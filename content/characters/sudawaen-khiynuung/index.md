@@ -39,9 +39,11 @@ unready, and the worlds do not speak of it lightly.
 
 ## Status
 
-Sudawaen Khiynuung's current binding status, the history of past
-bindings, and the conditions under which the name first entered
-the Old Tongue are not yet recorded here.
+Sudawaen Khiynuung is currently bound to the
+[[concepts/eidolon-knight|Eidolon Knight]]
+[[characters/mila|Mila]]. The history of past bindings, and the
+conditions under which the name first entered the Old Tongue,
+are not yet recorded here.
 
 _(Detail on Sudawaen Khiynuung's recorded manifestations, the
 specific embodied perceptions associated with its resonance, and

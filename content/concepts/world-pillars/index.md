@@ -1,33 +1,94 @@
-World Pillars are colossal stone [[concepts/eidolons|Eidolons]]
-that serve as the launch infrastructure of interplanetary travel
-in Alteria. They are ancient — older than the institutions that
-use them — and far larger than any Eidolon piloted by a single
-Knight.
+World Pillars are colossal [[concepts/eidolons|Eidolon]]
+constructs partially fused into the planets they serve.
+Stone, metal, and root-bound matter braided into vast immovable
+forms, each cored in [[concepts/skyblood|Skyblood]] on a scale
+no smaller Eidolon could survive. They do not move. They endure.
 
-## What they do
+They are the launch and arrival infrastructure of
+[[concepts/interplanetary-travel|interplanetary travel]] —
+the way a Knight leaves one world for another, and the way
+they survive returning. Travel between worlds is
+[[concepts/nearing|Nearing]] applied to space, sustained for
+hours or days at a stretch. A pilot cannot begin that Nearing
+from a planet's surface. The Pillars are what make the
+beginning possible.
 
-Travel between worlds in this cosmology is a form of
-[[concepts/nearing|Nearing]]: a pilot, in their own Eidolon, lets
-themselves fall forward toward [[concepts/nareth|Nareth]],
-shortening the journey by passing closer to the resonant
-substrate where space behaves differently. The technique works.
-It also requires enough initial velocity that the pilot does not
-simply stall — or, worse, drift uncorrected into something they
-cannot see in time.
+> _You don't fly between worlds. You survive being thrown
+> away from one._
 
-The World Pillars provide that velocity. They slingshot an
-Eidolon up and outward, fast enough and aimed well enough that
-the falling-forward can begin safely.
+This is the principle on which the Pillars rest.
 
-## What they are
+## What a launch is
 
-Each Pillar is itself an Eidolon: a vast stone construct,
-[[concepts/skyblood|Skyblood]]-powered, with a coherence and
-intent that no single human pilot animates. The question of who or
-what binds them is older than recorded practice. Some treat them
-as sleeping; others as patient; others as the work of a binding
-arrangement that has long since outlived its original parties.
+Leaving a planet is not a technical procedure. It is a ritualised
+act of separation: physically violent, spiritually dangerous,
+emotionally heavy. The pilot is, in a literal sense, being torn
+away from the world that has shaped them.
+
+The launch proceeds in four parts.
+
+**The Tethering.** The pilot's Eidolon is brought to the
+Pillar's launch rail — a carved alignment cut into the
+landscape, a furrow leading toward the Pillar's body — and bound
+in place with Skyblood chains and resonance cables. The chains
+hold the Eidolon's physical mass; the cables synchronize the
+[[beings/naya|Naya]] inside it. This second function is the
+more demanding. A pilot whose Naya cannot be brought into
+coherence at this stage cannot be launched, and the launch is
+abandoned.
+
+**The Draw.** The Pillar pulls tension. Pressure builds along
+the rail. The Pillar's vast Skyblood core enters resonance with
+the pilot's smaller core, and the pilot's Naya begins to
+vibrate at the Pillar's frequency. Naya substrates begin to
+overlap; identities begin to verge on desynchronisation. This
+stage is the most dangerous. A pilot whose
+[[concepts/binding|binding]] is not stable enough for the
+pressure can _fracture before launch_, and pilots have died on
+the rail without ever leaving the ground.
+
+**The Release.** The release is not mechanical. There is no
+lever, no countdown, no operator decision. The release happens
+when resonance peaks — when pilot, Naya, Eidolon, and Pillar
+reach the single moment in which the bound system can no
+longer be held against the gradient pulling outward. At that
+moment the chains shatter or disengage, and the Eidolon is
+violently flung skyward.
+
+A successful launch ends with the pilot beginning the long
+controlled drift into [[concepts/interplanetary-travel|the
+space between worlds]]. An unsuccessful one ends some other way.
+
+## Catching
+
+A pilot leaves through their home Pillar. They arrive through
+the destination world's. Receiving Pillars — or, on some
+worlds, smaller catch-structures aligned with them — slow the
+incoming Eidolon, stabilise it, and bring it down. The
+arrival is shaped to mirror the launch.
+
+If there is no Pillar at the destination capable of catching, or
+if the pilot misses the catch entirely, they do not land. They
+drift, burn, or pass into the storm-field of
+[[concepts/the-void|the Void Between Worlds]]. The Pillars
+make travel possible; they do not make it safe.
+
+## What the Pillars are
+
+Each Pillar is itself an Eidolon. Vast, ancient, partly buried,
+partly grown into the landscape — and bound, like any Eidolon,
+in some pact between matter and resonance. The question of
+who or what is bound _inside_ a World Pillar is older than the
+[[social/knights-of-bellona|Knights of Bellona]]'s public
+doctrine on the subject. The order maintains the Pillars; it
+does not claim to have built them.
+
+Some traditions treat the Pillars as sleeping. Others as
+patient. Others as the work of a binding arrangement that has
+long since outlived its original parties. The Pillars do not
+correct any of these readings.
 
 _(Detail on the Pillars' origin, their distribution across the
-worlds, how they are maintained, who operates them, and what — if
-anything — is bound inside them is not yet recorded here.)_
+worlds, the specific architecture of their alignment rails,
+how arrival catches differ from launch tethers, and what \(if
+anything\) is bound inside them is not yet recorded here.)_
