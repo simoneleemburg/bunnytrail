@@ -1,5 +1,5 @@
 Sudawaen Khiynuung is one of the [[beings/naya|Naya]] whose name
-has been rendered into the [[concepts/old-tongue|Old Tongue]] and
+has been rendered into the [[languages/old-tongue|Old Tongue]] and
 entered the records of the Sister Worlds. The readings, as with
 all such names, disagree — and in this case the disagreement
 carries weight, because what the readings turn on is whether the

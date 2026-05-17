@@ -11,7 +11,7 @@ provides materially — the rites, the regulation of
 [[concepts/nearing|Nearing]], the public face of doctrine — is in
 the end framing for the Triad's actual labour, which is the
 high-order translation of [[beings/naya|Naya]] symbol systems
-into [[concepts/old-tongue|Old Tongue]] names the Sister Worlds
+into [[languages/old-tongue|Old Tongue]] names the Sister Worlds
 can act on.
 
 The synesthetic experience of a Naya — colour, pressure, taste,

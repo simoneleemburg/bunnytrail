@@ -45,7 +45,7 @@ crystalline edges, precise movement, an elegance that reads as
 almost fragile until it is tested.
 
 The Naya itself has not been rendered into the
-[[concepts/old-tongue|Old Tongue]] in any reading the
+[[languages/old-tongue|Old Tongue]] in any reading the
 compendium can record. Freya may know its true approximation;
 if so, she has not made it public.
 

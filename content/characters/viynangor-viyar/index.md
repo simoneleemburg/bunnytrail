@@ -1,5 +1,5 @@
 Viynangor Viyar is one of the [[beings/naya|Naya]] whose name
-has been rendered into the [[concepts/old-tongue|Old Tongue]] and
+has been rendered into the [[languages/old-tongue|Old Tongue]] and
 entered the records of the Sister Worlds. As with all such names,
 the rendering is approximation; the readings disagree, and the
 disagreement is part of what the name carries.

@@ -84,7 +84,7 @@ The encounter arrives as colour, pressure, taste, impossible
 geometry, emotional memory. The substrate of Naya identity is
 visible to embodied perception; rendering it into a stable name
 that humans can repeat to each other is a different and harder
-problem, addressed by the [[concepts/old-tongue|Old Tongue]].
+problem, addressed by the [[languages/old-tongue|Old Tongue]].
 
 What the Sister Worlds call any given Naya is, in the end, an
 approximation. The Naya themselves are presumably unbothered by

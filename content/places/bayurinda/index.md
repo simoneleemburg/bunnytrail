@@ -35,7 +35,7 @@ to record the symbols revealed to them. They could not speak
 what they perceived, but they discovered that certain sounds,
 under the right conditions, produced sympathetic resonance with
 it. Refined across centuries, those resonance-patterns became
-the [[concepts/old-tongue|Old Tongue]] — the ritual language by
+the [[languages/old-tongue|Old Tongue]] — the ritual language by
 which the Sister Worlds now approximate Naya names.
 
 _(Detail on Bayurindan cities, lineages, the deep-sea memory

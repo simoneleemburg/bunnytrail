@@ -114,6 +114,60 @@ This is why Old Tongue names enter the historical record only
 slowly, and why so many Naya are still known to the worlds only
 by description, by emotional impression, or by silence.
 
+## Old Tongue words in this compendium
+
+The compendium contains many words that are not modern Sister
+World speech. Most of them are not Old Tongue. The Old Tongue
+is a specific ritual register used for a specific purpose —
+naming Naya — and almost everything in it is, accordingly, a
+Naya's name.
+
+What is recorded here in the Old Tongue:
+
+- [[characters/viynangor-viyar|Viynangor Viyar]] — the name of
+  a particular Naya, in the form the [[social/oracle-triad|Oracle Triad]]
+  has rendered it. The accepted readings vary; the sound is
+  the same.
+- [[characters/sudawaen-khiynuung|Sudawaen Khiynuung]] — the name
+  of another Naya, similarly rendered.
+
+Other Naya are named in the compendium without their Old Tongue
+names being recorded. [[characters/uraya-ur|Uraya Ur]],
+[[characters/freya|Freya]]'s unnamed bound Naya, and the Naya
+known only through Triad members' partnerships are referred to
+either by descriptive epithets, by their pilots' names, or by
+silence. In each case the absence reflects the difficulty of
+the work: the synesthetic encounter is common, but rendering it
+into an Old Tongue name is the Triad's distinctive labour, and
+most encounters never produce one.
+
+_Other names in the compendium — Bayurinda, Sharazan, Nebelheim,
+Asthera, Nareth, the names of characters such as Ngonawan
+Ilyardi or Sabina Vaarn, the cultural readings of
+[[places/the-dark-companion|the Dark Companion]] — are not
+Old Tongue. They belong to the working tongues of the Sister
+Worlds, or to scholarly registers, or to traditions whose
+languages are not yet recorded here. (See the gap-note
+below.)_
+
+## Sibling tongues
+
+The Old Tongue is the only language with an entry in this
+compendium at the time of writing. The Sister Worlds are not,
+of course, a single linguistic community: each world has its
+own working speech, the order's charts and rosters have their
+own scholarly register, and the cultural readings of Naya names
+emerge from translation traditions that are themselves
+languages of a kind. None of these have entries yet.
+
+_(The working tongues of [[places/bayurinda|Bayurinda]],
+[[places/sharazan|Sharazan]] and [[places/nebelheim|Nebelheim]],
+the scholarly register the [[social/knights-of-bellona|Knights of Bellona]]
+maintain across the worlds, and the lineages of translation
+that produce competing readings of Old Tongue names are not yet
+recorded here. The compendium acknowledges them by way of the
+words they have left behind.)_
+
 _(Detail on the deeper grammar of the Old Tongue, the lineages
 of its scholars, the specific musical and mathematical
 structures that underlie its resonance patterns, and the
