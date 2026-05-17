@@ -22,8 +22,19 @@
 		return [...groups.entries()].map(([kind, items]) => ({ kind, items }));
 	}
 
-	function labelForKind(kind: string): string {
+	function labelForKind(kind: string, direction: 'out' | 'in'): string {
 		if (kind === 'wikilink') return 'Mentions';
+		if (direction === 'in') {
+			// Inverse labels for incoming edges. The relation is declared
+			// on the *other* entity, so on this page we want the converse
+			// reading. Without this, "X located-in Y" rendered on Y's page
+			// as "located in: X" reads as if Y is located in X.
+			const inverse: Record<string, string> = {
+				'located-in': 'Contains',
+				'serves-in': 'Members'
+			};
+			if (inverse[kind]) return inverse[kind];
+		}
 		return kind.replace(/[-_]/g, ' ');
 	}
 
@@ -92,7 +103,7 @@
 					<h2 class="side-heading">Connections</h2>
 					{#each outGroups as group (group.kind)}
 						<div class="group">
-							<div class="group-label">{labelForKind(group.kind)}</div>
+							<div class="group-label">{labelForKind(group.kind, 'out')}</div>
 							<ul>
 								{#each group.items as item, i (item.entity?.id ?? i)}
 									{#if item.entity}
@@ -118,7 +129,7 @@
 					<h2 class="side-heading">Referenced by</h2>
 					{#each inGroups as group (group.kind)}
 						<div class="group">
-							<div class="group-label">{labelForKind(group.kind)}</div>
+							<div class="group-label">{labelForKind(group.kind, 'in')}</div>
 							<ul>
 								{#each group.items as item, i (item.entity?.id ?? i)}
 									{#if item.entity}
