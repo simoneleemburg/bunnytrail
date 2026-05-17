@@ -20,6 +20,12 @@
 			habitable-zone worlds — are settled territory; the others are sketches, their names still
 			tentative.
 		</p>
+		<p class="lede">
+			The chart extends a little past its own system. Across the long gulf, the neighbouring
+			<em>Hollow Binary</em> is visible from Cognita: a single companion star, and the unresolved
+			body it orbits — <a href="/places/the-dark-companion">the Dark Companion</a>, which gives off
+			no light and is known only by what it does.
+		</p>
 	</header>
 
 	<CognitaMap />
@@ -49,6 +55,14 @@
 			<dd>
 				Five of the eight worlds carry working names rather than settled ones, shown in italics on
 				the map. Their stories haven't fully arrived yet.
+			</dd>
+
+			<dt>The Hollow Binary</dt>
+			<dd>
+				The neighbouring system, drawn off to the right across a long gulf of interstellar space
+				(not to scale). Its visible companion star turns around a body the eye cannot resolve:
+				<a href="/places/the-dark-companion">the Dark Companion</a>, shown as a hollow rather than
+				drawn solidly, because no light has ever come from it.
 			</dd>
 		</dl>
 	</section>
