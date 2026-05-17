@@ -132,6 +132,13 @@ export interface EntityMeta {
 	 * Surfaced in cards and the property list, and groupable in list views.
 	 */
 	kind?: string;
+	/**
+	 * Gender, where it's part of who an entity is. Free-form so authors
+	 * can write what they want — "trans man", "trans woman", "fluid",
+	 * "non-binary", "agender", whatever fits. Surfaced in the property
+	 * list, never inferred.
+	 */
+	gender?: string;
 	/** "active" | "deceased" | "lost" | "ruined" | anything else. */
 	status?: string;
 	/** Structured relations. */

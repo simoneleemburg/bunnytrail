@@ -1,0 +1,11 @@
+name: Uraya Ur
+kind: naya
+gender: fluid
+epithet: The Watcher of Spiraling Echoes
+role: Oracle of Witnessing
+summary: Oracle of the threefold Triad, holder of Witnessing — the perception of pattern across recurrence, collapse, and re-emergence.
+tags: [oracle, oracle-triad, witnessing, naya]
+relations:
+  - kind: serves-in
+    target: social/sisters-of-bellona
+    note: As serving Oracle of Witnessing in the Triad.

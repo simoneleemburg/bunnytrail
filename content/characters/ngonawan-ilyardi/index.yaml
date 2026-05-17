@@ -1,0 +1,11 @@
+name: Ngonawan Ilyardi
+kind: serpent-humanoid
+gender: trans man
+epithet: The Sacred Serpent of Resonance
+role: Oracle of Interpretation
+summary: Oracle of the threefold Triad, holder of Interpretation — the extraction of meaning from resonant signal.
+tags: [oracle, oracle-triad, interpretation]
+relations:
+  - kind: serves-in
+    target: social/sisters-of-bellona
+    note: As serving Oracle of Interpretation in the Triad.
