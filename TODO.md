@@ -15,11 +15,13 @@ this file is not loaded by the site.
 
 ## Cosmology to add
 
-- **Black hole / Void stuff.** There is more cosmological material
-  about the broken god, the shattering, and what lies in or beyond
-  the Void Between Worlds that has not yet been pulled in. Once
-  the framing is decided, the Void entry and possibly Skyblood
-  will need updating.
+- **Black hole / Void stuff.** The Dark Companion entry is in
+  (`places/the-dark-companion`), and the Cognita map now shows the
+  Hollow Binary across the long gulf. The entry deliberately gap-notes
+  the connection to the broken god, the shattering, and fallen Naya;
+  those connections still need their own framing. Once that framing
+  exists, the Dark Companion entry and possibly Skyblood and the Void
+  will need updating to point at it.
 - **Fallen Naya, cosmic threats, entropy.** Material on Naya that
   have gone wrong in some larger-than-individual sense, on
   cosmology-scale threats, and on the cosmology's relationship
