@@ -210,7 +210,7 @@ the work: the synesthetic encounter is common, but rendering it
 into an Old Tongue name is the Triad's distinctive labour, and
 most encounters never produce one.
 
-_Other names in the compendium have their own provenances. The
+_Other names in the compendium have their own provenances._ The
 planet-names — Bayurinda, Sharazan, Nebelheim — belong to the
 working tongues of the Sister Worlds (Bayurinda itself is a
 [[languages/bayurindan|Bayurindan]] word, and Nebelheim a
@@ -223,12 +223,43 @@ various local traditions and are not Old Tongue. The
 cosmological terms [[concepts/asthera|Asthera]] and
 [[concepts/nareth|Nareth]] — names for the two great layers of
 existence — are [[languages/thallish|Thallish]], not Old Tongue.
-The Old Tongue presupposes \_Nareth_ as the name of the realm
+The Old Tongue presupposes _Nareth_ as the name of the realm
 its work addresses; it did not coin it. Two of the compendium's
 working-tongue names — [[characters/freya|Freya]] and
 [[characters/sabina-vaarn|Sabina Vaarn]] — are
 [[languages/tholingian|Tholingian]] and are marked
-accordingly.\_
+accordingly.
+
+## On the compendium's working register
+
+Many of the most-used words in this compendium are not in any
+of the named languages recorded here. _Knights of Bellona_,
+_Oracle Triad_, _World Pillar_, _Eidolon_, _Eidolon Knight_,
+_Skyblood_, _Nearing_, _Nearborn_, _Binding_, _Whispers_, _Aspect
+Wings_, _Resonance Veils_, _Sister Worlds_, _the First
+Listeners_, _the Drowning_, _the deep_, _the archipelago_ — all
+of them are written in the compendium's working English-language
+register, and not, in their present form, in
+[[languages/old-tongue|Old Tongue]], [[languages/tholingian|Tholingian]],
+[[languages/bayurindan|Bayurindan]], or
+[[languages/thallish|Thallish]].
+
+This is not an accident or a translation failure. It is the
+condition of the compendium. The cosmology of [Alteria
+Cognita](/cognita) is recorded across many languages — most of
+them not yet entered here — and a single working register has
+been adopted to hold the material together for readers who do
+not speak all of them. _Eidolon_ may yet turn out to be a
+borrowing from a tongue not currently recorded; _Knights of
+Bellona_ may yet turn out to be an English compromise across
+names each Sister World gives the order in its own speech; _the
+Drowning_ may yet turn out to be a gloss of a Bayurindan word
+this compendium has not recorded. Where the underlying tongue
+is known, the word is tagged; where it is not, the word stands
+as the compendium's working term and the question is held open.
+
+This entry is the place those questions live, until they
+resolve.
 
 ## Sibling tongues
 
@@ -239,19 +270,29 @@ scholarly register, and the cultural readings of Naya names
 emerge from translation traditions that are themselves
 languages of a kind.
 
-So far, only one of the working tongues has its own entry in
-the compendium: [[languages/tholingian|Tholingian]], the
-language of [[places/tholingia|Tholingia]] on
-[[places/nebelheim|Nebelheim]]. The rest are gestured at by the
-words they have left behind.
+Two of the Sister Worlds' working tongues have their own
+entries in the compendium so far:
+[[languages/tholingian|Tholingian]], the language of
+[[places/tholingia|Tholingia]] on
+[[places/nebelheim|Nebelheim]], and
+[[languages/bayurindan|Bayurindan]], the working tongue of the
+archipelago people of [[places/bayurinda|Bayurinda]]. A third,
+[[languages/thallish|Thallish]], stands as a stub —
+the source of [[concepts/asthera|Asthera]] and
+[[concepts/nareth|Nareth]], but otherwise not yet imported.
+The rest of [Cognita](/cognita)'s tongues are gestured at by
+the words they have left behind.
 
-_(The other working tongues of [[places/nebelheim|Nebelheim]],
-and the working tongues of [[places/bayurinda|Bayurinda]] and
-[[places/sharazan|Sharazan]], the scholarly register the
+_(The other working tongues of [[places/nebelheim|Nebelheim]]
+beyond Tholingian, the working tongue or tongues of
+[[places/sharazan|Sharazan]], the language of
+[[places/bayurinda#peoples-of-bayurinda|the deep]], the
+scholarly register the
 [[social/knights-of-bellona|Knights of Bellona]] maintain
-across the worlds, and the lineages of translation that produce
-competing readings of Old Tongue names are not yet recorded
-here.)_
+across the worlds, the language of origin of \_Eidolon_ and the
+other compendium-register terms, and the lineages of
+translation that produce competing readings of Old Tongue names
+are not yet recorded here.)\_
 
 _(Detail on the deeper grammar of the Old Tongue, the lineages
 of its scholars, the specific musical and mathematical

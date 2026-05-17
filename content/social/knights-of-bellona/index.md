@@ -7,9 +7,13 @@ few institutions that does. The order maintains the
 [[concepts/nearing|Nearing]], and trains and certifies every
 known [[concepts/eidolon-knight|Eidolon Knight]] in the cosmology.
 
-The order takes its name from Bellona. _(Who Bellona was, and how
-her name came to be attached to the order, is not yet recorded
-here.)_
+The order takes its name from Bellona. _(Who Bellona was, the
+language her name belongs to, and how that name came to be
+attached to the order are not yet recorded here. Nor is the
+question of whether "Knights of Bellona" is the order's own name
+for itself in some single working tongue, an English-language
+gloss of names the order is given on each of the Sister Worlds,
+or some long-stabilised compromise between the two.)_
 
 ## What they do
 

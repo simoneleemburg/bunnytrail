@@ -91,6 +91,21 @@ The role of the Eidolon Knight is recognised on all three
 worlds, but how that role is received varies sharply between
 them.
 
+## On the name
+
+_Eidolon_ is the word the compendium uses for the vessel. Its
+language is not yet recorded here. It is not
+[[languages/old-tongue|Old Tongue]], not
+[[languages/tholingian|Tholingian]], not
+[[languages/bayurindan|Bayurindan]]. Whether it is
+[[languages/thallish|Thallish]] (as
+[[concepts/asthera|Asthera]] and
+[[concepts/nareth|Nareth]] are), the
+[[social/knights-of-bellona|order]]'s own working term in some
+register the order has not yet been recorded as using, or a
+word that travelled in from somewhere else again, is open. The
+matter is under review; the word itself may not survive.
+
 _(Detail on construction practices, the lineage of named
 Eidolons, the lives of specific Eidolons across many pilots,
 and the failure modes of distorted vessels is not yet

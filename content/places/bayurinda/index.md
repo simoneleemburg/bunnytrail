@@ -54,6 +54,15 @@ discipline — flows from it. That the story is mythic does not
 make it untrue. That it is true does not make the story any less
 mythic.
 
+_The drowning_ is the English-language working term this
+compendium uses for the event. What the
+[[places/bayurinda-archipelago|archipelago]] calls it in
+[[languages/bayurindan|Bayurindan]], what the
+[[#peoples-of-bayurinda|deep]] call it among themselves, and
+whether the lost surface civilisation had a single name for what
+happened to it at all — given how long the loss took, or did not
+take — are not yet recorded here.
+
 _(The catastrophe itself, its causes, its date, whether the old
 civilisation foresaw it or was overtaken by it, and the question
 of how the deep relate to the events of the drowning — having

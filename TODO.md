@@ -12,6 +12,14 @@ this file is not loaded by the site.
   closer to riding, partnering, or attending. Whatever the term
   ends up being, it probably deserves its own entry rather than
   just being a section inside the Eidolon Knight page.
+- **"Eidolon" may want renaming.** The word reads as borrowed
+  (Greek-derived out of universe) and currently has no in-world
+  language attached. Decide whether _Eidolon_ stays — as a
+  Thallish word, an order's working term, or something else — or
+  is replaced by another word. If it stays, it needs a
+  language-of-origin attribution (or an explicit gap-note that
+  the question is open). If it goes, the rename touches a lot of
+  entries.
 
 ## Cosmology to add
 
