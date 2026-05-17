@@ -1,10 +1,7 @@
-Humans are the most prominent embodied people of Alteria — mortal,
+Humans are a prominent embodied people of Alteria — mortal,
 materially bound, and broadly recognisable as the kind of creature
 that walks, builds, remembers, and dies. They are native to
-[[concepts/asthera|Asthera]], the material plane, and their lives
-unfold across the inhabited worlds of the system: cities and
-caravan-routes, fishing fleets and pilgrim roads, generations
-overlapping and giving way.
+[[concepts/asthera|Asthera]], the material plane.
 
 What makes them unusual in Alteria's cosmology is less their bodies
 than what their bodies hold. Humans sustain persistent, high-intensity
@@ -18,17 +15,15 @@ their own.
 
 ## Why the Naya come to them
 
-Naya are drawn to humans above all the other embodied peoples for
-exactly this reason. Through binding — a negotiated coexistence
-rather than possession — a Naya can share in a human's emotional life
-and, in doing so, refine its own sense of self. The human, in turn,
-gains some measure of the resonance that runs beneath the surface of
-their own experience: intuition, presence, sometimes capacities that
-look from the outside like the small magics of the world.
+The Naya are drawn to humans for exactly this reason. Through binding
+— a negotiated coexistence rather than possession — a Naya can share
+in a human's emotional life and, in doing so, refine its own sense
+of self.
 
 A binding is not a gift. It is a relation. Both parties are changed.
-A well-bound human is not the same person as their unbound self,
-even when the binding ends.
+
+_(What humans gain from a binding, in their own terms, is not yet
+recorded here.)_
 
 ## Mortality, memory, and the cost
 

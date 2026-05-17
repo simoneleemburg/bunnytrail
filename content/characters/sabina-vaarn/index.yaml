@@ -4,7 +4,7 @@ gender: trans woman
 epithet: The Pilgrim of Ages
 role: Oracle of Endurance
 summary: Oracle of the threefold Triad, holder of Endurance — the carrying of meaning across time.
-tags: [oracle, oracle-triad, endurance, human]
+tags: [oracle, oracle-triad, endurance]
 relations:
   - kind: serves-in
     target: social/sisters-of-bellona

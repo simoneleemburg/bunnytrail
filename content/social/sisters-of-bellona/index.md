@@ -6,9 +6,9 @@ around [[concepts/nearing|Nearing]]: the body that decides what is
 sound practice, who is ready to near, and how the meaning brought
 back is held.
 
-The order takes its name from Bellona, a figure whose history is
-recorded elsewhere in their archives — a founder, by tradition,
-though the lineage is older than any single founding.
+The order takes its name from Bellona. _(Who Bellona was, and how
+her name came to be attached to the order, is not yet recorded
+here.)_
 
 ## What they do
 
