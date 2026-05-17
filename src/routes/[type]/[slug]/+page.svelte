@@ -30,7 +30,7 @@
 			// reading. Without this, "X located-in Y" rendered on Y's page
 			// as "located in: X" reads as if Y is located in X.
 			const inverse: Record<string, string> = {
-				'located-in': 'Contains',
+				'located-in': 'Regions',
 				'serves-in': 'Members'
 			};
 			if (inverse[kind]) return inverse[kind];
