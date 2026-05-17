@@ -54,6 +54,41 @@ npm run format:check  # Prettier check
   `add backlink rendering on entity pages`). No ticket prefixes — this
   project doesn't use an issue tracker.
 
+## Worldbuilding content rules
+
+These rules apply when authoring or editing files under `content/`.
+Worldbuilding is the user's domain; agents assist with structure,
+phrasing, and consistency, not with inventing the world.
+
+- **Don't invent canon.** Editing prose for clarity, rhythm, and
+  tone is fine. Adding new facts about the world is not — even small
+  ones. If the user's brief says "rare serpent-humanoid lineage,"
+  don't extend it into specific habitats, customs, or history. If a
+  character or place needs more detail than the brief provides,
+  either ask the user, leave the text short, or make the gap
+  explicit (a parenthetical italic note like _"How X came to Y is
+  not yet recorded here."_ is preferred over silent omission, so
+  the gap is visible later).
+- **Flag any inferences you do make.** When an inference is
+  unavoidable — e.g. a section needs a connecting sentence to read
+  coherently — call it out in chat after the edit. Don't bury small
+  worldbuilding claims in otherwise-routine prose.
+- **Cite the user's prompt.** If you're paraphrasing something the
+  user wrote, stay close to their phrasing and don't expand its
+  scope. "Identity tied to transformation" should not become
+  "identity expressed through ritualised transit-rites" without a
+  prompt.
+- **Tags are for cross-cutting affinities, not duplicates of
+  first-class fields.** If `kind: planet` is set, don't also add
+  `planet` to `tags`. Same for `gender`, `era`, `status`, etc. Use
+  tags for themes, motifs, and connections that the structured
+  fields don't already capture (e.g. `ocean`, `ruins`, `pilgrimage`,
+  `border`). Keeping tags clean keeps them useful.
+- **Empty is better than padded.** Short entries are fine. A stub
+  entry with a one-line summary and a gap note is better than a
+  paragraph of generic worldbuilding. The compendium grows by being
+  fed real material, not filler.
+
 ## Where things live
 
 - **New worldbuilding entity** → `content/<type>/<slug>/index.{yaml,md}`
