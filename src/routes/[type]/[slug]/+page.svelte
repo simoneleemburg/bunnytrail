@@ -31,7 +31,8 @@
 			// as "located in: X" reads as if Y is located in X.
 			const inverse: Record<string, string> = {
 				'located-in': 'Regions',
-				'serves-in': 'Members'
+				'serves-in': 'Members',
+				'spoken-in': 'Languages'
 			};
 			if (inverse[kind]) return inverse[kind];
 		}

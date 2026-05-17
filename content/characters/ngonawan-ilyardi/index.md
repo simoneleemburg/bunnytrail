@@ -1,4 +1,4 @@
-Ngonawan Ilyardi is the serving Oracle of Interpretation within the
+Ngonawan Ilyardi [[bay]] is the serving Oracle of Interpretation within the
 [[social/oracle-triad|Oracle Triad]] of the
 [[social/knights-of-bellona|Knights of Bellona]], also known as the
 Sacred Serpent of Resonance.

@@ -1,8 +1,19 @@
-The Naya are primordial beings native to [[concepts/nareth|Nareth]],
+The Naya [[bay]] are primordial beings native to [[concepts/nareth|Nareth]],
 the resonant substrate of reality. They are not physical creatures in
 any usual sense, but expressions of fundamental states of existence —
 storm, growth, flame, frost, light, decay, and the elemental or
 emotional conditions that run beneath such names.
+
+The word _Naya_ is Bayurindan: the archipelago people's name for
+these beings, carried out to the other Sister Worlds by the
+[[social/knights-of-bellona|order]] when contact was established,
+and adopted as the standard term across [Cognita](/cognita) along
+with the rest of the Bayurindan scholarly inheritance. Whether
+the lost surface civilisation called them by this word, by an
+ancestor of this word, or by something else again is not
+recorded here. What the [deep](/places/bayurinda#peoples-of-bayurinda)
+call them is, as so often, not a thing this compendium yet
+knows.
 
 In Nareth, form is not fixed. The Naya exist in a fluid state where
 identity, shape, and even personality are continuously shaped by
