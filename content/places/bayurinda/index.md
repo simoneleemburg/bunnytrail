@@ -10,6 +10,8 @@ without help. Two moons drag its tides into long overlapping
 rhythms, but for most Bayurindans the surface is weather rather
 than home.
 
+_(Bayurinda's two moons are not yet recorded separately here.)_
+
 ## Culture and tone
 
 Bayurindan culture is introspective, disciplined, and
