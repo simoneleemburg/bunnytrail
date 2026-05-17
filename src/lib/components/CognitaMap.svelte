@@ -4,10 +4,11 @@
 	 *
 	 * Two parallel planes:
 	 *   • Asthera — the material plane, drawn as a horizontal axis with
-	 *     the star at the left and seven planets on flat orbital arcs.
+	 *     the star at the left and eight planets on flat orbital arcs,
+	 *     ordered from innermost to outermost.
 	 *   • Nareth — the resonant plane, drawn as a translucent overlay
-	 *     arching above. The same seven planets exist there too, shown
-	 *     as ghost-points connected to their Astheran twins by faint
+	 *     arching above. The same bodies exist there too, shown as
+	 *     ghost-points connected to their Astheran twins by faint
 	 *     vertical resonance threads.
 	 *
 	 * The map is deliberately hand-coded rather than data-driven: it's a
@@ -17,22 +18,27 @@
 	 */
 
 	type Planet = {
-		/** Display label shown beneath the planet. Use null for an unnamed body. */
-		label: string | null;
+		/** Display label shown beneath the planet. */
+		label: string;
 		/** Optional entity slug under `places/`; if present, the label links. */
 		slug?: string;
 		/** Optional one-line note shown beneath the label on the material plane. */
 		note?: string;
+		/** True while the name is a working draft, not a final choice. */
+		tentative?: boolean;
 	};
 
+	// Innermost → outermost. Three of the habitable-zone worlds (Bayurinda,
+	// Nebelheim, Sharazan) have full entries; the rest are working names.
 	const planets: Planet[] = [
-		{ label: null },
+		{ label: 'Vireth', note: 'scorched, too near the star', tentative: true },
+		{ label: 'Zharos', note: 'barren, thin toxic air', tentative: true },
 		{ label: 'Bayurinda', slug: 'bayurinda', note: 'ocean, dual moons' },
-		{ label: null },
-		{ label: 'Nebelheim', slug: 'nebelheim', note: 'tectonic, drifting' },
-		{ label: null },
-		{ label: 'Sharazan', slug: 'sharazan', note: 'cluster of fragments' },
-		{ label: null }
+		{ label: 'Nebelheim', slug: 'nebelheim', note: 'volcanic, tectonic' },
+		{ label: 'Sharazan', slug: 'sharazan', note: 'cluster, crossroads' },
+		{ label: 'Orenth', note: 'gas giant, anchor', tentative: true },
+		{ label: 'Seryth', note: 'eccentric wanderer', tentative: true },
+		{ label: 'Caldra', note: 'ringed, debris-edge', tentative: true }
 	];
 
 	// Layout constants — tweak by eye.
@@ -41,8 +47,8 @@
 	const STAR_X = 80;
 	const AXIS_Y = 380; // Asthera axis
 	const NARETH_Y = 150; // Nareth overlay band centerline
-	const PLANET_LEFT = 200;
-	const PLANET_RIGHT = W - 60;
+	const PLANET_LEFT = 180;
+	const PLANET_RIGHT = W - 70;
 	const PLANET_STEP = (PLANET_RIGHT - PLANET_LEFT) / (planets.length - 1);
 
 	function planetX(i: number): number {
@@ -59,7 +65,7 @@
 	>
 		<title id="cognita-title">Alteria Cognita — the mapped territory</title>
 		<desc id="cognita-desc">
-			A diagram showing the star and its seven planets on the material plane of Asthera, with the
+			A diagram showing the star and its eight planets on the material plane of Asthera, with the
 			same bodies echoed on the resonant overlay of Nareth above.
 		</desc>
 
@@ -122,19 +128,17 @@
 			<!-- The planets. -->
 			{#each planets as p, i}
 				{@const cx = planetX(i)}
-				<g class="planet" class:placeholder={!p.label} transform={`translate(${cx} ${AXIS_Y})`}>
-					<circle class="planet-body" r={p.label ? 7 : 4} />
-					{#if p.label}
-						{#if p.slug}
-							<a href={`/places/${p.slug}`}>
-								<text class="planet-label" y="26" text-anchor="middle">{p.label}</text>
-							</a>
-						{:else}
+				<g class="planet" class:tentative={p.tentative} transform={`translate(${cx} ${AXIS_Y})`}>
+					<circle class="planet-body" r="6" />
+					{#if p.slug}
+						<a href={`/places/${p.slug}`}>
 							<text class="planet-label" y="26" text-anchor="middle">{p.label}</text>
-						{/if}
-						{#if p.note}
-							<text class="planet-note" y="42" text-anchor="middle">{p.note}</text>
-						{/if}
+						</a>
+					{:else}
+						<text class="planet-label" y="26" text-anchor="middle">{p.label}</text>
+					{/if}
+					{#if p.note}
+						<text class="planet-note" y="42" text-anchor="middle">{p.note}</text>
 					{/if}
 				</g>
 			{/each}
@@ -149,7 +153,7 @@
 	</svg>
 
 	<figcaption>
-		Two planes, one cosmos. The star and its seven planets persist as form on
+		Two planes, one cosmos. The star and its eight planets persist as form on
 		<a href="/concepts/asthera">Asthera</a>, and resonate as identity, memory and meaning on
 		<a href="/concepts/nareth">Nareth</a>.
 	</figcaption>
@@ -248,9 +252,14 @@
 		fill: var(--ink);
 	}
 
-	.planet.placeholder .planet-body {
-		fill: var(--ink-faint);
-		opacity: 0.55;
+	.planet.tentative .planet-body {
+		fill: var(--ink-soft);
+		opacity: 0.8;
+	}
+
+	.planet.tentative .planet-label {
+		font-style: italic;
+		fill: var(--ink-soft);
 	}
 
 	.planet-label {

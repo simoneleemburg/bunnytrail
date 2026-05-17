@@ -16,8 +16,9 @@
 			known portion. The pieces that have a name, a shape, a place to stand.
 		</p>
 		<p class="lede">
-			One star, seven planets, and two parallel layers of being. Three of the planets are settled
-			territory; the rest are placeholders, waiting on their names.
+			One star, eight planets, and two parallel layers of being. Three of the planets — the
+			habitable-zone worlds — are settled territory; the others are sketches, their names still
+			tentative.
 		</p>
 	</header>
 
@@ -44,8 +45,11 @@
 				threads are how a thing reaches across.
 			</dd>
 
-			<dt>The unnamed</dt>
-			<dd>Four of the seven worlds are still placeholders. Their stories haven't arrived yet.</dd>
+			<dt>The tentative</dt>
+			<dd>
+				Five of the eight worlds carry working names rather than settled ones, shown in italics on
+				the map. Their stories haven't fully arrived yet.
+			</dd>
 		</dl>
 	</section>
 </article>
