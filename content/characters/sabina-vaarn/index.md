@@ -16,8 +16,9 @@ Sabina is the carrying.
 
 ## Identity
 
-Sabina is a trans woman. The lived experience of her transformation
-is integral to her function in the Triad.
+Sabina is a trans woman, and so — by the cosmology's recognised
+reading — [[concepts/nearborn|Nearborn]]. The lived experience of
+her transformation is integral to her function in the Triad.
 
 _(How Sabina came to the Sisters, her life before the order, and
 the texture of her practice are not yet recorded here.)_

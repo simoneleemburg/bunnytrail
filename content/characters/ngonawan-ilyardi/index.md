@@ -18,8 +18,9 @@ order, and the wider world, can act on.
 
 ## Identity
 
-Ngonawan is a trans man. His identity is deeply tied to
-transformation and embodied transition.
+Ngonawan is a trans man, and so — by the cosmology's recognised
+reading — [[concepts/nearborn|Nearborn]]. His identity is deeply
+tied to transformation and embodied transition.
 
 _(The serpent-humanoid lineage Ngonawan belongs to — its peoples,
 its homelands, its relation to the wider Astheran world — is not
