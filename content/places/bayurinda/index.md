@@ -30,14 +30,20 @@ time. The drowning is held, on Bayurinda and elsewhere in
 [Cognita](/cognita), as **myth** — the foundational story of
 the world's present shape — and is treated by scholars with the
 patience that mythic material deserves. What is also recorded,
-plainly, is the material residue: the principal land masses of
-the older Bayurindan civilisation are now on the ocean floor,
-and their cities — built in stone, built to last — are on the
-ocean floor with them, in various conditions of ruin, repair,
-and continued use. The
-[[places/bayurinda-archipelago|archipelago]] that survives above
-the water is what remained, and is, by long tradition, taken to
-be the part of the old country that the seas spared.
+plainly, is the material residue. Ruins of the older Bayurindan
+civilisation are found across the planet, on land and under
+water both: weathered foundations on the high places of the
+present [[places/bayurinda-archipelago|archipelago]], cliff-side
+inscriptions on islets where nothing now lives, the occasional
+inland structure on a larger island that ought not, by any
+present account, to be where it is. The drowning was not
+complete, and the surface keeps its share of the loss. But the
+densest and most intact ruins — the cities themselves, the great
+halls, the libraries, the long inscriptional walls — are on the
+ocean floor, in various conditions of ruin, repair, and continued
+study by the deep. The archipelago that survives above the water
+claims, by long tradition, to be the part of the old country
+that the seas spared; this is disputed (see _Peoples_, below).
 
 The drowning is the central fact of Bayurindan history. Most of
 what the rest of [Alteria Cognita](/cognita) knows about
@@ -62,23 +68,27 @@ unequally:
 The [[places/bayurinda-archipelago|archipelago people]] live
 above and partly within the water, on the islands and in the
 sea-caves below them, in the place from which the world's name
-of record is taken. They are, by long tradition, taken to be the
+of record is taken. They claim, by long tradition, to be the
 **remnant** of the drowned civilisation — the descendants of
 those who, by accident of geography or fortune, stood on land
-that the seas did not take. The compendium follows that
-tradition, with the gap-note that the relationship between the
-archipelago of today and the lost civilisation of then is itself
-an old question, and is not settled here.
+that the seas did not take. _This is disputed._ Other accounts —
+some held in the archipelago itself, some held by scholars on
+the other Sister Worlds, some held by the deep where the deep
+can be drawn into the question at all — hold that the present
+archipelago people arrived later, or were always a coastal
+people distinct from the inland civilisation that drowned, or
+that the question of "descent" simply does not map onto the
+shape of what happened. The compendium records the dominant
+tradition, names the dispute, and does not settle it.
 
 The **deep** are an older people — older than the drowning, by
 the most credible accounts; older than Bayurindan history can
-quite reach. They live in pressure-adapted cities along the long
-architecture of the ocean, including, now, much of what was once
-the old surface civilisation's stone. Their account of themselves
-is not yet recorded here; what they call themselves is not a
-thing this compendium yet knows. Scholarship on the other Sister
-Worlds refers to them as _the deep_, or by various respectful
-circumlocutions.
+quite reach. They are mostly bipedal, pressure-adapted, and
+live in cities of their own making along the long architecture
+of the ocean. Their account of themselves is not yet recorded
+here; what they call themselves is not a thing this compendium
+yet knows. Scholarship on the other Sister Worlds refers to
+them as _the deep_, or by various respectful circumlocutions.
 
 The relationship between the archipelago and the deep is the
 central social fact of present Bayurindan life. The deep have
@@ -183,19 +193,29 @@ across centuries, those resonance-patterns became the
 which the Sister Worlds now approximate Naya names.
 
 The First Listeners were of the **lost surface civilisation**.
-Their world is on the sea floor now, and so is the place where
-they did their work. What survives of the Old Tongue, and of the
-practice behind it, survives because the **deep** preserved it:
-they were there before the drowning, they were there during the
-drowning, and they have been the patient custodians of what
-remained ever since. The form in which the rest of the Sister
-Worlds know the Old Tongue today is the form the deep have
-refined, taught to the archipelago, and through the archipelago
-released to anyone capable of receiving it.
+Their world is on the sea floor now, and so is most of the
+material they left behind. What survives of the Old Tongue,
+and of the practice behind it, survives almost entirely because
+the First Listeners carved their work into stone — and stone,
+on Bayurinda, mostly did not go away when the water came. The
+inscriptions are still legible on the floor of the ocean. The
+**deep** have read them, transcribed them, and across long
+centuries reconstructed from them as much of the original
+practice as the inscriptions can support. The form in which the
+rest of the Sister Worlds know the Old Tongue today is the
+form the deep have re-derived, refined, taught to the
+archipelago, and through the archipelago released to anyone
+capable of receiving it.
 
-The compendium credits the Listeners to Bayurinda, plainly,
-because Bayurinda is where they listened. The world they listened
-on, however, is gone.
+How much of the present practice is faithful to what the First
+Listeners actually did, how much is the deep's best reading of
+ambiguous inscriptions, and how much is centuries of careful
+extrapolation, is itself a matter of long argument among the
+deep — and, in the small ways it surfaces, among the
+archipelago. The compendium credits the Listeners to Bayurinda,
+plainly, because Bayurinda is where they listened. The world
+they listened on, however, is gone, and what reaches us reaches
+us through reconstruction.
 
 _(Detail on the First Listeners themselves — names, sequence,
 practices, and what exactly they perceived — is not yet recorded

@@ -13,15 +13,13 @@ The archipelago people call themselves _Bayurindans_, and call
 their place _Bayurinda_. The world has carried the second of
 those names ever since.
 
-By long tradition the archipelago is also taken to be the
+By long tradition the archipelago people claim to be the
 **remnant** of the [drowned civilisation](/places/bayurinda#the-drowning):
 the part of the old country that the seas did not take, and the
 people who survived above water are, in this account, the
 descendants of those who happened to be standing on land that
-remained land. The compendium follows the tradition, with the
-gap-note that the relationship between the archipelago of today
-and the lost civilisation of myth is itself an old question, and
-is not settled here.
+remained land. _This is disputed_, in the archipelago and beyond
+it (see _On the drowning, and descent_, below).
 
 ## Land and weather
 
@@ -32,11 +30,20 @@ high; the largest islands are broad rather than tall, and rise
 to wind-flattened uplands rather than to mountains. Below water
 the slopes continue — and continue, and continue. The same rock
 that holds an island above the surface holds a system of
-**sea-caves** below it; the same sea-caves, deeper down, give
-onto galleries that were once streets, harbours, halls, and
-shrines of the lost surface civilisation. Where the
-archipelago's living rock ends and the drowned country begins
-is, in many places, no longer a meaningful distinction.
+**sea-caves** below it: accessible at low tide, half-flooded at
+high tide, fully submerged at storm tide, and lived in by the
+archipelago people for as long as anyone can recall. The caves
+are the archipelago's own work, made and remade across
+generations.
+
+The caves are _not_ the drowned cities. There are ruins of the
+[lost surface civilisation](/places/bayurinda#the-drowning) on
+the archipelago — weathered foundations on the high places, an
+inscription here, a buried hall there — but the great drowned
+cities themselves lie further out, on the wider ocean floor,
+and are the deep's study, not the archipelago's. The archipelago
+people meet that old material in fragments: what their islands
+happen to carry, and what the deep choose to share.
 
 The weather is the central fact of the surface. Storms come in
 long seasonal bands, dragged by the moons and the deep currents,
@@ -60,24 +67,64 @@ to survive the storm in place. Everything that is meant to
 _greet_ the storm and remain afterward is meant to come apart
 first.
 
-The cave-level is different. The shallow sea-caves are shaped
-where they stand: chambers carved, lit, ventilated, lived in for
-generations. The deeper galleries are not the archipelago's work
-at all. They are what was left when the cities of the old
-civilisation went under, and what the
-[[places/bayurinda#peoples-of-bayurinda|deep]] have inhabited,
-maintained, and in some places extended in the long centuries
-since. The boundary between archipelago-shaped stone and lost-
-civilisation stone is, in the upper galleries, a question of
-careful scholarship; in the lower galleries it is a question
-of who is permitted to walk there.
+The cave-level is different. The sea-caves are shaped where
+they stand: chambers carved, lit, ventilated, lived in for
+generations. They are the archipelago's own work, and the part
+of Bayurindan life most willing to claim permanence. A house
+above water is rebuilt within a lifetime; a cave-shrine below
+water may be older than any line of teaching that uses it.
 
-The result is a culture that lives in three registers at once:
-the **provisional** structures of the surface, the **abiding**
-cave-work of the present archipelago, and the **inherited** stone
-of a civilisation that no longer breathes air. The archipelago
-people move between the first two daily. The third is for the
-deep, and for those few the deep choose to bring down.
+What is _not_ in the caves — and is sometimes mistakenly imagined
+to be, by visitors who have heard of the drowning and the deep
+in the same breath — is the lost civilisation itself. The
+[drowned cities](/places/bayurinda#the-drowning) are not under
+the archipelago's caves; they are out across the wider ocean
+floor, the deep's country and the deep's responsibility. What
+the archipelago carries of the old country is the **scattered
+ruins** the islands happen to hold above water — a foundation
+here, an inscription there, the occasional buried hall on a
+larger island — and whatever the deep choose to share from
+below. The archipelago is not the drowned country preserved.
+It is the country that did not drown, and even that is
+disputed (see _On the drowning, and descent_, below).
+
+The result is a culture that lives in two registers at once:
+the **provisional** structures of the surface and the **abiding**
+cave-work below. The drowned country is a third register, but
+it is not _on_ the archipelago in the way the first two are.
+It is _shared with_ the archipelago, by patient contact with
+the deep.
+
+## On the drowning, and descent
+
+The archipelago people's standing tradition is that they are the
+remnant of the [drowned civilisation](/places/bayurinda#the-drowning):
+those who happened to be on land that remained land when the seas
+came up. This is the account given in archipelago songs, in the
+liturgies that mark the storm seasons, and in the oldest of the
+archipelago lineages' own claims about themselves. It is also, in
+present-day archipelago life, the dominant reading.
+
+It is not the only reading. Other accounts hold variously that:
+
+- the archipelago people **arrived later**, after the drowning,
+  from somewhere else on the planet whose record is lost or has
+  never been told to outsiders;
+- the archipelago people were **always a coastal people**,
+  related to but distinct from the inland civilisation that
+  drowned — neighbours rather than ancestors of those who went
+  under;
+- the question of "descent" simply **does not map** onto what
+  happened: the drowning was long enough and complex enough that
+  any line of clean inheritance is an after-the-fact tidying.
+
+Where the deep stand on any of this is, in characteristic deep
+fashion, not said clearly to anyone the question would matter
+to. Scholarship on the other Sister Worlds is divided in much
+the same proportions as the archipelago itself.
+
+The compendium records the standing tradition as the standing
+tradition and names the dispute. It does not resolve it.
 
 ## Tone
 
@@ -91,11 +138,12 @@ are made with care, used hard, and let go without bitterness when
 the storms claim them.
 
 This is the same world whose [contemplative tradition](/places/bayurinda#culture-and-tone)
-is held to flow from the drowning. The archipelago people
-understand impermanence in a way that is, to outside observers,
-strikingly unburdened: they are the remnant of a country the
-seas took, living above caves that were once its streets, and
-they have made of all of it a working ordinariness.
+is held to flow from the drowning. Whether or not the archipelago
+people are descended from those who drowned, they live in a
+world whose history is unambiguously one of loss at civilisational
+scale, and they have made of that history a working ordinariness:
+neither denial of it nor preoccupation with it, but a steady
+patience with what does not last.
 
 ## Contact and Knighthood
 

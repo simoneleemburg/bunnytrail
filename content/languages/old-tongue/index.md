@@ -44,41 +44,57 @@ the Old Tongue. It is a ritual approximation, not a true
 translation, and the tradition that maintains it has never
 pretended otherwise.
 
-## How it survived
+## How it survived — partly
 
 The drowning of the surface civilisation should, by any ordinary
-reckoning, have lost the Old Tongue. It did not, because the
-[deep](/places/bayurinda#peoples-of-bayurinda) preserved it.
+reckoning, have lost the Old Tongue entirely. It did not — but
+what survived is less than the tradition sometimes likes to
+claim.
 
-The deep are an older Bayurindan people — older than the
-drowning, by the most credible accounts — who lived in
-pressure-adapted cities beneath the surface long before the
-seas rose and continue to live in and around the drowned country
-now. When the surface civilisation went under, the deep took
-custody of what could be preserved: records, practices, ritual
-sequences, lineages of teaching. Across the long centuries
-since, they have been the **curators and recoverers** of the
-Old Tongue. What had been a surface practice, developed in air,
-they have refined and maintained in their own conditions; the
-form of the tongue that the rest of the Sister Worlds now know
-is the form that has come up out of that long custodianship.
+What survived, in plain terms, is **the inscriptions**. The
+Old Tongue's resonance-patterns had been carved, by long
+custom, into the stone of the surface civilisation's halls,
+shrines, libraries, and ritual sites — and stone, on Bayurinda,
+mostly did not go away when the water came. The drowned cities
+on the ocean floor are still legibly marked with the work of
+the First Listeners. The
+[deep](/places/bayurinda#peoples-of-bayurinda) have read those
+inscriptions, transcribed them, debated them, and in time
+**reconstructed** from them as much of the original practice
+as the inscriptions can support. They have been at this, by
+the most credible accounts, for as long as the drowning is old.
+
+What did _not_ survive is most of the rest. The living
+practitioners did not. The unwritten lineages of teaching did
+not. The body of oral commentary, the casual technical
+shorthands of practitioners speaking to practitioners, the
+felt sense of what each pattern was _for_ — these are largely
+lost, and the deep have spent the centuries since trying to
+re-derive them from the marked stone. Some of that work is
+firm; some is the deep's best reading; some is acknowledged
+gap. Different deep lineages disagree on points of it. The
+present Old Tongue is the **dominant reconstruction**, not the
+original practice.
 
 The archipelago people are the **intermediaries**. They learned
-the Old Tongue from the deep, slowly, by patient contact across
-the threshold between water and air; they shaped what the deep
-taught them into a form that surface mouths in surface conditions
-could hold; and when the [[concepts/world-pillars|Pillars]] made
-travel between worlds possible, they carried that form outward to
-the other Sister Worlds. Every speaker of the Old Tongue on
-Nebelheim or Sharazan owes the practice, ultimately, to a chain
-that runs through the archipelago to the deep to the mystics of
-a civilisation that no longer breathes air.
+the reconstructed Old Tongue from the deep, slowly, by patient
+contact across the threshold between water and air; they shaped
+what the deep taught them into a form that surface mouths in
+surface conditions could hold; and when the
+[[concepts/world-pillars|Pillars]] made travel between worlds
+possible, they carried that form outward to the other Sister
+Worlds. Every speaker of the Old Tongue on Nebelheim or
+Sharazan owes the practice, ultimately, to a chain that runs
+back from their teacher to the archipelago, to the deep, to
+the marked stone of a civilisation that no longer breathes air
+and could no longer correct anyone if it wanted to.
 
-_(How much of the original practice was lost in the drowning,
-how much was lost again in the long translation up to the
-surface, and how much the present form is — to the deep — a
-polite approximation of an approximation, is not a question
-this compendium yet answers.)_
+_(Which parts of the present Old Tongue are confidently the
+First Listeners' work, which are the deep's careful
+reconstruction, which are deep disagreement papered over for
+surface use, and which are archipelago adaptation to air, is
+not a question this compendium yet answers — and is itself a
+matter of long dispute on Bayurinda.)_
 
 ## What kind of language it is
 

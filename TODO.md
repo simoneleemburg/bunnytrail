@@ -75,3 +75,14 @@ this file is not loaded by the site.
   something else. Think about it before importing pantheon and
   cosmogony material so the structure doesn't have to be
   retrofitted.
+
+- **Heading IDs in the markdown renderer.** Entries increasingly
+  use intra-page and cross-page anchor links (e.g.
+  `/places/bayurinda#the-drowning`) to refer between sections.
+  The current renderer doesn't emit `id` attributes on headings,
+  so those links go to the right page but don't scroll to the
+  right section. Add slugified IDs to `<h1>`–`<h6>` in
+  `src/lib/server/markdown.ts`, with collision-handling for
+  duplicate headings within an entry. Small feature; would
+  retroactively fix every existing `#section` reference in
+  content.

@@ -88,6 +88,20 @@ phrasing, and consistency, not with inventing the world.
   entry with a one-line summary and a gap note is better than a
   paragraph of generic worldbuilding. The compendium grows by being
   fed real material, not filler.
+- **Disputed truths are a feature, not a bug.** The compendium is
+  written as if compiled from many partial sources across many
+  centuries. There is, in many cases, no single authoritative
+  answer — only surviving partial truths, contradicting points of
+  view, and traditions that disagree. This is the deliberate
+  style. When a fact is contested in-world, record the contest:
+  attribute the dominant reading to "long tradition" or to a
+  named position, name the dispute, and resist the urge to
+  resolve it on the user's behalf. Phrases like _"by long
+  tradition, …; this is disputed,"_ _"some accounts hold …, others
+  hold …,"_ and _"the question is not settled here"_ are
+  preferred over a single confident voice. The compendium has the
+  texture of a real archive: incomplete, partisan in places, and
+  honest about both.
 
 ## Where things live
 
