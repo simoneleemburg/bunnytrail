@@ -28,7 +28,7 @@ shatters; an adaptive self holds. Skyblood does not change which
 of those a person is.
 
 This is one of the cosmology's harder facts, and one of the
-Sisters of Bellona's central teachings.
+Knights of Bellona's central teachings.
 
 ## Politics
 

@@ -1,6 +1,6 @@
 Ngonawan Ilyardi is the serving Oracle of Interpretation within the
 [[social/oracle-triad|Oracle Triad]] of the
-[[social/sisters-of-bellona|Sisters of Bellona]], also known as the
+[[social/knights-of-bellona|Knights of Bellona]], also known as the
 Sacred Serpent of Resonance.
 
 He belongs to a rare serpent-humanoid lineage native to the liminal,
@@ -33,4 +33,4 @@ tied to transformation and embodied transition.
 _(The serpent-humanoid lineage Ngonawan belongs to — its peoples,
 its homelands, its relation to the wider Astheran world — is not
 yet recorded here. Neither is the story of how he came to the
-Sisters.)_
+order.)_

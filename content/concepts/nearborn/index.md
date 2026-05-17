@@ -24,7 +24,7 @@ Nearborn "carry their second name from before they were born."
 Whether the underlying claim is true is, like much else in this
 cosmology, not something the compendium is in a position to
 resolve. Different scholars within the
-[[social/sisters-of-bellona|Sisters of Bellona]] have argued the
+[[social/knights-of-bellona|Knights of Bellona]] have argued the
 question for generations and continue to.
 
 ## The cultural layer
@@ -34,7 +34,7 @@ of the Sister Worlds do very different things with it.
 
 - On [[places/nebelheim|Nebelheim]], Nearborn status is formally
   recognised, regulated, and folded into the duties the order
-  oversees. The Sisters of Bellona conduct the recognition rites,
+  oversees. The Knights of Bellona conduct the recognition rites,
   and a Nearborn's path through public and ritual life is shaped
   by them. The framing is one of responsibility: a person known
   to be partially in Nareth has obligations of conduct and care.
@@ -74,7 +74,7 @@ There is also the older and more difficult question of whether
 every trans person is _in fact_ Nearborn in the resonant sense,
 or whether the in-universe explanation is itself partly a
 cultural overlay — a coherent story the worlds have settled on
-to account for what they observe. The Sisters of Bellona have
+to account for what they observe. The Knights of Bellona have
 not settled this. Nor has anyone else.
 
 As with most things in Alteria, what is known is what is named.

@@ -8,7 +8,7 @@ disagreement is part of what the name carries.
 
 The principal accepted readings:
 
-- _Soul Mirror_ — the [[social/sisters-of-bellona|Sisters of
+- _Soul Mirror_ — the [[social/knights-of-bellona|Knights of
 Bellona]] reading. The institutional shorthand most widely used
   across the worlds.
 - _Reflection of the Inner Self_ — the standing Bayurindan

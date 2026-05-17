@@ -6,7 +6,7 @@ specific working partnership of three: the Sacred Serpent
 this triad, by name, for centuries.
 
 The Triad is the working interpretive instrument of the
-[[social/sisters-of-bellona|Sisters of Bellona]]. What the order
+[[social/knights-of-bellona|Knights of Bellona]]. What the order
 provides materially — the rites, the regulation of
 [[concepts/nearing|Nearing]], the public face of doctrine — is in
 the end framing for the Triad's actual labour, which is the
@@ -72,7 +72,7 @@ formally does not reach the depth at which high-order symbols
 become legible. The translation depends on a synchronization no
 working contract can manufacture.
 
-The Sisters of Bellona arrange the order's life around this
+The Knights of Bellona arrange the order's life around this
 requirement. The Triad's sessions are protected. Their
 recovery time is protected. The conditions under which they
 work — what they need around them, who is permitted near, how
@@ -103,7 +103,7 @@ hold. The transcendence and the dissolution are the same
 process, and the Triad is far along it.
 
 How much further the practice can be sustained, and what happens
-to the partnership when it cannot, are questions the Sisters do
+to the partnership when it cannot, are questions the order does
 not answer in public.
 
 _(Detail on the origins of the Triad, how the three first found

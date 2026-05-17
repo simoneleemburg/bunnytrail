@@ -11,7 +11,7 @@ something that comes from far beyond any single self to hold.
 The principal accepted readings:
 
 - _Wrath of the Elders From Within_ — the
-  [[social/sisters-of-bellona|Sisters of Bellona]] reading. The
+  [[social/knights-of-bellona|Knights of Bellona]] reading. The
   most widely used.
 - _Ancestral Thunder Beneath the Flesh_ — the Bayurindan
   reading. Preferred in mystical and contemplative contexts.

@@ -1,6 +1,6 @@
 Sabina Vaarn is the serving Oracle of Endurance within the
 [[social/oracle-triad|Oracle Triad]] of the
-[[social/sisters-of-bellona|Sisters of Bellona]], also known as the
+[[social/knights-of-bellona|Knights of Bellona]], also known as the
 Pilgrim of Ages.
 
 She is a human.
@@ -25,5 +25,5 @@ Sabina is a trans woman, and so — by the cosmology's recognised
 reading — [[concepts/nearborn|Nearborn]]. The lived experience of
 her transformation is integral to her function in the Triad.
 
-_(How Sabina came to the Sisters, her life before the order, and
-the texture of her practice are not yet recorded here.)_
+_(How Sabina came to the order, her life before it, and the
+texture of her practice are not yet recorded here.)_

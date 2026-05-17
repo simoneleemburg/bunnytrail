@@ -142,7 +142,7 @@ Because of this, serious Nearing is rarely done alone.
 Skilled practitioners use rituals, emotional anchors,
 companions, and [[concepts/skyblood|Skyblood]] stabilisation to
 make safe return possible. The Oracle Triad, as maintained by
-the [[social/sisters-of-bellona|Sisters of Bellona]], exists
+the [[social/knights-of-bellona|Knights of Bellona]], exists
 in large part to provide a stabilising interpretive structure
 around the practice — so that what is brought back from Nareth
 can be held, witnessed, and made meaning of, rather than simply

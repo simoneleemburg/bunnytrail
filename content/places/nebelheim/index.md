@@ -24,7 +24,7 @@ breathing or molting.
 ## Binding on Nebelheim
 
 [[concepts/nareth|Nareth]]-touched practice on Nebelheim is regulated
-and restricted by the [[social/sisters-of-bellona|Sisters of
+and restricted by the [[social/knights-of-bellona|Knights of
 Bellona]], whose order is itself a Nebelheimic institution.
 [[concepts/binding|Binding]] here is understood as sacrifice and
 responsibility — closer to public duty than to private path.

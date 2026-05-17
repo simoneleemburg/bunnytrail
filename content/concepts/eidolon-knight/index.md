@@ -1,10 +1,13 @@
 An Eidolon Knight is a human who has undertaken
 [[concepts/binding|binding]] with a [[beings/naya|Naya]] and who
 pilots the [[concepts/eidolons|Eidolon]] the two of them share.
-The role is recognised on all three Sister Worlds. What the role
-_means_ — what is asked of the Knight, what they are owed, how
-the world around them treats them — varies sharply between the
-worlds.
+The role is recognised on all three Sister Worlds and is held by
+a single interplanetary order: the
+[[social/knights-of-bellona|Knights of Bellona]]. How the role
+is _received_ on each world — what a Knight is owed, how the
+world around them treats them, what their presence is taken to
+mean — varies sharply between the worlds. What the role _is_,
+and where it can be acquired, does not.
 
 ## What the role is
 
@@ -35,7 +38,7 @@ Rigid identities fracture. Unstable identities dissolve. Knights
 who succeed in the role are, almost by definition, people whose
 selves can take the pressure of merging. Whether they began that
 way or were made that way by the practice is a question the
-traditions answer differently.
+order itself answers inconsistently.
 
 [[concepts/skyblood|Skyblood]] is what anchors the merging
 materially. A Knight without access to a Skyblood-cored Eidolon
@@ -53,59 +56,80 @@ Naya in the way the Knight speaks and moves.
 
 The recognised failure modes are those of binding generally —
 identity bleed, distorted Eidolon forms, psychological collapse.
-Knights are not exempt from them. In some traditions, the costs
-are accepted in advance; in others, they are obscured.
+Knights are not exempt from them. The order's stance is that
+these costs are real, that they should be known to the Knight
+in advance, and that obscuring them is a failure of duty;
+whether that stance is actually maintained in practice is
+another question.
 
-## On the Sister Worlds
+## The order's exclusive role
 
-The role takes a sharply different shape on each world.
+To be an Eidolon Knight is to be a Knight of Bellona. The order
+trains, certifies, deploys, and oversees every known Knight in
+the cosmology; it does not teach binding outside its membership;
+it does not certify Knights trained elsewhere. Whether
+unsanctioned Knights exist somewhere outside the order's view is
+itself a question the order's silence makes difficult to assess.
+What the compendium can record is that no other path to the role
+is publicly known.
 
-- On [[places/nebelheim|Nebelheim]] the Knight is a working
-  figure: defence, labour, survival, the practical use of an
-  Eidolon for what an Eidolon can practically do. Knighthood
-  here is closer to a duty than a calling — a Nebelheimic
-  Knight is something like an old soldier with their dependable
-  old rifle, trusted because they have not failed yet and
-  expected to keep not failing. The
-  [[social/sisters-of-bellona|Sisters of Bellona]] regulate
-  who is permitted to bind, how, and under what conditions; the
-  Knight serves at the order's discretion within a broader
-  framework of public obligation.
+## How the worlds receive Knights
 
-- On [[places/bayurinda|Bayurinda]] the Knight is a
-  contemplative. The path of binding is slow, ritualised, and
-  treated as a long unfolding rather than an apprenticeship to
-  a function. A Bayurindan Knight may spend years in
-  preparation, more years in their first deepening, and may
-  never use their Eidolon in any way that would be recognised
-  as deployment on the other worlds. The Naya is teacher; the
-  Knight is student; the Eidolon is the shared vessel of an
-  ongoing practice.
+The order is one institution across the Sister Worlds. The
+Knight standing in a Nebelheimic caldera, the Knight in
+contemplative seclusion on Bayurinda, and the Knight conducting a
+ceremonial duel above a Sharazani fragment are wearing the same
+authority. What differs is how the world around them reads the
+role.
 
-- On [[places/sharazan|Sharazan]] the Knight is a public
-  figure. Knighthood there is theatrical, status-bearing, and
-  competitive. Duels, exhibitions, and ceremonial encounters in
-  Eidolon form are part of the structure of social hierarchy.
-  Sharazani Knights are known by name; their Eidolons are
-  elaborate, symbolic, and dressed for sight as much as for
-  use. The theatre is taken entirely seriously, and so are its
-  consequences.
+- On [[places/nebelheim|Nebelheim]] the Knight is read as a
+  working figure: a guarantor of defence, labour, and survival,
+  whose Eidolon is for what an Eidolon can practically do. The
+  Nebelheimic relationship to a Knight is closer to a duty than
+  a calling — a Knight stationed on Nebelheim is something like
+  an old soldier with their dependable old rifle, trusted
+  because they have not failed yet and expected to keep not
+  failing. The order's regulation of binding is, on Nebelheim,
+  felt as continuous with the world's own discipline.
 
-The differences are not stylistic. A Knight trained on one world
-cannot simply be relocated to another and continue. Their
-practice, the support around it, and the meaning their role
-carries do not survive translation between traditions.
+- On [[places/bayurinda|Bayurinda]] the Knight is read as a
+  contemplative. The cultural framing of binding here is slow,
+  ritualised, and treated as a long unfolding. A Knight may
+  spend much of their tenure in study, in extended Nearing, or
+  in deep ritual practice with their Naya; the Bayurindan
+  cultural eye is patient with this, and treats the Knight as
+  a figure of teaching as much as of action. The Eidolon may go
+  unused in any externally visible sense for long stretches
+  without the world thinking anything is wrong.
+
+- On [[places/sharazan|Sharazan]] the Knight is read as a
+  public figure. Knighthood there is invested with theatrical,
+  status-bearing, and competitive meaning. Duels, exhibitions,
+  and ceremonial encounters in Eidolon form are part of the
+  structure of social hierarchy; Sharazani audiences expect
+  their Knights to be known by name, and their Eidolons to be
+  dressed for sight as much as for use. The order does not
+  invent this theatre, but the order's Knights, on Sharazan,
+  must operate inside it.
+
+These are receptions, not traditions. The same Knight, moved
+between worlds, finds themselves read differently. The training
+that made them, and the order that authorises them, do not
+change.
 
 ## History
 
-Knighthood is older than the institutions that currently manage
-it. The "old knight roads" of [[places/sharazan|Sharazan]] —
-ancient routes that intersect with [[concepts/world-pillars|World
-Pillar]] paths and atmospheric travel currents — suggest a
-recorded history of Knights long before any of the current orders
-took their present form.
+Knighthood is the work of the Knights of Bellona, and has been
+for as long as the order has had Knights to send. The "old
+knight roads" of [[places/sharazan|Sharazan]] — ancient routes
+that intersect with [[concepts/world-pillars|World Pillar]] paths
+and atmospheric travel currents — are part of the long material
+record of the order's interplanetary reach. Whether the role
+existed in some other form before the order took its current
+shape is a question the order does not address in its public
+doctrine.
 
 _(Detail on individual named Knights, the histories of specific
-Eidolons, the structures by which Knighthood is conferred on each
-world, and the lineages of Knights in the historical record is not
-yet recorded here.)_
+Eidolons, the structure of the order's internal training, and
+the lineages of Knights in the historical record is not yet
+recorded here.)_

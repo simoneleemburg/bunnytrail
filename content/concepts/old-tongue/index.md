@@ -78,7 +78,7 @@ tradition doing the reading.
 
 **[[characters/viynangor-viyar|Viynangor Viyar]]** — the name of a particular Naya.
 
-- Sisters of Bellona reading: _Soul Mirror_.
+- Knights of Bellona reading: _Soul Mirror_.
 - Bayurindan reading: _Reflection of the Inner Self_.
 - Older Bayurindan reading: _The Witness Beneath Form_.
 - Sharazani poetic reading: _The Spirit Seen Twice_.
@@ -86,7 +86,7 @@ tradition doing the reading.
 
 **[[characters/sudawaen-khiynuung|Sudawaen Khiynuung]]** — the name of another.
 
-- Sisters of Bellona reading: _Wrath of the Elders From Within_.
+- Knights of Bellona reading: _Wrath of the Elders From Within_.
 - Bayurindan reading: _Ancestral Thunder Beneath the Flesh_.
 - Sharazani poetic reading: _The Buried Fury of Those Before Us_.
 

@@ -1,6 +1,6 @@
 Uraya Ur is the serving Oracle of Witnessing within the
 [[social/oracle-triad|Oracle Triad]] of the
-[[social/sisters-of-bellona|Sisters of Bellona]], also known as the
+[[social/knights-of-bellona|Knights of Bellona]], also known as the
 Watcher of Spiraling Echoes.
 
 She is of the [[beings/naya|Naya]], a primordial being native to
@@ -40,5 +40,5 @@ of perception that requires the perceiver not to be too settled.
 The other Oracles bring discipline against drift; Uraya brings the
 drift, held inside the discipline of the three.
 
-_(The specifics of Uraya's binding with the Sisters, and how she
+_(The specifics of Uraya's binding with the order, and how she
 came to take the role of Oracle, are not yet recorded here.)_

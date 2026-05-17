@@ -45,21 +45,28 @@ world's institutions respond to them differently.
 
 ## Cultural interpretation
 
-The Sister Worlds disagree about what binding is _for_.
+The Sister Worlds disagree about what binding is _for_, even as
+they agree that the practice itself is held by the
+[[social/knights-of-bellona|Knights of Bellona]]. The order's
+authority is uniform; the meaning each culture assigns to the
+practice is not.
 
-- On [[places/nebelheim|Nebelheim]], binding is sacrifice and
-  responsibility — duty to the world, regulated by the
-  [[social/sisters-of-bellona|Sisters of Bellona]].
-- On [[places/bayurinda|Bayurinda]], binding is a path to
-  transcendence — a slow ritualised practice, with Naya treated
-  as teachers rather than tools.
-- On [[places/sharazan|Sharazan]], binding is performance and
-  mastery — public, competitive, status-bearing.
+- On [[places/nebelheim|Nebelheim]], binding is read as
+  sacrifice and responsibility — duty to the world, continuous
+  with the planet's broader culture of survival.
+- On [[places/bayurinda|Bayurinda]], binding is read as a path
+  to transcendence — a slow ritualised practice, with Naya
+  treated as teachers rather than tools.
+- On [[places/sharazan|Sharazan]], binding is read as
+  performance and mastery — public, competitive, status-bearing.
 
-These differences shape almost everything: who is permitted to
-bind, how long the practice takes, what the resulting Eidolons
-look like, and what role the [[concepts/eidolon-knight|Eidolon
-Knight]] occupies in their society.
+These cultural readings do not change who is permitted to bind
+or what the practice technically requires — that authority is
+the order's, and is the same across worlds. What they shape is
+how the worlds receive the practice and the
+[[concepts/eidolon-knight|Eidolon Knight]] it produces: what is
+celebrated, what is whispered about, what is taken seriously,
+and what is simply expected.
 
 ## Nearborn and binding
 
