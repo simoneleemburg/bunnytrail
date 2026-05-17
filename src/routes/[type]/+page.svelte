@@ -27,6 +27,7 @@
 				id={entity.id}
 				name={entity.name}
 				type={data.label.singular}
+				kind={entity.kind}
 				summary={entity.summary}
 				tags={entity.tags}
 				era={entity.era}

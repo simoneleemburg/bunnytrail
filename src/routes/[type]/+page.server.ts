@@ -21,7 +21,8 @@ export async function load({ params }) {
 			name: e.meta.name,
 			summary: e.meta.summary ?? null,
 			tags: e.meta.tags ?? [],
-			era: e.meta.era ?? null
+			era: e.meta.era ?? null,
+			kind: typeof e.meta.kind === 'string' ? e.meta.kind : null
 		}))
 	};
 }

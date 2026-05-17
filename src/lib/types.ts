@@ -125,6 +125,13 @@ export interface EntityMeta {
 	tags?: string[];
 	/** Era / period label (purely a string for now). */
 	era?: string;
+	/**
+	 * Sub-type within an entity type — a free-form string used to keep
+	 * collections legible as they grow. For places: "planet", "city",
+	 * "ruin", "moon"; for characters: "mortal", "deity", "construct"; etc.
+	 * Surfaced in cards and the property list, and groupable in list views.
+	 */
+	kind?: string;
 	/** "active" | "deceased" | "lost" | "ruined" | anything else. */
 	status?: string;
 	/** Structured relations. */

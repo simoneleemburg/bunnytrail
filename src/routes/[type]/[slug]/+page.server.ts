@@ -26,7 +26,7 @@ export async function load({ params }) {
 	}));
 
 	// Hide synthetic top-level keys from the property list sidebar.
-	const HIDDEN = new Set(['name', 'summary', 'aliases', 'tags', 'relations']);
+	const HIDDEN = new Set(['name', 'summary', 'aliases', 'tags', 'relations', 'kind']);
 	const extra: { key: string; value: unknown }[] = [];
 	for (const [key, value] of Object.entries(entity.meta)) {
 		if (HIDDEN.has(key)) continue;
@@ -45,7 +45,8 @@ export async function load({ params }) {
 			name: entity.meta.name,
 			summary: entity.meta.summary ?? null,
 			aliases: entity.meta.aliases ?? [],
-			tags: entity.meta.tags ?? []
+			tags: entity.meta.tags ?? [],
+			kind: typeof entity.meta.kind === 'string' ? entity.meta.kind : null
 		},
 		extra,
 		html,

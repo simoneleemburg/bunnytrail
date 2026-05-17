@@ -58,7 +58,7 @@
 
 <article class="entity">
 	<PageHeader
-		eyebrow={data.typeLabel.singular}
+		eyebrow={data.entity.kind ?? data.typeLabel.singular}
 		title={data.entity.name}
 		subtitle={data.entity.summary ?? undefined}
 	/>

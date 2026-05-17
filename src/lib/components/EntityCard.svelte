@@ -5,18 +5,19 @@
 		id: string;
 		name: string;
 		type: string;
+		kind?: string | null;
 		summary?: string | null;
 		tags?: string[];
 		era?: string | null;
 	}
 
-	let { id, name, type, summary = null, tags = [], era = null }: Props = $props();
+	let { id, name, type, kind = null, summary = null, tags = [], era = null }: Props = $props();
 </script>
 
 <a class="entity-card" href={`/${id}`}>
 	<div class="rule"></div>
 	<div class="eyebrow">
-		<span class="type">{type}</span>
+		<span class="type">{kind ?? type}</span>
 		{#if era}
 			<span class="sep">·</span>
 			<span class="era">{era}</span>
