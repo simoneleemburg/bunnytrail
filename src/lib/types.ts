@@ -141,6 +141,14 @@ export interface EntityMeta {
 	gender?: string;
 	/** "active" | "deceased" | "lost" | "ruined" | anything else. */
 	status?: string;
+	/**
+	 * Short language code, used by entities of type `languages/`. The
+	 * markdown renderer recognises `[[<code>]]` as an inline language
+	 * tag and renders it as a small superscript link to the language's
+	 * page. Codes are short, lowercase, and globally unique across all
+	 * language entries (e.g. `ot` for the Old Tongue).
+	 */
+	code?: string;
 	/** Structured relations. */
 	relations?: Relation[];
 	/** Arbitrary extra fields rendered in the property list sidebar. */

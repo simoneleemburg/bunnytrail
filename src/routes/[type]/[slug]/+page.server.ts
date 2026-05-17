@@ -14,7 +14,7 @@ export async function load({ params }) {
 	if (!entity) error(404, `Not found: ${id}`);
 
 	const known = new Set(graph.all().map((e) => e.id));
-	const html = renderEntityBody(entity, known);
+	const html = renderEntityBody(entity, known, graph.languageCodes());
 
 	const outEdges = graph.outEdges(id).map((e) => ({
 		...e,

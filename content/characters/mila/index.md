@@ -16,7 +16,7 @@ Mila does not pilot a [[concepts/eidolon-knight|chosen Eidolon]]
 in the order's preferred sense. The
 [[concepts/eidolons|Eidolon]] she currently pilots is the one
 in which the [[beings/naya|Naya]]
-[[characters/sudawaen-khiynuung|Sudawaen Khiynuung]] is
+[[characters/sudawaen-khiynuung|Sudawaen Khiynuung]] [[ot]] is
 [[concepts/binding|bound]] — and she took it up under
 circumstances the compendium has not been given language for.
 

@@ -122,13 +122,20 @@ is a specific ritual register used for a specific purpose —
 naming Naya — and almost everything in it is, accordingly, a
 Naya's name.
 
-What is recorded here in the Old Tongue:
+What is recorded here in the Old Tongue is marked, where it
+appears in prose, with the small superscript _ot_ — a
+dictionary-style attribution, clickable, leading back to this
+entry. The principle is the same convention used elsewhere for
+language codes: a way to point at what register a word belongs
+to, without breaking the line of the sentence.
 
-- [[characters/viynangor-viyar|Viynangor Viyar]] — the name of
+What the convention marks:
+
+- [[characters/viynangor-viyar|Viynangor Viyar]] [[ot]] — the name of
   a particular Naya, in the form the [[social/oracle-triad|Oracle Triad]]
   has rendered it. The accepted readings vary; the sound is
   the same.
-- [[characters/sudawaen-khiynuung|Sudawaen Khiynuung]] — the name
+- [[characters/sudawaen-khiynuung|Sudawaen Khiynuung]] [[ot]] — the name
   of another Naya, similarly rendered.
 
 Other Naya are named in the compendium without their Old Tongue

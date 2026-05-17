@@ -189,6 +189,22 @@ class Graph {
 			.map(([tag, count]) => ({ tag, count }))
 			.sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
 	}
+
+	/**
+	 * Map from short language code to the language entity's id. Built
+	 * from the `code` field on each entity in the `languages` type.
+	 * Used by the markdown renderer to resolve `[[ot]]`-style inline
+	 * language tags.
+	 */
+	languageCodes(): Map<string, EntityId> {
+		const out = new Map<string, EntityId>();
+		for (const e of this.byType('languages')) {
+			const code = e.meta.code;
+			if (typeof code !== 'string' || !code) continue;
+			out.set(code, e.id);
+		}
+		return out;
+	}
 }
 
 /** Singleton graph instance. */
