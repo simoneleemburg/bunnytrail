@@ -46,12 +46,14 @@ this file is not loaded by the site.
 - **Remaining ChatGPT chat material.** There is more in the
   planning conversations than has been distilled. Identify what
   is canon, what is scaffolding, what should be discarded.
-- **Old conlang work (Thallish).** All of the Thallish material
-  from before. Decide whether Thallish is in-universe a named
-  language of a specific people, or scaffolding for the Old
-  Tongue, or distinct from both. Decide structure (single
-  conlang entry, per-people language entries, appendix-style?)
-  before importing.
+- **Old conlang work (Thallish).** Thallish is confirmed as a
+  named in-universe language (distinct from Old Tongue);
+  _Asthera_ and _Nareth_ are Thallish words and are tagged
+  `[[tha]]`. A stub language entry exists at
+  `content/languages/thallish/`. Still to do: import the existing
+  Thallish material; record which people speak it and on which
+  world; explain how _Asthera_ and _Nareth_ became universal
+  cosmological terms when other Thallish vocabulary did not.
 - **Nebelheim setting material.** Move in the existing Nebelheim
   setting writing — most likely as expansion of the Nebelheim
   place entry plus character/social entries for specific

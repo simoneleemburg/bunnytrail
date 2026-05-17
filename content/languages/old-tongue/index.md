@@ -210,16 +210,25 @@ the work: the synesthetic encounter is common, but rendering it
 into an Old Tongue name is the Triad's distinctive labour, and
 most encounters never produce one.
 
-_Other names in the compendium — Bayurinda, Sharazan, Nebelheim,
-Asthera, Nareth, the name of Ngonawan Ilyardi, the cultural
-readings of [[places/the-dark-companion|the Dark Companion]] —
-are not Old Tongue. They belong to the working tongues of the
-Sister Worlds, or to scholarly registers, or to traditions
-whose languages are not yet recorded here. Two of the
-compendium's working-tongue names — [[characters/freya|Freya]]
-and [[characters/sabina-vaarn|Sabina Vaarn]] — do have a
-language attached: they are [[languages/tholingian|Tholingian]],
-and are marked accordingly. (See the gap-note below.)_
+_Other names in the compendium have their own provenances. The
+planet-names — Bayurinda, Sharazan, Nebelheim — belong to the
+working tongues of the Sister Worlds (Bayurinda itself is a
+[[languages/bayurindan|Bayurindan]] word, and Nebelheim a
+[[languages/tholingian|Tholingian]] one; Sharazan's provenance
+is not yet recorded here). The name of
+[[characters/ngonawan-ilyardi|Ngonawan Ilyardi]] is Bayurindan
+and is marked accordingly. The cultural readings of
+[[places/the-dark-companion|the Dark Companion]] belong to
+various local traditions and are not Old Tongue. The
+cosmological terms [[concepts/asthera|Asthera]] and
+[[concepts/nareth|Nareth]] — names for the two great layers of
+existence — are [[languages/thallish|Thallish]], not Old Tongue.
+The Old Tongue presupposes \_Nareth_ as the name of the realm
+its work addresses; it did not coin it. Two of the compendium's
+working-tongue names — [[characters/freya|Freya]] and
+[[characters/sabina-vaarn|Sabina Vaarn]] — are
+[[languages/tholingian|Tholingian]] and are marked
+accordingly.\_
 
 ## Sibling tongues
 
