@@ -20,6 +20,14 @@ this file is not loaded by the site.
   the Void Between Worlds that has not yet been pulled in. Once
   the framing is decided, the Void entry and possibly Skyblood
   will need updating.
+- **Fallen Naya, cosmic threats, entropy.** Material on Naya that
+  have gone wrong in some larger-than-individual sense, on
+  cosmology-scale threats, and on the cosmology's relationship
+  with entropy. Currently the Void entry handles broken Naya at
+  the dissolution scale; this is the bigger frame. Decide the
+  relationship between fallen Naya and the broken-god material
+  before writing — they may be the same thing or two distinct
+  registers of the same shattering.
 - **Moons.** Lock in the moons — which planets have how many,
   their names, their bound or unbound status, their place in the
   cosmology. Currently absent.
