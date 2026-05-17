@@ -11,12 +11,22 @@
 
 <section class="hero">
 	<h1>Alteria</h1>
-	<p class="tagline">A field-notebook of worlds.</p>
-	<p class="lede">
-		A private compendium of characters, places, factions and ideas — gathered slowly, like
-		marginalia in an old folio. Entries cross-reference one another; tags and connections form the
-		map. Begin anywhere.
-	</p>
+	<p class="tagline">My sacred place of transformation.</p>
+	<div class="lede">
+		<p>
+			This shall be the name of my collective ideas and creations. This is where my world-building
+			stops being restrictive and starts being generative.
+		</p>
+		<p>
+			It contains three words in my mind in one: <em>alternate</em>, <em>alteration</em> and
+			<em>altar</em>. Imagining something different, the act of change, and the sacred spirit of it.
+			This is the essence around which all my ideas revolve.
+		</p>
+		<p class="closing">
+			Now it&rsquo;s time for them to come home. No more isolated worlds — but one interconnected
+			universe.
+		</p>
+	</div>
 </section>
 
 <section class="types">
@@ -74,6 +84,24 @@
 	.lede {
 		color: var(--ink-soft);
 		margin: 0;
+	}
+
+	.lede p {
+		margin: 0 0 var(--space-4);
+	}
+
+	.lede p:last-child {
+		margin-bottom: 0;
+	}
+
+	.lede em {
+		font-style: italic;
+		color: var(--ink);
+	}
+
+	.lede .closing {
+		margin-top: var(--space-5);
+		color: var(--ink);
 	}
 
 	.section-heading {
