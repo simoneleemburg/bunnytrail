@@ -76,7 +76,7 @@ the same Naya name will typically carry several accepted
 readings across the worlds, each shaped by the interpretive
 tradition doing the reading.
 
-**Viynangor Viyar** — the name of a particular Naya.
+**[[characters/viynangor-viyar|Viynangor Viyar]]** — the name of a particular Naya.
 
 - Sisters of Bellona reading: _Soul Mirror_.
 - Bayurindan reading: _Reflection of the Inner Self_.
@@ -84,7 +84,7 @@ tradition doing the reading.
 - Sharazani poetic reading: _The Spirit Seen Twice_.
 - Less formal: _Echo That Knows You_.
 
-**Sudawaen Khiynuung** — the name of another.
+**[[characters/sudawaen-khiynuung|Sudawaen Khiynuung]]** — the name of another.
 
 - Sisters of Bellona reading: _Wrath of the Elders From Within_.
 - Bayurindan reading: _Ancestral Thunder Beneath the Flesh_.
