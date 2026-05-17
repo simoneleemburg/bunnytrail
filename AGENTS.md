@@ -56,77 +56,29 @@ npm run format:check  # Prettier check
 
 ## Worldbuilding content rules
 
-These rules apply when authoring or editing files under `content/`.
-Worldbuilding is the user's domain; agents assist with structure,
-phrasing, and consistency, not with inventing the world.
+When authoring or editing files under `content/`, read
+[`WORLDBUILDING.md`](./WORLDBUILDING.md). It is the editorial
+standard for this project: voice, gap-notes, disputed truths,
+intersections, the texture we are aiming for.
 
-- **Don't invent canon.** Editing prose for clarity, rhythm, and
-  tone is fine. Adding new facts about the world is not — even small
-  ones. If the user's brief says "rare serpent-humanoid lineage,"
-  don't extend it into specific habitats, customs, or history. If a
-  character or place needs more detail than the brief provides,
-  either ask the user, leave the text short, or make the gap
-  explicit (a parenthetical italic note like _"How X came to Y is
-  not yet recorded here."_ is preferred over silent omission, so
-  the gap is visible later).
-- **Flag any inferences you do make.** When an inference is
-  unavoidable — e.g. a section needs a connecting sentence to read
-  coherently — call it out in chat after the edit. Don't bury small
-  worldbuilding claims in otherwise-routine prose.
-- **Cite the user's prompt.** If you're paraphrasing something the
-  user wrote, stay close to their phrasing and don't expand its
-  scope. "Identity tied to transformation" should not become
-  "identity expressed through ritualised transit-rites" without a
-  prompt.
-- **Tags are for cross-cutting affinities, not duplicates of
-  first-class fields.** If `kind: planet` is set, don't also add
-  `planet` to `tags`. Same for `gender`, `era`, `status`, etc. Use
-  tags for themes, motifs, and connections that the structured
-  fields don't already capture (e.g. `ocean`, `ruins`, `pilgrimage`,
-  `border`). Keeping tags clean keeps them useful.
-- **Empty is better than padded.** Short entries are fine. A stub
-  entry with a one-line summary and a gap note is better than a
-  paragraph of generic worldbuilding. The compendium grows by being
-  fed real material, not filler.
-- **Disputed truths are a feature, not a bug — when they
-  belong.** The compendium is written as if compiled from many
-  partial sources across many centuries. For the kinds of facts
-  that real long-lived cultures, archives, and institutions
-  actually disagree about — origin stories, the meaning of
-  ruins, the lineage of a practice, what a Naya "really" is,
-  the proper name of a place known to several peoples, how a
-  war was won and by whom — there is often no single
-  authoritative answer. Record the contest: attribute the
-  dominant reading to "long tradition" or to a named position,
-  name the dispute, and resist the urge to resolve it on the
-  user's behalf. Phrases like _"by long tradition, …; this is
-  disputed,"_ _"some accounts hold …, others hold …,"_ and
-  _"the question is not settled here"_ are preferred over a
-  single confident voice.
+The highest-priority reminders, in case you only read this file:
 
-  This is _not_ a license to invent contradiction for flavour.
-  The test is in-world plausibility of disagreement: would
-  real custodians of this material, given the kind of evidence
-  they have, plausibly disagree? If yes, write the dispute. If
-  no, write it plainly. Some things genuinely do not admit of
-  dispute and should not be hedged:
-  - mechanics and physics that are the same for everyone
-    (a Pillar launches or it doesn't; the Dark Companion is
-    a black hole; two moons hang over Bayurinda);
-  - structural facts of the compendium itself (who is in the
-    Oracle Triad, which world a character is from, what a
-    wikilink resolves to);
-  - facts the user has stated as canon — those are
-    canonical unless the user later says they are disputed;
-    don't invent a contrarian reading to "balance" a prompt;
-  - stub material — a short entry doesn't need a manufactured
-    controversy. Gap-notes are the right tool for "we don't
-    know yet"; disputes are the right tool for "the in-world
-    record itself disagrees."
+- **Don't invent canon.** Worldbuilding is the user's domain.
+  Editing prose for clarity is fine; adding new facts about the
+  world — even small ones — is not.
+- **Flag any inferences you do make** in chat, after the edit.
+  Don't bury small worldbuilding claims in otherwise-routine
+  prose.
+- **Empty is better than padded.** A stub with a gap-note beats a
+  paragraph of generic worldbuilding.
+- **Notice intersections; don't manufacture them.** Worlds come
+  alive at the points where ideas connect — but the agent's job is
+  to surface connections the user has already implied, not to
+  invent new ones.
 
-  The compendium has the texture of a real archive: incomplete,
-  partisan in places, and honest about both. It is not the
-  texture of a debate club.
+Everything else — disputed truths, tag hygiene, the in-world
+register, the practical pre-save checklist — is in
+`WORLDBUILDING.md`.
 
 ## Where things live
 

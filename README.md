@@ -45,6 +45,10 @@ description: Powers and movements — sworn houses, guilds, cults.
 
 See `content/README.md` for more.
 
+For the editorial standards the compendium is written to — voice,
+gap-notes, disputed truths, intersections — see
+[`WORLDBUILDING.md`](./WORLDBUILDING.md).
+
 ## Layout
 
 ```
