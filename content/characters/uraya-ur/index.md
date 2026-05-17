@@ -1,4 +1,4 @@
-Uraya Ur is the serving Oracle of Witnessing within the
+Uraya Ur [[ot]] is the serving Oracle of Witnessing within the
 [[social/oracle-triad|Oracle Triad]] of the
 [[social/knights-of-bellona|Knights of Bellona]], also known as the
 Watcher of Spiraling Echoes.

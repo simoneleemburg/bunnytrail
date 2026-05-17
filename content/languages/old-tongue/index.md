@@ -137,13 +137,16 @@ What the convention marks:
   the same.
 - [[characters/sudawaen-khiynuung|Sudawaen Khiynuung]] [[ot]] — the name
   of another Naya, similarly rendered.
+- [[characters/uraya-ur|Uraya Ur]] [[ot]] — the name of the Naya
+  who sits in the [[social/oracle-triad|Oracle Triad]] itself. A
+  particular case: the Triad's distinctive labour is the
+  rendering of Naya names into the Old Tongue, and one of those
+  names is its own.
 
 Other Naya are named in the compendium without their Old Tongue
-names being recorded. [[characters/uraya-ur|Uraya Ur]],
-[[characters/freya|Freya]]'s unnamed bound Naya, and the Naya
-known only through Triad members' partnerships are referred to
-either by descriptive epithets, by their pilots' names, or by
-silence. In each case the absence reflects the difficulty of
+names being recorded. [[characters/freya|Freya]]'s bound Naya is
+referred to by description and by her pilot's name rather than by
+an Old Tongue rendering. The absence reflects the difficulty of
 the work: the synesthetic encounter is common, but rendering it
 into an Old Tongue name is the Triad's distinctive labour, and
 most encounters never produce one.

@@ -61,6 +61,7 @@
 		eyebrow={data.entity.kind ?? data.typeLabel.singular}
 		title={data.entity.name}
 		subtitle={data.entity.summary ?? undefined}
+		language={data.language ?? undefined}
 	/>
 
 	{#if data.entity.aliases.length > 0}

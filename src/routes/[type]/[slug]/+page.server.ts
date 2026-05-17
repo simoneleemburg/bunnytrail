@@ -14,7 +14,21 @@ export async function load({ params }) {
 	if (!entity) error(404, `Not found: ${id}`);
 
 	const known = new Set(graph.all().map((e) => e.id));
-	const html = renderEntityBody(entity, known, graph.languageCodes());
+	const languageCodes = graph.languageCodes();
+	const html = renderEntityBody(entity, known, languageCodes);
+
+	// Resolve the entity's own name-language tag, if any. Missing or
+	// unknown codes are surfaced as a broken-link styled tag so the
+	// inconsistency is visible rather than silently swallowed.
+	const langCode = typeof entity.meta.language === 'string' ? entity.meta.language : null;
+	const langTargetId = langCode ? languageCodes.get(langCode) : undefined;
+	const language = langCode
+		? {
+				code: langCode,
+				href: langTargetId ? `/${langTargetId}` : '#',
+				broken: !langTargetId
+			}
+		: null;
 
 	const outEdges = graph.outEdges(id).map((e) => ({
 		...e,
@@ -26,7 +40,16 @@ export async function load({ params }) {
 	}));
 
 	// Hide synthetic top-level keys from the property list sidebar.
-	const HIDDEN = new Set(['name', 'summary', 'aliases', 'tags', 'relations', 'kind']);
+	const HIDDEN = new Set([
+		'name',
+		'summary',
+		'aliases',
+		'tags',
+		'relations',
+		'kind',
+		'language',
+		'code'
+	]);
 	const extra: { key: string; value: unknown }[] = [];
 	for (const [key, value] of Object.entries(entity.meta)) {
 		if (HIDDEN.has(key)) continue;
@@ -50,6 +73,7 @@ export async function load({ params }) {
 		},
 		extra,
 		html,
+		language,
 		outEdges,
 		inEdges
 	};

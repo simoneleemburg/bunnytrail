@@ -149,6 +149,15 @@ export interface EntityMeta {
 	 * language entries (e.g. `ot` for the Old Tongue).
 	 */
 	code?: string;
+	/**
+	 * Language code of the entity's name, used when its name is in a
+	 * non-English / non-English-equivalent language. The page header
+	 * renders the code as a small superscript tag beside the title,
+	 * leading back to the language entry. Refers to a `code` declared
+	 * on an entity in the `languages` type (e.g. `language: ot` on a
+	 * Naya whose name is in the Old Tongue).
+	 */
+	language?: string;
 	/** Structured relations. */
 	relations?: Relation[];
 	/** Arbitrary extra fields rendered in the property list sidebar. */

@@ -3,16 +3,26 @@
 		title: string;
 		eyebrow?: string;
 		subtitle?: string;
+		/**
+		 * Optional language tag rendered as a small superscript anchor
+		 * beside the title — the same dictionary-style attribution used
+		 * inline in prose for non-English names.
+		 */
+		language?: { code: string; href: string; broken?: boolean };
 	}
 
-	let { title, eyebrow, subtitle }: Props = $props();
+	let { title, eyebrow, subtitle, language }: Props = $props();
 </script>
 
 <header class="page-header">
 	{#if eyebrow}
 		<div class="eyebrow">{eyebrow}</div>
 	{/if}
-	<h1>{title}</h1>
+	<h1>
+		{title}{#if language}<sup class="lang-tag" data-broken={language.broken ? 'true' : undefined}
+				><a href={language.href} title={`language: ${language.code}`}>{language.code}</a></sup
+			>{/if}
+	</h1>
 	<div class="double-rule"></div>
 	{#if subtitle}
 		<p class="subtitle">{subtitle}</p>
@@ -47,5 +57,13 @@
 		font-size: var(--text-lg);
 		margin: 0;
 		max-width: var(--prose-max);
+	}
+
+	/* Local override of the global .lang-tag sizing so the title's
+	   tag is proportional to the larger h1, not the base font size. */
+	h1 .lang-tag {
+		font-size: 0.45em;
+		margin-left: 0.35em;
+		vertical-align: super;
 	}
 </style>
