@@ -88,20 +88,45 @@ phrasing, and consistency, not with inventing the world.
   entry with a one-line summary and a gap note is better than a
   paragraph of generic worldbuilding. The compendium grows by being
   fed real material, not filler.
-- **Disputed truths are a feature, not a bug.** The compendium is
-  written as if compiled from many partial sources across many
-  centuries. There is, in many cases, no single authoritative
-  answer — only surviving partial truths, contradicting points of
-  view, and traditions that disagree. This is the deliberate
-  style. When a fact is contested in-world, record the contest:
-  attribute the dominant reading to "long tradition" or to a
-  named position, name the dispute, and resist the urge to
-  resolve it on the user's behalf. Phrases like _"by long
-  tradition, …; this is disputed,"_ _"some accounts hold …, others
-  hold …,"_ and _"the question is not settled here"_ are
-  preferred over a single confident voice. The compendium has the
-  texture of a real archive: incomplete, partisan in places, and
-  honest about both.
+- **Disputed truths are a feature, not a bug — when they
+  belong.** The compendium is written as if compiled from many
+  partial sources across many centuries. For the kinds of facts
+  that real long-lived cultures, archives, and institutions
+  actually disagree about — origin stories, the meaning of
+  ruins, the lineage of a practice, what a Naya "really" is,
+  the proper name of a place known to several peoples, how a
+  war was won and by whom — there is often no single
+  authoritative answer. Record the contest: attribute the
+  dominant reading to "long tradition" or to a named position,
+  name the dispute, and resist the urge to resolve it on the
+  user's behalf. Phrases like _"by long tradition, …; this is
+  disputed,"_ _"some accounts hold …, others hold …,"_ and
+  _"the question is not settled here"_ are preferred over a
+  single confident voice.
+
+  This is _not_ a license to invent contradiction for flavour.
+  The test is in-world plausibility of disagreement: would
+  real custodians of this material, given the kind of evidence
+  they have, plausibly disagree? If yes, write the dispute. If
+  no, write it plainly. Some things genuinely do not admit of
+  dispute and should not be hedged:
+  - mechanics and physics that are the same for everyone
+    (a Pillar launches or it doesn't; the Dark Companion is
+    a black hole; two moons hang over Bayurinda);
+  - structural facts of the compendium itself (who is in the
+    Oracle Triad, which world a character is from, what a
+    wikilink resolves to);
+  - facts the user has stated as canon — those are
+    canonical unless the user later says they are disputed;
+    don't invent a contrarian reading to "balance" a prompt;
+  - stub material — a short entry doesn't need a manufactured
+    controversy. Gap-notes are the right tool for "we don't
+    know yet"; disputes are the right tool for "the in-world
+    record itself disagrees."
+
+  The compendium has the texture of a real archive: incomplete,
+  partisan in places, and honest about both. It is not the
+  texture of a debate club.
 
 ## Where things live
 
