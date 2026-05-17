@@ -13,8 +13,7 @@ content/
 ```
 
 Entity ids are `<type>/<slug>`. Reference other entities from prose with
-wikilinks: `[[characters/kael-of-the-third-veil]]` or
-`[[characters/kael-of-the-third-veil|Kael]]`.
+wikilinks: `[[concepts/nareth]]` or `[[concepts/nareth|the resonant]]`.
 
 ## Adding a new type
 
