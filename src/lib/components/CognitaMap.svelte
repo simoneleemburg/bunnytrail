@@ -29,13 +29,13 @@
 	};
 
 	// Innermost → outermost. Three of the habitable-zone worlds (Bayurinda,
-	// Nebelheim, Sharazan) have full entries; the rest are working names.
+	// Sharazan, Nebelheim) have full entries; the rest are working names.
 	const planets: Planet[] = [
 		{ label: 'Vireth', note: 'scorched, too near the star', tentative: true },
 		{ label: 'Zharos', note: 'barren, thin toxic air', tentative: true },
 		{ label: 'Bayurinda', slug: 'bayurinda', note: 'ocean, dual moons' },
+		{ label: 'Sharazan', slug: 'sharazan', note: 'crossroads, waystations' },
 		{ label: 'Nebelheim', slug: 'nebelheim', note: 'volcanic, tectonic' },
-		{ label: 'Sharazan', slug: 'sharazan', note: 'cluster, crossroads' },
 		{ label: 'Orenth', note: 'gas giant, anchor', tentative: true },
 		{ label: 'Seryth', note: 'eccentric wanderer', tentative: true },
 		{ label: 'Caldra', note: 'ringed, debris-edge', tentative: true }
