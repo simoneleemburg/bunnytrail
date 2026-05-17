@@ -152,31 +152,38 @@ into an Old Tongue name is the Triad's distinctive labour, and
 most encounters never produce one.
 
 _Other names in the compendium — Bayurinda, Sharazan, Nebelheim,
-Asthera, Nareth, the names of characters such as Ngonawan
-Ilyardi or Sabina Vaarn, the cultural readings of
-[[places/the-dark-companion|the Dark Companion]] — are not
-Old Tongue. They belong to the working tongues of the Sister
-Worlds, or to scholarly registers, or to traditions whose
-languages are not yet recorded here. (See the gap-note
-below.)_
+Asthera, Nareth, the name of Ngonawan Ilyardi, the cultural
+readings of [[places/the-dark-companion|the Dark Companion]] —
+are not Old Tongue. They belong to the working tongues of the
+Sister Worlds, or to scholarly registers, or to traditions
+whose languages are not yet recorded here. Two of the
+compendium's working-tongue names — [[characters/freya|Freya]]
+and [[characters/sabina-vaarn|Sabina Vaarn]] — do have a
+language attached: they are [[languages/tholingian|Tholingian]],
+and are marked accordingly. (See the gap-note below.)_
 
 ## Sibling tongues
 
-The Old Tongue is the only language with an entry in this
-compendium at the time of writing. The Sister Worlds are not,
-of course, a single linguistic community: each world has its
-own working speech, the order's charts and rosters have their
-own scholarly register, and the cultural readings of Naya names
+The Sister Worlds are not, of course, a single linguistic
+community: each world has its own working speech — in places
+several — and the order's charts and rosters have their own
+scholarly register, and the cultural readings of Naya names
 emerge from translation traditions that are themselves
-languages of a kind. None of these have entries yet.
+languages of a kind.
 
-_(The working tongues of [[places/bayurinda|Bayurinda]],
-[[places/sharazan|Sharazan]] and [[places/nebelheim|Nebelheim]],
-the scholarly register the [[social/knights-of-bellona|Knights of Bellona]]
-maintain across the worlds, and the lineages of translation
-that produce competing readings of Old Tongue names are not yet
-recorded here. The compendium acknowledges them by way of the
-words they have left behind.)_
+So far, only one of the working tongues has its own entry in
+the compendium: [[languages/tholingian|Tholingian]], the
+language of [[places/tholingia|Tholingia]] on
+[[places/nebelheim|Nebelheim]]. The rest are gestured at by the
+words they have left behind.
+
+_(The other working tongues of [[places/nebelheim|Nebelheim]],
+and the working tongues of [[places/bayurinda|Bayurinda]] and
+[[places/sharazan|Sharazan]], the scholarly register the
+[[social/knights-of-bellona|Knights of Bellona]] maintain
+across the worlds, and the lineages of translation that produce
+competing readings of Old Tongue names are not yet recorded
+here.)_
 
 _(Detail on the deeper grammar of the Old Tongue, the lineages
 of its scholars, the specific musical and mathematical

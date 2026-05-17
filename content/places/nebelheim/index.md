@@ -31,6 +31,19 @@ sacrifice and responsibility — closer to public duty than to
 private path. [[concepts/eidolons|Eidolons]] are used
 pragmatically: for defence, labour, and survival.
 
+## Regions
+
+Nebelheim is not a single country. Its geography of calderas,
+fissures and ash-plains has broken the world up into named
+territories, each with its own working tongue and institutional
+life. The compendium currently records only one of these in any
+detail: [[places/tholingia|Tholingia]], the region whose working
+language is [[languages/tholingian|Tholingian]].
+
+_(The other named regions of Nebelheim, their boundaries, their
+relationships to one another, and the political shape of the
+world taken as a whole are not yet recorded here.)_
+
 _(Detail on Nebelheim's geography, settlements, history, and the
 specific institutions of its geothermal civilisations is not yet
 recorded here.)_

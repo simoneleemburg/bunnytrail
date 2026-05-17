@@ -1,5 +1,7 @@
-Freya is an [[concepts/eidolon-knight|Eidolon Knight]] of the
-[[social/knights-of-bellona|Knights of Bellona]].
+Freya [[tho]] is an [[concepts/eidolon-knight|Eidolon Knight]] of the
+[[social/knights-of-bellona|Knights of Bellona]]. She is from
+[[places/tholingia|Tholingia]], a region of
+[[places/nebelheim|Nebelheim]], and her name is Tholingian.
 
 ## Identity
 
@@ -94,7 +96,7 @@ Freya is the lover of [[characters/mila|Mila]]. The compendium
 notes the partnership; the texture of it is not its business to
 narrate.
 
-_(Detail on Freya's origin world, her early life, the
-circumstances under which she came to the order, the name of
-the Naya in her chosen Eidolon, and her standing in the
-order's internal hierarchy is not yet recorded here.)_
+_(Detail on Freya's early life in [[places/tholingia|Tholingia]],
+the circumstances under which she came to the order, the name of
+the Naya in her chosen Eidolon, and her standing in the order's
+internal hierarchy is not yet recorded here.)_
