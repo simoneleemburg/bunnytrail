@@ -73,18 +73,30 @@ rule, not by case-by-case decision.
 
 ## Persistence
 
-The Triad has been these three, by name, for centuries. That this
-is possible at all is one of the cosmology's quieter strange
-facts. Two of the three are mortal. The third is Naya, and Naya
-do not persist in this way without binding.
+The Triad has been these three, by name, for centuries. They have
+lived this long because they have lived Near — held in a
+prolonged [[concepts/nearing|Nearing]] state, ageing only
+partially in the material world while the body's pace slows
+under the pressure of sustained resonance.
 
-How the Triad has held together this long — whether through some
-particular form of [[concepts/binding|binding]] between the
-three, whether through the cumulative effect of their sustained
-synchronization on the structure of all three selves, or by some
-arrangement the order has not fully disclosed — is a question
-the Sisters do not answer in public. The compendium can record
-the fact and not the mechanism.
+This is how the oldest oracles of every tradition have managed
+long lives, but the Triad has taken the practice further than
+most. Their working synchronization is itself a continuous
+near-state; they do not so much enter Nearing for sessions as
+remain inside it across the seams between them. The depth at
+which they translate Naya symbol systems would not be possible
+on any other basis.
+
+The cost is the cost of long Nearing. Each of the three has
+drifted, in ways visible to those who know what to look for:
+emotional detachment, dreamlike speech, partial merger with
+Naretic resonance, blurred edges where individuality used to
+hold. The transcendence and the dissolution are the same
+process, and the Triad is far along it.
+
+How much further the practice can be sustained, and what happens
+to the partnership when it cannot, are questions the Sisters do
+not answer in public.
 
 _(Detail on the origins of the Triad, how the three first found
 each other, the specific binding arrangement \(if any\) that
