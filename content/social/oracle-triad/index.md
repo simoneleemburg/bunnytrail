@@ -87,16 +87,16 @@ synchronization is established it can be held for hours and, in
 the deepest sessions, for days. Translation happens inside the
 sustained coupling, not in any one of the three reaching alone.
 
-This is canon, not metaphor: the practice is physically and
-emotionally intimate, and the partnership is one of lovers. The
-intimacy is not incidental to the work. A coupling held only
-formally does not reach the depth at which high-order symbols
-become legible — and a coupling held only formally would also
-not sustain Uraya's presence in Asthera. The translation
-depends on a synchronization no working contract can
-manufacture, and the synchronization is also what keeps the
-third of the three from drifting back to
-[[concepts/nareth|Nareth]].
+The intimacy is structural, not figurative: the partnership is
+one of lovers, and the practice is physically and emotionally
+intimate in the ordinary senses of those words. The intimacy is
+not incidental to the work. A coupling held only formally does
+not reach the depth at which high-order symbols become legible —
+and a coupling held only formally would also not sustain
+Uraya's presence in Asthera. The translation depends on a
+synchronization no working contract can manufacture, and the
+synchronization is also what keeps the third of the three from
+drifting back to [[concepts/nareth|Nareth]].
 
 The Knights of Bellona arrange the order's life around this
 requirement. The Triad's sessions are protected. Their
