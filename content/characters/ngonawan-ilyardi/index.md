@@ -8,13 +8,21 @@ water-adjacent civilisations of [[concepts/asthera|Asthera]].
 
 ## In the Triad
 
-As Oracle of Interpretation, Ngonawan does the work of turning
-resonance into meaning. Where another practitioner of
+Ngonawan hears the resonance. He perceives Naretic signal in fine
+grain — the shifting tonal substrate that carries
+[[beings/naya|Naya]] meaning before it has become anything a
+human can call a symbol. Where another practitioner of
 [[concepts/nearing|Nearing]] might come back from contact with
 [[concepts/nareth|Nareth]] holding sensation, image, dread, or
-unspeakable certainty, Ngonawan finds the structure inside it — the
-signal beneath the noise — and renders it into language that the
-order, and the wider world, can act on.
+unspeakable certainty, Ngonawan finds the signal under the
+noise.
+
+He cannot, alone, anchor what he hears. The signal arrives and
+slips unless something embodied — [[characters/sabina-vaarn|Sabina]] —
+holds it long enough for [[characters/uraya-ur|Uraya]] to read
+the recurrence patterns inside it. His perception is the entry
+point of the Triad's work and on its own is only a kind of
+beautiful, unusable hearing.
 
 ## Identity
 

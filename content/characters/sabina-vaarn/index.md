@@ -7,12 +7,17 @@ She is a human.
 
 ## In the Triad
 
-As Oracle of Endurance, Sabina holds the function that lets the
-Triad's work survive its moments. Whatever the Oracle of
-Interpretation extracts as meaning, and whatever the Oracle of
-Witnessing perceives as pattern, must be carried — across days,
-across generations, across the long slow weather of a tradition.
-Sabina is the carrying.
+Sabina stabilises embodied meaning. Her work is to hold what
+[[characters/ngonawan-ilyardi|Ngonawan]] hears inside a body that
+can keep it — to give resonance enough continuity in flesh and
+time that it does not dissipate before it can be read. She is
+the part of the Triad in which signal becomes durable.
+
+She cannot, alone, decode the high symbols. What she stabilises
+remains opaque to her until [[characters/uraya-ur|Uraya]] reads
+the recursive patterns inside it and the locked Triad binds the
+reading into language. Her work is the holding, not the
+meaning. The holding is what makes the meaning possible.
 
 ## Identity
 

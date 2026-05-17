@@ -10,12 +10,23 @@ resonance rather than holding to any one settlement.
 
 ## In the Triad
 
-As Oracle of Witnessing, Uraya perceives what cannot be perceived
-from inside form. Astheran observers — even very disciplined ones —
-read time as a sequence and meaning as a story; the line of one
-thing then another. Witnessing reads it differently: as recursion,
-spiral, the pattern that appears only across collapse and
-re-emergence, the same shape returning in unlike circumstances.
+Uraya recognises the recursive loops inside
+[[beings/naya|Naya]] symbol systems — the self-referential
+structures that make Naya meaning what it is. Astheran
+observers, even disciplined ones, read time as sequence and
+meaning as story; the line of one thing then another. Uraya
+reads the spiral instead: the pattern that appears only across
+collapse and re-emergence, the same shape returning in unlike
+circumstances. This is the recognition step on which all
+high-order translation depends.
+
+She cannot, alone, bind those recognitions into language. The
+structure is visible to her; speaking it is not something she
+does on her own substrate. The recursion she sees must pass
+through [[characters/sabina-vaarn|Sabina]]'s stabilising hold
+and [[characters/ngonawan-ilyardi|Ngonawan]]'s resonant hearing
+before the locked Triad can render it into terms the order can
+act on.
 
 ## Identity and form
 

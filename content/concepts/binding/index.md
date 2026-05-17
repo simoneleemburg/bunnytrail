@@ -61,6 +61,34 @@ bind, how long the practice takes, what the resulting Eidolons
 look like, and what role the Eidolon Knight occupies in their
 society.
 
+## Nearborn and binding
+
+A separate question, related but distinct from cultural framing,
+is what [[concepts/nearborn|Nearborn]] status does to binding
+practice.
+
+Most cultures of the Sister Worlds hold that Nearborn make
+exceptional binders — that a self already partially in
+[[concepts/nareth|Nareth]] is, by its nature, more prepared for
+the merging that binding requires. The reasoning is intuitive:
+binding asks an embodied self to remain coherent while opening
+to the resonant layer, and a Nearborn self has been doing
+something like that since birth.
+
+The actuality is less neat. The trait binding rewards is
+**adaptive identity** — a self that bends and recomposes under
+contact without fracturing. Some Nearborn have this in
+abundance; others, having lived their whole lives with an
+identity under stress, do not. The cultural reading and the
+actual prerequisite overlap, but they are not the same thing.
+
+This is one of the places where the gap between what the worlds
+believe about binding and what binding actually demands becomes
+materially dangerous. A Nearborn pressed toward the practice on
+the cultural assumption that they will excel may, in fact, not
+be ready. The recognition rites are not the same as the
+preparation, and confusing the two is a known failure mode.
+
 ## The core ethical question
 
 The cosmology has never quite settled whether Naya are partners or
