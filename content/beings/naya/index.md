@@ -41,3 +41,22 @@ They are exploratory beings of resonance, drawn toward meaning,
 experience, and the fragile structure of form within Asthera. What
 they become in any given encounter is decided in the encounter
 itself.
+
+## Names and language
+
+The Naya do not use spoken language as humans understand it. Their
+meaning moves as resonance and symbol; what they communicate is
+felt before it is heard, and most of what they communicate cannot
+be heard at all in any ordinary sense.
+
+Anyone in sustained contact with a Naya — bound to one, near one,
+standing inside its resonance — perceives this synesthetically.
+The encounter arrives as colour, pressure, taste, impossible
+geometry, emotional memory. The substrate of Naya identity is
+visible to embodied perception; rendering it into a stable name
+that humans can repeat to each other is a different and harder
+problem, addressed by the [[concepts/old-tongue|Old Tongue]].
+
+What the Sister Worlds call any given Naya is, in the end, an
+approximation. The Naya themselves are presumably unbothered by
+this.

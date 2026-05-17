@@ -10,8 +10,16 @@ The Triad is the working interpretive instrument of the
 provides materially — the rites, the regulation of
 [[concepts/nearing|Nearing]], the public face of doctrine — is in
 the end framing for the Triad's actual labour, which is the
-high-order translation of Naya symbol systems into language the
-Sister Worlds can act on.
+high-order translation of [[beings/naya|Naya]] symbol systems
+into [[concepts/old-tongue|Old Tongue]] names the Sister Worlds
+can act on.
+
+The synesthetic experience of a Naya — colour, pressure, taste,
+impossible geometry — is common to anyone in sustained contact
+with one. Many people can speak of what a Naya _is like_. Almost
+no one can render that lived experience into a stable, repeatable
+name. That rendering is the Triad's distinctive work, and the
+reason the worlds need them.
 
 That labour cannot be done by any of the three alone.
 

@@ -29,11 +29,14 @@ stable than on the other Sister Worlds — something more like a
 tradition of contemplation than a discipline of mastery.
 
 Bayurinda is also the world where the old work of decoding the
-Naya was done. Its early mystics catalogued resonance states,
-recurring symbols, and the ritual phonetics that let an embodied
-voice approximate what cannot really be spoken; the sacred tongues
-and interpretive naming systems that the wider cosmology now
-inherits trace back to that long Bayurindan study.
+Naya was done. Its early mystics — known in the tradition as the
+First Listeners — entered prolonged Nearing states and attempted
+to record the symbols revealed to them. They could not speak
+what they perceived, but they discovered that certain sounds,
+under the right conditions, produced sympathetic resonance with
+it. Refined across centuries, those resonance-patterns became
+the [[concepts/old-tongue|Old Tongue]] — the ritual language by
+which the Sister Worlds now approximate Naya names.
 
 _(Detail on Bayurindan cities, lineages, the deep-sea memory
 vaults, and the structure of its philosophical traditions is not
