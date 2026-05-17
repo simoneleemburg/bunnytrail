@@ -33,9 +33,9 @@
 	const planets: Planet[] = [
 		{ label: 'Vireth', note: 'scorched, too near the star', tentative: true },
 		{ label: 'Zharos', note: 'barren, thin toxic air', tentative: true },
-		{ label: 'Bayurinda', slug: 'bayurinda', note: 'ocean, dual moons' },
-		{ label: 'Sharazan', slug: 'sharazan', note: 'crossroads, waystations' },
-		{ label: 'Nebelheim', slug: 'nebelheim', note: 'volcanic, tectonic' },
+		{ label: 'Bayurinda', slug: 'bayurinda', note: 'submerged world' },
+		{ label: 'Sharazan', slug: 'sharazan', note: 'fractured cluster' },
+		{ label: 'Nebelheim', slug: 'nebelheim', note: 'tectonic, ash-skies' },
 		{ label: 'Orenth', note: 'gas giant, anchor', tentative: true },
 		{ label: 'Seryth', note: 'eccentric wanderer', tentative: true },
 		{ label: 'Caldra', note: 'ringed, debris-edge', tentative: true }

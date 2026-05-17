@@ -1,9 +1,38 @@
-Bayurinda is almost entirely sea. Two moons drag its tides into long,
-overlapping rhythms — neap weeks where the waters lie like glass, then
-slow storm-tides when both moons pull in concert and the swell rises
-into something closer to a slow flood than a wave.
+Bayurinda is a world of water, and a world whose civilisation lives
+beneath the water. Its cities are submerged: pressure-adapted, built
+into the long architecture of the deep. Communication runs through
+sound — bio-acoustic, structural, carried for great distances by the
+medium itself — and orientation in such cities depends on a spatial
+cognition unlike anything the surface worlds train.
 
-Beneath the surface, ruins. Whole architectures of an older world, now
-home to nothing but pressure and silt. Their geometry doesn't match
-anything Bayurinda's living people remember building. Sailors mark their
-positions on charts and refuse to anchor over them.
+The world is ancient and fluid. Outsiders rarely orient inside it
+without help. Two moons drag its tides into long overlapping
+rhythms, but for most Bayurindans the surface is weather rather
+than home.
+
+## Culture and tone
+
+Bayurindan culture is introspective, disciplined, and
+philosophical. The dominant practice of the world is self-perfection
+through slow patient work; the dominant tone is stillness, growth,
+and inner transformation.
+
+## Binding on Bayurinda
+
+Where Nebelheim regulates binding as public duty, Bayurinda treats
+it as a path to transcendence. [[beings/naya|Naya]] are not tools
+here. They are teachers. Practices around binding are slower,
+ritualised, and far more stable than on the other Sister Worlds —
+something more like a tradition of contemplation than a discipline
+of mastery.
+
+Bayurinda is also the world where the old work of decoding the
+Naya was done. Its early mystics catalogued resonance states,
+recurring symbols, and the ritual phonetics that let an embodied
+voice approximate what cannot really be spoken; the sacred tongues
+and interpretive naming systems that the wider cosmology now
+inherits trace back to that long Bayurindan study.
+
+_(Detail on Bayurindan cities, lineages, the deep-sea memory
+vaults, and the structure of its philosophical traditions is not
+yet recorded here.)_

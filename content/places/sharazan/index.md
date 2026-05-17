@@ -1,17 +1,53 @@
-Sharazan is the crossroads world. Trade routes converge here, both the
-overland kind and the rarer kind that cross between planets — the
-old, half-understood paths where ships and stranger things move
-between worlds without crossing the dark between. By circumstance or
-design, all of them seem to land on Sharazan.
+Sharazan is what remains of a world that catastrophically fractured
+and is still trying to behave like a planet. Its mass is broken into
+an archipelago of fragments, but its core — physical, resonant, or
+both — still exerts enough field to hold the pieces in coherent
+motion. The fragments share one atmospheric envelope. Air, water,
+and weather move between them as currents and rivers rather than
+between separate worlds.
 
-The result is a planet of waystations. Caravan-towns, port-cities,
-hostelries grown into small kingdoms; festivals where four languages
-share a market and no one is local. Its cities are layered with the
-sediment of everyone who has ever passed through, and its histories
-are mostly other people's histories, kept in trust.
+The result is a planet in pieces that never quite became a debris
+field. Atmospheric coherence is what keeps it alive, and what
+defines almost everything its peoples have built.
 
-Sharazan's own character is harder to name. Some say it has no
-character at all, only the sum of its visitors. Others say a world
-that holds the meeting-places of so many others has to be something
-quietly singular itself — the still point that lets the rest of the
-system turn.
+## Geography
+
+Civilisations on Sharazan are stratified by altitude, pressure, and
+temperature. Different fragments occupy different layers: some
+lush, some arid, some frozen above the cloud line, some volcanic
+beneath. Between them run permanent cloud streams, atmospheric
+rivers, drifting reefs, and migratory airborne ecologies. Travel
+is a discipline of falling and gliding rather than walking and
+sailing — membrane ships, gliders, controlled descent.
+
+This is the world where falling-forward travel was first practised
+and probably first understood.
+
+## The crossroads
+
+Sharazan is a crossroads world by geography as much as by culture.
+Travel currents, ancient route networks, world pillar paths, and
+old knight roads all intersect across the cluster. The fragments
+are politically separate and historically distinct, but the
+atmosphere keeps them in conversation: civilisations of separation
+trying to maintain continuity.
+
+This is the origin of what is sometimes called Sharazan's
+"crossroads" reputation in the wider cosmology. The world is not
+central in power. It is central in passage.
+
+## Culture and tone
+
+Sharazani culture is expressive, strategic, and status-driven. The
+tone is splendor, ambition, and elegance — public, ornate, alert
+to display.
+
+Binding here is performance, mastery, and competition. Eidolons
+are elaborate, symbolic, and public; duels and displays shape
+social hierarchy. Where Bayurindan binding is contemplative and
+Nebelheimic binding is duty, Sharazani binding is theatre — and
+the theatre is taken entirely seriously.
+
+_(Detail on individual fragments, their cultures, the structure of
+the route networks, and the politics of the cluster is not yet
+recorded here.)_
