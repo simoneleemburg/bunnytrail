@@ -40,7 +40,7 @@
 	const planets: Planet[] = [
 		{ label: 'Vireth', note: 'scorched, too near the star', tentative: true },
 		{ label: 'Zharos', note: 'barren, thin toxic air', tentative: true },
-		{ label: 'Bayurinda', slug: 'bayurinda', note: 'submerged world' },
+		{ label: 'Bayurinda', slug: 'bayurinda', note: 'ocean, drowned past' },
 		{ label: 'Sharazan', slug: 'sharazan', note: 'fractured cluster' },
 		{ label: 'Nebelheim', slug: 'nebelheim', note: 'tectonic, ash-skies' },
 		{ label: 'Orenth', note: 'gas giant, anchor', tentative: true },

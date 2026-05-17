@@ -110,10 +110,27 @@ presence on the planet is densest there. The
 [[languages/tholingian|Tholingian]] language has travelled
 along the same routes, with the same consequences.
 
-_(The Pillar counts and distributions on
-[[places/bayurinda|Bayurinda]] and [[places/sharazan|Sharazan]],
-and on the rest of [[places/nebelheim|Nebelheim]] outside
-Tholingia, are not yet recorded here.)_
+On [[places/bayurinda|Bayurinda]], the Pillars in current use
+stand on the [[places/bayurinda-archipelago|archipelago]], for
+the obvious material reason that an above-water Pillar is far
+easier to build, maintain, reach, and depart from than one
+anchored on the floor of a deep ocean. The archipelago is
+therefore the world's contact surface in the same structural
+sense that Tholingia is Nebelheim's: not its heart, but the part
+the order meets, and the part through which the rest of
+[Cognita](/cognita) knows the world.
+
+Whether [the lost surface civilisation](/places/bayurinda#the-drowning)
+of Bayurinda also had Pillars, and whether any of those are
+still standing — broken, drowned, or quietly maintained by the
+[deep](/places/bayurinda#peoples-of-bayurinda) — is not a
+question the compendium yet answers. The possibility is open;
+the matter is the archipelago's and the deep's to know.
+
+_(The Pillar count and distribution on
+[[places/sharazan|Sharazan]], and on the rest of
+[[places/nebelheim|Nebelheim]] outside Tholingia, are not yet
+recorded here.)_
 
 _(Detail on the Pillars' origin, the specific architecture of
 their alignment rails, how arrival catches differ from launch

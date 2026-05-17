@@ -54,6 +54,33 @@ detail on how Tholingian names are formed — given names,
 inherited names, naming customs across regions of Nebelheim —
 are not yet recorded here.)_
 
+## Historical vocabulary
+
+Tholingian has a layer of older words that no longer occur in
+everyday use but survive in archives, songs, and the speech of
+antiquarians. The compendium records one of them here, because
+it appears occasionally in older scholarship and would otherwise
+puzzle the reader:
+
+- _Blauheim_ — the pre-contact Tholingian name for
+  [[places/bayurinda|Bayurinda]]. It was used while the
+  Tholingians knew the world only as a destination of long
+  voyages, and not as the home of anyone they had spoken to.
+  When contact was established and the archipelago people's
+  name for themselves and their place — _Bayurinda_ — was
+  carried back to Nebelheim, the older name fell out of common
+  use. It survives, but it is no longer current.
+
+The principle the word records is general: Tholingian had names
+for the other off-world planets before there was anyone known to
+ask. Most of those names have not been preserved or are not
+recorded here.
+
+_(The full register of Tholingian historical vocabulary, the
+other pre-contact names, and the question of whether any of them
+might still be used in particular ritual or antiquarian contexts
+are not yet recorded here.)_
+
 ## Sibling tongues
 
 Tholingian is the only language of Nebelheim with an entry in

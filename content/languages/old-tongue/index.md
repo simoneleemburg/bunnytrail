@@ -11,17 +11,24 @@ This is the principle on which the Old Tongue rests.
 ## Origin: the First Listeners
 
 The Old Tongue was developed on [[places/bayurinda|Bayurinda]],
-in the long centuries when its mystics first turned their
-attention to the Naya in earnest. Where other worlds, in other
-hands, might have approached the Naya as subjects of conquest
-or instruments of power, Bayurindan practice approached them as
-the proper object of philosophical and spiritual study.
+in an age that is now held there as **myth**: long enough ago
+that no ordinary memory reaches it, ancient enough that the work
+survives only because it was preserved. The earliest mystics of
+that age first turned their attention to the [[beings/naya|Naya]]
+in earnest. Where other worlds, in other hands, might have
+approached the Naya as subjects of conquest or instruments of
+power, the Bayurindan tradition approached them as the proper
+object of philosophical and spiritual study.
 
 The mystics who undertook this work are remembered as the First
-Listeners. Through prolonged [[concepts/nearing|Nearing]] states,
-they reached far enough toward [[concepts/nareth|Nareth]] to
-perceive Naya symbols directly, and they tried to record what
-they perceived.
+Listeners. They were of the **surface civilisation** of that age
+— a civilisation that no longer exists in the form it had then,
+and whose principal land masses and cities are now on the ocean
+floor (see [the drowning](/places/bayurinda#the-drowning)).
+Through prolonged [[concepts/nearing|Nearing]] states, they
+reached far enough toward [[concepts/nareth|Nareth]] to perceive
+Naya symbols directly, and they tried to record what they
+perceived.
 
 They discovered three things, in roughly this order:
 
@@ -36,6 +43,42 @@ What emerged from those centuries of work is what is now called
 the Old Tongue. It is a ritual approximation, not a true
 translation, and the tradition that maintains it has never
 pretended otherwise.
+
+## How it survived
+
+The drowning of the surface civilisation should, by any ordinary
+reckoning, have lost the Old Tongue. It did not, because the
+[deep](/places/bayurinda#peoples-of-bayurinda) preserved it.
+
+The deep are an older Bayurindan people — older than the
+drowning, by the most credible accounts — who lived in
+pressure-adapted cities beneath the surface long before the
+seas rose and continue to live in and around the drowned country
+now. When the surface civilisation went under, the deep took
+custody of what could be preserved: records, practices, ritual
+sequences, lineages of teaching. Across the long centuries
+since, they have been the **curators and recoverers** of the
+Old Tongue. What had been a surface practice, developed in air,
+they have refined and maintained in their own conditions; the
+form of the tongue that the rest of the Sister Worlds now know
+is the form that has come up out of that long custodianship.
+
+The archipelago people are the **intermediaries**. They learned
+the Old Tongue from the deep, slowly, by patient contact across
+the threshold between water and air; they shaped what the deep
+taught them into a form that surface mouths in surface conditions
+could hold; and when the [[concepts/world-pillars|Pillars]] made
+travel between worlds possible, they carried that form outward to
+the other Sister Worlds. Every speaker of the Old Tongue on
+Nebelheim or Sharazan owes the practice, ultimately, to a chain
+that runs through the archipelago to the deep to the mystics of
+a civilisation that no longer breathes air.
+
+_(How much of the original practice was lost in the drowning,
+how much was lost again in the long translation up to the
+surface, and how much the present form is — to the deep — a
+polite approximation of an approximation, is not a question
+this compendium yet answers.)_
 
 ## What kind of language it is
 
