@@ -23,25 +23,16 @@ of self.
 
 ## Binding
 
-The interaction between a Naya and an embodied being is governed by
-the principle of _binding_. Binding is not control or possession. It
-is coexistence and mutual transformation — a negotiated relationship
-in which both parties are changed through contact. A well-made
-binding becomes a small, stable architecture: the Naya finds enough
-form to hold an identity for a while, and the embodied being gains
-something of the resonance that lies beneath their own surface.
-
-## When binding fails
-
-When this balance breaks, instability follows:
-
-- **Identity bleed**, where the boundary between self and other
-  dissolves; neither party can quite say where one ends.
-- **Distorted Eidolon forms**, where a Naya's manifestation becomes
-  unstable or corrupted — the shape no longer matching the truth it
-  was reaching for.
-- **Psychological fragmentation**, where coherent identity can no
-  longer be maintained on either side of the bond.
+The interaction between a Naya and an embodied being is governed
+by the principle of [[concepts/binding|binding]] — coexistence
+and mutual transformation rather than control or possession. A
+well-made binding becomes a small, stable architecture: the Naya
+finds enough form to hold an identity for a while, and the
+embodied being gains something of the resonance that lies beneath
+their own surface. When the balance breaks, the failure modes
+mirror those of Nearing — identity bleed, distorted
+[[concepts/eidolons|Eidolon]] forms, psychological
+fragmentation.
 
 ## What they are not
 

@@ -25,10 +25,11 @@ breathing or molting.
 
 [[concepts/nareth|Nareth]]-touched practice on Nebelheim is regulated
 and restricted by the [[social/sisters-of-bellona|Sisters of
-Bellona]], whose order is itself a Nebelheimic institution. Binding
-here is understood as sacrifice and responsibility — closer to
-public duty than to private path. Eidolons are used pragmatically:
-for defence, labour, and survival.
+Bellona]], whose order is itself a Nebelheimic institution.
+[[concepts/binding|Binding]] here is understood as sacrifice and
+responsibility — closer to public duty than to private path.
+[[concepts/eidolons|Eidolons]] are used pragmatically: for
+defence, labour, and survival.
 
 _(Detail on Nebelheim's geography, settlements, history, and the
 specific institutions of its geothermal civilisations is not yet

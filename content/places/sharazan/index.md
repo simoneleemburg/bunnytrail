@@ -26,8 +26,9 @@ and probably first understood.
 ## The crossroads
 
 Sharazan is a crossroads world by geography as much as by culture.
-Travel currents, ancient route networks, world pillar paths, and
-old knight roads all intersect across the cluster. The fragments
+Travel currents, ancient route networks,
+[[concepts/world-pillars|World Pillar]] paths, and old knight
+roads all intersect across the cluster. The fragments
 are politically separate and historically distinct, but the
 atmosphere keeps them in conversation: civilisations of separation
 trying to maintain continuity.
@@ -42,11 +43,12 @@ Sharazani culture is expressive, strategic, and status-driven. The
 tone is splendor, ambition, and elegance — public, ornate, alert
 to display.
 
-Binding here is performance, mastery, and competition. Eidolons
-are elaborate, symbolic, and public; duels and displays shape
-social hierarchy. Where Bayurindan binding is contemplative and
-Nebelheimic binding is duty, Sharazani binding is theatre — and
-the theatre is taken entirely seriously.
+Binding here is performance, mastery, and competition.
+[[concepts/eidolons|Eidolons]] are elaborate, symbolic, and
+public; duels and displays shape social hierarchy. Where
+Bayurindan binding is contemplative and Nebelheimic binding is
+duty, Sharazani binding is theatre — and the theatre is taken
+entirely seriously.
 
 _(Detail on individual fragments, their cultures, the structure of
 the route networks, and the politics of the cluster is not yet

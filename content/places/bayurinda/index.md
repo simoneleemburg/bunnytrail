@@ -23,10 +23,10 @@ and inner transformation.
 
 Where Nebelheim regulates binding as public duty, Bayurinda treats
 it as a path to transcendence. [[beings/naya|Naya]] are not tools
-here. They are teachers. Practices around binding are slower,
-ritualised, and far more stable than on the other Sister Worlds —
-something more like a tradition of contemplation than a discipline
-of mastery.
+here. They are teachers. Practices around
+[[concepts/binding|binding]] are slower, ritualised, and far more
+stable than on the other Sister Worlds — something more like a
+tradition of contemplation than a discipline of mastery.
 
 Bayurinda is also the world where the old work of decoding the
 Naya was done. Its early mystics catalogued resonance states,

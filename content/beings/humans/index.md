@@ -15,10 +15,10 @@ their own.
 
 ## Why the Naya come to them
 
-The Naya are drawn to humans for exactly this reason. Through binding
-— a negotiated coexistence rather than possession — a Naya can share
-in a human's emotional life and, in doing so, refine its own sense
-of self.
+The Naya are drawn to humans for exactly this reason. Through
+[[concepts/binding|binding]] — a negotiated coexistence rather
+than possession — a Naya can share in a human's emotional life
+and, in doing so, refine its own sense of self.
 
 A binding is not a gift. It is a relation. Both parties are changed.
 
