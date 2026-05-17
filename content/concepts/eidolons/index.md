@@ -13,8 +13,9 @@ can endure prolonged merging without harm.
 
 Each Eidolon is built from a material framework — wood, stone,
 metal, glass, or some combination — shaped by both the Naya's
-nature and the Eidolon Knight's identity. No two Eidolons are
-quite alike, because no two pairs of Naya and human are.
+nature and the [[concepts/eidolon-knight|Eidolon Knight]]'s
+identity. No two Eidolons are quite alike, because no two pairs
+of Naya and human are.
 
 At the centre of every Eidolon is a [[concepts/skyblood|Skyblood]]
 core, which powers it and stabilises the merging within. Without
@@ -47,9 +48,10 @@ are slower, more ritualised, treated as a path of practice. On
 public — duels and displays in Eidolon form shape social
 hierarchy.
 
-The Eidolon Knight — the human who has bound a Naya and pilots
-their shared vessel — is a recognised role across all three
-worlds, but the meaning of that role varies sharply between them.
+The [[concepts/eidolon-knight|Eidolon Knight]] — the human who
+has bound a Naya and pilots their shared vessel — is a recognised
+role across all three worlds, but the meaning of that role varies
+sharply between them.
 
 _(Detail on the construction practices, the lineage of Eidolon
 Knights, specific named Eidolons, and the failure modes of

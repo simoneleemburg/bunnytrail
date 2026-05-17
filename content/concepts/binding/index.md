@@ -58,8 +58,8 @@ The Sister Worlds disagree about what binding is _for_.
 
 These differences shape almost everything: who is permitted to
 bind, how long the practice takes, what the resulting Eidolons
-look like, and what role the Eidolon Knight occupies in their
-society.
+look like, and what role the [[concepts/eidolon-knight|Eidolon
+Knight]] occupies in their society.
 
 ## Nearborn and binding
 
