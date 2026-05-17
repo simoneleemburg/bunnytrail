@@ -25,13 +25,23 @@ npm run format    # prettier write
 
 ## Adding entries
 
-Every entity is a pair of files under `content/<type>/`:
+Every entity is a folder under `content/<type>/`:
 
-- `<slug>.yaml` — structured metadata (name, summary, tags, relations)
-- `<slug>.md`   — long-form prose
+- `<slug>/index.yaml` — structured metadata (name, summary, tags, relations)
+- `<slug>/index.md` — long-form prose
+- `<slug>/*` — companion files (images, attachments, …)
 
 Cross-reference other entries from prose using `[[type/slug]]` or
 `[[type/slug|Display Name]]`. The site builds backlinks automatically.
+
+To add a new entity type, just create a folder under `content/`. Drop in
+an optional `_type.yaml` to set labels and a description:
+
+```yaml
+singular: Faction
+plural: Factions
+description: Powers and movements — sworn houses, guilds, cults.
+```
 
 See `content/README.md` for more.
 

@@ -7,11 +7,16 @@ import { buildEdges, extractWikilinks, loadAll } from './loader';
 async function seedTempContent(): Promise<string> {
 	const dir = await mkdtemp(join(tmpdir(), 'alteria-'));
 
-	await mkdir(join(dir, 'characters'), { recursive: true });
-	await mkdir(join(dir, 'places'), { recursive: true });
+	await mkdir(join(dir, 'characters', 'kael'), { recursive: true });
+	await mkdir(join(dir, 'places', 'duskmere'), { recursive: true });
 
 	await writeFile(
-		join(dir, 'characters', 'kael.yaml'),
+		join(dir, 'characters', '_type.yaml'),
+		['singular: Character', 'plural: Characters', 'description: People of Alteria.'].join('\n')
+	);
+
+	await writeFile(
+		join(dir, 'characters', 'kael', 'index.yaml'),
 		[
 			'name: Kael of the Third Veil',
 			'aliases: [The Veiled, Kael]',
@@ -23,12 +28,15 @@ async function seedTempContent(): Promise<string> {
 		].join('\n')
 	);
 	await writeFile(
-		join(dir, 'characters', 'kael.md'),
+		join(dir, 'characters', 'kael', 'index.md'),
 		'Kael walks the [[places/duskmere|Duskmere]] roads and dreams of [[places/atlantis]].'
 	);
 
-	await writeFile(join(dir, 'places', 'duskmere.yaml'), 'name: Duskmere\ntags: [town]\n');
-	await writeFile(join(dir, 'places', 'duskmere.md'), 'A border town at the edge of the Veil.');
+	await writeFile(join(dir, 'places', 'duskmere', 'index.yaml'), 'name: Duskmere\ntags: [town]\n');
+	await writeFile(
+		join(dir, 'places', 'duskmere', 'index.md'),
+		'A border town at the edge of the Veil.'
+	);
 
 	return dir;
 }
@@ -58,6 +66,23 @@ describe('loadAll', () => {
 
 		const broken = issues.filter((i) => i.kind === 'broken-link');
 		expect(broken.some((i) => i.detail.includes('places/atlantis'))).toBe(true);
+	});
+
+	it('discovers types from subdirectories and skips underscore-prefixed entries', async () => {
+		const dir = await seedTempContent();
+		const { types } = await loadAll(dir);
+		expect(types).toEqual(['characters', 'places']);
+	});
+
+	it('loads per-type meta from _type.yaml when present', async () => {
+		const dir = await seedTempContent();
+		const { typeMeta } = await loadAll(dir);
+		expect(typeMeta.get('characters')).toEqual({
+			singular: 'Character',
+			plural: 'Characters',
+			description: 'People of Alteria.'
+		});
+		expect(typeMeta.has('places')).toBe(false);
 	});
 
 	it('builds forward and reverse edge indexes', async () => {

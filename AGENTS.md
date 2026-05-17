@@ -5,11 +5,13 @@ Operational instructions for AI coding agents working in this repository.
 ## Project in one paragraph
 
 Alteria is a personal worldbuilding compendium. Canonical data lives in
-`content/` as paired Markdown + YAML files (one entity = `<slug>.yaml` for
-structured metadata + `<slug>.md` for prose). A SvelteKit site loads it on
-boot into an in-memory graph and renders it as a browsable, cross-linked
-field-notebook. Cross-references use `[[type/slug]]` wikilinks; backlinks
-are built automatically.
+`content/` as one folder per entity: `content/<type>/<slug>/index.yaml`
+holds structured metadata and `index.md` holds the prose; sibling files
+(images, etc.) live alongside. Each type folder may also have a
+`_type.yaml` describing the labels + meaning of the type. A SvelteKit
+site loads it all on boot into an in-memory graph and renders it as a
+browsable, cross-linked field-notebook. Cross-references use
+`[[type/slug]]` wikilinks; backlinks are built automatically.
 
 ## Commands
 
@@ -54,10 +56,12 @@ npm run format:check  # Prettier check
 
 ## Where things live
 
-- **New worldbuilding entity** → `content/<type>/<slug>.{yaml,md}`
-- **New entity type** → add a directory under `content/` and make sure
-  the loader (`src/lib/server/loader.ts`) and routes
-  (`src/routes/[type]/`) handle it.
+- **New worldbuilding entity** → `content/<type>/<slug>/index.{yaml,md}`
+  (plus any companion files — images, attachments — in the same folder)
+- **New entity type** → create a directory under `content/`. The loader
+  discovers types from the filesystem at boot, so the nav and routes pick
+  it up automatically. Display labels are derived from the folder name
+  (see `labelsFor` in `src/lib/types.ts`).
 - **New UI primitive** → `src/lib/components/`. Existing primitives:
   `EntityCard`, `EntityLink`, `PageHeader`, `PropertyList`, `Tag`.
 - **Graph / loader logic** → `src/lib/server/`

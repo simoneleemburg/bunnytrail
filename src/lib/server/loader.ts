@@ -1,22 +1,22 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
+import type { Dirent } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { parse as parseYaml } from 'yaml';
-import {
-	ENTITY_TYPES,
-	type Edge,
-	type Entity,
-	type EntityId,
-	type EntityMeta,
-	type EntityType,
-	type HealthIssue
+import type {
+	Edge,
+	Entity,
+	EntityId,
+	EntityMeta,
+	EntityType,
+	EntityTypeMeta,
+	HealthIssue
 } from '$lib/types';
 
 /**
  * Where the canonical worldbuilding data lives, relative to the project root.
  * Override with ALTERIA_CONTENT_DIR for testing.
  */
-export const CONTENT_DIR =
-	process.env.ALTERIA_CONTENT_DIR ?? resolve(process.cwd(), 'content');
+export const CONTENT_DIR = process.env.ALTERIA_CONTENT_DIR ?? resolve(process.cwd(), 'content');
 
 /** Match `[[type/slug]]` or `[[type/slug|label]]` in markdown bodies. */
 const WIKILINK_RE = /\[\[([a-z]+)\/([a-z0-9-]+)(?:\|[^\]]+)?\]\]/g;
@@ -24,31 +24,69 @@ const WIKILINK_RE = /\[\[([a-z]+)\/([a-z0-9-]+)(?:\|[^\]]+)?\]\]/g;
 export interface LoadResult {
 	entities: Map<EntityId, Entity>;
 	issues: HealthIssue[];
+	/** Type slugs discovered as immediate subdirectories of `contentDir`, sorted. */
+	types: EntityType[];
+	/** Per-type meta loaded from `content/<type>/_type.yaml`, if present. */
+	typeMeta: Map<EntityType, EntityTypeMeta>;
 }
 
-/** Walk `content/<type>/*.{yaml,md}` and produce a list of entities. */
+/**
+ * List the immediate subdirectories of `contentDir`. Each one is treated as
+ * an entity type. Hidden directories (`.foo`) and underscore-prefixed ones
+ * (`_foo`) are skipped — the latter is reserved for content-system
+ * scaffolding (e.g. shared assets).
+ */
+export async function discoverTypes(contentDir: string = CONTENT_DIR): Promise<EntityType[]> {
+	const entries = await readDirents(contentDir);
+	const types: EntityType[] = [];
+	for (const entry of entries) {
+		if (!entry.isDirectory()) continue;
+		if (entry.name.startsWith('.') || entry.name.startsWith('_')) continue;
+		types.push(entry.name);
+	}
+	types.sort();
+	return types;
+}
+
+/**
+ * Walk `content/<type>/<slug>/index.{yaml,md}` and produce a list of
+ * entities. Each entity lives in its own folder so it can grow companion
+ * assets (images, attachments) over time without polluting the parent
+ * directory.
+ */
 export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadResult> {
 	const entities = new Map<EntityId, Entity>();
 	const issues: HealthIssue[] = [];
+	const types = await discoverTypes(contentDir);
+	const typeMeta = new Map<EntityType, EntityTypeMeta>();
 
-	for (const type of ENTITY_TYPES) {
+	for (const type of types) {
 		const typeDir = join(contentDir, type);
-		let files: string[];
-		try {
-			files = await readdir(typeDir);
-		} catch {
-			continue; // directory doesn't exist yet — fine
+
+		// Optional per-type meta. Missing file is fine; bad YAML is a load issue.
+		const typeMetaPath = join(typeDir, '_type.yaml');
+		if (await exists(typeMetaPath)) {
+			try {
+				const raw = await readFile(typeMetaPath, 'utf8');
+				const parsed = (parseYaml(raw) ?? {}) as EntityTypeMeta;
+				typeMeta.set(type, parsed);
+			} catch (err) {
+				issues.push({
+					kind: 'invalid-yaml',
+					detail: `${typeMetaPath}: ${err instanceof Error ? err.message : String(err)}`
+				});
+			}
 		}
 
-		const slugs = new Set<string>();
-		for (const f of files) {
-			const m = f.match(/^(.+)\.(yaml|md)$/);
-			if (m) slugs.add(m[1]);
-		}
+		const entries = await readDirents(typeDir);
+		for (const entry of entries) {
+			if (!entry.isDirectory()) continue;
+			if (entry.name.startsWith('.') || entry.name.startsWith('_')) continue;
 
-		for (const slug of slugs) {
-			const yamlPath = join(typeDir, `${slug}.yaml`);
-			const mdPath = join(typeDir, `${slug}.md`);
+			const slug = entry.name;
+			const entityDir = join(typeDir, slug);
+			const yamlPath = join(entityDir, 'index.yaml');
+			const mdPath = join(entityDir, 'index.md');
 			const id: EntityId = `${type}/${slug}`;
 
 			const hasYaml = await exists(yamlPath);
@@ -117,7 +155,7 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 		}
 	}
 
-	return { entities, issues };
+	return { entities, issues, types, typeMeta };
 }
 
 /** Extract `[[type/slug]]` references from a markdown body. */
@@ -127,6 +165,14 @@ export function extractWikilinks(body: string): EntityId[] {
 		out.add(`${m[1]}/${m[2]}`);
 	}
 	return [...out];
+}
+
+async function readDirents(path: string): Promise<Dirent[]> {
+	try {
+		return (await readdir(path, { withFileTypes: true })) as Dirent[];
+	} catch {
+		return [];
+	}
 }
 
 async function exists(path: string): Promise<boolean> {
@@ -177,6 +223,7 @@ export function buildEdges(entities: Map<EntityId, Entity>): {
 
 /** Pretty-print the type segment of an entity id, e.g. "characters/kael" → "characters". */
 export function typeOf(id: EntityId): EntityType | null {
-	const t = id.split('/')[0] as EntityType;
-	return ENTITY_TYPES.includes(t) ? t : null;
+	const idx = id.indexOf('/');
+	if (idx <= 0) return null;
+	return id.slice(0, idx);
 }

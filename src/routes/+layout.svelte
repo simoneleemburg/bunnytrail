@@ -1,20 +1,14 @@
 <script lang="ts">
-	import '$lib/styles/global.css'
-	import favicon from '$lib/assets/favicon.svg'
-	import type { Snippet } from 'svelte'
+	import '$lib/styles/global.css';
+	import favicon from '$lib/assets/favicon.svg';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
-		children: Snippet
+		data: { nav: { href: string; label: string; count: number }[] };
+		children: Snippet;
 	}
 
-	let { children }: Props = $props()
-
-	const nav = [
-		{ href: '/characters', label: 'Characters' },
-		{ href: '/places', label: 'Places' },
-		{ href: '/factions', label: 'Factions' },
-		{ href: '/concepts', label: 'Concepts' }
-	]
+	let { data, children }: Props = $props();
 </script>
 
 <svelte:head>
@@ -26,7 +20,7 @@
 		<div class="masthead-inner">
 			<a class="wordmark" href="/">Alteria</a>
 			<nav>
-				{#each nav as item (item.href)}
+				{#each data.nav as item (item.href)}
 					<a href={item.href}>{item.label}</a>
 				{/each}
 			</nav>

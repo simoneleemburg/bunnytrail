@@ -1,4 +1,13 @@
-import type { Edge, Entity, EntityId, EntityType, HealthIssue } from '$lib/types';
+import type {
+	Edge,
+	Entity,
+	EntityId,
+	EntityType,
+	EntityTypeInfo,
+	EntityTypeMeta,
+	HealthIssue
+} from '$lib/types';
+import { resolveTypeInfo } from '$lib/types';
 import { buildEdges, CONTENT_DIR, loadAll } from './loader';
 
 /**
@@ -13,6 +22,8 @@ class Graph {
 	#outEdges = new Map<EntityId, Edge[]>();
 	#inEdges = new Map<EntityId, Edge[]>();
 	#issues: HealthIssue[] = [];
+	#types: EntityType[] = [];
+	#typeMeta = new Map<EntityType, EntityTypeMeta>();
 	#loaded = false;
 	#loading: Promise<void> | null = null;
 
@@ -20,12 +31,14 @@ class Graph {
 	async load(contentDir: string = CONTENT_DIR): Promise<void> {
 		if (this.#loading) return this.#loading;
 		this.#loading = (async () => {
-			const { entities, issues } = await loadAll(contentDir);
+			const { entities, issues, types, typeMeta } = await loadAll(contentDir);
 			const edges = buildEdges(entities);
 			this.#entities = entities;
 			this.#outEdges = edges.out;
 			this.#inEdges = edges.in;
 			this.#issues = issues;
+			this.#types = types;
+			this.#typeMeta = typeMeta;
 			this.#loaded = true;
 		})();
 		try {
@@ -53,6 +66,30 @@ class Graph {
 
 	byType(type: EntityType): Entity[] {
 		return this.all().filter((e) => e.type === type);
+	}
+
+	/**
+	 * All entity types discovered as subdirectories of `content/`, in the
+	 * order they were found (sorted alphabetically by the loader).
+	 *
+	 * Each entry is decorated with display labels, the description from
+	 * `_type.yaml` (if any), and a live count of entities so consumers (nav,
+	 * landing page, etc.) don't have to redo the work.
+	 */
+	types(): (EntityTypeInfo & { count: number })[] {
+		return this.#types.map((type) => ({
+			...resolveTypeInfo(type, this.#typeMeta.get(type)),
+			count: this.byType(type).length
+		}));
+	}
+
+	/** Resolved info for a single type, with defaults applied. */
+	typeInfo(type: EntityType): EntityTypeInfo {
+		return resolveTypeInfo(type, this.#typeMeta.get(type));
+	}
+
+	hasType(type: EntityType): boolean {
+		return this.#types.includes(type);
 	}
 
 	/** Outgoing edges from `id`. */
@@ -134,7 +171,9 @@ class Graph {
 			if (score > 0) scored.push({ entity, score });
 		}
 
-		scored.sort((a, b) => b.score - a.score || a.entity.meta.name.localeCompare(b.entity.meta.name));
+		scored.sort(
+			(a, b) => b.score - a.score || a.entity.meta.name.localeCompare(b.entity.meta.name)
+		);
 		return scored.map((s) => s.entity);
 	}
 

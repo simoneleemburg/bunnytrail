@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { PageData } from './$types'
-	import Tag from '$lib/components/Tag.svelte'
+	import type { PageData } from './$types';
+	import Tag from '$lib/components/Tag.svelte';
 
-	let { data }: { data: PageData } = $props()
+	let { data }: { data: PageData } = $props();
 </script>
 
 <svelte:head>
@@ -14,8 +14,8 @@
 	<p class="tagline">A field-notebook of worlds.</p>
 	<p class="lede">
 		A private compendium of characters, places, factions and ideas — gathered slowly, like
-		marginalia in an old folio. Entries cross-reference one another; tags and connections form
-		the map. Begin anywhere.
+		marginalia in an old folio. Entries cross-reference one another; tags and connections form the
+		map. Begin anywhere.
 	</p>
 </section>
 
@@ -26,6 +26,9 @@
 			<a class="type-card" href={`/${c.type}`}>
 				<div class="rule"></div>
 				<div class="label">{c.label}</div>
+				{#if c.description}
+					<div class="description">{c.description}</div>
+				{/if}
 				<div class="count">{c.count}</div>
 			</a>
 		{/each}
@@ -45,7 +48,8 @@
 
 <p class="colophon">
 	<em>
-		{data.totalEntities} entries{#if data.issues > 0} · {data.issues} broken links{/if}
+		{data.totalEntities} entries{#if data.issues > 0}
+			· {data.issues} broken links{/if}
 	</em>
 </p>
 
@@ -120,6 +124,13 @@
 		font-variant: small-caps;
 		letter-spacing: 0.06em;
 		margin-top: var(--space-1);
+	}
+
+	.description {
+		margin-top: var(--space-2);
+		font-size: var(--text-sm);
+		color: var(--ink-soft);
+		font-style: italic;
 	}
 
 	.tags-section {

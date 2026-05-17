@@ -6,40 +6,99 @@
  *   content/<type>/<slug>.md      — long-form prose (rendered as the page body)
  *
  * The id of an entity is `<type>/<slug>`. Slugs are kebab-case.
+ *
+ * Entity types are discovered at load time by scanning the immediate
+ * subdirectories of `content/`. To add a new type, create a new folder —
+ * no code change required.
  */
 
-export type EntityType =
-	| 'characters'
-	| 'places'
-	| 'factions'
-	| 'events'
-	| 'species'
-	| 'items'
-	| 'concepts'
-	| 'timelines';
+/**
+ * The slug of a subdirectory under `content/`, used as both the URL segment
+ * and the prefix of every entity id (`<type>/<slug>`).
+ */
+export type EntityType = string;
 
-export const ENTITY_TYPES: EntityType[] = [
-	'characters',
-	'places',
-	'factions',
-	'events',
-	'species',
-	'items',
-	'concepts',
-	'timelines'
-];
+/** Human-readable labels derived from a type slug. */
+export interface EntityTypeLabels {
+	singular: string;
+	plural: string;
+}
 
-/** Human-readable singular labels for each type. */
-export const ENTITY_TYPE_LABELS: Record<EntityType, { singular: string; plural: string }> = {
-	characters: { singular: 'Character', plural: 'Characters' },
-	places: { singular: 'Place', plural: 'Places' },
-	factions: { singular: 'Faction', plural: 'Factions' },
-	events: { singular: 'Event', plural: 'Events' },
-	species: { singular: 'Species', plural: 'Species' },
-	items: { singular: 'Item', plural: 'Items' },
-	concepts: { singular: 'Concept', plural: 'Concepts' },
-	timelines: { singular: 'Timeline', plural: 'Timelines' }
-};
+/**
+ * Meta about an entity type, loaded from `content/<type>/_type.yaml` when
+ * present. Every field is optional; the loader fills in sensible defaults
+ * (see `labelsFor`) so authors only have to specify what they want to
+ * override.
+ */
+export interface EntityTypeMeta {
+	/** Override the singular label. Defaults to a naive singularization. */
+	singular?: string;
+	/** Override the plural label. Defaults to a title-cased folder name. */
+	plural?: string;
+	/** A short description of what this type means / is for. */
+	description?: string;
+}
+
+/** A fully-resolved type info, with defaults applied. */
+export interface EntityTypeInfo {
+	type: EntityType;
+	labels: EntityTypeLabels;
+	description: string | null;
+}
+
+/**
+ * Derive display labels from a folder name.
+ *
+ * The folder name is assumed to be a plural noun in kebab-case (e.g.
+ * `characters`, `star-systems`). We title-case it for the plural form and
+ * apply a tiny naive de-pluralizer for the singular form. Authors who want
+ * a different label can override later via a content config file; for now
+ * this heuristic is plenty.
+ */
+export function labelsFor(type: EntityType): EntityTypeLabels {
+	const plural = titleCase(type);
+	const singular = naiveSingular(plural);
+	return { singular, plural };
+}
+
+/**
+ * Combine a type slug with optional author-supplied meta into a fully
+ * resolved `EntityTypeInfo`. Missing labels fall back to the heuristic in
+ * `labelsFor`.
+ */
+export function resolveTypeInfo(
+	type: EntityType,
+	meta: EntityTypeMeta | null | undefined
+): EntityTypeInfo {
+	const defaults = labelsFor(type);
+	return {
+		type,
+		labels: {
+			singular: meta?.singular ?? defaults.singular,
+			plural: meta?.plural ?? defaults.plural
+		},
+		description: meta?.description ?? null
+	};
+}
+
+function titleCase(slug: string): string {
+	return slug
+		.split('-')
+		.map((part) => (part ? part[0].toUpperCase() + part.slice(1) : part))
+		.join(' ');
+}
+
+function naiveSingular(word: string): string {
+	// Operate on the last whitespace-separated token so "Star Systems" → "Star System".
+	const parts = word.split(' ');
+	const last = parts[parts.length - 1];
+	let singular = last;
+	if (/ies$/i.test(last)) singular = last.replace(/ies$/i, 'y');
+	else if (/ses$/i.test(last)) singular = last.replace(/es$/i, '');
+	else if (/s$/i.test(last) && !/ss$/i.test(last)) singular = last.replace(/s$/i, '');
+	parts[parts.length - 1] = singular;
+	return parts.join(' ');
+}
 
 /** A reference to another entity by `<type>/<slug>`. */
 export type EntityId = string;

@@ -1,13 +1,13 @@
 import { error } from '@sveltejs/kit';
 import { graph } from '$lib/server/graph';
 import { renderEntityBody } from '$lib/server/markdown';
-import { ENTITY_TYPE_LABELS, ENTITY_TYPES, type EntityType } from '$lib/types';
+import type { EntityType } from '$lib/types';
 
 export async function load({ params }) {
 	await graph.ready();
 
 	const type = params.type as EntityType;
-	if (!ENTITY_TYPES.includes(type)) error(404, `Unknown entity type: ${params.type}`);
+	if (!graph.hasType(type)) error(404, `Unknown entity type: ${params.type}`);
 
 	const id = `${type}/${params.slug}`;
 	const entity = graph.get(id);
@@ -37,7 +37,7 @@ export async function load({ params }) {
 	return {
 		id,
 		type,
-		typeLabel: ENTITY_TYPE_LABELS[type],
+		typeLabel: graph.typeInfo(type).labels,
 		entity: {
 			id,
 			type,
