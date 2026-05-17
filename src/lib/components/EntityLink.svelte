@@ -1,12 +1,12 @@
 <script lang="ts">
 	interface Props {
-		id: string
-		name: string
-		summary?: string | null
-		compact?: boolean
+		id: string;
+		name: string;
+		summary?: string | null;
+		compact?: boolean;
 	}
 
-	let { id, name, summary = null, compact = false }: Props = $props()
+	let { id, name, summary = null, compact = false }: Props = $props();
 </script>
 
 <a

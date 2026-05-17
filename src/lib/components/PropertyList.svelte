@@ -1,31 +1,31 @@
 <script lang="ts">
 	interface Item {
-		key: string
-		value: unknown
+		key: string;
+		value: unknown;
 	}
 
 	interface Props {
-		items: Item[]
+		items: Item[];
 	}
 
-	let { items }: Props = $props()
+	let { items }: Props = $props();
 
 	function format(value: unknown): string {
-		if (Array.isArray(value)) return value.map((v) => String(v)).join(', ')
-		return String(value)
+		if (Array.isArray(value)) return value.map((v) => String(v)).join(', ');
+		return String(value);
 	}
 
 	function isEmpty(value: unknown): boolean {
-		if (value === null || value === undefined || value === '') return true
-		if (Array.isArray(value) && value.length === 0) return true
-		return false
+		if (value === null || value === undefined || value === '') return true;
+		if (Array.isArray(value) && value.length === 0) return true;
+		return false;
 	}
 
 	function humanize(key: string): string {
-		return key.replace(/[-_]/g, ' ')
+		return key.replace(/[-_]/g, ' ');
 	}
 
-	const visible = $derived(items.filter((i) => !isEmpty(i.value)))
+	const visible = $derived(items.filter((i) => !isEmpty(i.value)));
 </script>
 
 {#if visible.length > 0}

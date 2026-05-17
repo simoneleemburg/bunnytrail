@@ -1,51 +1,55 @@
 <script lang="ts">
-	import type { PageData } from './$types'
-	import PageHeader from '$lib/components/PageHeader.svelte'
-	import PropertyList from '$lib/components/PropertyList.svelte'
-	import EntityLink from '$lib/components/EntityLink.svelte'
-	import Tag from '$lib/components/Tag.svelte'
+	import type { PageData } from './$types';
+	import PageHeader from '$lib/components/PageHeader.svelte';
+	import PropertyList from '$lib/components/PropertyList.svelte';
+	import EntityLink from '$lib/components/EntityLink.svelte';
+	import Tag from '$lib/components/Tag.svelte';
 
-	let { data }: { data: PageData } = $props()
+	let { data }: { data: PageData } = $props();
 
 	type EdgeWithEntity = {
-		kind: string
-		note?: string
-		entity: { id: string; name: string; summary: string | null } | null
-	}
+		kind: string;
+		note?: string;
+		entity: { id: string; name: string; summary: string | null } | null;
+	};
 
 	function groupEdges<T extends { kind: string }>(edges: T[]): { kind: string; items: T[] }[] {
-		const groups = new Map<string, T[]>()
+		const groups = new Map<string, T[]>();
 		for (const e of edges) {
-			if (!groups.has(e.kind)) groups.set(e.kind, [])
-			groups.get(e.kind)!.push(e)
+			if (!groups.has(e.kind)) groups.set(e.kind, []);
+			groups.get(e.kind)!.push(e);
 		}
-		return [...groups.entries()].map(([kind, items]) => ({ kind, items }))
+		return [...groups.entries()].map(([kind, items]) => ({ kind, items }));
 	}
 
 	function labelForKind(kind: string): string {
-		if (kind === 'wikilink') return 'Mentions'
-		return kind.replace(/[-_]/g, ' ')
+		if (kind === 'wikilink') return 'Mentions';
+		return kind.replace(/[-_]/g, ' ');
 	}
 
 	const outGroups = $derived(
 		groupEdges(
-			data.outEdges.map((e): EdgeWithEntity => ({
-				kind: e.kind,
-				note: e.note,
-				entity: e.toEntity
-			}))
+			data.outEdges.map(
+				(e): EdgeWithEntity => ({
+					kind: e.kind,
+					note: e.note,
+					entity: e.toEntity
+				})
+			)
 		)
-	)
+	);
 
 	const inGroups = $derived(
 		groupEdges(
-			data.inEdges.map((e): EdgeWithEntity => ({
-				kind: e.kind,
-				note: e.note,
-				entity: e.fromEntity
-			}))
+			data.inEdges.map(
+				(e): EdgeWithEntity => ({
+					kind: e.kind,
+					note: e.note,
+					entity: e.fromEntity
+				})
+			)
 		)
-	)
+	);
 </script>
 
 <svelte:head>

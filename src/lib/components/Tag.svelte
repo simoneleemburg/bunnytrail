@@ -1,10 +1,10 @@
 <script lang="ts">
 	interface Props {
-		label: string
-		href?: string
+		label: string;
+		href?: string;
 	}
 
-	let { label, href }: Props = $props()
+	let { label, href }: Props = $props();
 </script>
 
 {#if href}

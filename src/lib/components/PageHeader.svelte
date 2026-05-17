@@ -1,11 +1,11 @@
 <script lang="ts">
 	interface Props {
-		title: string
-		eyebrow?: string
-		subtitle?: string
+		title: string;
+		eyebrow?: string;
+		subtitle?: string;
 	}
 
-	let { title, eyebrow, subtitle }: Props = $props()
+	let { title, eyebrow, subtitle }: Props = $props();
 </script>
 
 <header class="page-header">

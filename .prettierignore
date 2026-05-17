@@ -1,0 +1,8 @@
+# package managers rewrite this on every install; don't churn it.
+package-lock.json
+
+# build output / sveltekit caches
+.svelte-kit
+build
+dist
+node_modules

@@ -1,16 +1,16 @@
 <script lang="ts">
-	import Tag from './Tag.svelte'
+	import Tag from './Tag.svelte';
 
 	interface Props {
-		id: string
-		name: string
-		type: string
-		summary?: string | null
-		tags?: string[]
-		era?: string | null
+		id: string;
+		name: string;
+		type: string;
+		summary?: string | null;
+		tags?: string[];
+		era?: string | null;
 	}
 
-	let { id, name, type, summary = null, tags = [], era = null }: Props = $props()
+	let { id, name, type, summary = null, tags = [], era = null }: Props = $props();
 </script>
 
 <a class="entity-card" href={`/${id}`}>
