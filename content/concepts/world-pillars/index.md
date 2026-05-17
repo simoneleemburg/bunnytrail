@@ -94,7 +94,28 @@ patient. Others as the work of a binding arrangement that has
 long since outlived its original parties. The Pillars do not
 correct any of these readings.
 
-_(Detail on the Pillars' origin, their distribution across the
-worlds, the specific architecture of their alignment rails,
-how arrival catches differ from launch tethers, and what \(if
-anything\) is bound inside them is not yet recorded here.)_
+## Distribution
+
+The Pillars are not evenly distributed. Each Sister World has
+some — every settled world does, by definition; without at
+least one functioning Pillar there can be no Knights coming or
+going — but the count and the concentration vary.
+
+On [[places/nebelheim|Nebelheim]], the densest concentration of
+Pillars is in [[places/tholingia|Tholingia]], which carries
+more than any other region of the world. This is the structural
+reason Tholingia is the region of Nebelheim most involved in
+interplanetary trade and contact, and the reason the order's
+presence on the planet is densest there. The
+[[languages/tholingian|Tholingian]] language has travelled
+along the same routes, with the same consequences.
+
+_(The Pillar counts and distributions on
+[[places/bayurinda|Bayurinda]] and [[places/sharazan|Sharazan]],
+and on the rest of [[places/nebelheim|Nebelheim]] outside
+Tholingia, are not yet recorded here.)_
+
+_(Detail on the Pillars' origin, the specific architecture of
+their alignment rails, how arrival catches differ from launch
+tethers, and what \(if anything\) is bound inside them is not
+yet recorded here.)_

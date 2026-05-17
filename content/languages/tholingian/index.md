@@ -1,11 +1,16 @@
-Tholingian is the working language of
+Tholingian [[tho]] is the working language of
 [[places/tholingia|Tholingia]], a region on
 [[places/nebelheim|Nebelheim]]. It is one of several Nebelheimic
 tongues; on a world whose geography is broken up by calderas,
 fissures and ash-plains, no single language has ever covered
-the whole. Tholingian is the one that has come, through emigration
-and through institutional reach, to be the most widely encountered
-outside its home region.
+the whole. Tholingian is, however, the Nebelheimic tongue most
+often encountered _outside_ Nebelheim — because Tholingia is
+the region of the planet most thickly served by
+[[concepts/world-pillars|World Pillars]], and so the region the
+rest of [Alteria Cognita](/cognita) most often arrives at and
+trades through. The language follows the routes. The name the
+compendium uses for the planet itself — _Nebelheim_ — is
+Tholingian for the same reason.
 
 Where the [[languages/old-tongue|Old Tongue]] is a ritual register
 shaped to approximate impossible Naya symbols, Tholingian is an

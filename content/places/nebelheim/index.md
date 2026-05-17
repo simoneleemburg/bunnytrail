@@ -1,4 +1,4 @@
-Nebelheim is the world of ash and tectonic pressure. Its sky is
+Nebelheim [[tho]] is the world of ash and tectonic pressure. Its sky is
 shaped less by weather than by volcanic dust and mineral haze —
 amber light, low and constant. Seismic instability is ordinary
 life. Civilisations here are geothermal: built into calderas, along
@@ -9,6 +9,29 @@ volcanic — a second furnace in the sky, harder to ignore than any
 star.
 
 _(Nebelheim's moon is not yet recorded separately here.)_
+
+## On the name
+
+_Nebelheim_ is a [[languages/tholingian|Tholingian]] word — the
+name the people of [[places/tholingia|Tholingia]] use for their
+own world. It has become the name of record in the
+[[social/knights-of-bellona|Knights of Bellona]]'s rosters and
+in the compendium's pages because Tholingia is the region the
+order most often deals with, and because Tholingia is the
+region whose language has travelled furthest along the routes
+between worlds (see [[places/tholingia|Tholingia]] for why).
+Other regions of the planet have their own names for it. None
+of those are yet recorded here.
+
+The adjective _Nebelheimic_, used throughout the compendium for
+the planet's culture and tone, is similarly Tholingian-derived,
+and similarly partial. Where the entry says "Nebelheimic
+culture," it is, in fairness, mostly speaking of what travels
+along Tholingian-marked routes.
+
+_(The other regional names for the planet, and the question of
+what the world is collectively called when the speaker is not
+Tholingian, are not yet recorded here.)_
 
 ## Culture and tone
 
