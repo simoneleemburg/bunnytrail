@@ -1,0 +1,59 @@
+/**
+ * Design tokens for Alteria.
+ *
+ * Aim: literary / cartographic. Serif body, restrained palette,
+ * parchment + ink, generous whitespace. Different visual language
+ * from dashboard-style apps.
+ */
+
+:root {
+	/* ── Palette ──────────────────────────────────────────────── */
+	--ink: #1b1714;
+	--ink-soft: #463c34;
+	--ink-faint: #7a6d62;
+	--parchment: #f4ecdc;
+	--parchment-soft: #ebe1cc;
+	--parchment-deep: #d9cdb1;
+	--vellum: #faf5e7;
+	--rule: #c9b994;
+	--accent: #7a2b1f; /* iron-oxide red */
+	--accent-soft: #a85544;
+	--ribbon: #2a3a55; /* deep indigo */
+	--gilt: #a38540;
+
+	/* ── Typography ───────────────────────────────────────────── */
+	--font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
+	--font-display: 'Iowan Old Style', 'Cormorant Garamond', Palatino, Georgia, serif;
+	--font-mono: 'Iosevka', 'JetBrains Mono', 'SFMono-Regular', ui-monospace, monospace;
+
+	--text-xs: 0.75rem;
+	--text-sm: 0.875rem;
+	--text-base: 1.0625rem;
+	--text-lg: 1.25rem;
+	--text-xl: 1.5rem;
+	--text-2xl: 2rem;
+	--text-3xl: 2.75rem;
+
+	--leading-tight: 1.2;
+	--leading-normal: 1.55;
+	--leading-relaxed: 1.7;
+
+	/* ── Space ────────────────────────────────────────────────── */
+	--space-1: 0.25rem;
+	--space-2: 0.5rem;
+	--space-3: 0.75rem;
+	--space-4: 1rem;
+	--space-5: 1.5rem;
+	--space-6: 2rem;
+	--space-7: 3rem;
+	--space-8: 4rem;
+
+	/* ── Misc ─────────────────────────────────────────────────── */
+	--radius-sm: 2px;
+	--radius-md: 4px;
+	--rule-thin: 1px solid var(--rule);
+	--rule-double: 3px double var(--rule);
+
+	--page-max: 64rem;
+	--prose-max: 38rem;
+}
