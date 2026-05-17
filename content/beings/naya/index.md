@@ -23,16 +23,45 @@ of self.
 
 ## Binding
 
-The interaction between a Naya and an embodied being is governed
-by the principle of [[concepts/binding|binding]] — coexistence
-and mutual transformation rather than control or possession. A
-well-made binding becomes a small, stable architecture: the Naya
-finds enough form to hold an identity for a while, and the
-embodied being gains something of the resonance that lies beneath
-their own surface. When the balance breaks, the failure modes
-mirror those of Nearing — identity bleed, distorted
-[[concepts/eidolons|Eidolon]] forms, psychological
-fragmentation.
+The Naya enter the physical world by being
+[[concepts/binding|bound]] into an [[concepts/eidolons|Eidolon]]
+— a constructed vessel built for them. Binding is the pact
+between the Naya and the vessel: one Naya, one Eidolon,
+durable. Without such a binding, a Naya cannot persist in
+[[concepts/asthera|Asthera]] in any sustained way. With one,
+they have a body of sorts, and a foothold in the physical layer
+they can act through.
+
+The [[concepts/eidolon-knight|Knight]] who pilots the Eidolon
+is, in this picture, a third party to the binding. The Knight
+gives the Eidolon direction; the binding is what the Eidolon
+_is_. A Naya bound into a well-built vessel can outlast many
+Knights piloting it in succession.
+
+When a binding holds, the Naya finds enough form in the vessel
+to sustain an identity for a long stretch — sometimes a human
+lifetime, sometimes far longer. When a binding fails, the
+failure mirrors the failure modes of Nearing more broadly:
+unstable seating, distorted manifestation, fragmentation.
+
+## Unbound Naya in Asthera
+
+A Naya in Asthera _without_ being bound into an Eidolon is
+vanishingly rare. The physical layer does not stabilise them.
+Without a vessel, a Naya's presence in Asthera is, at most,
+brief: a manifestation summoned through ritual, a momentary
+reach across the threshold during contact with a Nearer, a
+fragment of expression carried in a Whisper. Sustained
+presence without binding is not how the cosmology works.
+
+The recognised exception is [[characters/uraya-ur|Uraya Ur]],
+who remains continuously present in Asthera as part of the
+[[social/oracle-triad|Oracle Triad]] — sustained not by an
+Eidolon but by the partnership itself, the other two Oracles'
+joint Nearing of her held continuously enough to give her
+something to be present _through_. This is not a binding. It
+is a different and much rarer arrangement, and it is not
+known to be reproducible.
 
 ## What they are not
 

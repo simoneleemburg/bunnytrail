@@ -98,11 +98,11 @@ hold whole.
 
 The synesthetic experience of a Naya symbol — colour, pressure,
 taste, impossible geometry, emotional memory — is common to
-anyone in sustained contact with a Naya. Those who have bound
-one, walked near one, or stood within their resonance can speak,
-with feeling, of what the Naya _is like_. They do not, by that
-contact alone, gain the ability to render the experience into
-the Old Tongue.
+anyone in sustained contact with a Naya. Those who have piloted
+an Eidolon a Naya is bound in, walked near one, or stood within
+their resonance can speak, with feeling, of what the Naya _is
+like_. They do not, by that contact alone, gain the ability to
+render the experience into the Old Tongue.
 
 Translation into a named, repeatable, communicable Old Tongue
 form is the distinctive work of the

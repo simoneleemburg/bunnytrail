@@ -39,13 +39,19 @@ abandoned.
 
 **The Draw.** The Pillar pulls tension. Pressure builds along
 the rail. The Pillar's vast Skyblood core enters resonance with
-the pilot's smaller core, and the pilot's Naya begins to
-vibrate at the Pillar's frequency. Naya substrates begin to
-overlap; identities begin to verge on desynchronisation. This
-stage is the most dangerous. A pilot whose
-[[concepts/binding|binding]] is not stable enough for the
-pressure can _fracture before launch_, and pilots have died on
-the rail without ever leaving the ground.
+the Eidolon's smaller core, and the [[beings/naya|Naya]] bound
+in the vessel begins to vibrate at the Pillar's frequency.
+This stage is the most dangerous. Two distinct failures are
+possible. The Eidolon-and-Naya
+[[concepts/binding|binding]] itself may not hold under the
+resonance pressure — a binding that was sound for ordinary
+piloting can prove insufficient for the violence of launch,
+and the seating destabilises before release. Separately, the
+pilot may not hold under the resonance pressure — the
+piloting Nearing fractures, the Knight loses coherent contact
+with the vessel, and the launch cannot complete. Either
+failure aborts the launch, and pilots and Naya have both been
+lost on the rail without ever leaving the ground.
 
 **The Release.** The release is not mechanical. There is no
 lever, no countdown, no operator decision. The release happens

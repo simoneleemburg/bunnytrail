@@ -40,5 +40,24 @@ of perception that requires the perceiver not to be too settled.
 The other Oracles bring discipline against drift; Uraya brings the
 drift, held inside the discipline of the three.
 
-_(The specifics of Uraya's binding with the order, and how she
-came to take the role of Oracle, are not yet recorded here.)_
+## Unbound
+
+Uraya is one of the recognised exceptions in the cosmology.
+Almost every [[beings/naya|Naya]] present in
+[[concepts/asthera|Asthera]] is so through
+[[concepts/binding|binding]] — seated into an
+[[concepts/eidolons|Eidolon]] built for them. Uraya is not.
+What sustains her in Asthera is the Triad: the continuous joint
+[[concepts/nearing|Nearing]] of the other two Oracles, held
+intact across centuries, giving her enough to be present
+_through_. The partnership is, in effect, her vessel.
+
+This is not a binding. It depends on the partnership remaining
+intact. The arrangement is not known to be reproducible, and
+the order does not in its public doctrine claim to understand
+fully how it works.
+
+_(How Uraya first came to take the role of Oracle, the original
+conditions under which the partnership's sustaining function
+was discovered, and the question of what happens to her if the
+partnership ends are not yet recorded here.)_

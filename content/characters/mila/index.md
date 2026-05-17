@@ -1,11 +1,62 @@
 Mila is an [[concepts/eidolon-knight|Eidolon Knight]] of the
-[[social/knights-of-bellona|Knights of Bellona]], bound to
-[[characters/sudawaen-khiynuung|Sudawaen Khiynuung]].
+[[social/knights-of-bellona|Knights of Bellona]].
 
-The binding is a serious one. Sudawaen Khiynuung is not a
-[[beings/naya|Naya]] for the unready; that Mila pilots them at
-all is, by every account that has reached the order, a fact
-about Mila as much as about the Naya.
+## Identity
+
+Mila is a cis woman, and not [[concepts/nearborn|Nearborn]].
+She came to Knighthood by the order's more ordinary route —
+through screening, training, and demonstrated piloting
+capacity, in that order. Among those who have served alongside
+her, she is described as confident, embodied, decisive, and
+not much inclined to soften herself for the comfort of others.
+
+## How she came to her Eidolon
+
+Mila does not pilot a [[concepts/eidolon-knight|chosen Eidolon]]
+in the order's preferred sense. The
+[[concepts/eidolons|Eidolon]] she currently pilots is the one
+in which the [[beings/naya|Naya]]
+[[characters/sudawaen-khiynuung|Sudawaen Khiynuung]] is
+[[concepts/binding|bound]] — and she took it up under
+circumstances the compendium has not been given language for.
+
+What is recorded is this: the Eidolon was, at the moment Mila
+came to it, in need of a pilot. She took it. She has been
+piloting it since. The conditions under which she took it, and
+who was lost in the events that left the vessel available, are
+not yet recorded here.
+
+The order's position on Mila's piloting is, in public, neutral.
+She is a Knight; the Eidolon is piloted; the work is being
+done. What the order says in its internal records about the
+unusualness of the pairing — about whether the order considers
+this a recognised path to piloting Sudawaen Khiynuung's
+Eidolon, or simply the situation as it stands — has not been
+made public.
+
+## Her pilot's challenge
+
+Sudawaen Khiynuung carries ancestral wrath: the inherited
+fury of long histories pressed downward into whatever is
+willing to hold them. It is not a Naya for an unready pilot.
+The Eidolon's bound Naya is what it is; Mila is who she is;
+and the two of them, in the order's quieter assessments, do
+not balance each other so much as resonate.
+
+Mila's recognised challenge as a pilot is one of _restraint_.
+
+The general piloting failure of forcing — trying to dominate
+the Naya's nature rather than work with it — is, in Mila's
+case, made worse by the fact that the Naya's nature is itself
+force. The Eidolon does not resist her impulse to push. It
+amplifies it. A pilot of Sudawaen Khiynuung's vessel needs to
+hold back what the vessel itself encourages, and Mila — by her
+own nature confident, decisive, ready to act — is doing that
+work against the grain of who she is.
+
+She has not, so far, been lost. By the same internal
+assessments, she has come closer than her external manner
+suggests.
 
 ## In transit
 
@@ -14,25 +65,20 @@ Sudawaen Khiynuung's Aspect Wings manifest as crackling storm
 arcs — visible discharges that rip through the medium the
 Eidolon passes through. The signature is unmistakable.
 
-Mila's recognised pilot's challenge is one of _restraint_.
-Interplanetary motion rewards alignment, not thrust; a pilot
-who tries to force direction loses contact with the currents
-and drifts unaligned. For Mila, paired with a Naya whose
-nature is ancestral wrath and inherited fury, the temptation
-is to overpower. The practice she is in is the long work of
-learning to follow.
-
-She has not yet been lost.
-
-_(Detail on Mila's origin world, her early life, the
-circumstances under which she came to the order, the
-specifics of her binding with Sudawaen Khiynuung, and her
-current standing is not yet recorded here.)_
+The restraint challenge is at its sharpest in transit. The
+practice rewards following the currents; Mila's instinct is to
+push. The Eidolon does not correct the instinct. The work she
+is in, on every crossing, is learning not to overpower the
+journey she is being carried through.
 
 ## With Freya
 
-Mila is paired with [[characters/freya|Freya]] in ways the
-compendium has not yet been told how to describe.
+Mila is the lover of [[characters/freya|Freya]]. The compendium
+notes the partnership; the texture of it is not its business to
+narrate.
 
-_(The nature, history, and significance of Freya and Mila's
-partnership is not yet recorded here.)_
+_(Detail on Mila's origin world, her early life, the
+circumstances of her training, the specific events through
+which she came to pilot Sudawaen Khiynuung's Eidolon, and her
+standing in the order's internal hierarchy is not yet recorded
+here.)_

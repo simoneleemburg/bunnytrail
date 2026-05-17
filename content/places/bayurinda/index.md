@@ -19,12 +19,12 @@ philosophical. The dominant practice of the world is self-perfection
 through slow patient work; the dominant tone is stillness, growth,
 and inner transformation.
 
-## Binding on Bayurinda
+## Knighthood on Bayurinda
 
-Where Nebelheim regulates binding as public duty, Bayurinda treats
+Where Nebelheim regulates Knighthood as public duty, Bayurinda treats
 it as a path to transcendence. [[beings/naya|Naya]] are not tools
-here. They are teachers. Practices around
-[[concepts/binding|binding]] are slower, ritualised, and far more
+here. They are teachers. The practices of
+[[concepts/eidolon-knight|piloting]] are slower, ritualised, and far more
 stable than on the other Sister Worlds — something more like a
 tradition of contemplation than a discipline of mastery.
 

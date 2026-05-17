@@ -27,24 +27,27 @@ something invented within a single life.
 
 ## Nature
 
-Whatever else Sudawaen Khiynuung is, it is the kind of Naya whose
-resonance does not soften with familiarity. Those who have come
-near it describe it as old in a way other Naya are not — less
-like presence than like weight, less like wrath in the immediate
-sense than like the long pressure of a wrath that has been waiting.
+Whatever else Sudawaen Khiynuung is, it is the kind of
+[[beings/naya|Naya]] whose resonance does not soften with
+familiarity. Those who have come near it describe it as old in a
+way other Naya are not — less like presence than like weight,
+less like wrath in the immediate sense than like the long
+pressure of a wrath that has been waiting.
 
-A binding with Sudawaen Khiynuung is, by every account that has
-reached the order, a serious thing. It is not a Naya for the
-unready, and the worlds do not speak of it lightly.
+A pairing with Sudawaen Khiynuung is, by every account that has
+reached the order, a serious thing. It is not a Naya for an
+unready pilot, and the worlds do not speak of it lightly.
 
 ## Status
 
-Sudawaen Khiynuung is currently bound to the
-[[concepts/eidolon-knight|Eidolon Knight]]
-[[characters/mila|Mila]]. The history of past bindings, and the
+Sudawaen Khiynuung is [[concepts/binding|bound]] in an
+[[concepts/eidolons|Eidolon]] currently piloted by the
+[[concepts/eidolon-knight|Knight]]
+[[characters/mila|Mila]]. The history of past pilots, and the
 conditions under which the name first entered the Old Tongue,
 are not yet recorded here.
 
 _(Detail on Sudawaen Khiynuung's recorded manifestations, the
 specific embodied perceptions associated with its resonance, and
-named bindings past or present is not yet recorded here.)_
+the named Knights who have piloted its Eidolon across history is
+not yet recorded here.)_

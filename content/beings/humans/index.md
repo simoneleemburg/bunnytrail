@@ -15,15 +15,25 @@ their own.
 
 ## Why the Naya come to them
 
-The Naya are drawn to humans for exactly this reason. Through
-[[concepts/binding|binding]] — a negotiated coexistence rather
-than possession — a Naya can share in a human's emotional life
-and, in doing so, refine its own sense of self.
+The Naya are drawn to humans for exactly this reason. Most of
+the cosmology's sustained Naya–human contact runs through
+[[concepts/binding|binding]] — but binding, in the strict
+sense, is the pact between a Naya and an
+[[concepts/eidolons|Eidolon]], not between a Naya and a
+person. What humans offer the Naya is something the bound Naya
+reaches for _through_ its vessel and the
+[[concepts/eidolon-knight|Knight]] piloting it: sustained
+contact with a kind of emotional life Naya cannot generate on
+their own substrate.
 
-A binding is not a gift. It is a relation. Both parties are changed.
+The Knight, in piloting, opens that contact. The Naya, in
+being piloted, lives through it. The arrangement is not a
+gift in either direction. It is a relation; everyone involved
+is changed.
 
-_(What humans gain from a binding, in their own terms, is not yet
-recorded here.)_
+_(What humans gain in their own terms from sustained contact
+with a Naya, beyond what is said in the Knighthood and
+Nearing entries, is not yet recorded here.)_
 
 ## Mortality, memory, and the cost
 

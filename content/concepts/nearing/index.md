@@ -41,9 +41,15 @@ The major recognised purposes:
   than one was. The transformational practices rest on this.
 - To **answer**: to respond when a [[beings/naya|Naya]] reaches
   across from the other side and the situation requires a reply.
+- To **pilot**: to sustain working contact with a Naya bound
+  into an [[concepts/eidolons|Eidolon]], allowing the Knight to
+  move with the vessel rather than against it. The
+  [[concepts/eidolon-knight|Eidolon Knight]]'s entire practice
+  rests on this.
 - To **travel**: to soften one's attachment to space enough that
   the cosmos can be crossed in something less than its raw
-  distance. The interplanetary technique rests on this.
+  distance. The interplanetary technique rests on this, layered
+  on top of piloting Nearing.
 - To **listen**: to perceive _Whispers_, the echoes left in
   Nareth by past events of sufficient intensity.
 
@@ -54,12 +60,16 @@ and more diffuse than any of these traditions.
 
 ## Nearing as travel
 
-In its travel form, Nearing is how the cosmos is crossed. A
-pilot, usually inside an Eidolon, softens their attachment to
-conventional space until distance itself becomes negotiable —
-not abolished, but no longer the primary constraint on motion.
-What was a vast crossing becomes something traversable in a
-fraction of the time raw velocity would predict.
+In its travel form, Nearing is how the cosmos is crossed — and
+it is, in practice, a Nearing layered on top of another
+Nearing. A pilot inside an Eidolon is already Nearing toward
+the Naya bound in the vessel; that is what piloting is. To
+travel between worlds, they must Near _further_, softening
+their attachment to conventional space until distance itself
+becomes negotiable. Not abolished, but no longer the primary
+constraint on motion. What was a vast crossing becomes
+something traversable in a fraction of the time raw velocity
+would predict.
 
 Travellers describe the experience inconsistently: as falling
 forward through thought, as gliding across invisible currents,
@@ -133,10 +143,10 @@ loosens the boundaries that make a person who they are.
 Most people cannot remain Near without eventually losing
 coherence. Emotions bleed into one another. Memories become
 difficult to separate from visions. Identity erodes beneath the
-pressure of resonance. The recognised failure modes mirror
-those of an unstable [[concepts/binding|binding]]: identity
-bleed, distortion of the inner form, and the collapse of
-coherent selfhood.
+pressure of resonance. The recognised failure modes mirror the
+failure modes of piloting an [[concepts/eidolons|Eidolon]]:
+dissolving into the resonance, distortion of the inner form,
+and the collapse of coherent selfhood.
 
 Because of this, serious Nearing is rarely done alone.
 Skilled practitioners use rituals, emotional anchors,

@@ -55,6 +55,28 @@ Lock all three together — resonance heard, meaning held,
 recursion recognised — and the symbol can be translated. Any one
 absent, and the work breaks at that point and no further.
 
+## Uraya, unbound
+
+[[characters/uraya-ur|Uraya]] is one of the recognised
+exceptions in the cosmology: a [[beings/naya|Naya]] present in
+[[concepts/asthera|Asthera]] without being
+[[concepts/binding|bound]] into an [[concepts/eidolons|Eidolon]].
+
+Sustained presence in Asthera without binding is not how the
+cosmology ordinarily works. A Naya without a vessel cannot
+persist in the material layer for long; the physical world does
+not stabilise them. What stabilises Uraya is the partnership
+itself. [[characters/ngonawan-ilyardi|Ngonawan]] and
+[[characters/sabina-vaarn|Sabina]], in their joint and
+continuous Nearing of her, give her enough to be present
+_through_. The partnership is, in a sense the order does not
+quite have official language for, her vessel.
+
+This is not a binding. It is a different and much rarer
+arrangement, and it depends on the partnership remaining
+intact. The Triad's persistence is, among other things, what
+keeps Uraya in Asthera at all.
+
 ## Prolonged embodied synchronization
 
 The lock is not metaphorical. High-order translation of Naya
@@ -69,8 +91,12 @@ This is canon, not metaphor: the practice is physically and
 emotionally intimate, and the partnership is one of lovers. The
 intimacy is not incidental to the work. A coupling held only
 formally does not reach the depth at which high-order symbols
-become legible. The translation depends on a synchronization no
-working contract can manufacture.
+become legible — and a coupling held only formally would also
+not sustain Uraya's presence in Asthera. The translation
+depends on a synchronization no working contract can
+manufacture, and the synchronization is also what keeps the
+third of the three from drifting back to
+[[concepts/nareth|Nareth]].
 
 The Knights of Bellona arrange the order's life around this
 requirement. The Triad's sessions are protected. Their
@@ -107,6 +133,6 @@ to the partnership when it cannot, are questions the order does
 not answer in public.
 
 _(Detail on the origins of the Triad, how the three first found
-each other, the specific binding arrangement \(if any\) that
-underlies their persistence, and the conditions under which the
+each other, the exact mechanism by which the partnership
+sustains Uraya in Asthera, and the conditions under which the
 Triad might end is not yet recorded here.)_

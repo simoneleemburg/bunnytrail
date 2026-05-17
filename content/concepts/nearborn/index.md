@@ -80,6 +80,50 @@ not settled this. Nor has anyone else.
 As with most things in Alteria, what is known is what is named.
 What is true beneath the naming remains open.
 
+## Nearborn and Knighthood
+
+A separate question, related but distinct from the cultural
+framing of Nearborn identity, is what the
+[[concepts/eidolon-knight|order]] looks for when it screens
+candidates for Knighthood.
+
+Piloting an [[concepts/eidolons|Eidolon]] is sustained
+[[concepts/nearing|Nearing]] toward the [[beings/naya|Naya]]
+bound in the vessel. The practice rewards **adaptive
+identity** — a self that bends and recomposes under contact
+without fracturing. The
+[[social/knights-of-bellona|Knights of Bellona]] are, in
+substance, screening candidates for that capacity.
+
+Most cultures of the Sister Worlds hold that Nearborn make
+exceptional pilots — that a self already partially in
+[[concepts/nareth|Nareth]] is, by its nature, more prepared
+for the sustained Nearing piloting requires. The reasoning is
+intuitive: piloting asks an embodied self to remain coherent
+while opening to the resonant layer, and a Nearborn self has
+been doing something like that since birth.
+
+The actuality is less neat. Some Nearborn have adaptive
+identity in abundance; others, having lived their whole lives
+with an identity under stress, do not. The trait the order
+screens for and the trait the cultures assume overlap, but
+they are not the same thing. The order's question about any
+given candidate is, in effect: _is this person Nearborn
+enough_ — adaptive enough, practised enough at holding a self
+under resonance — to survive piloting Nearing without coming
+apart? The screening is imperfect. Candidates near the margin
+are sometimes rejected and sometimes admitted; the order has
+been wrong both ways.
+
+This is one of the places where the gap between what the
+worlds believe about Nearborn capacity and what piloting
+actually demands becomes materially dangerous. A Nearborn
+pressed toward Knighthood on the cultural assumption that
+they will excel may, in fact, not be ready. The recognition
+rites for Nearborn identity are not the same as the screening
+rites for Knighthood, and confusing the two is a known
+failure mode.
+
 _(Detail on specific Nearborn recognition rites, named Nearborn
 in the historical record, and the institutional structures
 that support \(or fail\) Nearborn lives is not yet recorded

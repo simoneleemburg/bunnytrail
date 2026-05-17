@@ -52,6 +52,28 @@ assess. The order does not deny their existence; the order does
 not discuss them. The compendium can record the absence and not
 fill it.
 
+## The chosen Eidolon
+
+The order's recognised ideal of Knighthood is the _chosen
+Eidolon_: a Knight who, over time, comes into deepening
+working partnership with one particular vessel and the
+[[beings/naya|Naya]] [[concepts/binding|bound]] inside it. The
+fit becomes specific. The Knight learns the Naya's nature in
+detail; the pairing becomes legible to those around them as a
+single working thing.
+
+This is a cultural concept, not a metaphysical requirement. A
+Knight without a chosen Eidolon is still a Knight; a Knight
+who pilots many vessels across a career is not less of one;
+a Knight who takes up a vessel in circumstances that do not
+allow for slow forming of a fit is still piloting. The order
+recognises all of this. But the image it trains toward, and
+the image its ceremonial life celebrates, is the chosen
+pairing — a Knight and their Eidolon, lifelong, mutually
+recognisable, working together at the depth only long pairing
+produces. The shape of much of the order's internal life
+follows from that ideal.
+
 ## Interplanetary structure
 
 The order operates across all three Sister Worlds as a single

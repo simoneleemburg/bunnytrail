@@ -1,12 +1,15 @@
-Travel between worlds in Alteria is
-[[concepts/nearing|Nearing]] applied to space.
+Travel between worlds in Alteria is two
+[[concepts/nearing|Nearings]] stacked.
 
-It is the work of an [[concepts/eidolons|Eidolon]] in motion,
-sustained by the [[beings/naya|Naya]] bound inside it, carrying
-a pilot whose softened relation to distance is what makes the
-crossing possible at all. It is not, in any ordinary sense,
-flight. It is not propulsion. It is what Nearing looks like
-when the thing being neared is the space between worlds.
+Any [[concepts/eidolon-knight|Knight]] piloting an
+[[concepts/eidolons|Eidolon]] is already Nearing — sustaining
+working contact with the [[beings/naya|Naya]]
+[[concepts/binding|bound]] in the vessel. That is what
+piloting is. To cross between worlds, the Knight must Near
+further: softening their attachment to ordinary space until
+distance itself stops behaving as a fixed constraint. The
+first Nearing is what makes the Eidolon move. The second is
+what makes the journey possible.
 
 The pilot has been thrown from their home world by a
 [[concepts/world-pillars|World Pillar]]. What they do between
@@ -23,6 +26,14 @@ sufficiently that crossing it becomes possible in a span of
 hours or days, rather than the span raw velocity alone would
 predict.
 
+This second Nearing is held _on top of_ the piloting Nearing,
+not in place of it. The Knight does not stop being in contact
+with the Naya during travel. They are in deeper contact with
+it. The two Nearings reinforce and complicate each other: the
+Naya's resonance helps loosen the Knight's attachment to space,
+and the Knight's loosened attachment to space lets the Naya's
+nature extend further into the medium being crossed.
+
 The technique is dangerous in the specific way Nearing is
 always dangerous. A pilot who softens too far loses themselves
 in the loosening. A pilot who does not soften enough cannot
@@ -33,11 +44,11 @@ length of the journey, without either failing or running away.
 
 While Nearing space, an Eidolon in transit maintains a
 self-contained reality bubble — a sustained pocket of
-conditions in which the pilot and their Naya can continue to
-exist. The bubble is sustained by the Naya's resonance,
-anchored by the Eidolon's [[concepts/skyblood|Skyblood]] core,
-and held in shape by the ongoing coherence of the pilot
-themselves.
+conditions in which the pilot and the Eidolon's Naya can
+continue to exist together. The bubble is sustained by the
+Naya's resonance, anchored by the Eidolon's
+[[concepts/skyblood|Skyblood]] core, and held in shape by the
+ongoing coherence of the pilot themselves.
 
 The bubble is what Nearing looks like, from inside, when the
 practice is travel. When the pilot's Nearing holds, the bubble
@@ -95,7 +106,7 @@ is interpretive rather than mathematical. A pilot reads:
 
 - star patterns — described in some traditions as the readable
   scars of an old breaking
-- the felt grain of Naya currents through their Eidolon
+- the felt grain of the Naya's currents through their Eidolon
 - the long shapes of routes other pilots have travelled
   before, where those routes have left enough impression on
   the medium to be re-found
@@ -103,23 +114,31 @@ is interpretive rather than mathematical. A pilot reads:
   alignment to take next
 
 This is part navigation, part Nearing, and part sustained
-conversation with the Naya. A pilot who is not in working
-communion with their Naya is, for practical purposes, lost.
+conversation with the Naya in the vessel. A pilot who is not
+in working communion with the Naya they are piloting is, for
+practical purposes, lost.
 
 ## The risks of transit
 
 Things go wrong in transit in characteristic ways, and each is
-recognisable as a specific failure of Nearing.
+recognisable as a specific failure of one or both of the
+stacked Nearings.
 
 - **Dissolving.** A pilot whose Nearing softens too far cannot
   recover themselves out of the loosening. The bubble fails
   because the pilot is no longer coherent enough to hold it.
-  The Naya's substrate cannot hold what the Knight no longer
-  holds in themselves, and the pair comes apart.
+  The Naya cannot hold what the Knight no longer holds in
+  themselves.
 - **Overpowering.** A pilot who tries to force direction
   rather than follow it has stopped Nearing and started
   pushing. They lose contact with the currents and drift
   unaligned. Most pilots who drift this way do not return.
+- **Forcing the Naya.** A pilot who, under the pressure of
+  transit, stops working with the Naya's nature and tries to
+  impose their own direction across it. The Aspect Wings
+  distort. The vessel's motion becomes erratic. The piloting
+  Nearing, not the space-Nearing, is what has broken — but the
+  consequences fall on the journey.
 - **Missing the catch.** The pilot arrives near their
   destination world but cannot align cleanly with the
   receiving Pillar's catch. They drift past, burn in
@@ -131,17 +150,16 @@ recognisable as a specific failure of Nearing.
 
 ## What the practice asks
 
-Interplanetary travel is, in the end, the same identity
-problem [[concepts/binding|binding]] is, sustained across a
-journey instead of a moment. The Knight must remain present
-long enough to maintain the field. They must Near rather than
-force. They must stay in working contact with their Naya
-across hours or days of conditions that strain both. The
-practice rewards the same adaptive identity binding rewards,
-and it punishes the same failures.
+Interplanetary travel is the longest and most demanding
+piloting most Knights ever do. The Knight must Near toward the
+Naya for hours or days without break, while also Nearing space
+itself. They must remain present enough to hold the bubble.
+They must follow rather than force. They must keep the
+piloting Nearing in good order even as the space-Nearing makes
+ordinary self-reference harder to maintain.
 
-It is, for the Knights who travel, the longest and most
-sustained Nearing they will ever do.
+The practice rewards the same adaptive identity all sustained
+Nearing rewards. It punishes the same failures.
 
 _(Detail on the duration of typical transits, the specific
 currents and routes between named worlds, the sub-disciplines

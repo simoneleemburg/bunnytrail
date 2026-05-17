@@ -43,12 +43,12 @@ Sharazani culture is expressive, strategic, and status-driven. The
 tone is splendor, ambition, and elegance — public, ornate, alert
 to display.
 
-Binding here is performance, mastery, and competition.
-[[concepts/eidolons|Eidolons]] are elaborate, symbolic, and
-public; duels and displays shape social hierarchy. Where
-Bayurindan binding is contemplative and Nebelheimic binding is
-duty, Sharazani binding is theatre — and the theatre is taken
-entirely seriously.
+[[concepts/eidolon-knight|Knighthood]] here is performance,
+mastery, and competition. [[concepts/eidolons|Eidolons]] are
+elaborate, symbolic, and public; duels and displays shape
+social hierarchy. Where Bayurindan Knighthood is contemplative
+and Nebelheimic Knighthood is duty, Sharazani Knighthood is
+theatre — and the theatre is taken entirely seriously.
 
 _(Detail on individual fragments, their cultures, the structure of
 the route networks, and the politics of the cluster is not yet

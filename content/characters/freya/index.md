@@ -1,35 +1,100 @@
 Freya is an [[concepts/eidolon-knight|Eidolon Knight]] of the
 [[social/knights-of-bellona|Knights of Bellona]].
 
+## Identity
+
+Freya is a trans woman, and so — by the cosmology's recognised
+reading — [[concepts/nearborn|Nearborn]]. She came to her own
+name through long work, and she carries it carefully.
+
+## Reception by the order
+
+The order nearly did not take her.
+
+Knighthood is sustained [[concepts/nearing|Nearing]] toward a
+[[beings/naya|Naya]] [[concepts/binding|bound]] in an
+[[concepts/eidolons|Eidolon]], and the order screens
+candidates for the adaptive identity that practice demands.
+Freya was, by every internal account that has reached the
+compendium, on the margin. The doubt the order's examiners
+recorded was not whether she was Nearborn — that was not
+contested — but whether she was _Nearborn enough_: whether her
+self had the kind of stability under resonance pressure that
+piloting requires, or whether sustained Nearing toward a Naya
+would unmake her.
+
+The doubts came down on her side, eventually. The internal
+record does not entirely explain how. Freya herself has
+spoken little about that period of her life, and the
+compendium does not press her on it.
+
+## Her chosen Eidolon
+
+Freya pilots, in the order's own preferred sense, a chosen
+Eidolon. The vessel and its bound Naya are hers in the
+deepening working-partnership way the order trains toward —
+not by accident, not in a pinch, but by long fit.
+
+The Naya in her Eidolon is, by those who have served alongside
+her, characterised as a quiet presence. Perceptive rather than
+imposing. Observant in a way that has unsettled some of
+Freya's companions and steadied others. Where some Naya
+overwhelm, this one notices. Where some force, this one
+witnesses. The Eidolon's manifestation tends toward clarity:
+crystalline edges, precise movement, an elegance that reads as
+almost fragile until it is tested.
+
+The Naya itself has not been rendered into the
+[[concepts/old-tongue|Old Tongue]] in any reading the
+compendium can record. Freya may know its true approximation;
+if so, she has not made it public.
+
+## Her pilot's challenge
+
+Freya's recognised challenge as a pilot is one of _presence_.
+
+The general failure mode of piloting Nearing is that the Knight
+softens too far into the Naya and loses themselves. Freya's
+version of this failure has its own specific shape. The
+problem, those who have piloted with her say, is not that she
+risks being _overwritten_ by the Naya in her Eidolon. It is
+that, under pressure, she risks _fading_ — going quiet,
+yielding, becoming less and less present until there is no
+longer enough of her there for the vessel to align around.
+
+This is recognisable as a Nearing failure, but recognisably
+Freya's. Other pilots dissolve outward into the Naya's
+resonance; Freya disappears inward, into a smallness she has
+practised at being. The work she is in is, more than anything
+else, the practice of remaining present enough to be piloted
+with.
+
+When the practice holds, the vessel becomes — by report — one
+of the more precise piloting partnerships the order knows.
+
 ## In transit
 
-Freya's bound [[beings/naya|Naya]] manifests, during
-[[concepts/interplanetary-travel|interplanetary travel]],
-through Aspect Wings of refracted, glass-like resonance —
-structures that bend light into patterns the pilot can almost
-recognise. The visual signature is distinctive enough that
+During [[concepts/interplanetary-travel|interplanetary travel]],
+the Naya's Aspect Wings manifest as refracted, glass-like
+structures of resonance that bend light into patterns the pilot
+can almost recognise. The signature is distinctive enough that
 other pilots have learned it by sight.
 
-Her recognised pilot's challenge is one of _presence_. The
-work of maintaining an Eidolon's reality bubble in the long
-emptiness between worlds is, for her specifically, a question
-of remaining sufficiently present to herself across hours and
-days where there is nothing in the environment to remain
-present _to_. Pilots who share this challenge describe it as a
-slow temptation toward dissolving — not into anything in
-particular, just outward, into the vastness.
-
-She has not yet dissolved.
-
-_(Detail on Freya's origin world, her early life, the
-circumstances under which she came to the order, the name of
-her bound Naya, and her current standing in the order is not
-yet recorded here.)_
+The presence challenge is at its sharpest in transit. There is
+nothing in the environment to remain present _to_ for hours or
+days at a stretch — just the long emptiness between worlds.
+Pilots who share Freya's failure mode describe the temptation
+of those crossings as a slow drawing-inward, toward the
+smallness that has always felt safest. She has not, yet, given
+in to it.
 
 ## With Mila
 
-Freya is paired with [[characters/mila|Mila]] in ways the
-compendium has not yet been told how to describe.
+Freya is the lover of [[characters/mila|Mila]]. The compendium
+notes the partnership; the texture of it is not its business to
+narrate.
 
-_(The nature, history, and significance of Freya and Mila's
-partnership is not yet recorded here.)_
+_(Detail on Freya's origin world, her early life, the
+circumstances under which she came to the order, the name of
+the Naya in her chosen Eidolon, and her standing in the
+order's internal hierarchy is not yet recorded here.)_

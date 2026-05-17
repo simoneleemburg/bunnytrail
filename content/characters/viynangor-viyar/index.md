@@ -20,7 +20,7 @@ Bellona]] reading. The institutional shorthand most widely used
   performance and in the more ornate written traditions.
 - _Echo That Knows You_ — a less formal reading, common in
   spoken use across all three worlds and often attached to
-  personal accounts of binding.
+  personal accounts of piloting its Eidolon.
 
 The readings agree on direction without agreeing on definition.
 What is common to them is _reflection_ — the act of seeing
@@ -29,22 +29,26 @@ back.
 
 ## Nature
 
-Whatever else Viynangor Viyar is, it is the kind of Naya whose
-presence shows the bound human what they actually are. Not what
+Whatever else Viynangor Viyar is, it is the kind of
+[[beings/naya|Naya]] whose presence shows the
+[[concepts/eidolon-knight|Knight]] piloting its
+[[concepts/eidolons|Eidolon]] what they actually are. Not what
 they wish to be. Not what they fear. What they are.
 
-This makes the binding distinctive in a way the worlds describe
-inconsistently. Some who have bound, or known those who bound,
-speak of it as a long slow gift. Others speak of it as a long
-slow cost. Both speak truthfully.
+This makes the pairing distinctive in a way the worlds describe
+inconsistently. Some Knights who have piloted its Eidolon, or
+who have known those who did, speak of it as a long slow gift.
+Others speak of it as a long slow cost. Both speak truthfully.
 
 ## Status
 
-Viynangor Viyar's current binding status, the history of past
-bindings, and the specific lineage through which the name first
-entered the Old Tongue are not yet recorded here.
+Viynangor Viyar is currently [[concepts/binding|bound]] in an
+Eidolon; the identity of the Knight piloting that Eidolon, the
+history of past pilots, and the specific lineage through which
+the name first entered the Old Tongue are not yet recorded
+here.
 
 _(Detail on Viynangor Viyar's recorded manifestations, the
 particular embodied perceptions associated with its resonance —
-colour, pressure, geometry — and named bindings past or
-present is not yet recorded here.)_
+colour, pressure, geometry — and the named Knights who have
+piloted its Eidolon across history is not yet recorded here.)_
