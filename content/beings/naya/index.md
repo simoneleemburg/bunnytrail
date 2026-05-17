@@ -76,11 +76,22 @@ known to be reproducible.
 
 ## What they are not
 
-The Naya are not inherently destructive, nor inherently benevolent.
-They are exploratory beings of resonance, drawn toward meaning,
-experience, and the fragile structure of form within Asthera. What
-they become in any given encounter is decided in the encounter
-itself.
+The Naya are not inherently destructive, nor inherently
+benevolent. Beyond that — what they are _drawn to_, why they
+seek out [[concepts/asthera|Asthera]], what they are doing when
+they enter into a [[concepts/binding|binding]] — is not a
+question this compendium answers in a single voice. By long
+tradition, especially in the scholarly registers of Bayurinda
+and in the working theology of the
+[[social/knights-of-bellona|order]], they are described as
+exploratory: beings of resonance drawn toward meaning,
+experience, and the fragile structure of form within Asthera.
+Other traditions speak of them more cautiously, in terms of
+hunger, or of incompleteness, or of a reach that no single
+encounter explains. The compendium notes the
+established reading and does not, in its own voice, settle the
+question. What a Naya becomes in any given encounter is decided
+in the encounter itself.
 
 ## Names and language
 

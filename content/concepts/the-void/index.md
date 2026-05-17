@@ -30,13 +30,16 @@ without a source.
 
 **Fragments of the old breaking.** The Void carries fragments
 of the same shattering that
-[[concepts/skyblood|Skyblood]] derives from — pieces of a god
-whose breaking is older than the order, older than the worlds'
-current arrangement of themselves, older than most of what is
-written down. These fragments are not Skyblood. Skyblood is
-what has been refined out of the breaking. What remains in the
-Void is the unrefined matter, and it does not stabilise
-identity the way Skyblood does. It scatters it.
+[[concepts/skyblood|Skyblood]] derives from — the breaking that
+by long tradition is called a shattered god, though that
+attribution varies between traditions and is not settled in
+this compendium. Whatever it was that broke, the breaking is
+older than the order, older than the worlds' current arrangement
+of themselves, older than most of what is written down. These
+fragments are not Skyblood. Skyblood is what has been refined
+out of the breaking. What remains in the Void is the unrefined
+matter, and it does not stabilise identity the way Skyblood
+does. It scatters it.
 
 **Failed Eidolons.** The Eidolons of pilots who could not
 maintain coherence in transit — who dissolved, overpowered,
@@ -85,5 +88,5 @@ not toward, and that what is in it is best left where it lies.
 _(Detail on the specific charted regions of the Void, the
 named storms and currents within it, the few Knights known to
 have travelled in the Void deliberately, and the deeper
-question of whose breaking it is full of is not yet recorded
-here.)_
+question of what the breaking was that the Void is full of is
+not yet recorded here.)_
