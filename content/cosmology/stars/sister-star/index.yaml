@@ -1,0 +1,7 @@
+name: The Sister Star
+kind: star
+summary: The star at the centre of the Sister System — the source of light and time for Bayurinda, Nebelheim, and Sharazan.
+tags: [sister-worlds]
+relations:
+  - kind: member-of
+    target: cosmology/systems/sister-system

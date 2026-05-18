@@ -39,6 +39,7 @@
 				'spoken-in': 'Languages',
 				'located-in': 'Located here',
 				'is-a': 'Includes',
+				'member-of': 'Bodies',
 				orbits: 'Moons'
 			};
 			if (inverse[kind]) return inverse[kind];

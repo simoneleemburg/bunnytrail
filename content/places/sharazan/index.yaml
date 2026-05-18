@@ -2,3 +2,6 @@ name: Sharazan
 kind: planet
 summary: A fractured atmospheric cluster — a wounded planet held in motion by altered fields, civilisations stratified vertically across an archipelago of fragments, where binding is performance and mastery.
 tags: [crossroads, fractured, atmosphere, splendor]
+relations:
+  - kind: member-of
+    target: cosmology/systems/sister-system
