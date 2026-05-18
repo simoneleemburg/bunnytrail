@@ -204,10 +204,10 @@
 							{@const dy = -2.5}
 							{#if m.slug}
 								<a href={`/places/${m.slug}`} aria-label={`Moon of ${p.label}`}>
-									<circle class="moon-body" cx={dx} cy={dy} r="1.4" />
+									<circle class="moon-body" cx={dx} cy={dy} r="2" />
 								</a>
 							{:else}
-								<circle class="moon-body" cx={dx} cy={dy} r="1.4" />
+								<circle class="moon-body" cx={dx} cy={dy} r="2" />
 							{/if}
 						{/each}
 					{/if}
