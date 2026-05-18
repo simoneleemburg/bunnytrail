@@ -17,6 +17,8 @@
 	let activeKind = $state<string | null>(null);
 
 	const hasContainers = $derived(data.containers.length > 0);
+	const hasSubtypes = $derived(data.subtypes.length > 0);
+	const hasViewToggle = $derived(hasContainers || hasSubtypes);
 
 	// Kind counts are derived from the *flat* list of entities so the
 	// counts don't change when the user switches view-mode.
@@ -90,7 +92,7 @@
 		<em>No {data.label.plural.toLowerCase()} have been recorded yet.</em>
 	</p>
 {:else}
-	{#if kindCounts.length > 1 || hasContainers}
+	{#if kindCounts.length > 1 || hasViewToggle}
 		<nav class="filters" aria-label="Filter and view">
 			{#if kindCounts.length > 1}
 				<div class="filter-group" role="group" aria-label="Filter by kind">
@@ -114,7 +116,7 @@
 					{/each}
 				</div>
 			{/if}
-			{#if hasContainers}
+			{#if hasViewToggle}
 				<div class="filter-group view-toggle" role="group" aria-label="View mode">
 					<button
 						type="button"
@@ -182,7 +184,7 @@
 				<EntityCard
 					id={entity.id}
 					name={entity.name}
-					type={data.label.singular}
+					type={entity.typeLabel ?? data.label.singular}
 					kind={entity.kind}
 					summaryHtml={entity.summaryHtml}
 					tags={entity.tags}

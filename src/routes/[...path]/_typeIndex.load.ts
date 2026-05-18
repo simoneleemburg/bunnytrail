@@ -17,9 +17,11 @@ import type { Entity, EntityType } from '$lib/types';
  *     `bayurinda-archipelago`). Each container is shown with its
  *     nested children inline. Only used in nested view-mode.
  *   • **Entity grid** — the flat list of entities. In nested mode
- *     this is restricted to standalone entities (no parent, no
- *     children); in flat mode it is every entity of this type at
- *     any depth.
+ *     this is restricted to standalone entities of this exact type
+ *     (no parent, no children); in flat mode it is every entity
+ *     under this type at any depth, *including* descendants of
+ *     subtypes, so e.g. /culture flat mode inlines languages with
+ *     direct culture entities.
  *
  * The kind-filter at the top of the page applies to everything,
  * regardless of view-mode.
@@ -49,6 +51,19 @@ export function loadTypeIndex(type: EntityType) {
 	// All entities of this exact type get flattened to cards once;
 	// the view decides which slots they appear in based on view-mode.
 	const cards = entities.map((e) => toCard(e, cardSummaryHtml));
+
+	// Descendants: every entity under this type at any depth (recurses
+	// through subtypes). Used by flat view-mode so a user browsing
+	// `/culture` can see all languages inlined with direct culture
+	// entities. Sorted by name; subtype-membership is conveyed by the
+	// `type` label on each card.
+	const descendants = graph
+		.byTypeRecursive(type)
+		.filter((e) => e.type !== type)
+		.map((e) => toCard(e, cardSummaryHtml, labelForType(e.type)));
+	const flatAll = [...cards, ...descendants].sort((a, b) =>
+		a.name.localeCompare(b.name)
+	);
 
 	// Containers: entities of *this exact type* that themselves
 	// contain child entities (of any type, including this one).
@@ -88,16 +103,26 @@ export function loadTypeIndex(type: EntityType) {
 		containers,
 		standalone,
 		// `flat` is the full list in display order — used when the
-		// user switches to flat view.
-		flat: cards
+		// user switches to flat view. Includes descendants of subtypes
+		// so e.g. /culture in flat mode shows languages inline.
+		flat: flatAll
 	};
 }
 
 export type TypeIndexData = ReturnType<typeof loadTypeIndex>;
 
+function labelForType(type: EntityType): string {
+	try {
+		return graph.typeInfo(type).labels.singular;
+	} catch {
+		return type;
+	}
+}
+
 function toCard(
 	e: Entity,
-	cardSummaryHtml: (s: string | null | undefined) => string | null
+	cardSummaryHtml: (s: string | null | undefined) => string | null,
+	typeLabel?: string
 ) {
 	return {
 		id: e.id,
@@ -107,6 +132,7 @@ function toCard(
 		summaryHtml: cardSummaryHtml(e.meta.summary),
 		tags: e.meta.tags ?? [],
 		era: e.meta.era ?? null,
-		kind: typeof e.meta.kind === 'string' ? e.meta.kind : null
+		kind: typeof e.meta.kind === 'string' ? e.meta.kind : null,
+		typeLabel: typeLabel ?? null
 	};
 }
