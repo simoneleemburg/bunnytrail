@@ -150,13 +150,15 @@
 
 	{#if visibleSubtypes.length > 0}
 		<section class="subtypes" aria-label="Subtypes">
-			<h2 class="subtypes-heading">Within {data.label.plural.toLowerCase()}</h2>
 			<ul class="subtype-list">
 				{#each visibleSubtypes as sub (sub.type)}
-					<li>
+					<li class="subtype">
 						<a class="subtype-link" href={`/${sub.type}`}>
-							<span class="subtype-label">{sub.plural}</span>
-							<span class="subtype-count">{sub.visibleCount}</span>
+							<div class="subtype-eyebrow">
+								<span class="subtype-tag">Collection</span>
+								<span class="subtype-count">{sub.visibleCount}</span>
+							</div>
+							<h3 class="subtype-label">{sub.plural}</h3>
 						</a>
 						{#if sub.description}
 							<p class="subtype-description">{sub.description}</p>
@@ -295,18 +297,6 @@
 
 	.subtypes {
 		margin: 0 0 var(--space-7) 0;
-		padding-bottom: var(--space-5);
-		border-bottom: var(--rule-thin);
-	}
-
-	.subtypes-heading {
-		font-family: var(--font-serif);
-		font-size: var(--text-sm);
-		font-variant: small-caps;
-		letter-spacing: 0.08em;
-		font-weight: 500;
-		color: var(--ink-faint);
-		margin: 0 0 var(--space-3) 0;
 	}
 
 	.subtype-list {
@@ -318,25 +308,66 @@
 		gap: var(--space-4) var(--space-6);
 	}
 
+	.subtype {
+		position: relative;
+		padding: var(--space-4);
+		margin: 0 calc(var(--space-4) * -1);
+		border-radius: 2px;
+		transition:
+			background-color 150ms ease,
+			box-shadow 150ms ease,
+			transform 150ms ease;
+	}
+
+	.subtype:hover {
+		background-color: var(--paper-warm);
+		box-shadow: var(--shadow-hover);
+		transform: translateY(-1px);
+	}
+
 	.subtype-link {
+		display: block;
+		color: inherit;
+		text-decoration: none;
+	}
+
+	/* Stretched link covers the whole tile, so the description below
+	   is clickable too. No interactive children compete here. */
+	.subtype-link::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+	}
+
+	.subtype-eyebrow {
 		display: flex;
 		align-items: baseline;
 		justify-content: space-between;
 		gap: var(--space-3);
-		color: inherit;
-		text-decoration: none;
-		border-bottom: 1px solid var(--rule);
+		margin-bottom: var(--space-2);
 		padding-bottom: var(--space-1);
+		border-bottom: 1px solid var(--rule);
 	}
 
-	.subtype-link:hover .subtype-label {
-		color: var(--accent);
+	.subtype-tag {
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-xs);
+		letter-spacing: 0.04em;
+		color: var(--ink-faint);
 	}
 
 	.subtype-label {
 		font-family: var(--font-display);
 		font-size: var(--text-lg);
+		font-weight: 500;
+		margin: 0;
 		color: var(--ink);
+	}
+
+	.subtype:hover .subtype-label {
+		color: var(--accent);
 	}
 
 	.subtype-count {
