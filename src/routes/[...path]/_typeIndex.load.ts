@@ -4,7 +4,6 @@ import type { Entity, EntityType } from '$lib/types';
 
 type Card = ReturnType<typeof toCard>;
 export type ContainerNode = { container: Card; children: ContainerNode[] };
-
 /**
  * Build the view-model for a type-index page. Caller has already
  * verified that `type` is a known type via `graph.hasType`.
@@ -70,9 +69,7 @@ export function loadTypeIndex(type: EntityType) {
 				count: subEntities.length,
 				kindCounts,
 				tags: rankTags(tagCounts),
-				tagsByKind: Object.fromEntries(
-					Object.entries(tagsByKind).map(([k, m]) => [k, rankTags(m)])
-				)
+				tagsByKind: Object.fromEntries(Object.entries(tagsByKind).map(([k, m]) => [k, rankTags(m)]))
 			};
 		})
 		.sort((a, b) => a.plural.localeCompare(b.plural));
@@ -90,9 +87,7 @@ export function loadTypeIndex(type: EntityType) {
 		.byTypeRecursive(type)
 		.filter((e) => e.type !== type)
 		.map((e) => toCard(e, cardSummaryHtml, labelForType(e.type)));
-	const flatAll = [...cards, ...descendants].sort((a, b) =>
-		a.name.localeCompare(b.name)
-	);
+	const flatAll = [...cards, ...descendants].sort((a, b) => a.name.localeCompare(b.name));
 
 	// Containers: a recursive tree of entities of *this exact type*
 	// that physically nest other entities of the same type beneath
@@ -147,6 +142,91 @@ export function loadTypeIndex(type: EntityType) {
 }
 
 export type TypeIndexData = ReturnType<typeof loadTypeIndex>;
+
+/**
+ * View-model for the global "everything" index — every entity in
+ * the graph, filterable by type/kind/tag and switchable between a
+ * nested view (top-level types as collection tiles + standalone
+ * entities) and a flat view (one big grid).
+ *
+ * Reuses the same `TypeIndexData` shape as type-scoped indexes, so
+ * the same `TypeIndex.svelte` component can render both. Differences
+ * from a type-scoped load:
+ *
+ *   • `subtypes` is filled with every top-level type (Beings,
+ *     Characters, …), so the collection tiles become "browse by
+ *     type" rather than "browse by subtype within this type".
+ *   • `containers` is always empty: container-style nesting only
+ *     makes sense within a single type's namespace.
+ *   • Every card carries its `typeLabel` so the grid shows what
+ *     kind of entity each one is.
+ */
+export function loadEverythingIndex() {
+	const resolveLink = (path: string) => graph.resolveLink(path);
+	const languageCodes = graph.languageCodes();
+	const cardSummaryHtml = (s: string | null | undefined) =>
+		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true }) : null;
+
+	// Top-level types become the "collection" tiles. Each tile gets
+	// recursive entities under that type (so e.g. Culture covers
+	// languages too) and the same tag-rollup the per-type loader
+	// builds for its subtypes.
+	const subtypes = graph
+		.topLevelTypes()
+		.filter((t) => graph.byTypeRecursive(t.type).length > 0)
+		.map((t) => {
+			const subEntities = graph.byTypeRecursive(t.type);
+			const kindCounts: Record<string, number> = {};
+			const tagCounts = new Map<string, number>();
+			const tagsByKind: Record<string, Map<string, number>> = {};
+			for (const e of subEntities) {
+				const k = typeof e.meta.kind === 'string' ? e.meta.kind : '—';
+				kindCounts[k] = (kindCounts[k] ?? 0) + 1;
+				const kindMap = (tagsByKind[k] ??= new Map<string, number>());
+				for (const tag of e.meta.tags ?? []) {
+					tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+					kindMap.set(tag, (kindMap.get(tag) ?? 0) + 1);
+				}
+			}
+			return {
+				type: t.type,
+				singular: t.labels.singular,
+				plural: t.labels.plural,
+				description: t.description,
+				count: subEntities.length,
+				kindCounts,
+				tags: rankTags(tagCounts),
+				tagsByKind: Object.fromEntries(Object.entries(tagsByKind).map(([k, m]) => [k, rankTags(m)]))
+			};
+		})
+		.sort((a, b) => a.plural.localeCompare(b.plural));
+
+	// Every entity in the graph, each tagged with its type label so
+	// the card eyebrow shows what *kind of thing* it is.
+	const allCards = graph
+		.all()
+		.sort((a, b) => a.meta.name.localeCompare(b.meta.name))
+		.map((e) => toCard(e, cardSummaryHtml, labelForType(e.type)));
+
+	return {
+		kind: 'type' as const,
+		// `type` is conventionally a path here; the everything page has
+		// no type path. The view doesn't use it directly when subtypes
+		// are top-level types; keeping the field present so the type
+		// matches.
+		type: '' as EntityType,
+		label: { singular: 'Entry', plural: 'Everything' },
+		description: 'Every entry in Alteria, in one place. Filter or flatten to taste.',
+		subtypes,
+		containers: [] as ContainerNode[],
+		// In nested view every entity belongs to one of the
+		// top-level-type collection tiles, so the standalone grid is
+		// empty — the user sees only the tiles. Flat view drops the
+		// tiles and shows everything in one grid instead.
+		standalone: [] as typeof allCards,
+		flat: allCards
+	};
+}
 
 function labelForType(type: EntityType): string {
 	try {

@@ -61,6 +61,14 @@
 				<div class="count">{c.count}</div>
 			</a>
 		{/each}
+		<a class="type-card type-card-everything" href="/everything">
+			<div class="rule"></div>
+			<div class="label">Everything</div>
+			<div class="description">
+				One grid for the whole world. Filter by kind or tag, or flatten and skim.
+			</div>
+			<div class="count">{data.totalEntities}</div>
+		</a>
 	</div>
 </section>
 
@@ -238,6 +246,14 @@
 		font-size: var(--text-sm);
 		color: var(--ink-soft);
 		font-style: italic;
+	}
+
+	.type-card-everything .label {
+		font-style: italic;
+	}
+
+	.type-card-everything .rule {
+		border-top-color: var(--accent-soft, var(--rule));
 	}
 
 	.tags-section {

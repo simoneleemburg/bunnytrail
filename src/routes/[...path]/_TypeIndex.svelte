@@ -111,10 +111,8 @@
 				// Re-derive count + tag list under the current filters.
 				// Kind narrows first; tag narrows the count further by
 				// requiring every active tag to appear under that kind.
-				const baseTags =
-					activeKind === null ? sub.tags : (sub.tagsByKind[activeKind] ?? []);
-				const visibleCount =
-					activeKind === null ? sub.count : (sub.kindCounts[activeKind] ?? 0);
+				const baseTags = activeKind === null ? sub.tags : (sub.tagsByKind[activeKind] ?? []);
+				const visibleCount = activeKind === null ? sub.count : (sub.kindCounts[activeKind] ?? 0);
 				let filteredCount = visibleCount;
 				let displayTags = baseTags;
 				if (activeTags.size > 0) {
@@ -152,9 +150,7 @@
 	// any descendant matches. Returns null when the entire subtree is
 	// hidden.
 	function filterNode(node: ContainerNode): RenderNode | null {
-		const children = node.children
-			.map(filterNode)
-			.filter((c): c is RenderNode => c !== null);
+		const children = node.children.map(filterNode).filter((c): c is RenderNode => c !== null);
 		const containerMatches = matchesFilters(node.container);
 		if (!containerMatches && children.length === 0) return null;
 		return { container: node.container, containerMatches, children };
@@ -166,9 +162,7 @@
 
 	const visibleContainers = $derived.by(() => {
 		if (viewMode !== 'nested') return [];
-		return data.containers
-			.map(filterNode)
-			.filter((n): n is RenderNode => n !== null);
+		return data.containers.map(filterNode).filter((n): n is RenderNode => n !== null);
 	});
 </script>
 
@@ -267,9 +261,7 @@
 				{/if}
 				{#if activeTags.size > 0}
 					<li>
-						<button type="button" class="tag-clear" onclick={clearTags}>
-							clear
-						</button>
+						<button type="button" class="tag-clear" onclick={clearTags}> clear </button>
 					</li>
 				{/if}
 			</ul>
