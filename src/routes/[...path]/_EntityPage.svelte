@@ -9,21 +9,15 @@
 
 	type EdgeWithEntity = {
 		kind: string;
+		direction: 'out' | 'in';
 		note?: string;
 		entity: { id: string; name: string; summary: string | null } | null;
 	};
 
-	function groupEdges<T extends { kind: string }>(edges: T[]): { kind: string; items: T[] }[] {
-		const groups = new Map<string, T[]>();
-		for (const e of edges) {
-			if (!groups.has(e.kind)) groups.set(e.kind, []);
-			groups.get(e.kind)!.push(e);
-		}
-		return [...groups.entries()].map(([kind, items]) => ({ kind, items }));
-	}
-
 	function labelForKind(kind: string, direction: 'out' | 'in'): string {
-		if (kind === 'wikilink') return 'Mentions';
+		if (kind === 'wikilink') {
+			return direction === 'out' ? 'Mentions' : 'Mentioned by';
+		}
 		if (direction === 'in') {
 			// Inverse labels for incoming edges. The relation is declared
 			// on the *other* entity, so on this page we want the converse
@@ -34,6 +28,8 @@
 				'native-to': 'Native peoples',
 				'serves-in': 'Members',
 				'spoken-in': 'Languages',
+				'located-in': 'Located here',
+				'is-a': 'Includes',
 				orbits: 'Moons'
 			};
 			if (inverse[kind]) return inverse[kind];
@@ -41,29 +37,54 @@
 		return kind.replace(/[-_]/g, ' ');
 	}
 
-	const outGroups = $derived(
-		groupEdges(
-			data.outEdges.map(
+	/**
+	 * Single flat stream of relationships, regardless of arrow direction.
+	 * Each (kind, direction) pair gets its own labelled bucket — so an
+	 * "is-a" pointing out reads as "is a" while an "is-a" pointing in
+	 * reads as "Includes". The user shouldn't have to think about which
+	 * way the underlying edge points.
+	 */
+	const relationGroups = $derived.by(() => {
+		const all: EdgeWithEntity[] = [
+			...data.outEdges.map(
 				(e): EdgeWithEntity => ({
 					kind: e.kind,
+					direction: 'out' as const,
 					note: e.note,
 					entity: e.toEntity
 				})
-			)
-		)
-	);
-
-	const inGroups = $derived(
-		groupEdges(
-			data.inEdges.map(
+			),
+			...data.inEdges.map(
 				(e): EdgeWithEntity => ({
 					kind: e.kind,
+					direction: 'in' as const,
 					note: e.note,
 					entity: e.fromEntity
 				})
 			)
-		)
-	);
+		];
+
+		type Group = { label: string; kind: string; items: EdgeWithEntity[] };
+		const groups = new Map<string, Group>();
+		for (const edge of all) {
+			const label = labelForKind(edge.kind, edge.direction);
+			const key = `${edge.direction}:${edge.kind}`;
+			if (!groups.has(key)) groups.set(key, { label, kind: edge.kind, items: [] });
+			groups.get(key)!.items.push(edge);
+		}
+
+		// Typed relations first (the structured signal), then wikilink
+		// mentions at the bottom (the noisier prose layer). Within each
+		// tier, preserve insertion order so authors get a predictable
+		// reading order tied to how the page declares its connections.
+		const typed: Group[] = [];
+		const mentions: Group[] = [];
+		for (const g of groups.values()) {
+			if (g.kind === 'wikilink') mentions.push(g);
+			else typed.push(g);
+		}
+		return [...typed, ...mentions];
+	});
 </script>
 
 <svelte:head>
@@ -112,25 +133,11 @@
 		</div>
 
 		<aside class="sidebar">
-			{#if data.extra.length > 0 || data.entity.tags.length > 0}
-				<section>
-					<PropertyList items={data.extra} />
-					{#if data.entity.tags.length > 0}
-						<div class="tag-row">
-							{#each data.entity.tags as tag (tag)}
-								<Tag label={tag} href={`/tags/${encodeURIComponent(tag)}`} />
-							{/each}
-						</div>
-					{/if}
-				</section>
-			{/if}
-
-			{#if outGroups.length > 0}
-				<section>
-					<h2 class="side-heading">Connections</h2>
-					{#each outGroups as group (group.kind)}
+			{#if relationGroups.length > 0}
+				<section class="relations">
+					{#each relationGroups as group (group.label)}
 						<div class="group">
-							<div class="group-label">{labelForKind(group.kind, 'out')}</div>
+							<div class="group-label">{group.label}</div>
 							<ul>
 								{#each group.items as item, i (item.entity?.id ?? i)}
 									{#if item.entity}
@@ -151,28 +158,16 @@
 				</section>
 			{/if}
 
-			{#if inGroups.length > 0}
+			{#if data.extra.length > 0 || data.entity.tags.length > 0}
 				<section>
-					<h2 class="side-heading">Referenced by</h2>
-					{#each inGroups as group (group.kind)}
-						<div class="group">
-							<div class="group-label">{labelForKind(group.kind, 'in')}</div>
-							<ul>
-								{#each group.items as item, i (item.entity?.id ?? i)}
-									{#if item.entity}
-										<li>
-											<EntityLink
-												id={item.entity.id}
-												name={item.entity.name}
-												summary={item.entity.summary}
-												compact
-											/>
-										</li>
-									{/if}
-								{/each}
-							</ul>
+					<PropertyList items={data.extra} />
+					{#if data.entity.tags.length > 0}
+						<div class="tag-row">
+							{#each data.entity.tags as tag (tag)}
+								<Tag label={tag} href={`/tags/${encodeURIComponent(tag)}`} />
+							{/each}
 						</div>
-					{/each}
+					{/if}
 				</section>
 			{/if}
 		</aside>
@@ -240,16 +235,6 @@
 	.sidebar section {
 		padding-top: var(--space-3);
 		border-top: var(--rule-thin);
-	}
-
-	.side-heading {
-		font-size: var(--text-sm);
-		font-variant: small-caps;
-		letter-spacing: 0.12em;
-		color: var(--ink-faint);
-		font-weight: 500;
-		font-family: var(--font-serif);
-		margin: 0 0 var(--space-4);
 	}
 
 	.tag-row {
