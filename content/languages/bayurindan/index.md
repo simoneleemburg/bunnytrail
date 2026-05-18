@@ -33,11 +33,11 @@ truth about it.
 _(The specific phonemes, the grammar, the script if there is
 one, and the relationship between Bayurindan and any older
 Bayurindan tongues — including whatever the lost surface
-civilisation spoke, and whatever the deep speak among
-themselves — are not yet recorded here. The question of
+civilisation spoke — are not yet recorded here. The question of
 whether present-day Bayurindan \_descends_ from the language of
 the drowned civilisation is, like much else about that
-civilisation, disputed.)\_
+civilisation, disputed. The deep's tongue is treated separately;
+see [[languages/deep-speech|Deep Speech]].)\_
 
 ## Bayurindan words in this compendium
 
@@ -60,19 +60,32 @@ superscript _bay_:
   the palatal _-ly-_ medial. (See [[characters/ngonawan-ilyardi|her
 entry]].)
 
+- **Nuunlau** [[bay]] — the archipelago people's word for the
+  deep: the pressure-adapted custodians who live on
+  [[places/bayurinda|Bayurinda]]'s seafloor and steward the
+  inscriptions there. _Nuunlau_ is what the archipelago calls
+  them; what the deep call themselves, in their own tongue, is
+  not yet recorded here. (See [[languages/deep-speech|Deep
+Speech]] for the language; an entry for the Nuunlau as a people
+  is not yet written.)
+
 _(Other Bayurindan words and names in the compendium are not
 yet marked. Sweep deferred.)_
 
 ## Sibling tongues
 
-Bayurindan is the only language of Bayurinda with an entry in
-this compendium. It is not the only language of Bayurinda. What
-the deep speak among themselves is not recorded here, and may
-not be recordable in any form a surface mouth can hold; what
-the lost surface civilisation spoke is largely lost with them,
-though [the inscriptions](/languages/old-tongue#how-it-survived--partly)
+Bayurindan shares its world with [[languages/deep-speech|Deep
+Speech]], the unrelated working tongue of the
+_[[languages/deep-speech|Nuunlau]]_ on the seafloor. The two
+languages are native to the same planet but, so far as the
+compendium records, share no common ancestry; they are two
+tongues that have lived on Bayurinda separately for as long as
+either has lived there. What the lost surface civilisation spoke
+is largely lost with them, though
+[the inscriptions](/languages/old-tongue#how-it-survived--partly)
 preserve fragments of what was written, mostly in the
-specifically ritual register that became the Old Tongue.
+specifically ritual register that became the
+[[languages/old-tongue|Old Tongue]].
 
 _(The question of how Bayurindan relates to the working tongues
 of [[places/nebelheim|Nebelheim]] and
