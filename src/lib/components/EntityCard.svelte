@@ -69,8 +69,8 @@
 	}
 
 	.entity-card:hover {
-		background-color: var(--paper-warm, rgba(122, 43, 31, 0.04));
-		box-shadow: 0 1px 0 var(--rule), 0 6px 16px -10px rgba(0, 0, 0, 0.18);
+		background-color: var(--paper-warm);
+		box-shadow: var(--shadow-hover);
 		transform: translateY(-1px);
 	}
 

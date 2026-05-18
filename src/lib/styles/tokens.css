@@ -21,6 +21,12 @@
 	--ribbon: #2a3a55; /* deep indigo */
 	--gilt: #a38540;
 
+	/* Warm paper tint for hover/active surfaces — a faint accent wash
+	   over the parchment. Quieter than parchment-soft; reads as
+	   "this paper is being touched" rather than a different sheet. */
+	--paper-warm: rgba(122, 43, 31, 0.04);
+	--shadow-hover: 0 1px 0 var(--rule), 0 6px 16px -10px rgba(0, 0, 0, 0.18);
+
 	/* ── Typography ───────────────────────────────────────────── */
 	--font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
 	--font-display: 'Iowan Old Style', 'Cormorant Garamond', Palatino, Georgia, serif;
