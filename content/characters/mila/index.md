@@ -60,7 +60,7 @@ suggests.
 
 ## In transit
 
-During [[cosmology/interplanetary-travel|interplanetary travel]],
+During [[cosmology/eidolon-starfaring|eidolon starfaring]],
 Sudawaen Khiynuung's Aspect Wings manifest as crackling storm
 arcs — visible discharges that rip through the medium the
 Eidolon passes through. The signature is unmistakable.

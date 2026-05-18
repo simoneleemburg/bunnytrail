@@ -73,7 +73,7 @@ within reach of the Dark Companion report consistent effects.
 loosening becomes less controlled — softer when the pilot
 intended firmness, harder to interrupt when the pilot intended
 release. The currents of
-[[cosmology/interplanetary-travel|interplanetary travel]] bend
+[[cosmology/eidolon-starfaring|eidolon starfaring]] bend
 toward the Hollow Binary in ways the order's charts attempt to
 mark but cannot fully predict.
 

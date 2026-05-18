@@ -5,7 +5,7 @@ forms, each cored in [[cosmology/skyblood|Skyblood]] on a scale
 no smaller Eidolon could survive. They do not move. They endure.
 
 They are the launch and arrival infrastructure of
-[[cosmology/interplanetary-travel|interplanetary travel]] —
+[[cosmology/eidolon-starfaring|eidolon starfaring]] —
 the way a Knight leaves one world for another, and the way
 they survive returning. Travel between worlds is
 [[cosmology/nearing|Nearing]] applied to space, sustained for
@@ -62,7 +62,7 @@ moment the chains shatter or disengage, and the Eidolon is
 violently flung skyward.
 
 A successful launch ends with the pilot beginning the long
-controlled drift into [[cosmology/interplanetary-travel|the
+controlled drift into [[cosmology/eidolon-starfaring|the
 space between worlds]]. An unsuccessful one ends some other way.
 
 ## Catching

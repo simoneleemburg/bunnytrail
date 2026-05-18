@@ -76,7 +76,7 @@ of the more precise piloting partnerships the order knows.
 
 ## In transit
 
-During [[cosmology/interplanetary-travel|interplanetary travel]],
+During [[cosmology/eidolon-starfaring|eidolon starfaring]],
 the Naya's Aspect Wings manifest as refracted, glass-like
 structures of resonance that bend light into patterns the pilot
 can almost recognise. The signature is distinctive enough that

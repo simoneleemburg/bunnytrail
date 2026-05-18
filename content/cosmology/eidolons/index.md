@@ -50,7 +50,7 @@ In use — that is, when piloted — an Eidolon can:
 - sustain the pilot temporarily, with no need for food or air
   during use within limits
 - travel between worlds, through the practice of
-  [[cosmology/interplanetary-travel|interplanetary travel]] and
+  [[cosmology/eidolon-starfaring|eidolon starfaring]] and
   the launch infrastructure of the
   [[cosmology/world-pillars|World Pillars]]
 

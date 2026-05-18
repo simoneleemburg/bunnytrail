@@ -22,8 +22,8 @@ some institutional argument — but the concentration is real and
 known, and it is the structural reason for Tholingia's place
 in the wider world.
 
-A Pillar is what makes [[cosmology/interplanetary-travel|interplanetary
-travel]] possible: a colossal Eidolon construct partially fused
+A Pillar is what makes [[cosmology/eidolon-starfaring|eidolon
+starfaring]] possible: a colossal Eidolon construct partially fused
 into the planet, the launch and arrival infrastructure by which
 a Knight leaves one world and survives reaching another. Each
 Pillar is a piece of the off-world economy in itself. A region

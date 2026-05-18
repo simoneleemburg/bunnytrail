@@ -48,7 +48,7 @@ The major recognised purposes:
   rests on this.
 - To **travel**: to soften one's attachment to space enough that
   the cosmos can be crossed in something less than its raw
-  distance. The interplanetary technique rests on this, layered
+  distance. The starfaring technique rests on this, layered
   on top of piloting Nearing.
 - To **listen**: to perceive _Whispers_, the echoes left in
   Nareth by past events of sufficient intensity.
@@ -99,7 +99,7 @@ with different safety structures.
   [[beings/aetherians#the-radiance-and-what-is-in-it|the
 radiance, and what is in it]].)
 
-- **The starfaring layer.** Interplanetary travel is itself a
+- **The starfaring layer.** Eidolon starfaring is itself a
   form of Nearing, and the long-distance starfarers practise it
   on top of piloting Nearing. The order trains for this; the
   Aetherian tradition does not, for obvious reasons of

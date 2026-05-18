@@ -150,7 +150,7 @@ stacked Nearings.
 
 ## What the practice asks
 
-Interplanetary travel is the longest and most demanding
+Eidolon starfaring is the longest and most demanding
 piloting most Knights ever do. The Knight must Near toward the
 Naya for hours or days without break, while also Nearing space
 itself. They must remain present enough to hold the bubble.
