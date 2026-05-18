@@ -4,8 +4,17 @@
 	import PropertyList from '$lib/components/PropertyList.svelte';
 	import EntityLink from '$lib/components/EntityLink.svelte';
 	import Tag from '$lib/components/Tag.svelte';
+	import { SvelteSet } from 'svelte/reactivity';
 
 	let { data }: { data: EntityPageData } = $props();
+
+	const COLLAPSE_AT = 8;
+	const expanded = new SvelteSet<string>();
+
+	function toggle(label: string) {
+		if (expanded.has(label)) expanded.delete(label);
+		else expanded.add(label);
+	}
 
 	type EdgeWithEntity = {
 		kind: string;
@@ -142,10 +151,15 @@
 			{#if relationGroups.length > 0}
 				<section class="relations">
 					{#each relationGroups as group (group.label)}
+						{@const isExpanded = expanded.has(group.label)}
+						{@const visible =
+							group.items.length > COLLAPSE_AT && !isExpanded
+								? group.items.slice(0, COLLAPSE_AT)
+								: group.items}
 						<div class="group">
 							<div class="group-label">{group.label}</div>
 							<ul>
-								{#each group.items as item, i (item.entity?.id ?? i)}
+								{#each visible as item, i (item.entity?.id ?? i)}
 									{#if item.entity}
 										<li>
 											<EntityLink
@@ -159,6 +173,15 @@
 									{/if}
 								{/each}
 							</ul>
+							{#if group.items.length > COLLAPSE_AT}
+								<button
+									type="button"
+									class="show-toggle"
+									onclick={() => toggle(group.label)}
+								>
+									{isExpanded ? 'Show fewer' : `Show all (${group.items.length})`}
+								</button>
+							{/if}
 						</div>
 					{/each}
 				</section>
@@ -255,6 +278,23 @@
 		letter-spacing: 0.08em;
 		color: var(--ink-faint);
 		margin-bottom: var(--space-2);
+	}
+
+	.show-toggle {
+		background: none;
+		border: 0;
+		padding: 0;
+		margin-top: var(--space-2);
+		font: inherit;
+		font-size: var(--text-xs);
+		font-variant: small-caps;
+		letter-spacing: 0.08em;
+		color: var(--ink-faint);
+		cursor: pointer;
+	}
+
+	.show-toggle:hover {
+		color: var(--accent);
 	}
 
 	ul {
