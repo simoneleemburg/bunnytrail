@@ -380,5 +380,43 @@ function buildOrbitsTree(
 		if (pageEntityIds.has(node.entity.id)) return true;
 		return node.children.some(treeTouches);
 	};
-	return roots.filter(treeTouches);
+	const keptRoots = roots.filter(treeTouches);
+
+	// Detect whether this page is the *home* of the orbits graph:
+	// the page where every root entity belongs to the page's type
+	// (e.g. on /cosmology, every system root is a cosmology
+	// entity). On the home page, the full tree renders — the view
+	// is showing you the actual shape of the cosmos, and pruning
+	// nodes that "belong somewhere else" doesn't apply because
+	// nothing does.
+	//
+	// On a non-home page (e.g. /places), the orbits view is
+	// borrowing the structural shape to organise the page's
+	// entities. There, internal nodes that aren't of the page's
+	// type get pruned with promotion — their children flow up to
+	// the parent's level. Root entities stay regardless of type
+	// because they're the scaffolding that labels what the page's
+	// entities belong to.
+	const isOrbitHome = keptRoots.every((root) => pageEntityIds.has(root.entity.id));
+
+	if (isOrbitHome) return keptRoots;
+
+	const pruneInternals = (children: OrbitNode[]): OrbitNode[] => {
+		const out: OrbitNode[] = [];
+		for (const child of children) {
+			const promotedChildren = pruneInternals(child.children);
+			if (pageEntityIds.has(child.entity.id)) {
+				out.push({ entity: child.entity, children: promotedChildren });
+			} else {
+				// Drop this node; promote its already-pruned children.
+				out.push(...promotedChildren);
+			}
+		}
+		return out.sort(compareOrbitNodes);
+	};
+
+	return keptRoots.map((root) => ({
+		entity: root.entity,
+		children: pruneInternals(root.children)
+	}));
 }
