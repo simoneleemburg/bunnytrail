@@ -31,11 +31,31 @@
 	const hasOrbits = $derived(data.orbits.length > 0);
 	const hasViewToggle = $derived(hasContainers || hasSubtypes || hasOrbits);
 
+	// Flatten the orbit forest into a single list of entity cards.
+	// Used in orbits mode to drive kind/tag chips and filter counts
+	// off the actually-visible entity set — not data.flat, which
+	// includes entities outside the orbit graph (e.g. realms,
+	// materials, phenomena) and excludes orbit-graph entities of
+	// other types (e.g. planets from /places).
+	const orbitEntities = $derived.by(() => {
+		const out: typeof data.flat = [];
+		const walk = (node: (typeof data.orbits)[number]) => {
+			out.push(node.entity);
+			for (const c of node.children) walk(c);
+		};
+		for (const root of data.orbits) walk(root);
+		return out;
+	});
+
+	// The entity set the chips and filters operate over. In orbits
+	// mode this is the orbit forest; otherwise the full page set.
+	const filterEntitySet = $derived(viewMode === 'orbits' ? orbitEntities : data.flat);
+
 	// Kind counts are derived from the *flat* list of entities so the
 	// counts don't change when the user switches view-mode.
 	const kindCounts = $derived.by(() => {
 		const counts = new Map<string, number>();
-		for (const e of data.flat) {
+		for (const e of filterEntitySet) {
 			const k = e.kind ?? '—';
 			counts.set(k, (counts.get(k) ?? 0) + 1);
 		}
@@ -66,7 +86,7 @@
 	// under both filters applied together).
 	const availableTags = $derived.by(() => {
 		const counts = new Map<string, number>();
-		for (const e of data.flat) {
+		for (const e of filterEntitySet) {
 			if (!matchesKind(e)) continue;
 			// Count under combined active-tag filter too — so the user
 			// sees what each tag *adds* to the current selection.
@@ -173,7 +193,21 @@
 	// gravitational relationships between bodies; pruning by tag or
 	// kind would leave dangling branches that misrepresent the
 	// hierarchy. Filters quietly apply only to flat/nested views.
-	const visibleOrbits = $derived(viewMode === 'orbits' ? data.orbits : []);
+	// Orbits view renders the structural tree, but with a twist:
+	// when a filter is active, whole root trees with no matching
+	// entity anywhere inside them are pruned out entirely. Within
+	// a kept tree, non-matching cards stay rendered but get dimmed
+	// (see `orbitTree` snippet) — so context-around-a-match is
+	// preserved, but empty systems don't take up space.
+	const visibleOrbits = $derived.by(() => {
+		if (viewMode !== 'orbits') return [];
+		if (activeKind === null && activeTags.size === 0) return data.orbits;
+		const treeHasMatch = (node: OrbitNode): boolean => {
+			if (matchesFilters(node.entity)) return true;
+			return node.children.some(treeHasMatch);
+		};
+		return data.orbits.filter(treeHasMatch);
+	});
 </script>
 
 <svelte:head>
@@ -201,7 +235,7 @@
 						class:active={activeKind === null}
 						onclick={() => (activeKind = null)}
 					>
-						All <span class="count">{data.flat.length}</span>
+						All <span class="count">{filterEntitySet.length}</span>
 					</button>
 					{#each kindCounts as [kind] (kind)}
 						<button
@@ -353,7 +387,9 @@
 	{/if}
 
 	{#snippet orbitTree(node: OrbitNode)}
-		<div class="orbit-group">
+		{@const dimmed =
+			(activeKind !== null || activeTags.size > 0) && !matchesFilters(node.entity)}
+		<div class="orbit-group" class:dimmed>
 			<EntityCard
 				id={node.entity.id}
 				name={node.entity.name}
@@ -715,5 +751,20 @@
 		gap: var(--space-5);
 		border-left: 1px solid var(--rule);
 		padding-left: var(--space-5);
+	}
+
+	/* Highlight-don't-prune. In orbits mode, a kind/tag filter
+	   dims the cards that don't match instead of removing them
+	   — preserving the gravitational shape. Only the card itself
+	   dims; descendant cards are still rendered at full strength
+	   so a matching child under a non-matching parent stays
+	   visible. */
+	.orbit-group.dimmed > :global(article) {
+		opacity: 0.35;
+		transition: opacity 120ms ease-out;
+	}
+	.orbit-group.dimmed > :global(article:hover),
+	.orbit-group.dimmed > :global(article:focus-within) {
+		opacity: 1;
 	}
 </style>
