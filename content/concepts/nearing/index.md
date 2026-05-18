@@ -54,9 +54,61 @@ The major recognised purposes:
   Nareth by past events of sufficient intensity.
 
 Nearing is especially associated with oracles, experienced
-[[concepts/eidolons|Eidolon]] pilots, Bayurindan mystics, and
-long-distance starfarers — though the practice itself is older
-and more diffuse than any of these traditions.
+[[concepts/eidolons|Eidolon]] pilots, Bayurindan mystics,
+[[beings/aetherians|Aetherian]] practitioners, and long-distance
+starfarers — though the practice itself is older and more
+diffuse than any of these traditions.
+
+## Traditions of Nearing
+
+The compendium records several recognised traditions of Nearing,
+which approach the practice from different starting points and
+with different safety structures.
+
+- **The order's tradition.** The
+  [[social/knights-of-bellona|Knights of Bellona]] hold the
+  cross-world institutional discipline of Nearing.
+  [[concepts/skyblood|Skyblood]] stabilisation, the
+  [[social/oracle-triad|Oracle Triad]], the screening rites for
+  Knighthood, and the long memory of what previous practitioners
+  have brought back all sit under their authority. The order's
+  framing is one of trained safety: serious Nearing belongs to
+  trained practitioners, and a person's [[concepts/nearborn|Nearborn]]
+  status is one of the factors the order weighs in deciding
+  who is ready for sustained practice. This framing is
+  sometimes received outside the order as a stronger claim than
+  it is — as though only the Nearborn _can_ near. The order does
+  not say that, and the practice itself does not require it.
+
+- **Bayurindan mystical traditions.** Among the archipelago's
+  contemplatives, Nearing is pursued through long study, ritual
+  attention, and slow self-cultivation. The work is its own end
+  rather than a route to piloting; the safety architecture is
+  the tradition's own.
+
+- **Aetherian Nearing.** The
+  [[beings/aetherians|Aetherians]] of
+  [[places/nuunlau|Nuunlau]] reach the [[beings/naya|Naya]]
+  through a different doorway entirely: a **radiance** emitted
+  by certain features on the floor of Nuunlau, to which the
+  Aetherian body is uniquely congenial. Every Aetherian can
+  near; the path is built into the biology and the place. The
+  safety architecture is the Aetherian form itself, refined
+  across the long generations since the drowning. No
+  Skyblood is used. The order's structures do not apply. (See
+  [[beings/aetherians#the-radiance-and-what-is-in-it|the
+radiance, and what is in it]].)
+
+- **The starfaring layer.** Interplanetary travel is itself a
+  form of Nearing, and the long-distance starfarers practise it
+  on top of piloting Nearing. The order trains for this; the
+  Aetherian tradition does not, for obvious reasons of
+  location.
+
+These traditions are not in competition for what Nearing _is_.
+They differ on who reaches it, by what means, with what supports,
+and to what end. The compendium records them alongside one
+another and does not rank them.
 
 ## Nearing as travel
 
@@ -148,12 +200,15 @@ failure modes of piloting an [[concepts/eidolons|Eidolon]]:
 dissolving into the resonance, distortion of the inner form,
 and the collapse of coherent selfhood.
 
-Because of this, serious Nearing is rarely done alone.
-Skilled practitioners use rituals, emotional anchors,
-companions, and [[concepts/skyblood|Skyblood]] stabilisation to
-make safe return possible. The Oracle Triad, as maintained by
-the [[social/knights-of-bellona|Knights of Bellona]], exists
-in large part to provide a stabilising interpretive structure
-around the practice — so that what is brought back from Nareth
-can be held, witnessed, and made meaning of, rather than simply
-suffered.
+Because of this, serious Nearing is rarely done unsupported. The
+support takes different forms in different traditions: in the
+order's tradition, rituals, emotional anchors, companions, and
+[[concepts/skyblood|Skyblood]] stabilisation, with the
+[[social/oracle-triad|Oracle Triad]] as the long stabilising
+structure around the deepest practice; in
+[[beings/aetherians|Aetherian]] Nearing, the support is the
+Aetherian form itself and the inherited practice around safe
+return; in the Bayurindan mystical traditions, the long
+discipline of study. What is universal is that some structure
+exists. Nearing without any structure — improvised, unwitnessed,
+without a way back — is what most reliably ends a practitioner.

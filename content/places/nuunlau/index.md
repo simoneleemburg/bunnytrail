@@ -64,12 +64,19 @@ it survived]].)
   the deep have built and inhabit. The
   [[#nuunlaumud-settlements|specifics]] are not yet recorded
   here.
-- **Older things** — geological structures the Nuunlaumud
-  themselves describe as pre-dating the drowning, including
-  features the surface civilisation did not leave and could not
-  have left. What these are, where they came from, and whether
-  they are wholly natural or wholly something else is a question
-  the compendium does not settle.
+- **Older things** — geological structures the older Nuunlaumud
+  describe as pre-dating the drowning, including features the
+  surface civilisation did not leave and could not have left.
+  What these are, where they came from, and whether they are
+  wholly natural or wholly something else is a question the
+  compendium does not settle. What is recorded is that the
+  older things **emit a radiance** the
+  [[beings/aetherians|Aetherians]] are uniquely congenial to,
+  and that Aetherians come to them to **near**: contact with
+  the [[beings/naya|Naya]] is, among the Aetherians, mediated
+  by going to the older things and coming back. (See
+  [[beings/aetherians#the-radiance-and-what-is-in-it|the
+radiance, and what is in it]].)
 
 ## Nuunlaumud settlements
 

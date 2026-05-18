@@ -65,9 +65,10 @@ their ancestors had:
 Their relationship to **radioactive material** is also unlike a
 human's. Ordinary exposure does not harm them. At high doses, it
 produces visions, out-of-body experiences, and other
-mind-altering effects. What on Bayurinda's seafloor is the
-source of this exposure, and how routine it is in Nuunlaumud
-life, is not yet recorded here.
+mind-altering effects.
+
+What these mind-altering effects _are_ is the subject of the
+next section.
 
 ## How an Aetherian is born
 
@@ -110,6 +111,58 @@ stage itself — the compendium has English working terms for none
 of these and would prefer Deep-Speech ones. Not yet recorded
 here.)_
 
+## The radiance, and what is in it
+
+The Aetherians' tolerance of radioactive material is not an
+incidental quirk of their biology. It is a doorway.
+
+There is something on the floor of [[places/nuunlau|Nuunlau]] —
+one of the **older things**, the structures the older
+Nuunlaumud describe as pre-dating the drowning and as not the
+work of the surface civilisation — that emits the radioactive
+material the Aetherian body is congenial to. The Aetherians
+come to it deliberately. At doses high enough to produce
+visions, out-of-body experiences, and the rest of the
+mind-altering effects, what is happening is not poisoning. It is
+**[[concepts/nearing|Nearing]]**, in the same sense Tholingian
+oracles and [[concepts/eidolon-knight|Eidolon Knights]] use the
+word: an embodied being drifting close to
+[[concepts/nareth|Nareth]] without crossing into it. The visions
+are contact with [[beings/naya|Naya]]. The out-of-body
+experiences are the loosening of attachment to form that Nearing
+produces in any practitioner. The Aetherians have a path to it
+that is built into them, mediated by a substance their seafloor
+makes available, and routinely walked.
+
+This is Aetherian Nearing. It looks nothing like the
+[[social/knights-of-bellona|Knights of Bellona]]'s practice —
+there is no [[concepts/skyblood|Skyblood]] stabilisation, no
+order's structures, no chosen [[concepts/eidolons|Eidolon]], no
+ritual cohort in the order's sense. There is the radiance, the
+body, the long inherited practice of going to the older things
+and coming back. The safety architecture is the Aetherian form
+itself, refined across the generations precisely so that the
+practitioner _can_ go and _can_ return.
+
+Because of this, **every Aetherian can near.** It is not a
+capacity reserved for a special class; it is what an Aetherian
+body is shaped, in part, to do. The decision in an Aetherian
+life is not whether they _can_ touch Naya but how often, how
+deep, in what company, and toward what end.
+
+_(What the Aetherians call the radiance, what they call the
+older things they go to, what they call the practice itself, and
+how their tradition of safe return is organised — by lineage, by
+elder teachers, by ritual cohort, by city — are not yet recorded
+here. The compendium would prefer Deep-Speech names for all of
+these and has none of them.)_
+
+_(Whether the older Nuunlaumud share this practice — whether the
+older things were a Naya-doorway for them before the Aetherians
+ever arrived, and whether what they gave their adopted people
+included the practice as well as the means to breathe — is also
+not yet recorded here.)_
+
 ## The modification debate
 
 Some Aetherians take the inherited modification as a starting
@@ -117,9 +170,14 @@ point and **further enhance their bodies** beyond it. Others
 **strongly disapprove** of the practice.
 
 This is a real fault-line in Aetherian life and not a small one.
-What its terms are — whether the disagreement is religious, or
-about lineage with the older Nuunlaumud, or about what
-counts as the Aetherian form, or all of these at once — is not
+One axis of the disagreement, at least, is what kinds of
+enhancement aim at — and some Aetherian enhancements aim at
+deeper or more sustained contact with the radiance, which is to
+say at deeper Nearing. Whether that makes the practice more
+sacred or more dangerous, more devout or more reckless, is
+exactly the kind of question Aetherians disagree about. The
+other terms of the debate — religious, lineage-shaped, about
+what counts as the Aetherian form, or some combination — are not
 yet recorded here.
 
 ## What the Aetherians read
