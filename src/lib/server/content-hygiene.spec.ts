@@ -10,6 +10,29 @@ import { loadAll } from './loader';
  * UI, so repeating it as a tag is noise and pollutes the tag rollup.
  */
 describe('content hygiene', () => {
+	it('every entity has a non-empty kind', async () => {
+		const contentDir = resolve(process.cwd(), 'content');
+		const { entities } = await loadAll(contentDir);
+
+		const missing: string[] = [];
+		for (const entity of entities.values()) {
+			const kind = entity.meta.kind;
+			if (typeof kind !== 'string' || kind.trim() === '') {
+				missing.push(entity.id);
+			}
+		}
+
+		if (missing.length > 0) {
+			const detail = missing.map((id) => `  - ${id}`).join('\n');
+			throw new Error(
+				`Found ${missing.length} entit${missing.length === 1 ? 'y' : 'ies'} ` +
+					`without a 'kind':\n${detail}`
+			);
+		}
+
+		expect(missing).toEqual([]);
+	});
+
 	it('no entity has a tag that duplicates its kind', async () => {
 		const contentDir = resolve(process.cwd(), 'content');
 		const { entities } = await loadAll(contentDir);

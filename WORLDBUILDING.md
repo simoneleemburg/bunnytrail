@@ -180,6 +180,8 @@ ones the world actually has, and they should be visible.
   truths says I should leave open? If yes, restore the contest.
 - Did I add tags that duplicate first-class fields? If yes, drop
   them.
+- Did I leave `kind` off the YAML? If yes, fill it in — every
+  entity must declare its kind.
 - Is the entry padded? If yes, prefer a gap-note to filler.
 
 ## When in doubt
