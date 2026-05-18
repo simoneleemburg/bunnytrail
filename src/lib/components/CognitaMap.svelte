@@ -33,6 +33,12 @@
 		note?: string;
 		/** True while the name is a working draft, not a final choice. */
 		tentative?: boolean;
+		/**
+		 * Optional moons. Drawn as a small orbit ellipse above the planet
+		 * with a dot on it. No labels at this scale — the moon's entry is
+		 * one click away on the planet's page.
+		 */
+		moons?: { slug?: string }[];
 	};
 
 	// Innermost → outermost. Three of the habitable-zone worlds (Bayurinda,
@@ -42,7 +48,12 @@
 		{ label: 'Zharos', note: 'barren, thin toxic air', tentative: true },
 		{ label: 'Bayurinda', slug: 'bayurinda', note: 'ocean, drowned past' },
 		{ label: 'Sharazan', slug: 'sharazan', note: 'fractured cluster' },
-		{ label: 'Nebelheim', slug: 'nebelheim', note: 'tectonic, ash-skies' },
+		{
+			label: 'Nebelheim',
+			slug: 'nebelheim',
+			note: 'tectonic, ash-skies',
+			moons: [{ slug: 'leyla' }]
+		},
 		{ label: 'Orenth', note: 'gas giant, anchor', tentative: true },
 		{ label: 'Seryth', note: 'eccentric wanderer', tentative: true },
 		{ label: 'Caldra', note: 'ringed, debris-edge', tentative: true }
@@ -183,6 +194,23 @@
 			{#each planets as p, i}
 				{@const cx = planetX(i)}
 				<g class="planet" class:tentative={p.tentative} transform={`translate(${cx} ${AXIS_Y})`}>
+					{#if p.moons}
+						<!-- Small moon orbit + dot(s). Drawn under the planet body
+						     so the body sits cleanly on top; dot offset above-left
+						     so it doesn't collide with the label or the orbital arc. -->
+						{#each p.moons as m, mi}
+							<ellipse class="moon-orbit" cx="0" cy="0" rx="11" ry="3.5" />
+							{@const dx = -8 + mi * 4}
+							{@const dy = -2.5}
+							{#if m.slug}
+								<a href={`/places/${m.slug}`} aria-label={`Moon of ${p.label}`}>
+									<circle class="moon-body" cx={dx} cy={dy} r="1.4" />
+								</a>
+							{:else}
+								<circle class="moon-body" cx={dx} cy={dy} r="1.4" />
+							{/if}
+						{/each}
+					{/if}
 					<circle class="planet-body" r="5" />
 					{#if p.slug}
 						<a href={`/places/${p.slug}`}>
@@ -381,6 +409,22 @@
 
 	.planet-body {
 		fill: var(--ink);
+	}
+
+	.moon-orbit {
+		fill: none;
+		stroke: var(--rule);
+		stroke-width: 0.4;
+		opacity: 0.7;
+	}
+
+	.moon-body {
+		fill: var(--ink-soft);
+	}
+
+	.planet a:hover ~ .moon-body,
+	.moon-body:hover {
+		fill: var(--accent);
 	}
 
 	.planet.tentative .planet-body {
