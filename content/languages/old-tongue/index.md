@@ -8,6 +8,16 @@ impossible Naya concepts into sound.
 
 This is the principle on which the Old Tongue rests.
 
+_(A small terminological note. The name **Old Tongue** is, in
+surface-scholar usage, sometimes stretched to cover both the
+language and the
+[[#the-inscriptional-script-and-its-second-life|inscriptional
+script]] it was written in. The two are not the same thing: the
+language is dead and reconstructed; the script is still in
+living use, carrying a different language. The compendium tries
+to keep the two distinct, but the loose usage is old enough that
+it cannot always be untangled without awkwardness.)_
+
 ## Origin: the First Listeners
 
 The Old Tongue was developed on [[places/bayurinda|Bayurinda]],
@@ -49,32 +59,61 @@ pretended otherwise.
 The drowning of the surface civilisation should, by any ordinary
 reckoning, have lost the Old Tongue entirely. It did not — but
 what survived is less than the tradition sometimes likes to
-claim.
+claim, and the mechanism of its survival deserves a careful
+unpacking.
 
-What survived, in plain terms, is **the inscriptions**. The
-Old Tongue's resonance-patterns had been carved, by long
-custom, into the stone of the surface civilisation's halls,
-shrines, libraries, and ritual sites — and stone, on Bayurinda,
-mostly did not go away when the water came. The drowned cities
-on the ocean floor are still legibly marked with the work of
-the First Listeners. The
-[deep](/places/bayurinda#peoples-of-bayurinda) have read those
-inscriptions, transcribed them, debated them, and in time
-**reconstructed** from them as much of the original practice
-as the inscriptions can support. They have been at this, by
-the most credible accounts, for as long as the drowning is old.
+What survived, in plain terms, is **the inscriptions** — and
+the inscriptions are two things at once, which it is worth
+keeping separate. They are, first, a body of stone-carved text
+left by the surface civilisation, marking its halls, shrines,
+libraries, and ritual sites. They are, second, the work of a
+specific **inscriptional script** — a notational technology
+the surface civilisation invented and used to encode its
+spoken language, the language that is now called the Old
+Tongue. Stone, on Bayurinda, mostly did not go away when the
+water came. The drowned cities on the ocean floor are still
+legibly marked.
+
+The reading of those inscriptions was begun by the **older
+Nuunlaumud** — the pre-drowning people of
+[[places/nuunlau|Nuunlau]], who had been at home in those waters
+long before the drowning ever happened and who had no script of
+their own. They came to a writing system that was not theirs,
+in service of a language they did not speak, in stone left by a
+civilisation they had not been part of, and learned to read it
+across centuries of patient attention.
+
+The sustained scholarly work of reconstruction — taking the
+inscriptions, transcribing them, debating them, deriving from
+them as much of the original Old Tongue practice as the marked
+stone can support — has fallen, since the Aetherians arrived,
+chiefly to **the [[beings/aetherians|Aetherians]]**. They are the
+surface civilisation's own descendants; they have a particular
+intimacy with the language those inscriptions encode, even
+though it is no longer their spoken tongue. The work they do is
+in collaboration with the older Nuunlaumud who began it.
+
+There is a further reason the Aetherians are well-placed for
+this work, and it is the most consequential single fact about
+the inscriptional script's afterlife:
+[[#the-inscriptional-script-and-its-second-life|the Aetherians
+use the same script to write Deep Speech]]. The notation that
+encoded the Old Tongue is, for them, not an archaeological
+puzzle but a daily literacy. They are reading inscriptions in a
+script they themselves write in, for a language they do not
+speak.
 
 What did _not_ survive is most of the rest. The living
 practitioners did not. The unwritten lineages of teaching did
 not. The body of oral commentary, the casual technical
 shorthands of practitioners speaking to practitioners, the
 felt sense of what each pattern was _for_ — these are largely
-lost, and the deep have spent the centuries since trying to
-re-derive them from the marked stone. Some of that work is
+lost, and the Nuunlaumud have spent the centuries since trying
+to re-derive them from the marked stone. Some of that work is
 firm; some is the deep's best reading; some is acknowledged
-gap. Different deep lineages disagree on points of it. The
-present Old Tongue is the **dominant reconstruction**, not the
-original practice.
+gap. Different lineages disagree on points of it. The present
+Old Tongue is the **dominant reconstruction**, not the original
+practice.
 
 The archipelago people are the **intermediaries**. They learned
 the reconstructed Old Tongue from the deep, slowly, by patient
@@ -85,16 +124,69 @@ surface conditions could hold; and when the
 possible, they carried that form outward to the other Sister
 Worlds. Every speaker of the Old Tongue on Nebelheim or
 Sharazan owes the practice, ultimately, to a chain that runs
-back from their teacher to the archipelago, to the deep, to
-the marked stone of a civilisation that no longer breathes air
-and could no longer correct anyone if it wanted to.
+back from their teacher to the archipelago, to the Aetherians
+and the older Nuunlaumud, to the marked stone of a civilisation
+that no longer breathes air and could no longer correct anyone
+if it wanted to.
 
 _(Which parts of the present Old Tongue are confidently the
-First Listeners' work, which are the deep's careful
+First Listeners' work, which are the Nuunlaumud's careful
 reconstruction, which are deep disagreement papered over for
 surface use, and which are archipelago adaptation to air, is
 not a question this compendium yet answers — and is itself a
 matter of long dispute on Bayurinda.)_
+
+## The inscriptional script, and its second life
+
+The thing the Old Tongue calls its inscriptions is, more
+strictly, the work of a specific **script** — a notational
+system the surface civilisation invented for its own spoken
+language. The script and the language were tightly bound in
+their original use, and in surface-scholar shorthand they are
+still sometimes spoken of as one thing. They are not. The
+language is dead in living mouths; the script is not.
+
+The [[beings/aetherians|Aetherians]] write
+[[languages/deep-speech|Deep Speech]] in this script. They have
+done so for as long as their tradition runs back — since
+shortly after the older Nuunlaumud took in the surface
+survivors and the survivors brought writing itself with them
+into [[places/nuunlau|Nuunlau]]. The older Nuunlaumud had no
+writing of their own and adopted none from the new arrivals;
+their tradition remained, and remains, **oral**. The
+inscriptional script is therefore one of the few cultural
+artefacts of the surface civilisation that survived not as a
+record but as a **living technology**, carried across the
+catastrophe by the people whose ancestors had made it, and
+fitted to a language those ancestors never spoke.
+
+The retrofit was, by every account that reaches the surface,
+work. Deep Speech's phonology is not the surface civilisation's
+phonology. The script has digraphs and repurposed glyphs in its
+Deep-Speech use that had different functions in its Old-Tongue
+use, and Aetherian orthographic tradition is, accordingly, its
+own discipline. _(What those orthographic differences are in
+detail, and what they reveal about either language, is not yet
+recorded here.)_
+
+The two consequences are easy to miss and worth saying flatly:
+
+- The Old Tongue, as a _spoken_ language, is dead and
+  reconstructed. The _script_ that encoded it is alive,
+  encoding a different language, in continuous daily use among
+  one of the populations on Bayurinda.
+- The Aetherians' relationship to the inscriptions is therefore
+  not the relationship of archaeologists to an alien artefact.
+  It is the relationship of literate people reading marks they
+  know how to read, encoding a language they do not know how to
+  speak. The difficulty of the work is at the language level,
+  not at the script level.
+
+_(Whether the older Nuunlaumud's oral tradition includes
+anything the Aetherian written tradition has lost, and whether
+the inscriptional script has changed in any noticeable way
+across its long second life as a Deep-Speech writing system,
+are open questions in this compendium.)_
 
 ## What kind of language it is
 

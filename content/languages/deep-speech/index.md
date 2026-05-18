@@ -43,12 +43,50 @@ them, not their own. What the Nuunlaumud call themselves, and
 what they call their language, are not yet recorded here.
 
 _(Whether Deep Speech is a single language or a family of
-related tongues spoken across different seafloor settlements,
-and whether the older Nuunlaumud have a writing system distinct
-from the inscriptions they steward, are open questions in this
-compendium. Whether anything of the surface civilisation's
-spoken language survives in Aetherian Deep Speech as substrate
-or loan-vocabulary is another.)_
+related tongues spoken across different seafloor settlements is
+an open question in this compendium. Whether anything of the
+surface civilisation's spoken language survives in Aetherian
+Deep Speech as substrate or loan-vocabulary is another.)_
+
+## How it is written
+
+Deep Speech has a writing system, but the system did not
+originate with it. The
+[[beings/aetherians|Aetherians]] write Deep Speech in the
+**[[languages/old-tongue#the-inscriptional-script-and-its-second-life|inscriptional
+script]]** — the notational technology the surface civilisation
+invented for what is now called the
+[[languages/old-tongue|Old Tongue]]. The surface survivors who
+became the Aetherians brought writing itself with them into
+[[places/nuunlau|Nuunlau]]; they kept it, and across the long
+generations they have fitted it to the language they adopted
+from the people who took them in. The retrofit was real work —
+Deep Speech's phonology is not the surface civilisation's — and
+Aetherian orthography is, accordingly, its own discipline.
+
+The **older Nuunlaumud**, by contrast, have no writing of their
+own. They had none before the surface survivors arrived, and
+they adopted none from the new arrivals; their tradition
+remained, and remains, oral. The reading of the inscriptions
+they began was reading a script that was not theirs, in service
+of a language they did not speak, by people who themselves did
+not write.
+
+The practical consequence is that Deep Speech _as written_
+exists, in living daily use, only among the Aetherians. What
+the older Nuunlaumud know, they hold in voice. What the
+Aetherians know, they hold in voice and in script. Where the
+two traditions touch — in shared scholarship, in the
+inscription-stewardship work, in everyday life in
+[[places/bal-rochan|Bal Rochan]] and the other Nuunlaumud
+settlements — the distinction between an oral memory and a
+written one is a real social fact, not just a technical one.
+
+_(How the older Nuunlaumud feel about writing as a technology,
+how the Aetherians feel about an oral tradition that remembers
+things the script does not, and how these two registers of
+memory check one another in practice, are not yet recorded
+here.)_
 
 ## Sibling tongues
 

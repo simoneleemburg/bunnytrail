@@ -53,11 +53,13 @@ several distinct things:
 
 - The **inscriptions** — the seafloor record left by the lost
   surface civilisation when it drowned. These rest on Nuunlau's
-  floor, in patterns the
-  [[beings/aetherians|Aetherians]] have spent centuries reading
-  and re-reading — their own ancestors, in a tongue the
-  Aetherians had to learn back from the older Nuunlaumud who
-  first found the inscriptions. (See
+  floor, in a [[languages/old-tongue#the-inscriptional-script-and-its-second-life|script
+  the Aetherians still write in every day]], encoding a language —
+  the [[languages/old-tongue|Old Tongue]] — that their ancestors
+  spoke and they no longer do. The reading of them was begun by
+  the older Nuunlaumud, who had neither the language nor the
+  script; the sustained reconstruction is now Aetherian work, in
+  collaboration with the older people who began it. (See
   [[languages/old-tongue#how-it-survived--partly|Old Tongue: how
 it survived]].)
 - The **cities of the Nuunlaumud** — the seafloor settlements

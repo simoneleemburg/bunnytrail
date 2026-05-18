@@ -185,19 +185,41 @@ yet recorded here.
 The **inscriptions** on the floor of Nuunlau are the work of the
 surface civilisation that drowned. The Aetherians, descended
 from the survivors of that civilisation, are the ones who read
-them.
+them. The mechanism by which they read them is worth being
+precise about.
 
-This is not how the inscription-stewardship started: the older
-Nuunlaumud were the first to find the inscriptions and the first
-to begin reading them, in a tongue not their own. But the
-sustained, generational work of reconstructing the
-[[languages/old-tongue|Old Tongue]] is now Aetherian work, in
-collaboration with the older people who began it. The
-[[social/oracle-triad|Oracle Triad]]'s long Old-Tongue chain
-ultimately rests on Aetherian scholarship — which is to say, on
+The inscriptions are written in a **[[languages/old-tongue#the-inscriptional-script-and-its-second-life|script]]
+the Aetherians themselves use every day** — the same notational
+system, carried out of the drowned surface civilisation by their
+ancestors, fitted across the long generations to
+[[languages/deep-speech|Deep Speech]], the language they
+actually speak. Their daily literacy is in the script the
+inscriptions are written in. What is unfamiliar to them in the
+inscriptions is the _language_ — the
+[[languages/old-tongue|Old Tongue]] their ancestors spoke and
+they no longer do. The Aetherians' relationship to the
+inscriptions is therefore not the relationship of archaeologists
+to opaque marks; it is the relationship of literate people
+reading marks they know how to read, encoding a language they do
+not know how to speak.
+
+This is not how the inscription-stewardship started. The older
+Nuunlaumud — who have no writing of their own and whose tradition
+is oral — were the first to find the inscriptions and the first
+to begin reading them, in a script and a language both not
+theirs. The sustained, generational work of reconstructing the
+Old Tongue is now Aetherian work, in collaboration with the
+older Nuunlaumud who began it; what the older people contribute
+is centuries of oral commentary on what the marks mean, held in
+voice and lineage, against what the Aetherians can read in the
+marks themselves. The two registers of memory check one another.
+
+The [[social/oracle-triad|Oracle Triad]]'s long Old-Tongue chain
+ultimately rests on this joint scholarship — which is to say, on
 the surface civilisation's descendants reading their own
-ancestors, in a language they had to learn back, on a seafloor
-their ancestors did not live on.
+ancestors in the script of those ancestors, in a language they
+had to learn back, with the help of a people whose memory is
+older than writing.
 
 What the Aetherians make of this themselves — whether they
 think of the inscriptions as ancestral, or as belonging to a
