@@ -3,7 +3,7 @@ kind: naya
 language: ot
 gender: fluid
 summary: A Naya whose nature is reflection — the witnessing of the piloting Knight by something that is not the Knight. Known across the worlds under several readings, none of them complete.
-tags: [naya, reflection, witnessing, old-tongue]
+tags: [reflection, witnessing, old-tongue]
 relations:
   - kind: is-a
     target: beings/naya
