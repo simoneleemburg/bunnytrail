@@ -29,6 +29,7 @@
 					summaryHtml={entity.summaryHtml}
 					tags={entity.tags}
 					era={entity.era}
+					sigil={entity.sigil}
 				/>
 			{/each}
 		</div>

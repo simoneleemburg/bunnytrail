@@ -261,6 +261,7 @@ function toCard(
 		tags: e.meta.tags ?? [],
 		era: e.meta.era ?? null,
 		kind: typeof e.meta.kind === 'string' ? e.meta.kind : null,
+		sigil: typeof e.meta.sigil === 'string' ? e.meta.sigil : null,
 		typeLabel: typeLabel ?? null
 	};
 }

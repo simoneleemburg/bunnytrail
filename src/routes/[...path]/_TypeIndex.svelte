@@ -307,6 +307,7 @@
 					summaryHtml={node.container.summaryHtml}
 					tags={node.container.tags}
 					era={node.container.era}
+					sigil={node.container.sigil}
 				/>
 			{:else}
 				<p class="container-stub">
@@ -342,6 +343,7 @@
 					summaryHtml={entity.summaryHtml}
 					tags={entity.tags}
 					era={entity.era}
+					sigil={entity.sigil}
 				/>
 			{/each}
 		</div>

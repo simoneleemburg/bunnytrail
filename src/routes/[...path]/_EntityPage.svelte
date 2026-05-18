@@ -76,6 +76,7 @@
 		title={data.entity.name}
 		subtitleHtml={data.entity.summaryHtml}
 		language={data.language ?? undefined}
+		sigil={data.entity.sigil}
 	/>
 
 	{#if data.entity.aliases.length > 0}

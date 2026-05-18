@@ -16,6 +16,8 @@
 		summaryHtml?: string | null;
 		tags?: string[];
 		era?: string | null;
+		/** Optional sigil glyph rendered before the name. */
+		sigil?: string | null;
 	}
 
 	let {
@@ -26,7 +28,8 @@
 		summary = null,
 		summaryHtml = null,
 		tags = [],
-		era = null
+		era = null,
+		sigil = null
 	}: Props = $props();
 </script>
 
@@ -40,7 +43,9 @@
 		{/if}
 	</div>
 	<h3 class="name">
-		<a class="card-link" href={`/${id}`}>{name}</a>
+		<a class="card-link" href={`/${id}`}
+			>{#if sigil}<span class="sigil" aria-hidden="true">{sigil}</span>{/if}{name}</a
+		>
 	</h3>
 	{#if summaryHtml}
 		<p class="summary">{@html summaryHtml}</p>
@@ -102,6 +107,17 @@
 	.card-link {
 		color: inherit;
 		text-decoration: none;
+	}
+
+	.name .sigil {
+		display: inline-block;
+		margin-right: 0.3em;
+		color: var(--ink-soft);
+		font-weight: 400;
+		/* Alchemical glyphs sit low on the baseline; optically
+		   centre on the title's cap-height. */
+		font-size: 0.85em;
+		vertical-align: 0.08em;
 	}
 
 	/* Stretch the title's link over the whole card so empty space and

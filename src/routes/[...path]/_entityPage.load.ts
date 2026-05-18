@@ -80,7 +80,8 @@ export function loadEntityPage(entity: Entity) {
 		'relations',
 		'kind',
 		'language',
-		'code'
+		'code',
+		'sigil'
 	]);
 	const extra: { key: string; value: unknown }[] = [];
 	for (const [key, value] of Object.entries(entity.meta)) {
@@ -109,7 +110,8 @@ export function loadEntityPage(entity: Entity) {
 			summaryHtml: summaryHtml(entity.meta.summary),
 			aliases: entity.meta.aliases ?? [],
 			tags: entity.meta.tags ?? [],
-			kind: typeof entity.meta.kind === 'string' ? entity.meta.kind : null
+			kind: typeof entity.meta.kind === 'string' ? entity.meta.kind : null,
+			sigil: typeof entity.meta.sigil === 'string' ? entity.meta.sigil : null
 		},
 		extra,
 		html,

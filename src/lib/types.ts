@@ -189,6 +189,13 @@ export interface EntityMeta {
 	 * Naya whose name is in the Old Tongue).
 	 */
 	language?: string;
+	/**
+	 * Optional sigil glyph (typically an alchemical or astrological
+	 * symbol) shown left of the title on the entity page and in the
+	 * card eyebrow. Purely decorative; no semantic meaning beyond
+	 * what the author assigns.
+	 */
+	sigil?: string;
 	/** Structured relations. */
 	relations?: Relation[];
 	/** Arbitrary extra fields rendered in the property list sidebar. */

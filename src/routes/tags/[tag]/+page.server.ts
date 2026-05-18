@@ -62,6 +62,7 @@ function toCard(
 		summaryHtml: cardSummaryHtml(entity.meta.summary),
 		tags: entity.meta.tags ?? [],
 		era: entity.meta.era ?? null,
-		kind: typeof entity.meta.kind === 'string' ? entity.meta.kind : null
+		kind: typeof entity.meta.kind === 'string' ? entity.meta.kind : null,
+		sigil: typeof entity.meta.sigil === 'string' ? entity.meta.sigil : null
 	};
 }
