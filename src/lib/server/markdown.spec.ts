@@ -50,7 +50,25 @@ describe('renderBody', () => {
 
 	it('renders ordinary markdown unchanged', () => {
 		const html = renderBody('# Hello\n\n_world_', known, langs);
-		expect(html).toContain('<h1>Hello</h1>');
+		expect(html).toContain('<h1 id="hello">Hello</h1>');
 		expect(html).toContain('<em>world</em>');
+	});
+
+	it('adds id attributes to headings, slugified from their text', () => {
+		const html = renderBody('## On the name\n\n### Sibling tongues', known, langs);
+		expect(html).toContain('<h2 id="on-the-name">On the name</h2>');
+		expect(html).toContain('<h3 id="sibling-tongues">Sibling tongues</h3>');
+	});
+
+	it('disambiguates duplicate heading slugs with -2, -3, …', () => {
+		const html = renderBody('## Notes\n\n## Notes\n\n## Notes', known, langs);
+		expect(html).toContain('<h2 id="notes">Notes</h2>');
+		expect(html).toContain('<h2 id="notes-2">Notes</h2>');
+		expect(html).toContain('<h2 id="notes-3">Notes</h2>');
+	});
+
+	it('strips diacritics and punctuation when slugifying headings', () => {
+		const html = renderBody('## Bayurinda — drowned, but not silent', known, langs);
+		expect(html).toContain('id="bayurinda-drowned-but-not-silent"');
 	});
 });

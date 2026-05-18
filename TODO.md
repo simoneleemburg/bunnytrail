@@ -86,13 +86,9 @@ this file is not loaded by the site.
   cosmogony material so the structure doesn't have to be
   retrofitted.
 
-- **Heading IDs in the markdown renderer.** Entries increasingly
-  use intra-page and cross-page anchor links (e.g.
-  `/places/bayurinda#the-drowning`) to refer between sections.
-  The current renderer doesn't emit `id` attributes on headings,
-  so those links go to the right page but don't scroll to the
-  right section. Add slugified IDs to `<h1>`–`<h6>` in
-  `src/lib/server/markdown.ts`, with collision-handling for
-  duplicate headings within an entry. Small feature; would
-  retroactively fix every existing `#section` reference in
-  content.
+- ~~**Heading IDs in the markdown renderer.**~~ _Done._ Headings
+  `<h1>`–`<h6>` now carry slugified `id` attributes (lowercase,
+  diacritic-stripped, non-alphanumerics collapsed to `-`).
+  Duplicate slugs within one body are disambiguated with `-2`,
+  `-3`, etc. Every existing `#section` link across content now
+  scrolls to the right section.

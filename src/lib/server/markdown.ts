@@ -2,6 +2,22 @@ import { marked } from 'marked';
 import type { Entity, EntityId } from '$lib/types';
 
 /**
+ * Slugify a heading's text content into an anchor-safe id.
+ *
+ * Lowercase, ASCII-fold diacritics, collapse non-alphanumerics to
+ * single hyphens, trim. Pure; collision handling is the caller's
+ * job (see `renderBody`).
+ */
+function slugifyHeading(text: string): string {
+	return text
+		.normalize('NFKD')
+		.replace(/[\u0300-\u036f]/g, '') // strip diacritics
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '');
+}
+
+/**
  * Render a markdown body to HTML, converting:
  *
  *   • `[[type/slug]]` and `[[type/slug|label]]` — entity wikilinks.
@@ -12,6 +28,12 @@ import type { Entity, EntityId } from '$lib/types';
  *     (e.g. `[[ot]]` for the Old Tongue). Rendered as a small
  *     superscript anchor next to the preceding word. Unknown codes
  *     are still rendered but marked with `data-broken="true"`.
+ *
+ * Headings (`#`, `##`, `###`, …) get auto-generated `id` attributes
+ * derived from their text content, so cross-page anchor links like
+ * `/places/bayurinda#on-the-name` actually scroll to the section.
+ * Duplicate slugs within one body are disambiguated with `-2`, `-3`,
+ * etc.
  */
 export function renderBody(
 	body: string,
@@ -43,7 +65,27 @@ export function renderBody(
 		}
 	);
 
-	const html = marked.parse(rewritten, { async: false }) as string;
+	// Per-render heading-id state. Tracked here (not at module scope)
+	// so concurrent renders of different entities can't collide.
+	const headingSlugCounts = new Map<string, number>();
+	const renderer = new marked.Renderer();
+	renderer.heading = ({ depth, text }) => {
+		// `text` is the heading's raw markdown source; render its inline
+		// markdown (emphasis, links, etc.) so the visible content matches
+		// what marked would have produced by default.
+		const inlineHtml = marked.parseInline(text, { async: false }) as string;
+		const base = slugifyHeading(text);
+		let id = base;
+		if (base) {
+			const prev = headingSlugCounts.get(base) ?? 0;
+			if (prev > 0) id = `${base}-${prev + 1}`;
+			headingSlugCounts.set(base, prev + 1);
+		}
+		const idAttr = id ? ` id="${id}"` : '';
+		return `<h${depth}${idAttr}>${inlineHtml}</h${depth}>\n`;
+	};
+
+	const html = marked.parse(rewritten, { async: false, renderer }) as string;
 	// `marked` renders `[text](url "title")` as `<a href="url" title="title">…</a>`.
 	// Convert our sentinel title into a data attribute the UI can style.
 	return html.replace(/title="broken-link"/g, 'data-broken="true"');
