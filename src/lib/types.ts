@@ -41,6 +41,13 @@ export interface EntityTypeLabels {
  * present. Every field is optional; the loader fills in sensible defaults
  * (see `labelsFor`) so authors only have to specify what they want to
  * override.
+ *
+ * `kind` and `kindParent` together place this type folder into the
+ * kind hierarchy: `kind` is the kind every entity in this folder
+ * declares as its own `meta.kind`; `kindParent` is the supertype kind
+ * it descends from. Both are optional; top-level type folders that
+ * contain heterogeneous kinds (e.g. /cosmology, /places) typically
+ * declare neither. See `KindTree` for the resulting structure.
  */
 export interface EntityTypeMeta {
 	/** Override the singular label. Defaults to a naive singularization. */
@@ -49,6 +56,32 @@ export interface EntityTypeMeta {
 	plural?: string;
 	/** A short description of what this type means / is for. */
 	description?: string;
+	/**
+	 * The kind every entity directly under this folder declares. When
+	 * present, the loader enforces that every entity in the folder
+	 * has `meta.kind` matching this value. Also registers `kind` as a
+	 * known kind in the kind tree, so other folders can name it as
+	 * their `kindParent`.
+	 */
+	kind?: string;
+	/**
+	 * The parent of this folder's `kind` in the kind hierarchy.
+	 * Requires `kind` to also be declared. The named parent must
+	 * itself be declared as some other folder's `kind`. Cycles are
+	 * detected at load time and rejected.
+	 */
+	kindParent?: string;
+	/**
+	 * Extra kinds this folder *declares* but doesn't own on disk.
+	 * Useful when a supertype folder wants to register kinds whose
+	 * entities live elsewhere — e.g. `cosmology/celestial-bodies`
+	 * declares `planet` and `moon` as descending from
+	 * `celestial-body`, even though planets and moons currently
+	 * live under `/places`. Each entry has the same shape as the
+	 * top-level `kind` + `kindParent` pair, and is subject to the
+	 * same cycle / missing-parent validation.
+	 */
+	subkinds?: Array<{ kind: string; kindParent?: string }>;
 }
 
 /** A fully-resolved type info, with defaults applied. */
@@ -104,6 +137,122 @@ export function parentType(type: EntityType): EntityType | null {
 	const idx = type.lastIndexOf('/');
 	if (idx < 0) return null;
 	return type.slice(0, idx);
+}
+
+/**
+ * The kind hierarchy. Built once at load time from `_type.yaml`
+ * declarations; queried by routes that want to filter by supertype,
+ * walk descendants, or check is-a relationships.
+ *
+ * Kinds form a forest (multiple root kinds, no cycles, every kind
+ * has zero or one parent). A kind is *known* if some `_type.yaml`
+ * declared it via `kind:`; unknown kinds (free-form strings authors
+ * use without registering) are not part of the tree and answer
+ * every query trivially (they are their own ancestor, have no
+ * descendants).
+ */
+export interface KindTree {
+	/** Every known kind, in arbitrary order. */
+	all(): string[];
+	/** Whether the kind has been registered by some `_type.yaml`. */
+	has(kind: string): boolean;
+	/** The kind's parent in the hierarchy, or null if root / unknown. */
+	parent(kind: string): string | null;
+	/** Direct children of this kind. */
+	children(kind: string): string[];
+	/** All ancestors (parent, grandparent, …), nearest first. */
+	ancestors(kind: string): string[];
+	/**
+	 * All descendants of this kind, including the kind itself. Useful
+	 * for "show every entity whose kind is-a celestial-body" queries.
+	 * Returns a Set for cheap membership tests.
+	 */
+	descendantsInclusive(kind: string): Set<string>;
+	/**
+	 * Whether `kind` is the same as or a descendant of `ancestor`.
+	 * Returns false for unknown kinds (they are not in the tree).
+	 */
+	isKindOf(kind: string | null | undefined, ancestor: string): boolean;
+}
+
+/**
+ * Build a KindTree from a map of registered kinds to their (possibly
+ * null) parent. Validates: every named parent must itself be
+ * registered, and no cycles. Throws on either condition — these are
+ * structural errors that should fail loud at load time, not silently
+ * skew the UI.
+ */
+export function buildKindTree(declarations: Map<string, string | null>): KindTree {
+	// Validate: every named parent is registered.
+	for (const [kind, parent] of declarations) {
+		if (parent !== null && !declarations.has(parent)) {
+			throw new Error(
+				`kind '${kind}' declares parent '${parent}', but '${parent}' is not registered by any _type.yaml`
+			);
+		}
+	}
+
+	// Validate: no cycles. Walk each kind's ancestor chain; reject
+	// if we revisit any kind.
+	for (const kind of declarations.keys()) {
+		const seen = new Set<string>([kind]);
+		let cur = declarations.get(kind) ?? null;
+		while (cur !== null) {
+			if (seen.has(cur)) {
+				throw new Error(`kind cycle detected involving '${kind}' → '${cur}'`);
+			}
+			seen.add(cur);
+			cur = declarations.get(cur) ?? null;
+		}
+	}
+
+	const childIdx = new Map<string, string[]>();
+	for (const [kind, parent] of declarations) {
+		if (parent === null) continue;
+		const arr = childIdx.get(parent) ?? [];
+		arr.push(kind);
+		childIdx.set(parent, arr);
+	}
+	for (const arr of childIdx.values()) arr.sort();
+
+	const ancestorsOf = (kind: string): string[] => {
+		const out: string[] = [];
+		let cur = declarations.get(kind) ?? null;
+		while (cur !== null) {
+			out.push(cur);
+			cur = declarations.get(cur) ?? null;
+		}
+		return out;
+	};
+
+	const descendantsOf = (kind: string): Set<string> => {
+		const out = new Set<string>([kind]);
+		const queue = [kind];
+		while (queue.length > 0) {
+			const cur = queue.shift()!;
+			for (const child of childIdx.get(cur) ?? []) {
+				if (out.has(child)) continue;
+				out.add(child);
+				queue.push(child);
+			}
+		}
+		return out;
+	};
+
+	return {
+		all: () => [...declarations.keys()].sort(),
+		has: (kind) => declarations.has(kind),
+		parent: (kind) => declarations.get(kind) ?? null,
+		children: (kind) => [...(childIdx.get(kind) ?? [])],
+		ancestors: ancestorsOf,
+		descendantsInclusive: descendantsOf,
+		isKindOf: (kind, ancestor) => {
+			if (!kind) return false;
+			if (kind === ancestor) return true;
+			if (!declarations.has(kind)) return false;
+			return ancestorsOf(kind).includes(ancestor);
+		}
+	};
 }
 
 /** The last segment of a type path. */

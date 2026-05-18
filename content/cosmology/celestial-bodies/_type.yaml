@@ -1,0 +1,17 @@
+singular: Celestial Body
+plural: Celestial Bodies
+description: >-
+  The supertype that gathers everything the compendium records in the
+  sky — stars, black holes, planets, moons, and anything else that
+  the working cosmology treats as a body in space.
+kind: celestial-body
+# `subkinds` registers kinds whose entities live in folders other
+# than this one. Stars and black holes live under this same
+# `/cosmology` tree and declare their parent on their own
+# `_type.yaml`, so they aren't listed here. Planets and moons
+# currently live under `/places/`, so we register their lineage here.
+subkinds:
+  - kind: planet
+    kindParent: celestial-body
+  - kind: moon
+    kindParent: celestial-body

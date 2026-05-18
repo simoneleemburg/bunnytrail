@@ -9,8 +9,10 @@ import type {
 	EntityMeta,
 	EntityType,
 	EntityTypeMeta,
-	HealthIssue
+	HealthIssue,
+	KindTree
 } from '$lib/types';
+import { buildKindTree } from '$lib/types';
 
 /**
  * Where the canonical worldbuilding data lives, relative to the project root.
@@ -32,6 +34,8 @@ export interface LoadResult {
 	types: EntityType[];
 	/** Per-type meta loaded from `<typePath>/_type.yaml`, if present. */
 	typeMeta: Map<EntityType, EntityTypeMeta>;
+	/** Kind hierarchy assembled from `kind` + `kindParent` declarations. */
+	kinds: KindTree;
 }
 
 /**
@@ -150,11 +154,104 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 		}
 	}
 
+	// Build the kind hierarchy from `_type.yaml` `kind` + `kindParent`
+	// declarations. Validation happens in two stages:
+	//   • Per-folder uniformity: a folder declaring `kind: X` must
+	//     contain only entities whose `meta.kind === X`. Mismatches
+	//     become invalid-yaml issues so the editor sees them on the
+	//     entity, but they don't block tree construction.
+	//   • Tree-level integrity: every named `kindParent` must
+	//     correspond to some declared `kind`, and there must be no
+	//     cycles. These are structural errors; we surface them as
+	//     invalid-yaml issues and fall back to an empty kind tree
+	//     rather than throwing, so the dev server stays up.
+	const declarations = new Map<string, string | null>();
+	for (const [typePath, meta] of typeMeta) {
+		const kind = typeof meta.kind === 'string' ? meta.kind : null;
+		const kindParent = typeof meta.kindParent === 'string' ? meta.kindParent : null;
+		if (!kind && kindParent) {
+			issues.push({
+				kind: 'invalid-yaml',
+				detail: `${typePath}/_type.yaml: kindParent '${kindParent}' declared without kind`
+			});
+		} else if (kind) {
+			if (declarations.has(kind) && declarations.get(kind) !== kindParent) {
+				issues.push({
+					kind: 'invalid-yaml',
+					detail: `${typePath}/_type.yaml: kind '${kind}' redeclared with different parent`
+				});
+			} else {
+				declarations.set(kind, kindParent);
+			}
+			// Per-folder uniformity check: every entity directly under
+			// this folder (one path segment past `typePath`) must declare
+			// `meta.kind === kind`. Subfolders that are themselves
+			// type-declaring (e.g. a subtype under this type) are
+			// excluded — their entities answer to their own _type.yaml.
+			const typePrefix = `${typePath}/`;
+			const subtypePaths = [...typeMeta.keys()].filter(
+				(t) => t !== typePath && t.startsWith(typePrefix)
+			);
+			for (const entity of entities.values()) {
+				if (!entity.id.startsWith(typePrefix)) continue;
+				// Skip entities that belong to a nested subtype.
+				if (subtypePaths.some((sp) => entity.id === sp || entity.id.startsWith(`${sp}/`))) continue;
+				const entityKind = typeof entity.meta.kind === 'string' ? entity.meta.kind : null;
+				if (entityKind !== kind) {
+					issues.push({
+						kind: 'invalid-yaml',
+						entity: entity.id,
+						detail: `kind '${entityKind ?? '(missing)'}' does not match folder kind '${kind}' declared in ${typePath}/_type.yaml`
+					});
+				}
+			}
+		}
+
+		// `subkinds`: extra kinds this folder registers but doesn't
+		// own on disk. Their entities live in some other folder and
+		// declare `kind:` directly on the entity. We don't run
+		// uniformity checks for them — there is no owning folder to
+		// check against.
+		if (Array.isArray(meta.subkinds)) {
+			for (const entry of meta.subkinds) {
+				if (!entry || typeof entry.kind !== 'string') {
+					issues.push({
+						kind: 'invalid-yaml',
+						detail: `${typePath}/_type.yaml: subkinds entry missing kind`
+					});
+					continue;
+				}
+				const subKind = entry.kind;
+				const subParent = typeof entry.kindParent === 'string' ? entry.kindParent : null;
+				if (declarations.has(subKind) && declarations.get(subKind) !== subParent) {
+					issues.push({
+						kind: 'invalid-yaml',
+						detail: `${typePath}/_type.yaml: subkind '${subKind}' redeclared with different parent`
+					});
+					continue;
+				}
+				declarations.set(subKind, subParent);
+			}
+		}
+	}
+
+	let kinds: KindTree;
+	try {
+		kinds = buildKindTree(declarations);
+	} catch (err) {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: `kind tree: ${err instanceof Error ? err.message : String(err)}`
+		});
+		kinds = buildKindTree(new Map());
+	}
+
 	return {
 		entities,
 		issues,
 		types: [...types].sort(),
-		typeMeta
+		typeMeta,
+		kinds
 	};
 }
 

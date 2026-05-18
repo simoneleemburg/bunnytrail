@@ -5,9 +5,10 @@ import type {
 	EntityType,
 	EntityTypeInfo,
 	EntityTypeMeta,
-	HealthIssue
+	HealthIssue,
+	KindTree
 } from '$lib/types';
-import { parentType, resolveTypeInfo } from '$lib/types';
+import { buildKindTree, parentType, resolveTypeInfo } from '$lib/types';
 import { buildEdges, CONTENT_DIR, loadAll, resolveWikilink, typeOf } from './loader';
 
 /**
@@ -25,6 +26,7 @@ class Graph {
 	#types: EntityType[] = [];
 	#typesSet = new Set<EntityType>();
 	#typeMeta = new Map<EntityType, EntityTypeMeta>();
+	#kinds: KindTree = buildKindTree(new Map());
 	#loaded = false;
 	#loading: Promise<void> | null = null;
 
@@ -32,7 +34,7 @@ class Graph {
 	async load(contentDir: string = CONTENT_DIR): Promise<void> {
 		if (this.#loading) return this.#loading;
 		this.#loading = (async () => {
-			const { entities, issues, types, typeMeta } = await loadAll(contentDir);
+			const { entities, issues, types, typeMeta, kinds } = await loadAll(contentDir);
 			const edges = buildEdges(entities);
 			this.#entities = entities;
 			this.#outEdges = edges.out;
@@ -41,6 +43,7 @@ class Graph {
 			this.#types = types;
 			this.#typesSet = new Set(types);
 			this.#typeMeta = typeMeta;
+			this.#kinds = kinds;
 			this.#loaded = true;
 		})();
 		try {
@@ -103,8 +106,35 @@ class Graph {
 		return resolveTypeInfo(type, this.#typeMeta.get(type));
 	}
 
+	/**
+	 * Raw `_type.yaml` meta for a type, or `null` if none. Useful for
+	 * callers that need fields outside the resolved `EntityTypeInfo`
+	 * surface — e.g. `kind` to detect supertype folders.
+	 */
+	typeMetaRaw(type: EntityType): EntityTypeMeta | null {
+		return this.#typeMeta.get(type) ?? null;
+	}
+
 	hasType(type: EntityType): boolean {
 		return this.#typesSet.has(type);
+	}
+
+	/** The full kind hierarchy. See `KindTree` in `$lib/types`. */
+	kinds(): KindTree {
+		return this.#kinds;
+	}
+
+	/**
+	 * Entities whose `meta.kind` is `kind` or any descendant of `kind`
+	 * in the kind hierarchy. Useful for supertype filters and pages
+	 * that want every member of a kind family.
+	 *
+	 * If `kind` is not registered in the tree, falls back to strict
+	 * `meta.kind === kind` matching — so free-form kinds keep working.
+	 */
+	byKindRecursive(kind: string): Entity[] {
+		const family = this.#kinds.has(kind) ? this.#kinds.descendantsInclusive(kind) : new Set([kind]);
+		return this.all().filter((e) => typeof e.meta.kind === 'string' && family.has(e.meta.kind));
 	}
 
 	/** Resolve the type path of an entity id. */

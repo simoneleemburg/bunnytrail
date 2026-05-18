@@ -1,5 +1,7 @@
 singular: Black Hole
 plural: Black Holes
+kind: black-hole
+kindParent: celestial-body
 description: >-
   Bodies that are gravitationally present but not luminously so — the
   things that pull on what passes near them without giving anything

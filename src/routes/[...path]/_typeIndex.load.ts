@@ -38,7 +38,27 @@ const ORBIT_KINDS = new Set(['member-of', 'orbits']);
  */
 export function loadTypeIndex(type: EntityType) {
 	const info = graph.typeInfo(type);
-	const entities = graph.byType(type).sort((a, b) => a.meta.name.localeCompare(b.meta.name));
+	const typeMetaForKind = graph.typeMetaRaw(type);
+	const folderKind = typeof typeMetaForKind?.kind === 'string' ? typeMetaForKind.kind : null;
+
+	// If this folder declares a `kind:` in its `_type.yaml`, treat it
+	// as a *supertype* folder. The folder's own self-page entity
+	// (whose id equals the folder path) becomes the page's header
+	// prose (its `summary` overrides the type description); all
+	// entities whose kind descends from `folderKind` get pulled in
+	// alongside the folder's direct children. The self-page itself
+	// is filtered out of the entity grid — it *is* the page.
+	const selfPage = folderKind ? (graph.get(type) ?? null) : null;
+	const descendantKindEntities = folderKind
+		? graph.byKindRecursive(folderKind).filter((e) => e.id !== type)
+		: [];
+
+	// Direct children of the folder, sorted by name. The self-page
+	// (which lives at the folder root) is excluded from the grid.
+	const entities = graph
+		.byType(type)
+		.filter((e) => e.id !== type)
+		.sort((a, b) => a.meta.name.localeCompare(b.meta.name));
 
 	const resolveLink = (path: string) => graph.resolveLink(path);
 	const languageCodes = graph.languageCodes();
@@ -95,7 +115,19 @@ export function loadTypeIndex(type: EntityType) {
 		.byTypeRecursive(type)
 		.filter((e) => e.type !== type)
 		.map((e) => toCard(e, cardSummaryHtml, labelForType(e.type)));
-	const flatAll = [...cards, ...descendants].sort((a, b) => a.name.localeCompare(b.name));
+
+	// Supertype gather: entities whose `kind` descends from this
+	// folder's declared `kind`, but which live in some other folder
+	// in the type tree (e.g. planets and moons under `/places` when
+	// the page is `cosmology/celestial-bodies`). Each one shows its
+	// home type as the eyebrow so the reader knows where it lives.
+	const kindGathered = descendantKindEntities
+		.filter((e) => !graph.byTypeRecursive(type).some((local) => local.id === e.id))
+		.map((e) => toCard(e, cardSummaryHtml, labelForType(e.type)));
+
+	const flatAll = [...cards, ...descendants, ...kindGathered].sort((a, b) =>
+		a.name.localeCompare(b.name)
+	);
 
 	// Containers: a recursive tree of entities of *this exact type*
 	// that physically nest other entities of the same type beneath
@@ -131,8 +163,11 @@ export function loadTypeIndex(type: EntityType) {
 		.filter((n) => n.children.length > 0);
 
 	// `standalone` = entities of this exact type not appearing
-	// anywhere in the container tree.
-	const standalone = cards.filter((c) => !containedIds.has(c.id));
+	// anywhere in the container tree. On supertype folders, also
+	// includes the kind-gathered entities from other folders — they
+	// have no container relationship here, but they're conceptually
+	// part of this page's collection.
+	const standalone = [...cards.filter((c) => !containedIds.has(c.id)), ...kindGathered];
 
 	// Orbits tree: walks `member-of` and `orbits` edges across types,
 	// producing the gravitational shape — systems containing stars +
@@ -149,7 +184,10 @@ export function loadTypeIndex(type: EntityType) {
 		kind: 'type' as const,
 		type,
 		label: info.labels,
-		description: info.description,
+		// On a supertype folder, prefer the self-page summary as the
+		// header prose — it speaks in the compendium's voice rather
+		// than the type description's editorial register.
+		description: selfPage?.meta.summary ?? info.description,
 		subtypes,
 		containers,
 		standalone,
@@ -157,8 +195,28 @@ export function loadTypeIndex(type: EntityType) {
 		// `flat` is the full list in display order — used when the
 		// user switches to flat view. Includes descendants of subtypes
 		// so e.g. /culture in flat mode shows languages inline.
-		flat: flatAll
+		flat: flatAll,
+		// Wire format for the kind hierarchy: a plain
+		// `kind -> parentKind | null` map. The client rebuilds the
+		// full `KindTree` via the same `buildKindTree` helper, so
+		// chip derivation and ancestor-walking filters use exactly
+		// the same logic the loader does.
+		kindParents: serialiseKinds()
 	};
+}
+
+/**
+ * Serialise the graph's `KindTree` to a plain object suitable for
+ * SvelteKit's `load` boundary. The client rehydrates with
+ * `buildKindTree(new Map(Object.entries(kindParents)))`.
+ */
+function serialiseKinds(): Record<string, string | null> {
+	const tree = graph.kinds();
+	const out: Record<string, string | null> = {};
+	for (const kind of tree.all()) {
+		out[kind] = tree.parent(kind);
+	}
+	return out;
 }
 
 export type TypeIndexData = ReturnType<typeof loadTypeIndex>;
@@ -245,7 +303,8 @@ export function loadEverythingIndex() {
 		// empty — the user sees only the tiles. Flat view drops the
 		// tiles and shows everything in one grid instead.
 		standalone: [] as typeof allCards,
-		flat: allCards
+		flat: allCards,
+		kindParents: serialiseKinds()
 	};
 }
 
@@ -294,27 +353,19 @@ function toCard(
  *      canonical slot in its system (innermost = 0, then outward).
  *      Entities with an explicit order always sort before entities
  *      without one.
- *   2. **Cosmological role** — centre outward — for entities that
- *      *don't* carry an explicit order. Star, black-hole, planet,
- *      moon, then anything else.
- *   3. **Alphabetical** by name, as the final tie-break.
+ *   2. **Alphabetical** by name, for siblings without an explicit
+ *      order. (We used to hardcode a star→black-hole→planet→moon
+ *      cosmological rank here; that's now the author's job to
+ *      express via `order:` on the relations they care about
+ *      ordering. Falling back to alphabetical is honest when no
+ *      order has been declared.)
  */
-const ORBIT_KIND_ORDER: readonly string[] = ['star', 'black-hole', 'planet', 'moon'];
-
-function orbitKindRank(kind: string | null): number {
-	if (!kind) return ORBIT_KIND_ORDER.length;
-	const idx = ORBIT_KIND_ORDER.indexOf(kind);
-	return idx === -1 ? ORBIT_KIND_ORDER.length : idx;
-}
-
 function compareOrbitNodes(a: OrbitNode, b: OrbitNode): number {
 	const aHas = a.order !== undefined;
 	const bHas = b.order !== undefined;
 	if (aHas && bHas) return (a.order as number) - (b.order as number);
 	if (aHas) return -1;
 	if (bHas) return 1;
-	const rankDiff = orbitKindRank(a.entity.kind) - orbitKindRank(b.entity.kind);
-	if (rankDiff !== 0) return rankDiff;
 	return a.entity.name.localeCompare(b.entity.name);
 }
 

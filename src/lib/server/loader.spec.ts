@@ -2,6 +2,7 @@ import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { buildKindTree } from '$lib/types';
 import { buildEdges, extractWikilinks, loadAll } from './loader';
 
 async function seedTempContent(): Promise<string> {
@@ -192,6 +193,227 @@ describe('loadAll', () => {
 					i.detail.includes('culture/languages/tholingian')
 			)
 		).toBe(false);
+	});
+});
+
+describe('buildKindTree', () => {
+	it('returns an empty tree from empty declarations', () => {
+		const tree = buildKindTree(new Map());
+		expect(tree.all()).toEqual([]);
+		expect(tree.has('star')).toBe(false);
+		expect(tree.isKindOf('star', 'celestial-body')).toBe(false);
+	});
+
+	it('builds a single-level hierarchy and walks descendants', () => {
+		const tree = buildKindTree(
+			new Map([
+				['celestial-body', null],
+				['star', 'celestial-body'],
+				['planet', 'celestial-body'],
+				['moon', 'celestial-body']
+			])
+		);
+		expect(tree.all().sort()).toEqual(['celestial-body', 'moon', 'planet', 'star']);
+		expect(tree.parent('star')).toBe('celestial-body');
+		expect(tree.parent('celestial-body')).toBe(null);
+		expect(tree.children('celestial-body').sort()).toEqual(['moon', 'planet', 'star']);
+		expect([...tree.descendantsInclusive('celestial-body')].sort()).toEqual([
+			'celestial-body',
+			'moon',
+			'planet',
+			'star'
+		]);
+		expect(tree.isKindOf('star', 'celestial-body')).toBe(true);
+		expect(tree.isKindOf('celestial-body', 'celestial-body')).toBe(true);
+		expect(tree.isKindOf('star', 'star')).toBe(true);
+		expect(tree.isKindOf('star', 'planet')).toBe(false);
+	});
+
+	it('walks multi-level ancestry', () => {
+		const tree = buildKindTree(
+			new Map([
+				['construct', null],
+				['eidolon', 'construct'],
+				['world-pillar', 'eidolon']
+			])
+		);
+		expect(tree.ancestors('world-pillar')).toEqual(['eidolon', 'construct']);
+		expect(tree.isKindOf('world-pillar', 'construct')).toBe(true);
+		expect(tree.isKindOf('world-pillar', 'eidolon')).toBe(true);
+		expect(tree.isKindOf('eidolon', 'world-pillar')).toBe(false);
+		expect([...tree.descendantsInclusive('construct')].sort()).toEqual([
+			'construct',
+			'eidolon',
+			'world-pillar'
+		]);
+	});
+
+	it('rejects parents that have not been registered', () => {
+		expect(() =>
+			buildKindTree(
+				new Map([
+					['star', 'celestial-body']
+					// celestial-body never registered
+				])
+			)
+		).toThrow(/parent 'celestial-body'/);
+	});
+
+	it('rejects cycles', () => {
+		expect(() =>
+			buildKindTree(
+				new Map([
+					['a', 'b'],
+					['b', 'c'],
+					['c', 'a']
+				])
+			)
+		).toThrow(/cycle/);
+	});
+
+	it('treats unknown kinds as outside the tree', () => {
+		const tree = buildKindTree(new Map([['star', null]]));
+		expect(tree.has('not-a-kind')).toBe(false);
+		expect(tree.ancestors('not-a-kind')).toEqual([]);
+		expect([...tree.descendantsInclusive('not-a-kind')]).toEqual(['not-a-kind']);
+		expect(tree.isKindOf('not-a-kind', 'star')).toBe(false);
+		// Self-identity still holds for unknown kinds.
+		expect(tree.isKindOf('not-a-kind', 'not-a-kind')).toBe(true);
+	});
+});
+
+async function seedHierarchyContent(): Promise<string> {
+	const dir = await mkdtemp(join(tmpdir(), 'alteria-kinds-'));
+
+	// content/cosmology/celestial-bodies/ — supertype folder with its
+	// own self-page. The supertype concept is itself a celestial body.
+	await mkdir(join(dir, 'cosmology', 'celestial-bodies'), { recursive: true });
+	await writeFile(join(dir, 'cosmology', '_type.yaml'), 'singular: Cosmological\nplural: Cosmology');
+	await writeFile(
+		join(dir, 'cosmology', 'celestial-bodies', '_type.yaml'),
+		['singular: Celestial Body', 'plural: Celestial Bodies', 'kind: celestial-body'].join('\n')
+	);
+	await writeFile(
+		join(dir, 'cosmology', 'celestial-bodies', 'index.yaml'),
+		'name: Celestial Bodies\nkind: celestial-body'
+	);
+	await writeFile(
+		join(dir, 'cosmology', 'celestial-bodies', 'index.md'),
+		'The bodies that hang in the dark.'
+	);
+
+	// content/cosmology/stars/ — subtype, parented at celestial-body.
+	await mkdir(join(dir, 'cosmology', 'stars', 'aureth'), { recursive: true });
+	await writeFile(
+		join(dir, 'cosmology', 'stars', '_type.yaml'),
+		['singular: Star', 'plural: Stars', 'kind: star', 'kindParent: celestial-body'].join('\n')
+	);
+	await writeFile(
+		join(dir, 'cosmology', 'stars', 'aureth', 'index.yaml'),
+		'name: Aureth\nkind: star'
+	);
+	await writeFile(
+		join(dir, 'cosmology', 'stars', 'aureth', 'index.md'),
+		'The star at the centre.'
+	);
+
+	// content/cosmology/planets/ — second subtype, also parented at
+	// celestial-body. Bayurinda has the *wrong* kind to exercise the
+	// uniformity check.
+	await mkdir(join(dir, 'cosmology', 'planets', 'bayurinda'), { recursive: true });
+	await writeFile(
+		join(dir, 'cosmology', 'planets', '_type.yaml'),
+		['singular: Planet', 'plural: Planets', 'kind: planet', 'kindParent: celestial-body'].join('\n')
+	);
+	await writeFile(
+		join(dir, 'cosmology', 'planets', 'bayurinda', 'index.yaml'),
+		'name: Bayurinda\nkind: not-a-planet'
+	);
+	await writeFile(join(dir, 'cosmology', 'planets', 'bayurinda', 'index.md'), 'A water world.');
+
+	return dir;
+}
+
+describe('loadAll kind hierarchy', () => {
+	it('assembles the kind tree from _type.yaml declarations', async () => {
+		const dir = await seedHierarchyContent();
+		const { kinds } = await loadAll(dir);
+
+		expect(kinds.has('celestial-body')).toBe(true);
+		expect(kinds.has('star')).toBe(true);
+		expect(kinds.has('planet')).toBe(true);
+		expect(kinds.parent('star')).toBe('celestial-body');
+		expect(kinds.parent('planet')).toBe('celestial-body');
+		expect(kinds.parent('celestial-body')).toBe(null);
+		expect(kinds.isKindOf('star', 'celestial-body')).toBe(true);
+	});
+
+	it('flags entities whose kind does not match their folder declaration', async () => {
+		const dir = await seedHierarchyContent();
+		const { issues } = await loadAll(dir);
+		const mismatch = issues.find(
+			(i) =>
+				i.kind === 'invalid-yaml' &&
+				i.entity === 'cosmology/planets/bayurinda' &&
+				i.detail.includes("does not match folder kind 'planet'")
+		);
+		expect(mismatch).toBeDefined();
+	});
+
+	it('does not flag the supertype self-page (it shares its folder kind)', async () => {
+		const dir = await seedHierarchyContent();
+		const { issues } = await loadAll(dir);
+		const bogus = issues.find(
+			(i) =>
+				i.kind === 'invalid-yaml' && i.entity === 'cosmology/celestial-bodies' && i.detail.includes('kind')
+		);
+		expect(bogus).toBeUndefined();
+	});
+
+	it('registers subkinds whose entities live in other folders', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-subkinds-'));
+		// Supertype folder declares its own kind + extra subkinds
+		// whose entities live elsewhere.
+		await mkdir(join(dir, 'cosmology', 'celestial-bodies'), { recursive: true });
+		await writeFile(join(dir, 'cosmology', '_type.yaml'), 'singular: Cosmological\nplural: Cosmology');
+		await writeFile(
+			join(dir, 'cosmology', 'celestial-bodies', '_type.yaml'),
+			[
+				'singular: Celestial Body',
+				'plural: Celestial Bodies',
+				'kind: celestial-body',
+				'subkinds:',
+				'  - kind: planet',
+				'    kindParent: celestial-body',
+				'  - kind: moon',
+				'    kindParent: celestial-body'
+			].join('\n')
+		);
+		await writeFile(
+			join(dir, 'cosmology', 'celestial-bodies', 'index.yaml'),
+			'name: Celestial Bodies\nkind: celestial-body'
+		);
+		await writeFile(
+			join(dir, 'cosmology', 'celestial-bodies', 'index.md'),
+			'The bodies that hang in the dark.'
+		);
+		// Planet entity living under /places — declares `kind: planet`
+		// on the entity itself.
+		await mkdir(join(dir, 'places', 'bayurinda'), { recursive: true });
+		await writeFile(join(dir, 'places', '_type.yaml'), 'singular: Place\nplural: Places');
+		await writeFile(join(dir, 'places', 'bayurinda', 'index.yaml'), 'name: Bayurinda\nkind: planet');
+		await writeFile(join(dir, 'places', 'bayurinda', 'index.md'), 'A water world.');
+
+		const { kinds, issues } = await loadAll(dir);
+		expect(kinds.parent('planet')).toBe('celestial-body');
+		expect(kinds.parent('moon')).toBe('celestial-body');
+		expect(kinds.isKindOf('planet', 'celestial-body')).toBe(true);
+		// /places is a mixed-kind folder (no `kind:` in its _type.yaml)
+		// so the planet entity shouldn't trigger a uniformity issue.
+		const placesIssues = issues.filter(
+			(i) => i.kind === 'invalid-yaml' && i.entity === 'places/bayurinda'
+		);
+		expect(placesIssues).toEqual([]);
 	});
 });
 

@@ -3,6 +3,7 @@
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import Tag from '$lib/components/Tag.svelte';
+	import { buildKindTree } from '$lib/types';
 
 	let { data }: { data: TypeIndexData } = $props();
 
@@ -51,20 +52,73 @@
 	// mode this is the orbit forest; otherwise the full page set.
 	const filterEntitySet = $derived(viewMode === 'orbits' ? orbitEntities : data.flat);
 
-	// Kind counts are derived from the *flat* list of entities so the
-	// counts don't change when the user switches view-mode.
+	// Rehydrate the kind hierarchy from the loader's parent-map.
+	// Same builder the server used, so chip derivation and filter
+	// matching agree with `byKindRecursive`.
+	const kindTree = $derived.by(() =>
+		buildKindTree(new Map(Object.entries(data.kindParents ?? {})))
+	);
+
+	/**
+	 * Kind chips visible on this page. Two sources, deduped:
+	 *
+	 *   • **Leaf chips** — every distinct `kind` value present on
+	 *     the visible entities. Count = entities directly carrying
+	 *     that kind. These are the existing chips.
+	 *   • **Supertype chips** — for each leaf kind that lives inside
+	 *     the kind hierarchy, every ancestor up the tree gains a
+	 *     chip too, *as long as that ancestor has descendants in
+	 *     the visible set*. Count = total entities whose kind is
+	 *     the ancestor itself or any descendant of it.
+	 *
+	 * Free-form kinds (not registered in `_type.yaml`) have no
+	 * ancestors and therefore behave exactly as before. The chip
+	 * for a supertype is tagged `supertype: true` so the view can
+	 * style it distinctly.
+	 */
 	const kindCounts = $derived.by(() => {
-		const counts = new Map<string, number>();
+		// Direct counts per kind value carried by visible entities.
+		const direct = new Map<string, number>();
 		for (const e of filterEntitySet) {
 			const k = e.kind ?? '—';
-			counts.set(k, (counts.get(k) ?? 0) + 1);
+			direct.set(k, (direct.get(k) ?? 0) + 1);
 		}
-		return [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+		// For each direct kind in the tree, accumulate ancestor totals.
+		const supertypeTotals = new Map<string, number>();
+		for (const [kind, count] of direct) {
+			if (!kindTree.has(kind)) continue;
+			for (const ancestor of kindTree.ancestors(kind)) {
+				supertypeTotals.set(ancestor, (supertypeTotals.get(ancestor) ?? 0) + count);
+			}
+		}
+		// A supertype whose self-page entity is in the visible set
+		// already shows up in `direct`. Merge: total visible
+		// descendants = direct count (the self-page) + supertype
+		// totals (everything below). Mark as supertype iff it has
+		// any non-self descendants under it.
+		const merged = new Map<string, { count: number; supertype: boolean }>();
+		for (const [k, c] of direct) {
+			merged.set(k, { count: c, supertype: false });
+		}
+		for (const [k, c] of supertypeTotals) {
+			const existing = merged.get(k);
+			merged.set(k, {
+				count: (existing?.count ?? 0) + c,
+				supertype: true
+			});
+		}
+		return [...merged.entries()].sort(([a], [b]) => a.localeCompare(b));
 	});
 
 	function matchesKind(card: { kind: string | null }): boolean {
 		if (activeKind === null) return true;
-		return (card.kind ?? '—') === activeKind;
+		const k = card.kind ?? '—';
+		if (k === activeKind) return true;
+		// Walk ancestors so a supertype chip selects every
+		// descendant. Free-form kinds have no ancestors so this
+		// short-circuits cleanly.
+		if (!kindTree.has(k)) return false;
+		return kindTree.ancestors(k).includes(activeKind);
 	}
 
 	function matchesTags(card: { tags: string[] }): boolean {
@@ -237,14 +291,16 @@
 					>
 						All <span class="count">{filterEntitySet.length}</span>
 					</button>
-					{#each kindCounts as [kind] (kind)}
+					{#each kindCounts as [kind, info] (kind)}
 						<button
 							type="button"
 							class="filter"
 							class:active={activeKind === kind}
+							class:supertype={info.supertype}
+							title={info.supertype ? `${kind} (supertype — ${info.count} total)` : kind}
 							onclick={() => (activeKind = kind)}
 						>
-							{kind}
+							{kind}{#if info.supertype}<span class="count">{info.count}</span>{/if}
 						</button>
 					{/each}
 				</div>
@@ -496,6 +552,24 @@
 	.filter.active {
 		color: var(--ink);
 		border-bottom-color: var(--ink);
+	}
+
+	/* Supertype chips group every descendant kind. The italic +
+	   leading caret signals "this is a category, not a leaf"; the
+	   count beside it shows how many entities the chip gathers. */
+	.filter.supertype {
+		font-style: italic;
+	}
+
+	.filter.supertype::before {
+		content: '↑ ';
+		font-style: normal;
+		color: var(--ink-faint);
+		margin-right: 0.1em;
+	}
+
+	.filter.supertype.active::before {
+		color: var(--ink-soft);
 	}
 
 	.count {
