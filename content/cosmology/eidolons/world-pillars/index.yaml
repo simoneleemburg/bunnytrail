@@ -2,3 +2,7 @@ name: World Pillars
 kind: construct
 summary: Massive ancient Eidolon constructs partially fused into the planets they serve, powered by enormous Skyblood cores. They do not move; they endure. Pilgrimage, launch, and arrival between worlds happen through them.
 tags: [construct, ancient, infrastructure, travel, skyblood]
+relations:
+  - kind: is-a
+    target: cosmology/eidolons
+    note: Each Pillar is itself an Eidolon — vast, ancient, partly fused into the world it serves.
