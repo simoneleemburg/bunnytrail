@@ -235,16 +235,10 @@
 		font-size: var(--text-sm);
 	}
 
-	.sidebar section {
-		padding-top: var(--space-3);
-		border-top: var(--rule-thin);
-	}
-
 	.tag-row {
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--space-2) var(--space-3);
-		margin-top: var(--space-4);
 	}
 
 	.group {
