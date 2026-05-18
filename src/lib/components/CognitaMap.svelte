@@ -94,7 +94,7 @@
 	>
 		<title id="cognita-title">Alteria Cognita and the wider stellar neighbourhood</title>
 		<desc id="cognita-desc">
-			A diagram showing the star and its eight planets of Alteria Cognita on the material plane of
+			A diagram showing Aureth and its eight planets of Alteria Cognita on the material plane of
 			Asthera, with the same bodies echoed on the resonant overlay of Nareth above. To the right,
 			across the long gulf of interstellar space, the neighbouring Hollow Binary is shown — a
 			visible companion star orbiting an unresolved body, the Dark Companion.
@@ -183,11 +183,13 @@
 				<ellipse class="orbit" cx={STAR_X} cy={AXIS_Y} rx={r} ry={r * 0.08} />
 			{/each}
 
-			<!-- The Cognita star. -->
+			<!-- Aureth, the star at the centre of the system. -->
 			<g class="star" transform={`translate(${STAR_X} ${AXIS_Y})`}>
 				<circle class="star-glow" r="20" />
 				<circle class="star-body" r="9" />
-				<text class="star-label" y="40" text-anchor="middle">the star</text>
+				<a href="/cosmology/stars/aureth">
+					<text class="star-label" y="40" text-anchor="middle">Aureth</text>
+				</a>
 			</g>
 
 			<!-- The Cognita planets. -->

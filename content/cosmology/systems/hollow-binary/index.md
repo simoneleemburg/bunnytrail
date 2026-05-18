@@ -1,6 +1,6 @@
 The Hollow Binary is the scholarly name for the binary system
 that lies near to, but apart from, the
-[[cosmology/systems/sister-system|Sister System]]. Its two
+[[cosmology/systems/aureth-system|Aureth System]]. Its two
 bodies are a visible companion star and the
 [[cosmology/black-holes/the-dark-companion|Dark Companion]] — an invisible
 second body resolvable only by what it does to its companion.

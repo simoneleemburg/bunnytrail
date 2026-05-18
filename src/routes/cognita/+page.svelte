@@ -16,7 +16,7 @@
 			known portion. The pieces that have a name, a shape, a place to stand.
 		</p>
 		<p class="lede">
-			One star, eight planets, and two parallel layers of being. Three of the planets — the
+			<a href="/cosmology/stars/aureth">Aureth</a>, eight planets, and two parallel layers of being. Three of the planets — the
 			habitable-zone worlds — are settled territory; the others are sketches, their names still
 			tentative.
 		</p>

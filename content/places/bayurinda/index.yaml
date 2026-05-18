@@ -5,5 +5,5 @@ summary: A water world whose mythic past sits on the sea-floor. Before what is n
 tags: [ocean, drowned-civilisation, multiple-peoples, archipelago, mythic-past]
 relations:
   - kind: member-of
-    target: cosmology/systems/sister-system
+    target: cosmology/systems/aureth-system
     order: 1

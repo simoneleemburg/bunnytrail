@@ -5,5 +5,5 @@ summary: A tectonic world of ash-skies and seismic life — where stability is t
 tags: [volcanic, tectonic, ash, duty]
 relations:
   - kind: member-of
-    target: cosmology/systems/sister-system
+    target: cosmology/systems/aureth-system
     order: 3
