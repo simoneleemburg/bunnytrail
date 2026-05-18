@@ -59,7 +59,19 @@
 <style>
 	.entity-card {
 		position: relative;
-		padding: var(--space-4) 0 var(--space-5);
+		padding: var(--space-4) var(--space-4) var(--space-5);
+		margin: 0 calc(var(--space-4) * -1);
+		border-radius: 2px;
+		transition:
+			background-color 150ms ease,
+			box-shadow 150ms ease,
+			transform 150ms ease;
+	}
+
+	.entity-card:hover {
+		background-color: var(--paper-warm, rgba(122, 43, 31, 0.04));
+		box-shadow: 0 1px 0 var(--rule), 0 6px 16px -10px rgba(0, 0, 0, 0.18);
+		transform: translateY(-1px);
 	}
 
 	.rule {
