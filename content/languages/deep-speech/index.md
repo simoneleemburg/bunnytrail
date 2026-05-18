@@ -21,13 +21,13 @@ surface civilisation, do not preserve deep speech at all.
 ## On the name
 
 In [[languages/bayurindan|Bayurindan]], the deep waters where
-the seafloor people live are called the _Nuunlau_ [[bay]] — a
-region-name — and the people themselves are the _Nuunlaumud_
-[[bay]], formed from _Nuunlau_ by the Bayurindan suffix _-mud_
-that derives a people-name from a place-name. _Nuunlaumud_ is
-therefore an exonym: the archipelago's name for them, not their
-own. What the Nuunlaumud call themselves, and what they call
-their language, are not yet recorded here.
+the seafloor people live are called _[[places/nuunlau|Nuunlau]]_
+[[bay]] — a region-name — and the people themselves are the
+_Nuunlaumud_ [[bay]], formed from _Nuunlau_ by the Bayurindan
+suffix _-mud_ that derives a people-name from a place-name.
+_Nuunlaumud_ is therefore an exonym: the archipelago's name for
+them, not their own. What the Nuunlaumud call themselves, and
+what they call their language, are not yet recorded here.
 
 _(Whether deep speech is a single language or a family of
 related tongues spoken across different seafloor settlements,

@@ -95,9 +95,10 @@ the most credible accounts; older than Bayurindan history can
 quite reach. They are mostly bipedal, pressure-adapted, and
 live in cities of their own making along the long architecture
 of the ocean. The archipelago people call the waters where the
-deep live the _Nuunlau_ [[bay]] — Bayurindan distinguishes
-shallow and deep water as different nouns, not different
-adjectives — and call the people themselves the _Nuunlaumud_
+deep live _[[places/nuunlau|Nuunlau]]_ [[bay]] — Bayurindan
+distinguishes shallow and deep water as different nouns, not
+different adjectives — and call the people themselves the
+_Nuunlaumud_
 [[bay]], formed from _Nuunlau_ by the Bayurindan suffix _-mud_
 that derives a people-name from a place-name. What the
 Nuunlaumud call themselves, in their own tongue (which is not
