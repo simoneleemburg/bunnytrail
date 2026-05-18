@@ -3,9 +3,10 @@ peoples' homelands, internal divisions, languages, and relation
 to the wider Astheran world are not yet recorded here.)_
 
 The **serpent-humanoids** are a rare lineage of Asthera —
-serpentine in body, humanoid in bearing — native to the
-**liminal, water-adjacent civilisations** of the material realm.
-They appear in the compendium so far through a single member,
+serpentine in body, humanoid in bearing — native to
+[[places/bayurinda|Bayurinda]]. The compendium records them
+so far only through the liminal, water-adjacent civilisations
+of that world, and through a single member,
 [[characters/ngonawan-ilyardi|Ngonawan Ilyardi]], the Sacred
 Serpent of Resonance and Oracle of Interpretation in the
 [[culture/oracle-triad|Oracle Triad]].

@@ -1,7 +1,9 @@
 Humans are a prominent embodied people of Alteria — mortal,
 materially bound, and broadly recognisable as the kind of creature
 that walks, builds, remembers, and dies. They are native to
-[[cosmology/realms/asthera|Asthera]], the material plane.
+[[cosmology/realms/asthera|Asthera]], the material plane — the
+compendium records them on [[places/nebelheim|Nebelheim]] and
+[[places/bayurinda|Bayurinda]].
 
 What makes them unusual in Alteria's cosmology is less their bodies
 than what their bodies hold. Humans sustain persistent, high-intensity
