@@ -94,8 +94,11 @@ The **deep** are an older people — older than the drowning, by
 the most credible accounts; older than Bayurindan history can
 quite reach. They are mostly bipedal, pressure-adapted, and
 live in cities of their own making along the long architecture
-of the ocean. The archipelago people call them the
-_Nuunlau_ [[bay]]; what they call themselves, in their own
+of the ocean. The archipelago people call the waters where the
+deep live the _Nuunlau_ [[bay]] — Bayurindan distinguishes
+shallow and deep water as different nouns, not different
+adjectives — and refer to the deep, when they need to, as _those
+of the Nuunlau_. What the deep call themselves, in their own
 tongue (which is not [[languages/bayurindan|Bayurindan]] — see
 [[languages/deep-speech|Deep Speech]]), is not yet recorded
 here. Scholarship on the other Sister Worlds refers to them as

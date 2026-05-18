@@ -20,10 +20,14 @@ surface civilisation, do not preserve deep speech at all.
 
 ## On the name
 
-The archipelago people of Bayurinda call the deep _Nuunlau_ [[bay]],
-and the deep's tongue, when they speak of it at all, is the
-_speech of the Nuunlau_. The deep's own name for their language,
-and for themselves, are not yet recorded here.
+In [[languages/bayurindan|Bayurindan]], the deep waters where
+the seafloor people live are called the _Nuunlau_ [[bay]] — a
+region-name, not a name for the people themselves. By extension
+the archipelago sometimes refers to the people as _those of the
+Nuunlau_, but Bayurindan does not have, so far as is recorded
+here, a single word that names the deep as a people in the way
+English's _the deep_ does. The deep's own name for themselves,
+and for their language, are not yet recorded here.
 
 _(Whether deep speech is a single language or a family of
 related tongues spoken across different seafloor settlements,

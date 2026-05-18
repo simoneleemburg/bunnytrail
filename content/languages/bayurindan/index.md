@@ -39,6 +39,25 @@ the drowned civilisation is, like much else about that
 civilisation, disputed. The deep's tongue is treated separately;
 see [[languages/deep-speech|Deep Speech]].)\_
 
+## On water
+
+Bayurindan distinguishes kinds of water where many other tongues
+do not. The shallows the archipelago lives in, the deep waters
+beyond the reefs, the brackish margins where freshwater currents
+meet the sea, the surface skin that the storms work on, and the
+still water held in cave-pools below — these are different
+nouns in Bayurindan, not different adjectives applied to one
+word. _[[#bayurindan-words-in-this-compendium|Nuunlau]]_ is the
+word for the deep waters specifically — the regions beyond the
+archipelago's working reach, where the seafloor people live —
+and is a region-name, not a property-word.
+
+_(The full vocabulary of Bayurindan water-words, and the social
+and ritual distinctions that go with them, is not yet recorded
+here. The compendium uses English working terms — "the
+shallows," "the deep," "the surface," "the caves" — wherever
+the specific Bayurindan word has not yet been written down.)_
+
 ## Bayurindan words in this compendium
 
 The compendium uses several Bayurindan words as base
@@ -60,14 +79,15 @@ superscript _bay_:
   the palatal _-ly-_ medial. (See [[characters/ngonawan-ilyardi|her
 entry]].)
 
-- **Nuunlau** [[bay]] — the archipelago people's word for the
-  deep: the pressure-adapted custodians who live on
-  [[places/bayurinda|Bayurinda]]'s seafloor and steward the
-  inscriptions there. _Nuunlau_ is what the archipelago calls
-  them; what the deep call themselves, in their own tongue, is
-  not yet recorded here. (See [[languages/deep-speech|Deep
-Speech]] for the language; an entry for the Nuunlau as a people
-  is not yet written.)
+- **Nuunlau** [[bay]] — the archipelago people's word for _the
+  deep_ as a region: the deep-water reaches of
+  [[places/bayurinda|Bayurinda]]'s ocean, distinct from the
+  shallows the archipelago itself inhabits. By extension,
+  scholarship sometimes uses _Nuunlau_ for the people who live
+  there, though strictly the word names the place, not the
+  people. (See [[languages/deep-speech|Deep Speech]] for the
+  deep's own tongue; an entry for the Nuunlau as a region, and
+  one for the deep as a people, are not yet written.)
 
 _(Other Bayurindan words and names in the compendium are not
 yet marked. Sweep deferred.)_
