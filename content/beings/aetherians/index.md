@@ -134,7 +134,7 @@ mind-altering effects, what is happening is not poisoning. It is
 **[[cosmology/nearing|Nearing]]**, in the same sense Tholingian
 oracles and [[culture/eidolon-knight|Eidolon Knights]] use the
 word: an embodied being drifting close to
-[[cosmology/nareth|Nareth]] without crossing into it. The visions
+[[cosmology/realms/nareth|Nareth]] without crossing into it. The visions
 are contact with [[beings/naya|Naya]]. The out-of-body
 experiences are the loosening of attachment to form that Nearing
 produces in any practitioner. The Aetherians have a path to it

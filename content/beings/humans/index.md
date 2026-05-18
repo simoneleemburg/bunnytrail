@@ -1,7 +1,7 @@
 Humans are a prominent embodied people of Alteria — mortal,
 materially bound, and broadly recognisable as the kind of creature
 that walks, builds, remembers, and dies. They are native to
-[[cosmology/asthera|Asthera]], the material plane.
+[[cosmology/realms/asthera|Asthera]], the material plane.
 
 What makes them unusual in Alteria's cosmology is less their bodies
 than what their bodies hold. Humans sustain persistent, high-intensity
@@ -9,7 +9,7 @@ emotional experience — grief that lasts years, devotion that survives
 distance, the slow accumulations of love and resentment and hope — in
 a way that few other beings can. To embodied life this is simply how
 existence feels. To the [[beings/naya|Naya]], looking in from
-[[cosmology/nareth|Nareth]], it is something rarer: a stability of
+[[cosmology/realms/nareth|Nareth]], it is something rarer: a stability of
 feeling, and a vividness of feeling, that they cannot generate on
 their own.
 

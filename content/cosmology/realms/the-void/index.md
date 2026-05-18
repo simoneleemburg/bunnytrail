@@ -21,7 +21,7 @@ identity in some encounter — through failed
 [[cosmology/binding|binding]], through unsupported
 [[cosmology/nearing|Nearing]], through whatever it is that
 breaks Naya — sometimes do not return to
-[[cosmology/nareth|Nareth]]. They dissipate instead into the
+[[cosmology/realms/nareth|Nareth]]. They dissipate instead into the
 medium between worlds, where their resonance lingers without
 ever quite resolving into anything coherent. A pilot who
 passes through a region of broken Naya feels them: drifts of

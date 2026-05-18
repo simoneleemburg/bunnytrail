@@ -36,7 +36,7 @@ Listeners. They were of the **surface civilisation** of that age
 and whose principal land masses and cities are now on the ocean
 floor (see [the drowning](/places/bayurinda#the-drowning)).
 Through prolonged [[cosmology/nearing|Nearing]] states, they
-reached far enough toward [[cosmology/nareth|Nareth]] to perceive
+reached far enough toward [[cosmology/realms/nareth|Nareth]] to perceive
 Naya symbols directly, and they tried to record what they
 perceived.
 
@@ -312,8 +312,8 @@ is not yet recorded here). The name of
 and is marked accordingly. The cultural readings of
 [[places/the-dark-companion|the Dark Companion]] belong to
 various local traditions and are not Old Tongue. The
-cosmological terms [[cosmology/asthera|Asthera]] and
-[[cosmology/nareth|Nareth]] — names for the two great layers of
+cosmological terms [[cosmology/realms/asthera|Asthera]] and
+[[cosmology/realms/nareth|Nareth]] — names for the two great layers of
 existence — are [[culture/languages/thallish|Thallish]], not Old Tongue.
 The Old Tongue presupposes _Nareth_ as the name of the realm
 its work addresses; it did not coin it. Two of the compendium's
@@ -370,8 +370,8 @@ entries in the compendium so far:
 [[culture/languages/bayurindan|Bayurindan]], the working tongue of the
 archipelago people of [[places/bayurinda|Bayurinda]]. A third,
 [[culture/languages/thallish|Thallish]], stands as a stub —
-the source of [[cosmology/asthera|Asthera]] and
-[[cosmology/nareth|Nareth]], but otherwise not yet imported.
+the source of [[cosmology/realms/asthera|Asthera]] and
+[[cosmology/realms/nareth|Nareth]], but otherwise not yet imported.
 The rest of [Cognita](/cognita)'s tongues are gestured at by
 the words they have left behind.
 

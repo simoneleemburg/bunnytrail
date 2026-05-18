@@ -8,13 +8,13 @@ like Nearing — parts of existence can drift into or interact with
 Nareth. It is associated with transformation, dissolution of fixed
 identity, and the emergence of alternative states of being.
 
-Counterpart to [[cosmology/asthera|Asthera]], the realm of form and
+Counterpart to [[cosmology/realms/asthera|Asthera]], the realm of form and
 persistence.
 
 ## On the name
 
 The word _Nareth_ is [[culture/languages/thallish|Thallish]], the second of the
-two cosmological terms (with [[cosmology/asthera|Asthera]]) that the
+two cosmological terms (with [[cosmology/realms/asthera|Asthera]]) that the
 Sister Worlds have adopted from that language for the great layers of
 existence. The [[culture/languages/old-tongue|Old Tongue]] presupposes the
 term but does not coin it — the Old Tongue was built for the

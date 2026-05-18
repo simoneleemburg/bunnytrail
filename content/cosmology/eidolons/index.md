@@ -1,6 +1,6 @@
 An Eidolon is a constructed vessel that allows a
 [[beings/naya|Naya]] to manifest physically on
-[[cosmology/asthera|Asthera]]. The Naya is
+[[cosmology/realms/asthera|Asthera]]. The Naya is
 [[cosmology/binding|bound]] into the vessel — seated durably
 into a body built for its nature — and through the vessel
 becomes present in the material world. Without its Naya, the
@@ -16,7 +16,7 @@ The binding between a Naya and its Eidolon is specific and
 durable. One Naya is seated into one vessel. The Naya does not
 move between Eidolons. The Eidolon is not refittable to a
 different Naya. If the vessel is destroyed, the Naya is not
-destroyed — it returns to [[cosmology/nareth|Nareth]] — but the
+destroyed — it returns to [[cosmology/realms/nareth|Nareth]] — but the
 Eidolon ends with it, and the pact does not transfer.
 
 A bound Eidolon outlives any single Knight who pilots it.
@@ -99,8 +99,8 @@ language is not yet recorded here. It is not
 [[culture/languages/tholingian|Tholingian]], not
 [[culture/languages/bayurindan|Bayurindan]]. Whether it is
 [[culture/languages/thallish|Thallish]] (as
-[[cosmology/asthera|Asthera]] and
-[[cosmology/nareth|Nareth]] are), the
+[[cosmology/realms/asthera|Asthera]] and
+[[cosmology/realms/nareth|Nareth]] are), the
 [[culture/knights-of-bellona|order]]'s own working term in some
 register the order has not yet been recorded as using, or a
 word that travelled in from somewhere else again, is open. The

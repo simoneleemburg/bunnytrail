@@ -76,7 +76,7 @@ arrival is shaped to mirror the launch.
 If there is no Pillar at the destination capable of catching, or
 if the pilot misses the catch entirely, they do not land. They
 drift, burn, or pass into the storm-field of
-[[cosmology/the-void|the Void Between Worlds]]. The Pillars
+[[cosmology/realms/the-void|the Void Between Worlds]]. The Pillars
 make travel possible; they do not make it safe.
 
 ## What the Pillars are

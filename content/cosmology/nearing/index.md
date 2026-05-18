@@ -1,5 +1,5 @@
 Nearing is a partially transcendent state in which an embodied
-being drifts closer to [[cosmology/nareth|Nareth]] — the fluid
+being drifts closer to [[cosmology/realms/nareth|Nareth]] — the fluid
 resonant layer of reality, where identity, emotion, memory,
 distance, and time become less fixed — without crossing into it.
 The word does the work of the idea: one _nears_. One does not

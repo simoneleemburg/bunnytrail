@@ -4,7 +4,7 @@ Ngonawan Ilyardi [[bay]] is the serving Oracle of Interpretation within the
 Sacred Serpent of Resonance.
 
 He belongs to a rare serpent-humanoid lineage native to the liminal,
-water-adjacent civilisations of [[cosmology/asthera|Asthera]].
+water-adjacent civilisations of [[cosmology/realms/asthera|Asthera]].
 
 ## In the Triad
 
@@ -13,7 +13,7 @@ grain — the shifting tonal substrate that carries
 [[beings/naya|Naya]] meaning before it has become anything a
 human can call a symbol. Where another practitioner of
 [[cosmology/nearing|Nearing]] might come back from contact with
-[[cosmology/nareth|Nareth]] holding sensation, image, dread, or
+[[cosmology/realms/nareth|Nareth]] holding sensation, image, dread, or
 unspeakable certainty, Ngonawan finds the signal under the
 noise.
 

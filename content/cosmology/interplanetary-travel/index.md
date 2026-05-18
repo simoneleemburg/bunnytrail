@@ -143,7 +143,7 @@ stacked Nearings.
   destination world but cannot align cleanly with the
   receiving Pillar's catch. They drift past, burn in
   atmosphere, or are carried into
-  [[cosmology/the-void|the Void Between Worlds]].
+  [[cosmology/realms/the-void|the Void Between Worlds]].
 - **Encountering something in transit.** The space between
   worlds is not empty. What an Eidolon meets there is the
   subject of its own entry.

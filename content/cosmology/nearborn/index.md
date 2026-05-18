@@ -1,10 +1,10 @@
 A Nearborn is a person whose self was never fully bounded by
-[[cosmology/asthera|Asthera]]'s rules from the beginning of life.
+[[cosmology/realms/asthera|Asthera]]'s rules from the beginning of life.
 Where most embodied selves take their shape from the material
 layer and only later — through [[cosmology/nearing|Nearing]],
 [[cosmology/binding|binding]], or other deliberate practice — open
 themselves to the resonant layer, a Nearborn begins already
-partially in [[cosmology/nareth|Nareth]]. They do not have to
+partially in [[cosmology/realms/nareth|Nareth]]. They do not have to
 learn to near. They began near.
 
 ## The in-universe reading of trans identity
@@ -97,7 +97,7 @@ substance, screening candidates for that capacity.
 
 Most cultures of the Sister Worlds hold that Nearborn make
 exceptional pilots — that a self already partially in
-[[cosmology/nareth|Nareth]] is, by its nature, more prepared
+[[cosmology/realms/nareth|Nareth]] is, by its nature, more prepared
 for the sustained Nearing piloting requires. The reasoning is
 intuitive: piloting asks an embodied self to remain coherent
 while opening to the resonant layer, and a Nearborn self has

@@ -4,14 +4,14 @@ identities persist as distinct beings, and where worlds, civilizations,
 and histories unfold in tangible, structured time.
 
 It is the realm of form and persistence, in contrast to the fluid,
-resonant nature of [[cosmology/nareth|Nareth]].
+resonant nature of [[cosmology/realms/nareth|Nareth]].
 
 ## On the name
 
 The word _Asthera_ is [[culture/languages/thallish|Thallish]] — one of two
 cosmological terms that the Sister Worlds have, almost universally,
 adopted from that language for the great layers of existence (the
-other is [[cosmology/nareth|Nareth]]). The route by which _Asthera_
+other is [[cosmology/realms/nareth|Nareth]]). The route by which _Asthera_
 became the standard term across [Cognita](/cognita), the people who
 originally coined it, and the world Thallish is spoken on, are not
 yet recorded in this compendium. (See [[culture/languages/thallish|Thallish]]

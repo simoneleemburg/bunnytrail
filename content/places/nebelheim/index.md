@@ -44,7 +44,7 @@ breathing or molting.
 
 ## Binding on Nebelheim
 
-[[cosmology/nareth|Nareth]]-touched practice on Nebelheim is regulated
+[[cosmology/realms/nareth|Nareth]]-touched practice on Nebelheim is regulated
 and restricted by the [[culture/knights-of-bellona|Knights of
 Bellona]], whose order is itself a Nebelheimic institution.
 [[culture/eidolon-knight|Knighthood]] here is understood as

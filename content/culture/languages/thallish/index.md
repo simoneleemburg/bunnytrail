@@ -2,8 +2,8 @@ Thallish [[tha]] is a language of [Alteria Cognita](/cognita)
 whose words sit at the centre of the compendium's cosmological
 vocabulary without the compendium yet recording who speaks them.
 The two terms it has supplied to the Sister Worlds' standard
-register — [[cosmology/asthera|Asthera]] and
-[[cosmology/nareth|Nareth]] — name the two great layers of
+register — [[cosmology/realms/asthera|Asthera]] and
+[[cosmology/realms/nareth|Nareth]] — name the two great layers of
 existence, and travel through every entry that touches on the
 metaphysics of the world.
 
@@ -27,9 +27,9 @@ The compendium uses two Thallish words as base vocabulary,
 marked where they appear with the small superscript _tha_:
 
 - **Asthera** [[tha]] — the material, embodied world-layer of
-  existence. See [[cosmology/asthera|Asthera]].
+  existence. See [[cosmology/realms/asthera|Asthera]].
 - **Nareth** [[tha]] — the resonant substrate that is its
-  counterpart. See [[cosmology/nareth|Nareth]].
+  counterpart. See [[cosmology/realms/nareth|Nareth]].
 
 Both are used so often, across so many entries, that they have
 ceased to read as foreign vocabulary at all. They are simply the

@@ -1,6 +1,6 @@
 The Dark Companion is the invisible second body of a
 neighbouring binary star system, visible from
-[[cosmology/asthera|Asthera]] only by what it does to its
+[[cosmology/realms/asthera|Asthera]] only by what it does to its
 companion star. A single star is observed; that star orbits
 something the eye cannot resolve. The thing it orbits is the
 Dark Companion.
@@ -157,7 +157,7 @@ cannot resolve which of these is true.
 The Dark Companion is not, in any reading currently endorsed,
 identified with the broken god whose shattering produced
 [[cosmology/skyblood|Skyblood]] and litters
-[[cosmology/the-void|the Void Between Worlds]]. The two
+[[cosmology/realms/the-void|the Void Between Worlds]]. The two
 phenomena are old in different ways. Some cultural readings
 gesture at a connection; none of them are scholarly. The
 compendium notes the gesture and declines to confirm it.
