@@ -40,15 +40,27 @@ export function loadTypeIndex(type: EntityType) {
 
 	const subtypes = graph
 		.subtypesOf(type)
-		.map((sub) => ({
-			type: sub.type,
-			singular: sub.labels.singular,
-			plural: sub.labels.plural,
-			description: sub.description,
+		.map((sub) => {
 			// Include entities at any depth under the subtype, since
 			// the user is browsing "everything of this kind".
-			count: graph.byTypeRecursive(sub.type).length
-		}))
+			const subEntities = graph.byTypeRecursive(sub.type);
+			// Distribution of `kind` values across the subtype's
+			// entities, so the page-level kind filter can hide /
+			// re-count subtype tiles in sync with the rest.
+			const kindCounts: Record<string, number> = {};
+			for (const e of subEntities) {
+				const k = typeof e.meta.kind === 'string' ? e.meta.kind : '—';
+				kindCounts[k] = (kindCounts[k] ?? 0) + 1;
+			}
+			return {
+				type: sub.type,
+				singular: sub.labels.singular,
+				plural: sub.labels.plural,
+				description: sub.description,
+				count: subEntities.length,
+				kindCounts
+			};
+		})
 		.sort((a, b) => a.plural.localeCompare(b.plural));
 
 	// All entities of this exact type get flattened to cards once;

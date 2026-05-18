@@ -36,6 +36,20 @@
 		return (card.kind ?? '—') === activeKind;
 	}
 
+	// Subtype tiles only show in nested mode, and their counts /
+	// visibility follow the active kind filter: a subtype with zero
+	// entities of the active kind is hidden entirely.
+	const visibleSubtypes = $derived.by(() => {
+		if (viewMode !== 'nested') return [];
+		return data.subtypes
+			.map((sub) => {
+				const count =
+					activeKind === null ? sub.count : (sub.kindCounts[activeKind] ?? 0);
+				return { ...sub, visibleCount: count };
+			})
+			.filter((sub) => sub.visibleCount > 0);
+	});
+
 	// View-model for a rendered container row. `containerMatches`
 	// drives whether to render the full EntityCard or just a small
 	// "Within X" stub (kept so descendants below still have context).
@@ -80,25 +94,6 @@
 
 {#if data.description}
 	<p class="type-description">{data.description}</p>
-{/if}
-
-{#if data.subtypes.length > 0}
-	<section class="subtypes" aria-label="Subtypes">
-		<h2 class="subtypes-heading">Within {data.label.plural.toLowerCase()}</h2>
-		<ul class="subtype-list">
-			{#each data.subtypes as sub (sub.type)}
-				<li>
-					<a class="subtype-link" href={`/${sub.type}`}>
-						<span class="subtype-label">{sub.plural}</span>
-						<span class="subtype-count">{sub.count}</span>
-					</a>
-					{#if sub.description}
-						<p class="subtype-description">{sub.description}</p>
-					{/if}
-				</li>
-			{/each}
-		</ul>
-	</section>
 {/if}
 
 {#if data.flat.length === 0}
@@ -151,6 +146,25 @@
 				</div>
 			{/if}
 		</nav>
+	{/if}
+
+	{#if visibleSubtypes.length > 0}
+		<section class="subtypes" aria-label="Subtypes">
+			<h2 class="subtypes-heading">Within {data.label.plural.toLowerCase()}</h2>
+			<ul class="subtype-list">
+				{#each visibleSubtypes as sub (sub.type)}
+					<li>
+						<a class="subtype-link" href={`/${sub.type}`}>
+							<span class="subtype-label">{sub.plural}</span>
+							<span class="subtype-count">{sub.visibleCount}</span>
+						</a>
+						{#if sub.description}
+							<p class="subtype-description">{sub.description}</p>
+						{/if}
+					</li>
+				{/each}
+			</ul>
+		</section>
 	{/if}
 
 	{#snippet containerTree(node: RenderNode)}
