@@ -48,7 +48,7 @@
 			>
 				All <span class="count">{data.entities.length}</span>
 			</button>
-			{#each kindCounts as [kind, count] (kind)}
+			{#each kindCounts as [kind] (kind)}
 				<button
 					type="button"
 					class="filter"
@@ -56,7 +56,6 @@
 					onclick={() => (activeKind = kind)}
 				>
 					{kind}
-					<span class="count">{count}</span>
 				</button>
 			{/each}
 		</nav>
