@@ -4,11 +4,9 @@ amber light, low and constant. Seismic instability is ordinary
 life. Civilisations here are geothermal: built into calderas, along
 glowing fissures, beside sulfuric fog valleys and black beaches.
 
-A single large moon hangs over the world, itself molten and
-volcanic — a second furnace in the sky, harder to ignore than any
-star.
-
-_(Nebelheim's moon is not yet recorded separately here.)_
+A single moon, [[places/leyla|Leyla]] [[tho]], hangs over the
+world — itself molten and volcanic, a second furnace in the sky,
+harder to ignore than any star.
 
 ## On the name
 

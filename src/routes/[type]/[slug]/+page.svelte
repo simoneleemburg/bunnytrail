@@ -32,7 +32,8 @@
 			const inverse: Record<string, string> = {
 				'located-in': 'Regions',
 				'serves-in': 'Members',
-				'spoken-in': 'Languages'
+				'spoken-in': 'Languages',
+				orbits: 'Moons'
 			};
 			if (inverse[kind]) return inverse[kind];
 		}
