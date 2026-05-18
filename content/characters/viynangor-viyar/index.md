@@ -31,7 +31,7 @@ back.
 
 Whatever else Viynangor Viyar is, it is the kind of
 [[beings/naya|Naya]] whose presence shows the
-[[concepts/eidolon-knight|Knight]] piloting its
+[[social/eidolon-knight|Knight]] piloting its
 [[concepts/eidolons|Eidolon]] what they actually are. Not what
 they wish to be. Not what they fear. What they are.
 

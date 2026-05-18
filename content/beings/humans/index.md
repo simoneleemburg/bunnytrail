@@ -22,7 +22,7 @@ sense, is the pact between a Naya and an
 [[concepts/eidolons|Eidolon]], not between a Naya and a
 person. What humans offer the Naya is something the bound Naya
 reaches for _through_ its vessel and the
-[[concepts/eidolon-knight|Knight]] piloting it: sustained
+[[social/eidolon-knight|Knight]] piloting it: sustained
 contact with a kind of emotional life Naya cannot generate on
 their own substrate.
 

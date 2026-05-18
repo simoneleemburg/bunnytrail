@@ -132,7 +132,7 @@ come to it deliberately. At doses high enough to produce
 visions, out-of-body experiences, and the rest of the
 mind-altering effects, what is happening is not poisoning. It is
 **[[concepts/nearing|Nearing]]**, in the same sense Tholingian
-oracles and [[concepts/eidolon-knight|Eidolon Knights]] use the
+oracles and [[social/eidolon-knight|Eidolon Knights]] use the
 word: an embodied being drifting close to
 [[concepts/nareth|Nareth]] without crossing into it. The visions
 are contact with [[beings/naya|Naya]]. The out-of-body

@@ -44,7 +44,7 @@ The major recognised purposes:
 - To **pilot**: to sustain working contact with a Naya bound
   into an [[concepts/eidolons|Eidolon]], allowing the Knight to
   move with the vessel rather than against it. The
-  [[concepts/eidolon-knight|Eidolon Knight]]'s entire practice
+  [[social/eidolon-knight|Eidolon Knight]]'s entire practice
   rests on this.
 - To **travel**: to soften one's attachment to space enough that
   the cosmos can be crossed in something less than its raw

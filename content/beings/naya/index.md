@@ -43,7 +43,7 @@ durable. Without such a binding, a Naya cannot persist in
 they have a body of sorts, and a foothold in the physical layer
 they can act through.
 
-The [[concepts/eidolon-knight|Knight]] who pilots the Eidolon
+The [[social/eidolon-knight|Knight]] who pilots the Eidolon
 is, in this picture, a third party to the binding. The Knight
 gives the Eidolon direction; the binding is what the Eidolon
 _is_. A Naya bound into a well-built vessel can outlast many

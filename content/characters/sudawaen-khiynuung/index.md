@@ -42,7 +42,7 @@ unready pilot, and the worlds do not speak of it lightly.
 
 Sudawaen Khiynuung is [[concepts/binding|bound]] in an
 [[concepts/eidolons|Eidolon]] currently piloted by the
-[[concepts/eidolon-knight|Knight]]
+[[social/eidolon-knight|Knight]]
 [[characters/mila|Mila]]. The history of past pilots, and the
 conditions under which the name first entered the Old Tongue,
 are not yet recorded here.

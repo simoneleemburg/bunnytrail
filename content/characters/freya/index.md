@@ -1,4 +1,4 @@
-Freya [[tho]] is an [[concepts/eidolon-knight|Eidolon Knight]] of the
+Freya [[tho]] is an [[social/eidolon-knight|Eidolon Knight]] of the
 [[social/knights-of-bellona|Knights of Bellona]]. She is from
 [[places/tholingia|Tholingia]], a region of
 [[places/nebelheim|Nebelheim]], and her name is Tholingian.

@@ -84,7 +84,7 @@ What is true beneath the naming remains open.
 
 A separate question, related but distinct from the cultural
 framing of Nearborn identity, is what the
-[[concepts/eidolon-knight|order]] looks for when it screens
+[[social/eidolon-knight|order]] looks for when it screens
 candidates for Knighthood.
 
 Piloting an [[concepts/eidolons|Eidolon]] is sustained

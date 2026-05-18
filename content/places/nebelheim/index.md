@@ -47,7 +47,7 @@ breathing or molting.
 [[concepts/nareth|Nareth]]-touched practice on Nebelheim is regulated
 and restricted by the [[social/knights-of-bellona|Knights of
 Bellona]], whose order is itself a Nebelheimic institution.
-[[concepts/eidolon-knight|Knighthood]] here is understood as
+[[social/eidolon-knight|Knighthood]] here is understood as
 sacrifice and responsibility — closer to public duty than to
 private path. [[concepts/eidolons|Eidolons]] are used
 pragmatically: for defence, labour, and survival.

@@ -8,7 +8,7 @@ one.
 
 This is the relationship the word _binding_ refers to: Eidolon
 and Naya, vessel and being. The
-[[concepts/eidolon-knight|Knight]] who later pilots the
+[[social/eidolon-knight|Knight]] who later pilots the
 Eidolon is a third party to that pact, not a participant in it.
 Knights come and go. The binding is the durable thing.
 
@@ -85,7 +85,7 @@ itself is a sustained practice of contact between Knight and
 the Naya inside the vessel — a form of
 [[concepts/nearing|Nearing]] toward the Naya through the
 Eidolon. It is its own discipline, treated in the
-[[concepts/eidolon-knight|Eidolon Knight]] entry. What matters
+[[social/eidolon-knight|Eidolon Knight]] entry. What matters
 here is that the binding sits underneath all of that. The
 Knight is not party to it.
 

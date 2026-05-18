@@ -43,7 +43,7 @@ Sharazani culture is expressive, strategic, and status-driven. The
 tone is splendor, ambition, and elegance — public, ornate, alert
 to display.
 
-[[concepts/eidolon-knight|Knighthood]] here is performance,
+[[social/eidolon-knight|Knighthood]] here is performance,
 mastery, and competition. [[concepts/eidolons|Eidolons]] are
 elaborate, symbolic, and public; duels and displays shape
 social hierarchy. Where Bayurindan Knighthood is contemplative

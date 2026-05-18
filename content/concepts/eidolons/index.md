@@ -55,7 +55,7 @@ In use — that is, when piloted — an Eidolon can:
   [[concepts/world-pillars|World Pillars]]
 
 Use carries cost. Even successful piloting leaves the
-[[concepts/eidolon-knight|Knight]] under physical and
+[[social/eidolon-knight|Knight]] under physical and
 psychological strain; the longer the use, the deeper the
 strain.
 

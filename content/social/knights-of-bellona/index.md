@@ -5,7 +5,7 @@ Nebelheim]], [[places/bayurinda|Bayurinda]], and
 few institutions that does. The order maintains the
 [[social/oracle-triad|Oracle Triad]], regulates the practice of
 [[concepts/nearing|Nearing]], and trains and certifies every
-known [[concepts/eidolon-knight|Eidolon Knight]] in the cosmology.
+known [[social/eidolon-knight|Eidolon Knight]] in the cosmology.
 
 The order takes its name from Bellona. _(Who Bellona was, the
 language her name belongs to, and how that name came to be
@@ -37,7 +37,7 @@ The Knights of Bellona hold three intertwined responsibilities.
   through which Triad translations reach the worlds — sit under
   the same authority.
 - **Knighthood.** The order trains, certifies, deploys, and
-  oversees every [[concepts/eidolon-knight|Eidolon Knight]] in
+  oversees every [[social/eidolon-knight|Eidolon Knight]] in
   the cosmology. To be a Knight is to be a Knight of Bellona.
   No other path to the role is known.
 

@@ -1,4 +1,4 @@
-Mila is an [[concepts/eidolon-knight|Eidolon Knight]] of the
+Mila is an [[social/eidolon-knight|Eidolon Knight]] of the
 [[social/knights-of-bellona|Knights of Bellona]].
 
 ## Identity
@@ -12,7 +12,7 @@ not much inclined to soften herself for the comfort of others.
 
 ## How she came to her Eidolon
 
-Mila does not pilot a [[concepts/eidolon-knight|chosen Eidolon]]
+Mila does not pilot a [[social/eidolon-knight|chosen Eidolon]]
 in the order's preferred sense. The
 [[concepts/eidolons|Eidolon]] she currently pilots is the one
 in which the [[beings/naya|Naya]]

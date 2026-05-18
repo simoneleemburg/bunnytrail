@@ -197,7 +197,7 @@ what can be recovered, does not value haste.
 Where Nebelheim regulates Knighthood as public duty, Bayurinda
 treats it as a path to transcendence. [[beings/naya|Naya]] are
 not tools here. They are teachers. The practices of
-[[concepts/eidolon-knight|piloting]] are slower, ritualised, and
+[[social/eidolon-knight|piloting]] are slower, ritualised, and
 far more stable than on the other Sister Worlds — something more
 like a tradition of contemplation than a discipline of mastery.
 

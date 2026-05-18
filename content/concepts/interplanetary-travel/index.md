@@ -1,7 +1,7 @@
 Travel between worlds in Alteria is two
 [[concepts/nearing|Nearings]] stacked.
 
-Any [[concepts/eidolon-knight|Knight]] piloting an
+Any [[social/eidolon-knight|Knight]] piloting an
 [[concepts/eidolons|Eidolon]] is already Nearing — sustaining
 working contact with the [[beings/naya|Naya]]
 [[concepts/binding|bound]] in the vessel. That is what

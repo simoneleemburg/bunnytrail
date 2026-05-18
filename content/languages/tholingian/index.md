@@ -43,7 +43,7 @@ marked, where they appear, with the small superscript _tho_ —
 the same dictionary-style attribution used for other languages.
 
 - [[characters/freya|Freya]] [[tho]] — the
-  [[concepts/eidolon-knight|Eidolon Knight]]. Tholingian by
+  [[social/eidolon-knight|Eidolon Knight]]. Tholingian by
   origin, Knighthood-trained off-world.
 - [[characters/sabina-vaarn|Sabina Vaarn]] [[tho]] — the
   Pilgrim of the [[social/oracle-triad|Oracle Triad]]. The same
