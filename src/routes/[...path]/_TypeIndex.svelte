@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { TypeIndexData } from './_typeIndex.load';
+	import type { TypeIndexData, ContainerNode } from './_typeIndex.load';
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 
@@ -36,6 +36,27 @@
 		return (card.kind ?? '—') === activeKind;
 	}
 
+	// View-model for a rendered container row. `containerMatches`
+	// drives whether to render the full EntityCard or just a small
+	// "Within X" stub (kept so descendants below still have context).
+	type RenderNode = {
+		container: ContainerNode['container'];
+		containerMatches: boolean;
+		children: RenderNode[];
+	};
+
+	// Recursively filter a container node by the active kind, keeping
+	// any node where the container itself matches OR any descendant
+	// matches. Returns null when the entire subtree is hidden.
+	function filterNode(node: ContainerNode): RenderNode | null {
+		const children = node.children
+			.map(filterNode)
+			.filter((c): c is RenderNode => c !== null);
+		const containerMatches = matchesKind(node.container);
+		if (!containerMatches && children.length === 0) return null;
+		return { container: node.container, containerMatches, children };
+	}
+
 	// In nested mode the visible grid is just the standalone entities
 	// (containers + nested children are shown separately, above).
 	// In flat mode it's the full list.
@@ -43,18 +64,11 @@
 		(viewMode === 'flat' ? data.flat : data.standalone).filter(matchesKind)
 	);
 
-	// Containers section is only shown in nested mode, and only if at
-	// least one container or one of its children matches the active
-	// kind filter (otherwise the section would be visually empty).
 	const visibleContainers = $derived.by(() => {
 		if (viewMode !== 'nested') return [];
 		return data.containers
-			.map((c) => ({
-				container: c.container,
-				containerMatches: matchesKind(c.container),
-				children: c.children.filter(matchesKind)
-			}))
-			.filter((c) => c.containerMatches || c.children.length > 0);
+			.map(filterNode)
+			.filter((n): n is RenderNode => n !== null);
 	});
 </script>
 
@@ -139,41 +153,37 @@
 		</nav>
 	{/if}
 
+	{#snippet containerTree(node: RenderNode)}
+		<div class="container-group">
+			{#if node.containerMatches}
+				<EntityCard
+					id={node.container.id}
+					name={node.container.name}
+					type={data.label.singular}
+					kind={node.container.kind}
+					summaryHtml={node.container.summaryHtml}
+					tags={node.container.tags}
+					era={node.container.era}
+				/>
+			{:else}
+				<p class="container-stub">
+					Within <a href={`/${node.container.id}`}>{node.container.name}</a>
+				</p>
+			{/if}
+			{#if node.children.length > 0}
+				<div class="child-list">
+					{#each node.children as child (child.container.id)}
+						{@render containerTree(child)}
+					{/each}
+				</div>
+			{/if}
+		</div>
+	{/snippet}
+
 	{#if visibleContainers.length > 0}
 		<section class="containers" aria-label="Container entities">
 			{#each visibleContainers as group (group.container.id)}
-				<div class="container-group">
-					{#if group.containerMatches}
-						<EntityCard
-							id={group.container.id}
-							name={group.container.name}
-							type={data.label.singular}
-							kind={group.container.kind}
-							summaryHtml={group.container.summaryHtml}
-							tags={group.container.tags}
-							era={group.container.era}
-						/>
-					{:else}
-						<p class="container-stub">
-							Within <a href={`/${group.container.id}`}>{group.container.name}</a>
-						</p>
-					{/if}
-					{#if group.children.length > 0}
-						<ul class="child-list">
-							{#each group.children as child (child.id)}
-								<li>
-									<a href={`/${child.id}`} class="child-link">
-										<span class="child-name">{child.name}</span>
-										{#if child.kind}<span class="child-kind">{child.kind}</span>{/if}
-									</a>
-									{#if child.summaryHtml}
-										<p class="child-summary">{@html child.summaryHtml}</p>
-									{/if}
-								</li>
-							{/each}
-						</ul>
-					{/if}
-				</div>
+				{@render containerTree(group)}
 			{/each}
 		</section>
 	{/if}
@@ -361,49 +371,11 @@
 	}
 
 	.child-list {
-		list-style: none;
-		padding: 0;
 		margin: 0 0 0 var(--space-5);
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-3);
+		gap: var(--space-5);
 		border-left: 1px solid var(--rule);
-		padding-left: var(--space-4);
-	}
-
-	.child-list li {
-		padding-top: var(--space-1);
-	}
-
-	.child-link {
-		display: flex;
-		align-items: baseline;
-		gap: var(--space-3);
-		color: inherit;
-		text-decoration: none;
-	}
-
-	.child-link:hover .child-name {
-		color: var(--accent);
-	}
-
-	.child-name {
-		font-family: var(--font-display);
-		font-size: var(--text-base);
-		color: var(--ink);
-	}
-
-	.child-kind {
-		font-size: var(--text-xs);
-		font-variant: small-caps;
-		letter-spacing: 0.08em;
-		color: var(--ink-faint);
-	}
-
-	.child-summary {
-		margin: var(--space-1) 0 0 0;
-		color: var(--ink-soft);
-		font-size: var(--text-sm);
-		line-height: var(--leading-normal);
+		padding-left: var(--space-5);
 	}
 </style>
