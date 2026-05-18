@@ -103,7 +103,7 @@ coming apart. The screening is imperfect. Candidates near the
 margin are sometimes rejected and sometimes admitted; the order
 has been wrong both ways.
 
-[[cosmology/skyblood|Skyblood]] is what makes piloting possible
+[[cosmology/materials/skyblood|Skyblood]] is what makes piloting possible
 materially. A Knight without access to a Skyblood-cored Eidolon
 is a Knight in spirit only.
 

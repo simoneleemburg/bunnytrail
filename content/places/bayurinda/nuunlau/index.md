@@ -78,12 +78,12 @@ it survived]].)
   the [[beings/naya|Naya]] is, among the Aetherians, mediated
   by going to the older things and coming back. The radiance
   has a Deep-Speech name —
-  **[[cosmology/urouch|Urouch]]** [[ds]] — and a physical form,
+  **[[cosmology/materials/urouch|Urouch]]** [[ds]] — and a physical form,
   the small blue-shining black pellets the deep finds in
   un-scavenged ruins. (See
   [[beings/aetherians#the-radiance-and-what-is-in-it|the
 radiance, and what is in it]] and
-  [[cosmology/urouch|Urouch]].)
+  [[cosmology/materials/urouch|Urouch]].)
 
 ## Nuunlaumud settlements
 

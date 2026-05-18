@@ -47,7 +47,7 @@ self-contained reality bubble — a sustained pocket of
 conditions in which the pilot and the Eidolon's Naya can
 continue to exist together. The bubble is sustained by the
 Naya's resonance, anchored by the Eidolon's
-[[cosmology/skyblood|Skyblood]] core, and held in shape by the
+[[cosmology/materials/skyblood|Skyblood]] core, and held in shape by the
 ongoing coherence of the pilot themselves.
 
 The bubble is what Nearing looks like, from inside, when the

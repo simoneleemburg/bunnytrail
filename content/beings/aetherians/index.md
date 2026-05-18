@@ -121,7 +121,7 @@ one of the **older things**, the structures the older
 Nuunlaumud describe as pre-dating the drowning and as not the
 work of the surface civilisation — that emits the radioactive
 material the Aetherian body is congenial to. The substance has
-a Deep-Speech name: **[[cosmology/urouch|Urouch]]** [[ds]], small
+a Deep-Speech name: **[[cosmology/materials/urouch|Urouch]]** [[ds]], small
 black pellets with a distinct blue shine, found in
 un-scavenged ruins on the seafloor. No new Urouch has been
 made since the drowning; what is in circulation is what is
@@ -143,7 +143,7 @@ makes available, and routinely walked.
 
 This is Aetherian Nearing. It looks nothing like the
 [[culture/knights-of-bellona|Knights of Bellona]]'s practice —
-there is no [[cosmology/skyblood|Skyblood]] stabilisation, no
+there is no [[cosmology/materials/skyblood|Skyblood]] stabilisation, no
 order's structures, no chosen [[cosmology/eidolons|Eidolon]], no
 ritual cohort in the order's sense. There is the radiance, the
 body, the long inherited practice of going to the older things
@@ -158,7 +158,7 @@ life is not whether they _can_ touch Naya but how often, how
 deep, in what company, and toward what end.
 
 _(The Aetherians have a Deep-Speech name for the substance —
-[[cosmology/urouch|Urouch]] — but their names for the older
+[[cosmology/materials/urouch|Urouch]] — but their names for the older
 things they go to, for the practice itself, and for the
 organisation of safe return — by lineage, by elder teachers,
 by ritual cohort, by city — are not yet recorded here. The

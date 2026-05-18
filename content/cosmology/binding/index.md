@@ -39,7 +39,7 @@ vessel is _for_. A binding made into a vessel whose shape
 disagrees with the Naya's nature does not stabilise; in
 practice, it does not complete.
 
-At the centre of every Eidolon is a [[cosmology/skyblood|Skyblood]]
+At the centre of every Eidolon is a [[cosmology/materials/skyblood|Skyblood]]
 core, and the core is what makes the binding possible at all.
 Skyblood stabilises the Naya's presence in physical matter the
 way nothing else does. Without it the seating cannot be sustained;

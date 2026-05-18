@@ -30,7 +30,7 @@ without a source.
 
 **Fragments of the old breaking.** The Void carries fragments
 of the same shattering that
-[[cosmology/skyblood|Skyblood]] derives from — the breaking that
+[[cosmology/materials/skyblood|Skyblood]] derives from — the breaking that
 by long tradition is called a shattered god, though that
 attribution varies between traditions and is not settled in
 this compendium. Whatever it was that broke, the breaking is

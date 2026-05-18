@@ -35,7 +35,7 @@ with the Naya's nature; an Eidolon for a Naya of storm is not
 the same vessel as an Eidolon for a Naya of stillness, and
 neither can be substituted for the other.
 
-At the centre of every Eidolon is a [[cosmology/skyblood|Skyblood]]
+At the centre of every Eidolon is a [[cosmology/materials/skyblood|Skyblood]]
 core, which makes the binding stable and lets the vessel act in
 the physical world. Without Skyblood, no binding holds. With it,
 the construct becomes something between a body, a tool, and a

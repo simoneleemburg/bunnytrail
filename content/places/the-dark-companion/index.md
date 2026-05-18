@@ -156,7 +156,7 @@ cannot resolve which of these is true.
 
 The Dark Companion is not, in any reading currently endorsed,
 identified with the broken god whose shattering produced
-[[cosmology/skyblood|Skyblood]] and litters
+[[cosmology/materials/skyblood|Skyblood]] and litters
 [[cosmology/realms/the-void|the Void Between Worlds]]. The two
 phenomena are old in different ways. Some cultural readings
 gesture at a connection; none of them are scholarly. The

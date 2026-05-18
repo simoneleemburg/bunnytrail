@@ -1,7 +1,7 @@
 World Pillars are colossal [[cosmology/eidolons|Eidolon]]
 constructs partially fused into the planets they serve.
 Stone, metal, and root-bound matter braided into vast immovable
-forms, each cored in [[cosmology/skyblood|Skyblood]] on a scale
+forms, each cored in [[cosmology/materials/skyblood|Skyblood]] on a scale
 no smaller Eidolon could survive. They do not move. They endure.
 
 They are the launch and arrival infrastructure of

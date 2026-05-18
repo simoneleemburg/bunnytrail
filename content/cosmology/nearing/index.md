@@ -68,7 +68,7 @@ with different safety structures.
 - **The order's tradition.** The
   [[culture/knights-of-bellona|Knights of Bellona]] hold the
   cross-world institutional discipline of Nearing.
-  [[cosmology/skyblood|Skyblood]] stabilisation, the
+  [[cosmology/materials/skyblood|Skyblood]] stabilisation, the
   [[culture/oracle-triad|Oracle Triad]], the screening rites for
   Knighthood, and the long memory of what previous practitioners
   have brought back all sit under their authority. The order's
@@ -203,7 +203,7 @@ and the collapse of coherent selfhood.
 Because of this, serious Nearing is rarely done unsupported. The
 support takes different forms in different traditions: in the
 order's tradition, rituals, emotional anchors, companions, and
-[[cosmology/skyblood|Skyblood]] stabilisation, with the
+[[cosmology/materials/skyblood|Skyblood]] stabilisation, with the
 [[culture/oracle-triad|Oracle Triad]] as the long stabilising
 structure around the deepest practice; in
 [[beings/aetherians|Aetherian]] Nearing, the support is the
