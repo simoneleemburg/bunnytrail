@@ -133,6 +133,12 @@
 		</div>
 
 		<aside class="sidebar">
+			{#if data.extra.length > 0}
+				<section>
+					<PropertyList items={data.extra} />
+				</section>
+			{/if}
+
 			{#if relationGroups.length > 0}
 				<section class="relations">
 					{#each relationGroups as group (group.label)}
@@ -158,16 +164,13 @@
 				</section>
 			{/if}
 
-			{#if data.extra.length > 0 || data.entity.tags.length > 0}
+			{#if data.entity.tags.length > 0}
 				<section>
-					<PropertyList items={data.extra} />
-					{#if data.entity.tags.length > 0}
-						<div class="tag-row">
-							{#each data.entity.tags as tag (tag)}
-								<Tag label={tag} href={`/tags/${encodeURIComponent(tag)}`} />
-							{/each}
-						</div>
-					{/if}
+					<div class="tag-row">
+						{#each data.entity.tags as tag (tag)}
+							<Tag label={tag} href={`/tags/${encodeURIComponent(tag)}`} />
+						{/each}
+					</div>
 				</section>
 			{/if}
 		</aside>
