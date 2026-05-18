@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { TypeIndexData, ContainerNode } from './_typeIndex.load';
+	import type { TypeIndexData, ContainerNode, OrbitNode } from './_typeIndex.load';
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import Tag from '$lib/components/Tag.svelte';
@@ -20,7 +20,7 @@
 	//
 	// All three apply at the same time and reset on navigation
 	// (per-page local state only).
-	type ViewMode = 'nested' | 'flat';
+	type ViewMode = 'nested' | 'flat' | 'orbits';
 	let viewMode = $state<ViewMode>('nested');
 	let activeKind = $state<string | null>(null);
 	let activeTags = $state<Set<string>>(new Set());
@@ -28,7 +28,8 @@
 
 	const hasContainers = $derived(data.containers.length > 0);
 	const hasSubtypes = $derived(data.subtypes.length > 0);
-	const hasViewToggle = $derived(hasContainers || hasSubtypes);
+	const hasOrbits = $derived(data.orbits.length > 0);
+	const hasViewToggle = $derived(hasContainers || hasSubtypes || hasOrbits);
 
 	// Kind counts are derived from the *flat* list of entities so the
 	// counts don't change when the user switches view-mode.
@@ -156,14 +157,23 @@
 		return { container: node.container, containerMatches, children };
 	}
 
-	const visibleGrid = $derived(
-		(viewMode === 'flat' ? data.flat : data.standalone).filter(matchesFilters)
-	);
+	const visibleGrid = $derived.by(() => {
+		if (viewMode === 'orbits') return [];
+		const source = viewMode === 'flat' ? data.flat : data.standalone;
+		return source.filter(matchesFilters);
+	});
 
 	const visibleContainers = $derived.by(() => {
 		if (viewMode !== 'nested') return [];
 		return data.containers.map(filterNode).filter((n): n is RenderNode => n !== null);
 	});
+
+	// Orbits view renders the full structural tree as-is. We don't
+	// apply the kind/tag filters here — the tree's value is the
+	// gravitational relationships between bodies; pruning by tag or
+	// kind would leave dangling branches that misrepresent the
+	// hierarchy. Filters quietly apply only to flat/nested views.
+	const visibleOrbits = $derived(viewMode === 'orbits' ? data.orbits : []);
 </script>
 
 <svelte:head>
@@ -223,6 +233,16 @@
 					>
 						Flat
 					</button>
+					{#if hasOrbits}
+						<button
+							type="button"
+							class="filter"
+							class:active={viewMode === 'orbits'}
+							onclick={() => (viewMode = 'orbits')}
+						>
+							Orbits
+						</button>
+					{/if}
 				</div>
 			{/if}
 		</nav>
@@ -328,6 +348,36 @@
 		<section class="containers" aria-label="Container entities">
 			{#each visibleContainers as group (group.container.id)}
 				{@render containerTree(group)}
+			{/each}
+		</section>
+	{/if}
+
+	{#snippet orbitTree(node: OrbitNode)}
+		<div class="orbit-group">
+			<EntityCard
+				id={node.entity.id}
+				name={node.entity.name}
+				type={node.entity.typeLabel ?? data.label.singular}
+				kind={node.entity.kind}
+				summaryHtml={node.entity.summaryHtml}
+				tags={node.entity.tags}
+				era={node.entity.era}
+				sigil={node.entity.sigil}
+			/>
+			{#if node.children.length > 0}
+				<div class="orbit-children">
+					{#each node.children as child (child.entity.id)}
+						{@render orbitTree(child)}
+					{/each}
+				</div>
+			{/if}
+		</div>
+	{/snippet}
+
+	{#if visibleOrbits.length > 0}
+		<section class="orbits" aria-label="Orbital hierarchy">
+			{#each visibleOrbits as root (root.entity.id)}
+				{@render orbitTree(root)}
 			{/each}
 		</section>
 	{/if}
@@ -637,6 +687,28 @@
 	}
 
 	.child-list {
+		margin: 0 0 0 var(--space-5);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-5);
+		border-left: 1px solid var(--rule);
+		padding-left: var(--space-5);
+	}
+
+	.orbits {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+		margin: 0 0 var(--space-5) 0;
+	}
+
+	.orbit-group {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+	}
+
+	.orbit-children {
 		margin: 0 0 0 var(--space-5);
 		display: flex;
 		flex-direction: column;

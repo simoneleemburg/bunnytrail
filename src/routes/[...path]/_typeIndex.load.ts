@@ -134,6 +134,17 @@ export function loadTypeIndex(type: EntityType) {
 	// anywhere in the container tree.
 	const standalone = cards.filter((c) => !containedIds.has(c.id));
 
+	// Orbits tree: walks `member-of` and `orbits` edges across types,
+	// producing the gravitational shape — systems containing stars +
+	// planets, planets containing moons. Roots are entities whose
+	// outgoing structural edges go nowhere (no parent in this
+	// graph). We only emit trees that include at least one entity of
+	// the current type's recursive set, so the view shows up only
+	// where it has something to say. (For `/places`, that means
+	// systems show up because they contain planets; for `/cosmology`,
+	// systems show up because they *are* cosmology entities.)
+	const orbits = buildOrbitsTree(type, cardSummaryHtml);
+
 	return {
 		kind: 'type' as const,
 		type,
@@ -142,6 +153,7 @@ export function loadTypeIndex(type: EntityType) {
 		subtypes,
 		containers,
 		standalone,
+		orbits,
 		// `flat` is the full list in display order — used when the
 		// user switches to flat view. Includes descendants of subtypes
 		// so e.g. /culture in flat mode shows languages inline.
@@ -227,6 +239,7 @@ export function loadEverythingIndex() {
 		description: 'Every entry in Alteria, in one place. Filter or flatten to taste.',
 		subtypes,
 		containers: [] as ContainerNode[],
+		orbits: [] as OrbitNode[],
 		// In nested view every entity belongs to one of the
 		// top-level-type collection tiles, so the standalone grid is
 		// empty — the user sees only the tiles. Flat view drops the
@@ -272,4 +285,78 @@ function toCard(
 		sigil: typeof e.meta.sigil === 'string' ? e.meta.sigil : null,
 		typeLabel: typeLabel ?? null
 	};
+}
+
+/**
+ * Walk `member-of` and `orbits` edges to produce the gravitational
+ * tree visible from a type-index page.
+ *
+ * Strategy:
+ *   1. Find every entity that participates in any structural edge
+ *      (either side). This is the "orbital universe".
+ *   2. Within that universe, an entity is a *root* if its outgoing
+ *      structural edges all point outside the universe — i.e. it
+ *      has no structural parent. Stars, systems, and free-floating
+ *      planets are roots.
+ *   3. Recursively descend each root by following *incoming*
+ *      structural edges (the children — "what orbits/is-a-member-of
+ *      me").
+ *   4. Keep only trees that touch the current type. We test this by
+ *      asking whether any entity in the tree has the page's type as
+ *      an ancestor in the type hierarchy. For `/cosmology`, systems
+ *      themselves match; for `/places`, planets match.
+ */
+function buildOrbitsTree(
+	pageType: EntityType,
+	cardSummaryHtml: (s: string | null | undefined) => string | null
+): OrbitNode[] {
+	const universe = new Set<EntityId>();
+	for (const e of graph.all()) {
+		const structuralOut = graph.outEdges(e.id).filter((edge) => ORBIT_KINDS.has(edge.kind));
+		const structuralIn = graph.inEdges(e.id).filter((edge) => ORBIT_KINDS.has(edge.kind));
+		if (structuralOut.length > 0 || structuralIn.length > 0) universe.add(e.id);
+	}
+
+	if (universe.size === 0) return [];
+
+	const isRoot = (id: EntityId): boolean => {
+		const out = graph.outEdges(id).filter((edge) => ORBIT_KINDS.has(edge.kind));
+		// A root has no structural parent in the universe. If every
+		// structural-out edge points to something the universe doesn't
+		// contain (which shouldn't happen given how we built it, but
+		// defensively), still treat it as a root.
+		return out.every((edge) => !universe.has(edge.to));
+	};
+
+	const build = (id: EntityId, seen: Set<EntityId>): OrbitNode | null => {
+		const entity = graph.get(id);
+		if (!entity) return null;
+		if (seen.has(id)) return null; // cycle guard
+		const nextSeen = new Set(seen).add(id);
+		const childEdges = graph.inEdges(id).filter((edge) => ORBIT_KINDS.has(edge.kind));
+		const children = childEdges
+			.map((edge) => build(edge.from, nextSeen))
+			.filter((c): c is OrbitNode => c !== null)
+			.sort((a, b) => a.entity.name.localeCompare(b.entity.name));
+		return {
+			entity: toCard(entity, cardSummaryHtml, labelForType(entity.type)),
+			children
+		};
+	};
+
+	const roots = [...universe]
+		.filter(isRoot)
+		.map((id) => build(id, new Set()))
+		.filter((n): n is OrbitNode => n !== null)
+		.sort((a, b) => a.entity.name.localeCompare(b.entity.name));
+
+	// Keep only trees that touch the page's type. The page-type's
+	// recursive set defines "this page is about these entities";
+	// trees that have no overlap aren't relevant here.
+	const pageEntityIds = new Set(graph.byTypeRecursive(pageType).map((e) => e.id));
+	const treeTouches = (node: OrbitNode): boolean => {
+		if (pageEntityIds.has(node.entity.id)) return true;
+		return node.children.some(treeTouches);
+	};
+	return roots.filter(treeTouches);
 }
