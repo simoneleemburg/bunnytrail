@@ -10,11 +10,11 @@ surface.
 
 Almost nothing of it is recorded in this compendium. What is
 known to the surface comes through the few words that have
-travelled up: notably _Bal Rochan_, the deep's name for their
-largest settlement. The archipelago people of Bayurinda render
-this name unchanged when they speak of it (the consonant
-cluster _-l R-_, foreign to Bayurindan's open-syllable
-phonology, marks the word audibly as not theirs). The Old
+travelled up: notably _[[places/bal-rochan|Bal Rochan]]_, the
+deep's name for their largest settlement. The archipelago people
+of Bayurinda render this name unchanged when they speak of it
+(the consonant cluster _-l R-_, foreign to Bayurindan's
+open-syllable phonology, marks the word audibly as not theirs). The Old
 Tongue's recovered inscriptions, which come from the lost
 surface civilisation, do not preserve deep speech at all.
 

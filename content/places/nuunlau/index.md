@@ -63,11 +63,18 @@ it survived]].)
 
 ## Nuunlaumud settlements
 
-_(The settlements of the [[languages/deep-speech|Nuunlaumud]] —
-including the one the archipelago knows by its deep-speech name
-\_Bal Rochan_, which is reputed to be the largest — are not yet
-recorded here as separate entries. When they are, they will live
-under [[places/nuunlau|Nuunlau]] as its inner regions.)\_
+The largest known Nuunlaumud settlement is
+[[places/bal-rochan|Bal Rochan]] — a city built around a single
+concave boulder of lava-stone older than the surface
+civilisation, held by coral pillars and roofed with a dome of
+bone and seaweed grown into coral. _Bal Rochan_ is one of the
+few [[languages/deep-speech|Deep Speech]] words the archipelago
+has taken into its own usage without translation.
+
+_(Other Nuunlaumud settlements — and the question of whether Bal
+Rochan's boulder-on-pillars architecture is the standard
+Nuunlaumud form or particular to that city — are not yet
+recorded here.)_
 
 ## Relation to the archipelago
 
