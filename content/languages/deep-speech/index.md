@@ -24,10 +24,15 @@ Almost nothing of Deep Speech itself is recorded in this
 compendium. What is known to the surface comes through the few
 words that have travelled up: notably
 _[[places/bal-rochan|Bal Rochan]]_, the deep's name for their
-largest settlement. The archipelago people of Bayurinda render
-this name unchanged when they speak of it (the consonant
-cluster _-l R-_, foreign to Bayurindan's open-syllable
-phonology, marks the word audibly as not theirs). The Old
+largest settlement, and _[[concepts/urouch|Urouch]]_, the
+deep's name for the radioactive substance on which long-term
+life in [[places/nuunlau|Nuunlau]] depends (pronounced with the
+final _-ch_ as a soft _-sh_, roughly _oo-roush_). The
+archipelago people of Bayurinda render both names unchanged
+when they speak of them; the consonant cluster _-l R-_ in _Bal
+Rochan_, foreign to Bayurindan's open-syllable phonology, marks
+the word audibly as not theirs, and _Urouch_'s soft sibilant
+ending sits no more comfortably in a Bayurindan mouth. The Old
 Tongue's recovered inscriptions, which come from the lost
 surface civilisation, do not preserve Deep Speech at all.
 

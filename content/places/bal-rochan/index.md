@@ -43,6 +43,16 @@ carried on alongside the older Nuunlaumud who first began it. The
 [[social/oracle-triad|Oracle Triad]]'s long Old-Tongue chain
 ultimately rests on Bal Rochan's scholarship.
 
+The archipelago also knows, from the same second-hand accounts,
+that Bal Rochan is **kept alive by [[concepts/urouch|Urouch]]** —
+the radioactive substance found in un-scavenged ruins on the
+seafloor and on which long-term life in the deep depends. A
+city of Bal Rochan's scale is, in plain terms, a sustained call
+on a finite resource, and the politics of Urouch access and
+stewardship are reputed to be among the most consequential
+internal matters of Nuunlaumud life. None of those politics are
+recorded here.
+
 _(How Bal Rochan is governed; what its internal divisions are;
 whether off-worlders or even archipelago Bayurindans are
 admitted, and under what protocols, are not yet recorded here.)_

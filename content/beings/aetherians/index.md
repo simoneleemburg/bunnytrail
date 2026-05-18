@@ -120,7 +120,14 @@ There is something on the floor of [[places/nuunlau|Nuunlau]] —
 one of the **older things**, the structures the older
 Nuunlaumud describe as pre-dating the drowning and as not the
 work of the surface civilisation — that emits the radioactive
-material the Aetherian body is congenial to. The Aetherians
+material the Aetherian body is congenial to. The substance has
+a Deep-Speech name: **[[concepts/urouch|Urouch]]** [[ds]], small
+black pellets with a distinct blue shine, found in
+un-scavenged ruins on the seafloor. No new Urouch has been
+made since the drowning; what is in circulation is what is
+left. _The radiance_ is the surface-friendly term for the
+phenomenon; _Urouch_ is the substance itself, in the deep's
+own word. The Aetherians
 come to it deliberately. At doses high enough to produce
 visions, out-of-body experiences, and the rest of the
 mind-altering effects, what is happening is not poisoning. It is
@@ -150,12 +157,13 @@ body is shaped, in part, to do. The decision in an Aetherian
 life is not whether they _can_ touch Naya but how often, how
 deep, in what company, and toward what end.
 
-_(What the Aetherians call the radiance, what they call the
-older things they go to, what they call the practice itself, and
-how their tradition of safe return is organised — by lineage, by
-elder teachers, by ritual cohort, by city — are not yet recorded
-here. The compendium would prefer Deep-Speech names for all of
-these and has none of them.)_
+_(The Aetherians have a Deep-Speech name for the substance —
+[[concepts/urouch|Urouch]] — but their names for the older
+things they go to, for the practice itself, and for the
+organisation of safe return — by lineage, by elder teachers,
+by ritual cohort, by city — are not yet recorded here. The
+compendium would prefer Deep-Speech names for all of these and
+has only the one.)_
 
 _(Whether the older Nuunlaumud share this practice — whether the
 older things were a Naya-doorway for them before the Aetherians

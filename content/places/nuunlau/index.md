@@ -76,9 +76,14 @@ it survived]].)
   [[beings/aetherians|Aetherians]] are uniquely congenial to,
   and that Aetherians come to them to **near**: contact with
   the [[beings/naya|Naya]] is, among the Aetherians, mediated
-  by going to the older things and coming back. (See
+  by going to the older things and coming back. The radiance
+  has a Deep-Speech name —
+  **[[concepts/urouch|Urouch]]** [[ds]] — and a physical form,
+  the small blue-shining black pellets the deep finds in
+  un-scavenged ruins. (See
   [[beings/aetherians#the-radiance-and-what-is-in-it|the
-radiance, and what is in it]].)
+radiance, and what is in it]] and
+  [[concepts/urouch|Urouch]].)
 
 ## Nuunlaumud settlements
 
