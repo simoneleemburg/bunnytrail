@@ -187,7 +187,7 @@
 			<g class="star" transform={`translate(${STAR_X} ${AXIS_Y})`}>
 				<circle class="star-glow" r="20" />
 				<circle class="star-body" r="9" />
-				<a href="/cosmology/stars/aureth">
+				<a href="/cosmology/celestial-bodies/stars/aureth">
 					<text class="star-label" y="40" text-anchor="middle">Aureth</text>
 				</a>
 			</g>
@@ -268,7 +268,7 @@
 
 				<!-- The Dark Companion: drawn as a dashed empty circle,
 				     a hollow where a body should be. Linked to its entry. -->
-				<a href="/cosmology/black-holes/the-dark-companion">
+				<a href="/cosmology/celestial-bodies/black-holes/the-dark-companion">
 					<g class="dark-companion" transform={`translate(${DARK_COMPANION_X} ${AXIS_Y})`}>
 						<circle class="dark-halo" r="22" />
 						<circle class="dark-ring" r="11" />
@@ -298,7 +298,7 @@
 		form on <a href="/cosmology/asthera">Asthera</a> and resonate as identity, memory and meaning on
 		<a href="/cosmology/nareth">Nareth</a>. Across the long gulf, the neighbouring Hollow Binary
 		turns around something the eye cannot resolve:
-		<a href="/cosmology/black-holes/the-dark-companion">the Dark Companion</a>.
+		<a href="/cosmology/celestial-bodies/black-holes/the-dark-companion">the Dark Companion</a>.
 	</figcaption>
 </figure>
 

@@ -302,7 +302,9 @@ async function seedHierarchyContent(): Promise<string> {
 		'The bodies that hang in the dark.'
 	);
 
-	// content/cosmology/stars/ — subtype, parented at celestial-body.
+	// content/cosmology/stars/ — sibling subtype, parented at celestial-body.
+	// (In the test fixture we keep it as a sibling rather than nested, since
+	// either layout works; the real repo nests under cosmology/celestial-bodies.)
 	await mkdir(join(dir, 'cosmology', 'stars', 'aureth'), { recursive: true });
 	await writeFile(
 		join(dir, 'cosmology', 'stars', '_type.yaml'),
