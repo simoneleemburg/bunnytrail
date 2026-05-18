@@ -7,6 +7,8 @@ role: Oracle of Interpretation
 summary: Oracle of the threefold Triad, holder of Interpretation — the extraction of meaning from resonant signal.
 tags: [oracle, oracle-triad, interpretation]
 relations:
+  - kind: is-a
+    target: beings/serpent-humanoids
   - kind: serves-in
     target: culture/knights-of-bellona
     note: As serving Oracle of Interpretation in the Triad.

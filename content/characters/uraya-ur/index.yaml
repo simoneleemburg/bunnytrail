@@ -7,6 +7,8 @@ role: Oracle of Witnessing
 summary: Oracle of the threefold Triad, holder of Witnessing — the perception of pattern across recurrence, collapse, and re-emergence.
 tags: [oracle, oracle-triad, witnessing]
 relations:
+  - kind: is-a
+    target: beings/naya
   - kind: serves-in
     target: culture/knights-of-bellona
     note: As serving Oracle of Witnessing in the Triad.
