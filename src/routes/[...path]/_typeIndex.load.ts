@@ -48,9 +48,19 @@ export function loadTypeIndex(type: EntityType) {
 			// entities, so the page-level kind filter can hide /
 			// re-count subtype tiles in sync with the rest.
 			const kindCounts: Record<string, number> = {};
+			// Tag aggregation: overall counts, plus per-kind counts
+			// so the tile can show kind-filtered tags when the page
+			// kind filter is active. Each map: tag -> entity count.
+			const tagCounts = new Map<string, number>();
+			const tagsByKind: Record<string, Map<string, number>> = {};
 			for (const e of subEntities) {
 				const k = typeof e.meta.kind === 'string' ? e.meta.kind : '—';
 				kindCounts[k] = (kindCounts[k] ?? 0) + 1;
+				const kindMap = (tagsByKind[k] ??= new Map<string, number>());
+				for (const t of e.meta.tags ?? []) {
+					tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
+					kindMap.set(t, (kindMap.get(t) ?? 0) + 1);
+				}
 			}
 			return {
 				type: sub.type,
@@ -58,7 +68,11 @@ export function loadTypeIndex(type: EntityType) {
 				plural: sub.labels.plural,
 				description: sub.description,
 				count: subEntities.length,
-				kindCounts
+				kindCounts,
+				tags: rankTags(tagCounts),
+				tagsByKind: Object.fromEntries(
+					Object.entries(tagsByKind).map(([k, m]) => [k, rankTags(m)])
+				)
 			};
 		})
 		.sort((a, b) => a.plural.localeCompare(b.plural));
@@ -140,6 +154,17 @@ function labelForType(type: EntityType): string {
 	} catch {
 		return type;
 	}
+}
+
+/**
+ * Convert a tag-count map into a sorted array. Sort is by count
+ * descending, breaking ties alphabetically — so the most-used tags
+ * lead, with stable order for equally-common ones.
+ */
+function rankTags(counts: Map<string, number>): Array<{ label: string; count: number }> {
+	return [...counts.entries()]
+		.map(([label, count]) => ({ label, count }))
+		.sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
 }
 
 function toCard(

@@ -2,19 +2,29 @@
 	import type { TypeIndexData, ContainerNode } from './_typeIndex.load';
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
+	import Tag from '$lib/components/Tag.svelte';
 
 	let { data }: { data: TypeIndexData } = $props();
 
-	// Two orthogonal UI states:
+	// Display caps for tags. Subtype tiles get a tight cap to keep
+	// the tile compact; the page-level filter starts collapsed at
+	// FILTER_TOP_N and reveals the rest behind a "show all" toggle.
+	const SUBTYPE_TAG_CAP = 6;
+	const FILTER_TOP_N = 8;
+
+	// Three orthogonal UI states:
 	//   • view-mode: nested (containers shown with children) vs flat
-	//     (all entities at the same level, no nesting visible)
 	//   • kind-filter: shows only entities of a given `kind` field
+	//   • tag-filter: multi-select, AND semantics — an entity must
+	//     have *every* selected tag to remain visible
 	//
-	// Both apply at the same time and reset on navigation (per-page
-	// local state only).
+	// All three apply at the same time and reset on navigation
+	// (per-page local state only).
 	type ViewMode = 'nested' | 'flat';
 	let viewMode = $state<ViewMode>('nested');
 	let activeKind = $state<string | null>(null);
+	let activeTags = $state<Set<string>>(new Set());
+	let showAllTags = $state(false);
 
 	const hasContainers = $derived(data.containers.length > 0);
 	const hasSubtypes = $derived(data.subtypes.length > 0);
@@ -36,46 +46,122 @@
 		return (card.kind ?? '—') === activeKind;
 	}
 
-	// Subtype tiles only show in nested mode, and their counts /
-	// visibility follow the active kind filter: a subtype with zero
-	// entities of the active kind is hidden entirely.
+	function matchesTags(card: { tags: string[] }): boolean {
+		if (activeTags.size === 0) return true;
+		for (const t of activeTags) {
+			if (!card.tags.includes(t)) return false;
+		}
+		return true;
+	}
+
+	function matchesFilters(card: { kind: string | null; tags: string[] }): boolean {
+		return matchesKind(card) && matchesTags(card);
+	}
+
+	// Tags available for the page-level filter row: aggregated from
+	// every entity currently passing the *kind* filter. We deliberately
+	// don't intersect with active tags here, so the user can see what
+	// other tags would narrow further (with their projected counts
+	// under both filters applied together).
+	const availableTags = $derived.by(() => {
+		const counts = new Map<string, number>();
+		for (const e of data.flat) {
+			if (!matchesKind(e)) continue;
+			// Count under combined active-tag filter too — so the user
+			// sees what each tag *adds* to the current selection.
+			if (!matchesTags(e)) continue;
+			for (const t of e.tags) {
+				counts.set(t, (counts.get(t) ?? 0) + 1);
+			}
+		}
+		// Active tags are always present in the row even if their
+		// own count under the current selection equals the whole
+		// visible set — they need to be clickable to deselect.
+		for (const t of activeTags) {
+			if (!counts.has(t)) counts.set(t, 0);
+		}
+		return [...counts.entries()]
+			.map(([label, count]) => ({ label, count }))
+			.sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+	});
+
+	const visibleFilterTags = $derived(
+		showAllTags ? availableTags : availableTags.slice(0, FILTER_TOP_N)
+	);
+	const hiddenTagCount = $derived(Math.max(0, availableTags.length - FILTER_TOP_N));
+
+	function toggleTag(label: string) {
+		const next = new Set(activeTags);
+		if (next.has(label)) next.delete(label);
+		else next.add(label);
+		activeTags = next;
+	}
+
+	function clearTags() {
+		activeTags = new Set();
+	}
+
+	// Subtype tiles only show in nested mode. Their counts, visibility
+	// and displayed tags all follow the active kind + tag filters: a
+	// subtype with zero matching entities is hidden entirely.
 	const visibleSubtypes = $derived.by(() => {
 		if (viewMode !== 'nested') return [];
 		return data.subtypes
 			.map((sub) => {
-				const count =
+				// Re-derive count + tag list under the current filters.
+				// Kind narrows first; tag narrows the count further by
+				// requiring every active tag to appear under that kind.
+				const baseTags =
+					activeKind === null ? sub.tags : (sub.tagsByKind[activeKind] ?? []);
+				const visibleCount =
 					activeKind === null ? sub.count : (sub.kindCounts[activeKind] ?? 0);
-				return { ...sub, visibleCount: count };
+				let filteredCount = visibleCount;
+				let displayTags = baseTags;
+				if (activeTags.size > 0) {
+					// Approximate: drop tags that don't co-occur with
+					// every active tag. We don't have per-tag-pair
+					// counts so we leave the count alone if any active
+					// tag is missing entirely (hides the tile).
+					const present = new Set(baseTags.map((t) => t.label));
+					for (const t of activeTags) {
+						if (!present.has(t)) {
+							filteredCount = 0;
+							break;
+						}
+					}
+					// Don't repeat active tags inside the tile.
+					displayTags = baseTags.filter((t) => !activeTags.has(t.label));
+				}
+				return {
+					...sub,
+					visibleCount: filteredCount,
+					displayTags: displayTags.slice(0, SUBTYPE_TAG_CAP)
+				};
 			})
 			.filter((sub) => sub.visibleCount > 0);
 	});
 
-	// View-model for a rendered container row. `containerMatches`
-	// drives whether to render the full EntityCard or just a small
-	// "Within X" stub (kept so descendants below still have context).
 	type RenderNode = {
 		container: ContainerNode['container'];
 		containerMatches: boolean;
 		children: RenderNode[];
 	};
 
-	// Recursively filter a container node by the active kind, keeping
-	// any node where the container itself matches OR any descendant
-	// matches. Returns null when the entire subtree is hidden.
+	// Recursively filter a container node by the active kind+tag
+	// filters, keeping any node where the container itself matches OR
+	// any descendant matches. Returns null when the entire subtree is
+	// hidden.
 	function filterNode(node: ContainerNode): RenderNode | null {
 		const children = node.children
 			.map(filterNode)
 			.filter((c): c is RenderNode => c !== null);
-		const containerMatches = matchesKind(node.container);
+		const containerMatches = matchesFilters(node.container);
 		if (!containerMatches && children.length === 0) return null;
 		return { container: node.container, containerMatches, children };
 	}
 
-	// In nested mode the visible grid is just the standalone entities
-	// (containers + nested children are shown separately, above).
-	// In flat mode it's the full list.
 	const visibleGrid = $derived(
-		(viewMode === 'flat' ? data.flat : data.standalone).filter(matchesKind)
+		(viewMode === 'flat' ? data.flat : data.standalone).filter(matchesFilters)
 	);
 
 	const visibleContainers = $derived.by(() => {
@@ -148,6 +234,48 @@
 		</nav>
 	{/if}
 
+	{#if availableTags.length > 0}
+		<nav class="tag-filter" aria-label="Filter by tag">
+			<span class="tag-filter-label">Tags</span>
+			<ul class="tag-filter-list">
+				{#each visibleFilterTags as tag (tag.label)}
+					<li>
+						<button
+							type="button"
+							class="tag-chip"
+							class:active={activeTags.has(tag.label)}
+							onclick={() => toggleTag(tag.label)}
+							aria-pressed={activeTags.has(tag.label)}
+						>
+							{tag.label}<span class="tag-chip-count">{tag.count}</span>
+						</button>
+					</li>
+				{/each}
+				{#if hiddenTagCount > 0 && !showAllTags}
+					<li>
+						<button type="button" class="tag-more" onclick={() => (showAllTags = true)}>
+							+{hiddenTagCount} more
+						</button>
+					</li>
+				{/if}
+				{#if showAllTags && availableTags.length > FILTER_TOP_N}
+					<li>
+						<button type="button" class="tag-more" onclick={() => (showAllTags = false)}>
+							show fewer
+						</button>
+					</li>
+				{/if}
+				{#if activeTags.size > 0}
+					<li>
+						<button type="button" class="tag-clear" onclick={clearTags}>
+							clear
+						</button>
+					</li>
+				{/if}
+			</ul>
+		</nav>
+	{/if}
+
 	{#if visibleSubtypes.length > 0}
 		<section class="subtypes" aria-label="Subtypes">
 			<ul class="subtype-list">
@@ -162,6 +290,13 @@
 						</a>
 						{#if sub.description}
 							<p class="subtype-description">{sub.description}</p>
+						{/if}
+						{#if sub.displayTags.length > 0}
+							<ul class="subtype-tags">
+								{#each sub.displayTags as tag (tag.label)}
+									<li><Tag label={tag.label} href={`/tags/${tag.label}`} /></li>
+								{/each}
+							</ul>
 						{/if}
 					</li>
 				{/each}
@@ -381,6 +516,98 @@
 		font-size: var(--text-sm);
 		color: var(--ink-soft);
 		line-height: var(--leading-normal);
+	}
+
+	.subtype-tags {
+		list-style: none;
+		padding: 0;
+		margin: var(--space-3) 0 0 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-1) var(--space-2);
+		/* Lift tag links above the subtype-link::after overlay so they
+		   are independently clickable. */
+		position: relative;
+		z-index: 2;
+	}
+
+	.tag-filter {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: var(--space-2) var(--space-3);
+		margin: 0 0 var(--space-6) 0;
+	}
+
+	.tag-filter-label {
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-sm);
+		color: var(--ink-faint);
+	}
+
+	.tag-filter-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-1) var(--space-3);
+	}
+
+	.tag-chip {
+		appearance: none;
+		background: transparent;
+		border: 0;
+		padding: 0 var(--space-2);
+		font-family: var(--font-serif);
+		font-size: var(--text-xs);
+		font-variant: small-caps;
+		letter-spacing: 0.06em;
+		color: var(--ink-soft);
+		cursor: pointer;
+		line-height: 1.6;
+		border-bottom: 1px solid var(--rule);
+	}
+
+	.tag-chip:hover {
+		color: var(--accent);
+		border-bottom-color: var(--accent-soft);
+	}
+
+	.tag-chip.active {
+		color: var(--ink);
+		border-bottom-color: var(--ink);
+	}
+
+	.tag-chip-count {
+		display: inline-block;
+		margin-left: 0.35em;
+		font-variant: tabular-nums;
+		color: var(--ink-faint);
+	}
+
+	.tag-chip.active .tag-chip-count {
+		color: var(--ink-soft);
+	}
+
+	.tag-more,
+	.tag-clear {
+		appearance: none;
+		background: transparent;
+		border: 0;
+		padding: 0;
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-xs);
+		color: var(--ink-faint);
+		cursor: pointer;
+		line-height: 1.6;
+	}
+
+	.tag-more:hover,
+	.tag-clear:hover {
+		color: var(--accent);
 	}
 
 	.containers {
