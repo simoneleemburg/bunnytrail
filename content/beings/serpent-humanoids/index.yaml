@@ -2,3 +2,6 @@ name: Serpent-Humanoids
 kind: mortal
 summary: A rare lineage of serpentine-bodied peoples native to the liminal, water-adjacent civilisations of Asthera. Their numbers are small; their homelands and traditions are not yet recorded in the compendium beyond what individual members carry with them.
 tags: [asthera, liminal, water-adjacent, gap-noted]
+relations:
+  - kind: native-to
+    target: places/bayurinda
