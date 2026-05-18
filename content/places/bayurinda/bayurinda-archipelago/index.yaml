@@ -5,6 +5,6 @@ summary: The principal above-water region of Bayurinda — caves below, rebuilda
 aliases: [Bayurinda Archipelago, The Archipelago]
 tags: [archipelago, ocean, storms, caves, contact, diplomatic-face]
 relations:
-  - kind: located-in
+  - kind: region-of
     target: places/bayurinda
     note: The principal above-water region of the planet.

@@ -16,6 +16,6 @@ tags:
     naya-contact
   ]
 relations:
-  - kind: located-in
+  - kind: native-to
     target: places/bayurinda/nuunlau
     note: The populous majority of the deep-water region.

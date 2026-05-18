@@ -5,6 +5,6 @@ summary: The deep-water region of [[places/bayurinda|Bayurinda]] — the long, l
 aliases: [the Deep]
 tags: [ocean, deep-water, inscriptions, custodians]
 relations:
-  - kind: located-in
+  - kind: region-of
     target: places/bayurinda
     note: The deep-water counterpart to the archipelago — the other half of Bayurinda.
