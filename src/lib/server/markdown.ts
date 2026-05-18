@@ -99,3 +99,65 @@ export function renderEntityBody(
 ): string {
 	return renderBody(entity.body, knownIds, languageCodes);
 }
+
+/**
+ * Render a one-line summary as inline HTML.
+ *
+ * Summaries are single-line, no-block-element strings used in
+ * page subtitles and entity cards. They may contain markdown
+ * italics, em-dashes, `[label](/href)` links, `[[type/slug]]`
+ * wikilinks, and `[[code]]` language tags. They MAY NOT contain
+ * block-level constructs (paragraphs, lists, headings); those
+ * are silently flattened by `parseInline`.
+ *
+ * Pass `stripLinks: true` for contexts where the summary is
+ * already inside an anchor (e.g. EntityCard, which wraps the
+ * whole card in `<a>`); links become their plain-text label, and
+ * language-tag superscripts shed their inner anchor too, to
+ * avoid invalid nested-anchor HTML.
+ */
+export function renderSummary(
+	summary: string,
+	knownIds: Set<EntityId>,
+	languageCodes: Map<string, EntityId> = new Map(),
+	options: { stripLinks?: boolean } = {}
+): string {
+	const { stripLinks = false } = options;
+
+	// Same two-pass rewrite as renderBody: language tags first, then
+	// entity wikilinks to plain markdown links.
+	const withLangTags = summary.replace(/\[\[([a-z]{2,8})\]\]/g, (_, code: string) => {
+		const id = languageCodes.get(code);
+		if (id) {
+			if (stripLinks) {
+				return `<sup class="lang-tag" title="language: ${code}">${code}</sup>`;
+			}
+			const [type, slug] = id.split('/');
+			return `<sup class="lang-tag"><a href="/${type}/${slug}" title="language: ${code}">${code}</a></sup>`;
+		}
+		return `<sup class="lang-tag" data-broken="true" title="unknown language code: ${code}">${code}</sup>`;
+	});
+
+	const rewritten = withLangTags.replace(
+		/\[\[([a-z]+)\/([a-z0-9-]+)(?:\|([^\]]+))?\]\]/g,
+		(_, type: string, slug: string, label?: string) => {
+			const text = label ?? slug.replace(/-/g, ' ');
+			if (stripLinks) return text;
+			const id = `${type}/${slug}`;
+			const broken = knownIds.has(id) ? '' : ' "broken-link"';
+			return `[${text}](/${type}/${slug}${broken})`;
+		}
+	);
+
+	let html = marked.parseInline(rewritten, { async: false }) as string;
+	html = html.replace(/title="broken-link"/g, 'data-broken="true"');
+
+	if (stripLinks) {
+		// Replace any remaining <a …>label</a> (from markdown links in
+		// the source) with just the label. parseInline preserves these,
+		// and we can't wrap an <a> in another <a>.
+		html = html.replace(/<a\b[^>]*>([\s\S]*?)<\/a>/gi, '$1');
+	}
+
+	return html;
+}

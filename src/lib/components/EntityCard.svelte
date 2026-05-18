@@ -7,11 +7,27 @@
 		type: string;
 		kind?: string | null;
 		summary?: string | null;
+		/**
+		 * Summary as inline HTML, pre-rendered via `renderSummary` with
+		 * `stripLinks: true` (the card is wrapped in an <a>, so nested
+		 * anchors aren't permitted). Prefer this; `summary` is kept as
+		 * a fallback.
+		 */
+		summaryHtml?: string | null;
 		tags?: string[];
 		era?: string | null;
 	}
 
-	let { id, name, type, kind = null, summary = null, tags = [], era = null }: Props = $props();
+	let {
+		id,
+		name,
+		type,
+		kind = null,
+		summary = null,
+		summaryHtml = null,
+		tags = [],
+		era = null
+	}: Props = $props();
 </script>
 
 <a class="entity-card" href={`/${id}`}>
@@ -24,7 +40,9 @@
 		{/if}
 	</div>
 	<h3 class="name">{name}</h3>
-	{#if summary}
+	{#if summaryHtml}
+		<p class="summary">{@html summaryHtml}</p>
+	{:else if summary}
 		<p class="summary">{summary}</p>
 	{/if}
 	{#if tags.length > 0}

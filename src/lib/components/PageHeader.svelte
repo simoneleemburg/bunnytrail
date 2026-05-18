@@ -2,6 +2,13 @@
 	interface Props {
 		title: string;
 		eyebrow?: string;
+		/**
+		 * Subtitle as inline HTML, pre-rendered on the server via
+		 * `renderSummary`. Prefer this; `subtitle` (plain text) is kept
+		 * as a fallback for callers that don't go through the markdown
+		 * pipeline.
+		 */
+		subtitleHtml?: string | null;
 		subtitle?: string;
 		/**
 		 * Optional language tag rendered as a small superscript anchor
@@ -11,7 +18,7 @@
 		language?: { code: string; href: string; broken?: boolean };
 	}
 
-	let { title, eyebrow, subtitle, language }: Props = $props();
+	let { title, eyebrow, subtitle, subtitleHtml, language }: Props = $props();
 </script>
 
 <header class="page-header">
@@ -24,7 +31,9 @@
 			>{/if}
 	</h1>
 	<div class="double-rule"></div>
-	{#if subtitle}
+	{#if subtitleHtml}
+		<p class="subtitle">{@html subtitleHtml}</p>
+	{:else if subtitle}
 		<p class="subtitle">{subtitle}</p>
 	{/if}
 </header>

@@ -73,7 +73,7 @@
 	<PageHeader
 		eyebrow={data.entity.kind ?? data.typeLabel.singular}
 		title={data.entity.name}
-		subtitle={data.entity.summary ?? undefined}
+		subtitleHtml={data.entity.summaryHtml}
 		language={data.language ?? undefined}
 	/>
 

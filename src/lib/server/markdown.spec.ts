@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { renderBody } from './markdown';
+import { renderBody, renderSummary } from './markdown';
 
 describe('renderBody', () => {
 	const known = new Set<string>(['characters/kael', 'places/duskmere']);
@@ -70,5 +70,61 @@ describe('renderBody', () => {
 	it('strips diacritics and punctuation when slugifying headings', () => {
 		const html = renderBody('## Bayurinda — drowned, but not silent', known, langs);
 		expect(html).toContain('id="bayurinda-drowned-but-not-silent"');
+	});
+});
+
+describe('renderSummary', () => {
+	const known = new Set<string>(['characters/kael', 'places/duskmere']);
+	const langs = new Map<string, string>([['ot', 'languages/old-tongue']]);
+
+	it('renders markdown italics inline', () => {
+		const html = renderSummary('The word _Naya_ is Bayurindan.', known, langs);
+		expect(html).toContain('<em>Naya</em>');
+	});
+
+	it('does not wrap the summary in a <p>', () => {
+		const html = renderSummary('A short summary.', known, langs);
+		expect(html).not.toContain('<p>');
+		expect(html).toBe('A short summary.');
+	});
+
+	it('renders wikilinks as anchors when stripLinks is false', () => {
+		const html = renderSummary('See [[characters/kael]] for context.', known, langs);
+		expect(html).toContain('<a href="/characters/kael">kael</a>');
+	});
+
+	it('renders language tags as superscript anchors when stripLinks is false', () => {
+		const html = renderSummary('A word [[ot]] in passing.', known, langs);
+		expect(html).toContain('<sup class="lang-tag">');
+		expect(html).toContain('<a href="/languages/old-tongue"');
+	});
+
+	it('strips wikilinks to their label text when stripLinks is true', () => {
+		const html = renderSummary('See [[characters/kael|Kael]] for context.', known, langs, {
+			stripLinks: true
+		});
+		expect(html).toContain('Kael');
+		expect(html).not.toContain('<a ');
+	});
+
+	it('strips markdown links to their label when stripLinks is true', () => {
+		const html = renderSummary('A language of [Alteria Cognita](/cognita).', known, langs, {
+			stripLinks: true
+		});
+		expect(html).toContain('Alteria Cognita');
+		expect(html).not.toContain('<a ');
+		expect(html).not.toContain('/cognita');
+	});
+
+	it('strips the anchor from language tags when stripLinks is true', () => {
+		const html = renderSummary('A word [[ot]] in passing.', known, langs, { stripLinks: true });
+		expect(html).toContain('<sup class="lang-tag"');
+		expect(html).toContain('>ot</sup>');
+		expect(html).not.toContain('<a ');
+	});
+
+	it('marks unknown wikilinks as broken', () => {
+		const html = renderSummary('See [[characters/nobody]].', known, langs);
+		expect(html).toContain('data-broken="true"');
 	});
 });

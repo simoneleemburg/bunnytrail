@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
 import { graph } from '$lib/server/graph';
-import { renderEntityBody } from '$lib/server/markdown';
+import { renderEntityBody, renderSummary } from '$lib/server/markdown';
 import type { EntityType } from '$lib/types';
 
 export async function load({ params }) {
@@ -17,6 +17,14 @@ export async function load({ params }) {
 	const languageCodes = graph.languageCodes();
 	const html = renderEntityBody(entity, known, languageCodes);
 
+	// Helpers that close over known/languageCodes so callers can just
+	// pass a summary string. `stripLinks: true` for EntityCard
+	// summaries, which render inside a wrapping <a>.
+	const summaryHtml = (s: string | null | undefined) =>
+		s ? renderSummary(s, known, languageCodes) : null;
+	const cardSummaryHtml = (s: string | null | undefined) =>
+		s ? renderSummary(s, known, languageCodes, { stripLinks: true }) : null;
+
 	// Resolve the entity's own name-language tag, if any. Missing or
 	// unknown codes are surfaced as a broken-link styled tag so the
 	// inconsistency is visible rather than silently swallowed.
@@ -32,11 +40,11 @@ export async function load({ params }) {
 
 	const outEdges = graph.outEdges(id).map((e) => ({
 		...e,
-		toEntity: pickCard(graph.get(e.to))
+		toEntity: pickCard(graph.get(e.to), cardSummaryHtml)
 	}));
 	const inEdges = graph.inEdges(id).map((e) => ({
 		...e,
-		fromEntity: pickCard(graph.get(e.from))
+		fromEntity: pickCard(graph.get(e.from), cardSummaryHtml)
 	}));
 
 	// Hide synthetic top-level keys from the property list sidebar.
@@ -67,6 +75,7 @@ export async function load({ params }) {
 			slug: entity.slug,
 			name: entity.meta.name,
 			summary: entity.meta.summary ?? null,
+			summaryHtml: summaryHtml(entity.meta.summary),
 			aliases: entity.meta.aliases ?? [],
 			tags: entity.meta.tags ?? [],
 			kind: typeof entity.meta.kind === 'string' ? entity.meta.kind : null
@@ -79,13 +88,17 @@ export async function load({ params }) {
 	};
 }
 
-function pickCard(e: ReturnType<typeof graph.get>) {
+function pickCard(
+	e: ReturnType<typeof graph.get>,
+	cardSummaryHtml: (s: string | null | undefined) => string | null
+) {
 	if (!e) return null;
 	return {
 		id: e.id,
 		type: e.type,
 		slug: e.slug,
 		name: e.meta.name,
-		summary: e.meta.summary ?? null
+		summary: e.meta.summary ?? null,
+		summaryHtml: cardSummaryHtml(e.meta.summary)
 	};
 }

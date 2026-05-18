@@ -28,7 +28,7 @@
 				name={entity.name}
 				type={data.label.singular}
 				kind={entity.kind}
-				summary={entity.summary}
+				summaryHtml={entity.summaryHtml}
 				tags={entity.tags}
 				era={entity.era}
 			/>
