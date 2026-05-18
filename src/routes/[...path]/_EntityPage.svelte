@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { EntityPageData } from './_entityPage.load';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import PropertyList from '$lib/components/PropertyList.svelte';
 	import EntityLink from '$lib/components/EntityLink.svelte';
 	import Tag from '$lib/components/Tag.svelte';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: { data: EntityPageData } = $props();
 
 	type EdgeWithEntity = {
 		kind: string;
@@ -84,6 +84,29 @@
 	<div class="layout">
 		<div class="prose">
 			{@html data.html}
+
+			{#if data.childGroups.length > 0}
+				<section class="children" aria-label="Contents">
+					{#each data.childGroups as group (group.type)}
+						<h2 class="children-heading">
+							{group.label.plural} within {data.entity.name}
+						</h2>
+						<ul class="child-list">
+							{#each group.entities as child (child.id)}
+								<li class="child">
+									<a href={`/${child.id}`} class="child-link">
+										<span class="child-name">{child.name}</span>
+										{#if child.kind}<span class="child-kind">{child.kind}</span>{/if}
+									</a>
+									{#if child.summaryHtml}
+										<p class="child-summary">{@html child.summaryHtml}</p>
+									{/if}
+								</li>
+							{/each}
+						</ul>
+					{/each}
+				</section>
+			{/if}
 		</div>
 
 		<aside class="sidebar">
@@ -262,5 +285,74 @@
 	.note {
 		color: var(--ink-faint);
 		font-style: italic;
+	}
+
+	.children {
+		margin-top: var(--space-7);
+		padding-top: var(--space-5);
+		border-top: var(--rule-thin);
+	}
+
+	.children-heading {
+		font-family: var(--font-display);
+		font-size: var(--text-lg);
+		font-weight: 500;
+		color: var(--ink);
+		margin: 0 0 var(--space-4) 0;
+	}
+
+	.children-heading:not(:first-child) {
+		margin-top: var(--space-6);
+	}
+
+	.child-list {
+		list-style: none;
+		padding: 0;
+		margin: 0 0 var(--space-5) 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+	}
+
+	.child {
+		padding-top: var(--space-3);
+		border-top: 1px solid var(--rule);
+	}
+
+	.child:first-child {
+		border-top: 0;
+		padding-top: 0;
+	}
+
+	.child-link {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-3);
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.child-link:hover .child-name {
+		color: var(--accent);
+	}
+
+	.child-name {
+		font-family: var(--font-display);
+		font-size: var(--text-base);
+		color: var(--ink);
+	}
+
+	.child-kind {
+		font-size: var(--text-xs);
+		font-variant: small-caps;
+		letter-spacing: 0.08em;
+		color: var(--ink-faint);
+	}
+
+	.child-summary {
+		margin: var(--space-1) 0 0 0;
+		color: var(--ink-soft);
+		font-size: var(--text-sm);
+		line-height: var(--leading-normal);
 	}
 </style>

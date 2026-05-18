@@ -2,6 +2,13 @@ import { marked } from 'marked';
 import type { Entity, EntityId } from '$lib/types';
 
 /**
+ * A function that resolves a wikilink path (as written in prose) to
+ * a canonical entity id, or `null` if the link cannot be resolved
+ * (missing or ambiguous). See `resolveWikilink` in `loader.ts`.
+ */
+export type LinkResolver = (rawPath: string) => EntityId | null;
+
+/**
  * Slugify a heading's text content into an anchor-safe id.
  *
  * Lowercase, ASCII-fold diacritics, collapse non-alphanumerics to
@@ -20,9 +27,11 @@ function slugifyHeading(text: string): string {
 /**
  * Render a markdown body to HTML, converting:
  *
- *   • `[[type/slug]]` and `[[type/slug|label]]` — entity wikilinks.
- *     Links to entities not in the graph get a `data-broken="true"`
- *     attribute so the UI can style them.
+ *   • `[[type/slug]]`, `[[type/sub/slug]]`, `[[…/slug|label]]` —
+ *     entity wikilinks. The path is resolved through `resolveLink`,
+ *     which performs exact + suffix matching so wikilinks survive
+ *     entity moves along the filesystem tree. Unresolved links get
+ *     a `data-broken="true"` attribute so the UI can style them.
  *   • `[[<code>]]` — inline language tags, where `<code>` is a short
  *     lowercase code defined on an entity in the `languages` type
  *     (e.g. `[[ot]]` for the Old Tongue). Rendered as a small
@@ -37,7 +46,7 @@ function slugifyHeading(text: string): string {
  */
 export function renderBody(
 	body: string,
-	knownIds: Set<EntityId>,
+	resolveLink: LinkResolver,
 	languageCodes: Map<string, EntityId> = new Map()
 ): string {
 	// Process inline language tags first. The regex deliberately
@@ -46,22 +55,25 @@ export function renderBody(
 	const withLangTags = body.replace(/\[\[([a-z]{2,8})\]\]/g, (whole, code: string) => {
 		const id = languageCodes.get(code);
 		if (id) {
-			const [type, slug] = id.split('/');
-			return `<sup class="lang-tag"><a href="/${type}/${slug}" title="language: ${code}">${code}</a></sup>`;
+			return `<sup class="lang-tag"><a href="/${id}" title="language: ${code}">${code}</a></sup>`;
 		}
 		return `<sup class="lang-tag" data-broken="true" title="unknown language code: ${code}">${code}</sup>`;
 	});
 
 	// Rewrite entity wikilinks to plain markdown links before handing
 	// off to marked, so that we get correct paragraph / list handling
-	// for free.
+	// for free. Accepts paths of any depth (e.g.
+	// `[[culture/languages/tholingian]]`).
 	const rewritten = withLangTags.replace(
-		/\[\[([a-z]+)\/([a-z0-9-]+)(?:\|([^\]]+))?\]\]/g,
-		(_, type: string, slug: string, label?: string) => {
-			const id = `${type}/${slug}`;
+		/\[\[([a-z][a-z0-9-]*(?:\/[a-z0-9-]+)+)(?:\|([^\]]+))?\]\]/g,
+		(_, path: string, label?: string) => {
+			const resolved = resolveLink(path);
+			const slug = path.slice(path.lastIndexOf('/') + 1);
 			const text = label ?? slug.replace(/-/g, ' ');
-			const broken = knownIds.has(id) ? '' : ' "broken-link"';
-			return `[${text}](/${type}/${slug}${broken})`;
+			if (resolved) {
+				return `[${text}](/${resolved})`;
+			}
+			return `[${text}](/${path} "broken-link")`;
 		}
 	);
 
@@ -94,10 +106,10 @@ export function renderBody(
 /** Convenience for entity bodies. */
 export function renderEntityBody(
 	entity: Entity,
-	knownIds: Set<EntityId>,
+	resolveLink: LinkResolver,
 	languageCodes: Map<string, EntityId> = new Map()
 ): string {
-	return renderBody(entity.body, knownIds, languageCodes);
+	return renderBody(entity.body, resolveLink, languageCodes);
 }
 
 /**
@@ -118,7 +130,7 @@ export function renderEntityBody(
  */
 export function renderSummary(
 	summary: string,
-	knownIds: Set<EntityId>,
+	resolveLink: LinkResolver,
 	languageCodes: Map<string, EntityId> = new Map(),
 	options: { stripLinks?: boolean } = {}
 ): string {
@@ -132,20 +144,20 @@ export function renderSummary(
 			if (stripLinks) {
 				return `<sup class="lang-tag" title="language: ${code}">${code}</sup>`;
 			}
-			const [type, slug] = id.split('/');
-			return `<sup class="lang-tag"><a href="/${type}/${slug}" title="language: ${code}">${code}</a></sup>`;
+			return `<sup class="lang-tag"><a href="/${id}" title="language: ${code}">${code}</a></sup>`;
 		}
 		return `<sup class="lang-tag" data-broken="true" title="unknown language code: ${code}">${code}</sup>`;
 	});
 
 	const rewritten = withLangTags.replace(
-		/\[\[([a-z]+)\/([a-z0-9-]+)(?:\|([^\]]+))?\]\]/g,
-		(_, type: string, slug: string, label?: string) => {
+		/\[\[([a-z][a-z0-9-]*(?:\/[a-z0-9-]+)+)(?:\|([^\]]+))?\]\]/g,
+		(_, path: string, label?: string) => {
+			const slug = path.slice(path.lastIndexOf('/') + 1);
 			const text = label ?? slug.replace(/-/g, ' ');
 			if (stripLinks) return text;
-			const id = `${type}/${slug}`;
-			const broken = knownIds.has(id) ? '' : ' "broken-link"';
-			return `[${text}](/${type}/${slug}${broken})`;
+			const resolved = resolveLink(path);
+			if (resolved) return `[${text}](/${resolved})`;
+			return `[${text}](/${path} "broken-link")`;
 		}
 	);
 

@@ -7,8 +7,8 @@ import type {
 	EntityTypeMeta,
 	HealthIssue
 } from '$lib/types';
-import { resolveTypeInfo } from '$lib/types';
-import { buildEdges, CONTENT_DIR, loadAll } from './loader';
+import { parentType, resolveTypeInfo } from '$lib/types';
+import { buildEdges, CONTENT_DIR, loadAll, resolveWikilink, typeOf } from './loader';
 
 /**
  * In-memory worldbuilding graph, built from the `content/` directory at boot
@@ -23,6 +23,7 @@ class Graph {
 	#inEdges = new Map<EntityId, Edge[]>();
 	#issues: HealthIssue[] = [];
 	#types: EntityType[] = [];
+	#typesSet = new Set<EntityType>();
 	#typeMeta = new Map<EntityType, EntityTypeMeta>();
 	#loaded = false;
 	#loading: Promise<void> | null = null;
@@ -38,6 +39,7 @@ class Graph {
 			this.#inEdges = edges.in;
 			this.#issues = issues;
 			this.#types = types;
+			this.#typesSet = new Set(types);
 			this.#typeMeta = typeMeta;
 			this.#loaded = true;
 		})();
@@ -64,17 +66,20 @@ class Graph {
 		return [...this.#entities.values()];
 	}
 
+	/** Direct entities of a type — does not include entities of subtypes. */
 	byType(type: EntityType): Entity[] {
 		return this.all().filter((e) => e.type === type);
 	}
 
+	/** Entities of this type plus all subtypes (recursive). */
+	byTypeRecursive(type: EntityType): Entity[] {
+		return this.all().filter((e) => e.type === type || e.type.startsWith(`${type}/`));
+	}
+
 	/**
-	 * All entity types discovered as subdirectories of `content/`, in the
-	 * order they were found (sorted alphabetically by the loader).
-	 *
-	 * Each entry is decorated with display labels, the description from
-	 * `_type.yaml` (if any), and a live count of entities so consumers (nav,
-	 * landing page, etc.) don't have to redo the work.
+	 * All type paths discovered (top-level + subtypes), each decorated
+	 * with display labels, the description from `_type.yaml` (if any),
+	 * and a live count of *direct* entities (not including subtypes).
 	 */
 	types(): (EntityTypeInfo & { count: number })[] {
 		return this.#types.map((type) => ({
@@ -83,13 +88,53 @@ class Graph {
 		}));
 	}
 
+	/** Only top-level types (no parent). */
+	topLevelTypes(): (EntityTypeInfo & { count: number })[] {
+		return this.types().filter((t) => t.parent === null);
+	}
+
+	/** Direct subtypes of a given type. */
+	subtypesOf(type: EntityType): (EntityTypeInfo & { count: number })[] {
+		return this.types().filter((t) => t.parent === type);
+	}
+
 	/** Resolved info for a single type, with defaults applied. */
 	typeInfo(type: EntityType): EntityTypeInfo {
 		return resolveTypeInfo(type, this.#typeMeta.get(type));
 	}
 
 	hasType(type: EntityType): boolean {
-		return this.#types.includes(type);
+		return this.#typesSet.has(type);
+	}
+
+	/** Resolve the type path of an entity id. */
+	typeOf(id: EntityId): EntityType | null {
+		return typeOf(id, this.#typesSet);
+	}
+
+	/** Child entities of an entity (filesystem-nested). */
+	children(id: EntityId): Entity[] {
+		const entity = this.#entities.get(id);
+		if (!entity) return [];
+		return entity.children.map((cid) => this.#entities.get(cid)).filter((e): e is Entity => !!e);
+	}
+
+	/** Parent entity, if this entity is filesystem-nested under one. */
+	parent(id: EntityId): Entity | null {
+		const entity = this.#entities.get(id);
+		if (!entity || !entity.parent) return null;
+		return this.#entities.get(entity.parent) ?? null;
+	}
+
+	/**
+	 * Resolve a wikilink path to a canonical entity id, with one
+	 * fallback step (suffix match). Returns `null` if the path is
+	 * missing or ambiguous; the markdown renderer treats both as
+	 * broken links.
+	 */
+	resolveLink(rawPath: string): EntityId | null {
+		const r = resolveWikilink(rawPath, this.#entities);
+		return r.id;
 	}
 
 	/** Outgoing edges from `id`. */
@@ -192,20 +237,29 @@ class Graph {
 
 	/**
 	 * Map from short language code to the language entity's id. Built
-	 * from the `code` field on each entity in the `languages` type.
+	 * from the `code` field on entities whose type matches the
+	 * `languages` collection — top-level `languages` or the subtype
+	 * `culture/languages`, whichever exists.
+	 *
 	 * Used by the markdown renderer to resolve `[[ot]]`-style inline
 	 * language tags.
 	 */
 	languageCodes(): Map<string, EntityId> {
 		const out = new Map<string, EntityId>();
-		for (const e of this.byType('languages')) {
-			const code = e.meta.code;
-			if (typeof code !== 'string' || !code) continue;
-			out.set(code, e.id);
+		const langTypes = this.#types.filter((t) => t === 'languages' || t.endsWith('/languages'));
+		for (const t of langTypes) {
+			for (const e of this.byType(t)) {
+				const code = e.meta.code;
+				if (typeof code !== 'string' || !code) continue;
+				out.set(code, e.id);
+			}
 		}
 		return out;
 	}
 }
+
+// Re-export for callers that want path utilities without reaching into types.
+export { parentType };
 
 /** Singleton graph instance. */
 export const graph = new Graph();

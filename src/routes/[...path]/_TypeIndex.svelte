@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { TypeIndexData } from './_typeIndex.load';
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: { data: TypeIndexData } = $props();
 
 	let activeKind = $state<string | null>(null);
 
@@ -31,6 +31,25 @@
 
 {#if data.description}
 	<p class="type-description">{data.description}</p>
+{/if}
+
+{#if data.subtypes.length > 0}
+	<section class="subtypes" aria-label="Subtypes">
+		<h2 class="subtypes-heading">Within {data.label.plural.toLowerCase()}</h2>
+		<ul class="subtype-list">
+			{#each data.subtypes as sub (sub.type)}
+				<li>
+					<a class="subtype-link" href={`/${sub.type}`}>
+						<span class="subtype-label">{sub.plural}</span>
+						<span class="subtype-count">{sub.count}</span>
+					</a>
+					{#if sub.description}
+						<p class="subtype-description">{sub.description}</p>
+					{/if}
+				</li>
+			{/each}
+		</ul>
+	</section>
 {/if}
 
 {#if data.entities.length === 0}
@@ -137,5 +156,64 @@
 
 	.filter.active .count {
 		color: var(--ink-soft);
+	}
+
+	.subtypes {
+		margin: 0 0 var(--space-7) 0;
+		padding-bottom: var(--space-5);
+		border-bottom: var(--rule-thin);
+	}
+
+	.subtypes-heading {
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-variant: small-caps;
+		letter-spacing: 0.08em;
+		font-weight: 500;
+		color: var(--ink-faint);
+		margin: 0 0 var(--space-3) 0;
+	}
+
+	.subtype-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+		gap: var(--space-4) var(--space-6);
+	}
+
+	.subtype-link {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-3);
+		color: inherit;
+		text-decoration: none;
+		border-bottom: 1px solid var(--rule);
+		padding-bottom: var(--space-1);
+	}
+
+	.subtype-link:hover .subtype-label {
+		color: var(--accent);
+	}
+
+	.subtype-label {
+		font-family: var(--font-display);
+		font-size: var(--text-lg);
+		color: var(--ink);
+	}
+
+	.subtype-count {
+		font-size: var(--text-xs);
+		font-variant: tabular-nums small-caps;
+		color: var(--ink-faint);
+	}
+
+	.subtype-description {
+		margin: var(--space-2) 0 0 0;
+		font-size: var(--text-sm);
+		color: var(--ink-soft);
+		line-height: var(--leading-normal);
 	}
 </style>

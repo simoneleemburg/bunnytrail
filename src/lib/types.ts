@@ -1,20 +1,32 @@
 /**
  * Core types for the Alteria worldbuilding graph.
  *
- * On disk, every entity is a pair of files:
- *   content/<type>/<slug>.yaml    — structured metadata (this file's shape)
- *   content/<type>/<slug>.md      — long-form prose (rendered as the page body)
+ * On disk, every entity lives in its own folder:
+ *   content/<...path>/<slug>/index.yaml — structured metadata (this file's shape)
+ *   content/<...path>/<slug>/index.md   — long-form prose (rendered as the page body)
  *
- * The id of an entity is `<type>/<slug>`. Slugs are kebab-case.
+ * Folders may nest to arbitrary depth. The shape of a folder is determined
+ * by which marker files it contains:
  *
- * Entity types are discovered at load time by scanning the immediate
- * subdirectories of `content/`. To add a new type, create a new folder —
- * no code change required.
+ *   - `_type.yaml` only          → a type container (or subtype container)
+ *   - `index.yaml`               → an entity (with optional `_type.yaml`,
+ *                                  which would declare its children's type)
+ *   - neither                    → an implicit grouping (allowed but rare)
+ *
+ * The id of an entity is its full path under `content/`, e.g.
+ * `culture/languages/tholingian` or `places/bayurinda/sharazan`. The id
+ * always ends in the entity's own slug; slugs are kebab-case. The
+ * entity's `type` is the path to the nearest enclosing `_type.yaml`.
+ *
+ * Entity types are discovered at load time by walking `content/`. To
+ * add a new type or subtype, create a folder with a `_type.yaml` in
+ * it — no code change required.
  */
 
 /**
- * The slug of a subdirectory under `content/`, used as both the URL segment
- * and the prefix of every entity id (`<type>/<slug>`).
+ * The slug-path of a type: a `/`-joined chain of folder names with a
+ * `_type.yaml`. Top-level types are a single segment (`characters`);
+ * subtypes are multi-segment (`culture/languages`).
  */
 export type EntityType = string;
 
@@ -44,27 +56,31 @@ export interface EntityTypeInfo {
 	type: EntityType;
 	labels: EntityTypeLabels;
 	description: string | null;
+	/** The parent type path, if this is a subtype. `null` for top-level types. */
+	parent: EntityType | null;
+	/** The depth of this type — 0 for top-level, 1 for one level of subtype, etc. */
+	depth: number;
 }
 
 /**
- * Derive display labels from a folder name.
+ * Derive display labels from a type path. We label on the *leaf* segment
+ * (the most specific part) and title-case it. Authors who want a
+ * different label can override via `_type.yaml`.
  *
- * The folder name is assumed to be a plural noun in kebab-case (e.g.
- * `characters`, `star-systems`). We title-case it for the plural form and
- * apply a tiny naive de-pluralizer for the singular form. Authors who want
- * a different label can override later via a content config file; for now
- * this heuristic is plenty.
+ * The leaf segment is assumed to be a plural noun in kebab-case (e.g.
+ * `characters`, `star-systems`, `languages`).
  */
 export function labelsFor(type: EntityType): EntityTypeLabels {
-	const plural = titleCase(type);
+	const leaf = leafSegment(type);
+	const plural = titleCase(leaf);
 	const singular = naiveSingular(plural);
 	return { singular, plural };
 }
 
 /**
- * Combine a type slug with optional author-supplied meta into a fully
- * resolved `EntityTypeInfo`. Missing labels fall back to the heuristic in
- * `labelsFor`.
+ * Combine a type path with optional author-supplied meta into a fully
+ * resolved `EntityTypeInfo`. Missing labels fall back to the heuristic
+ * in `labelsFor`.
  */
 export function resolveTypeInfo(
 	type: EntityType,
@@ -77,8 +93,23 @@ export function resolveTypeInfo(
 			singular: meta?.singular ?? defaults.singular,
 			plural: meta?.plural ?? defaults.plural
 		},
-		description: meta?.description ?? null
+		description: meta?.description ?? null,
+		parent: parentType(type),
+		depth: type.split('/').length - 1
 	};
+}
+
+/** The parent type path of a type, or `null` for top-level types. */
+export function parentType(type: EntityType): EntityType | null {
+	const idx = type.lastIndexOf('/');
+	if (idx < 0) return null;
+	return type.slice(0, idx);
+}
+
+/** The last segment of a type path. */
+export function leafSegment(type: EntityType): string {
+	const idx = type.lastIndexOf('/');
+	return idx < 0 ? type : type.slice(idx + 1);
 }
 
 function titleCase(slug: string): string {
@@ -100,14 +131,14 @@ function naiveSingular(word: string): string {
 	return parts.join(' ');
 }
 
-/** A reference to another entity by `<type>/<slug>`. */
+/** A reference to another entity by its full path id. */
 export type EntityId = string;
 
 /** A typed relation from one entity to another. */
 export interface Relation {
 	/** The kind of relation, e.g. "member-of", "ally-of", "located-in", "child-of". */
 	kind: string;
-	/** Target entity id (`<type>/<slug>`). */
+	/** Target entity id (full path). */
 	target: EntityId;
 	/** Optional short note explaining the relation. */
 	note?: string;
@@ -178,6 +209,14 @@ export interface Entity {
 	yamlPath: string;
 	/** Absolute path to the MD file on disk (for diagnostics). */
 	mdPath: string;
+	/**
+	 * The id of the parent entity, if this entity's folder is nested
+	 * inside another entity's folder. `null` for top-level entities
+	 * within a type/subtype container.
+	 */
+	parent: EntityId | null;
+	/** Direct child entity ids (filesystem-nested under this entity). */
+	children: EntityId[];
 }
 
 /** A directed edge in the graph, with provenance. */

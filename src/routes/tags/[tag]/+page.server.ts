@@ -12,10 +12,10 @@ export async function load({ params }) {
 	const matches = graph.search('', { tag });
 	if (matches.length === 0) error(404, `No entries tagged "${tag}".`);
 
-	const known = new Set(graph.all().map((e) => e.id));
+	const resolveLink = (path: string) => graph.resolveLink(path);
 	const languageCodes = graph.languageCodes();
 	const cardSummaryHtml = (s: string | null | undefined) =>
-		s ? renderSummary(s, known, languageCodes, { stripLinks: true }) : null;
+		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true }) : null;
 
 	// Group matches by type so the page reads like a /[type] listing
 	// repeated per type. Within each group, sort by name.
