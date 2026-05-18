@@ -274,6 +274,13 @@
 	<p class="type-description">{data.description}</p>
 {/if}
 
+{#if data.selfBodyHtml}
+	<!-- Supertype self-page body: the prose authored in the
+	     folder's own index.md, rendered inline as a hub
+	     introduction above the entity grids. -->
+	<div class="self-body">{@html data.selfBodyHtml}</div>
+{/if}
+
 {#if data.flat.length === 0}
 	<p class="empty">
 		<em>No {data.label.plural.toLowerCase()} have been recorded yet.</em>
@@ -508,6 +515,41 @@
 		margin: 0 0 var(--space-6) 0;
 		color: var(--ink-soft);
 		font-style: italic;
+	}
+
+	/* Supertype self-page body. Mirrors the `.prose` rules used on
+	   entity pages so typography is consistent — when you land on
+	   `/cosmology/celestial-bodies` the reading experience is the
+	   same as on any entity page, with the entity grid below. */
+	.self-body {
+		max-width: var(--prose-max);
+		margin: 0 0 var(--space-6) 0;
+		color: var(--ink);
+	}
+
+	.self-body :global(h2) {
+		font-size: var(--text-xl);
+		margin-top: var(--space-6);
+	}
+
+	.self-body :global(h3) {
+		font-size: var(--text-lg);
+		margin-top: var(--space-5);
+	}
+
+	.self-body :global(p),
+	.self-body :global(ul),
+	.self-body :global(ol) {
+		margin: 0 0 var(--space-4);
+	}
+
+	.self-body :global(ul),
+	.self-body :global(ol) {
+		padding-left: var(--space-5);
+	}
+
+	.self-body :global(blockquote) {
+		margin: var(--space-5) 0;
 	}
 
 	.filters {

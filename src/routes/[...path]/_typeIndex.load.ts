@@ -1,5 +1,5 @@
 import { graph } from '$lib/server/graph';
-import { renderSummary } from '$lib/server/markdown';
+import { renderEntityBody, renderSummary } from '$lib/server/markdown';
 import type { Entity, EntityId, EntityType } from '$lib/types';
 
 type Card = ReturnType<typeof toCard>;
@@ -64,6 +64,15 @@ export function loadTypeIndex(type: EntityType) {
 	const languageCodes = graph.languageCodes();
 	const cardSummaryHtml = (s: string | null | undefined) =>
 		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true }) : null;
+
+	// On supertype folders, render the self-page's `index.md` body
+	// using the same pipeline entity pages use, so wikilinks and
+	// language tags resolve identically. The view drops it in
+	// between the page description and the entity grids.
+	const selfBodyHtml =
+		selfPage && selfPage.body.trim()
+			? renderEntityBody(selfPage, resolveLink, languageCodes)
+			: null;
 
 	const subtypes = graph
 		.subtypesOf(type)
@@ -188,6 +197,11 @@ export function loadTypeIndex(type: EntityType) {
 		// header prose — it speaks in the compendium's voice rather
 		// than the type description's editorial register.
 		description: selfPage?.meta.summary ?? info.description,
+		// Rendered HTML of the supertype self-page's body, if any.
+		// The view drops it in between the description and the
+		// subtype/entity grids so the supertype page reads as a
+		// proper hub rather than a bare index.
+		selfBodyHtml,
 		subtypes,
 		containers,
 		standalone,
@@ -295,6 +309,7 @@ export function loadEverythingIndex() {
 		type: '' as EntityType,
 		label: { singular: 'Entry', plural: 'Everything' },
 		description: 'Every entry in Alteria, in one place. Filter or flatten to taste.',
+		selfBodyHtml: null as string | null,
 		subtypes,
 		containers: [] as ContainerNode[],
 		orbits: [] as OrbitNode[],
