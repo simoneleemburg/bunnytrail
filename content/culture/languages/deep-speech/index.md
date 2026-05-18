@@ -23,7 +23,7 @@ speech.
 Almost nothing of Deep Speech itself is recorded in this
 compendium. What is known to the surface comes through the few
 words that have travelled up: notably
-_[[places/bal-rochan|Bal Rochan]]_, the deep's name for their
+_[[places/bayurinda/nuunlau/bal-rochan|Bal Rochan]]_, the deep's name for their
 largest settlement, and _[[cosmology/urouch|Urouch]]_, the
 deep's name for the radioactive substance on which long-term
 life in [[places/bayurinda/nuunlau|Nuunlau]] depends (pronounced with the
@@ -83,7 +83,7 @@ the older Nuunlaumud know, they hold in voice. What the
 Aetherians know, they hold in voice and in script. Where the
 two traditions touch — in shared scholarship, in the
 inscription-stewardship work, in everyday life in
-[[places/bal-rochan|Bal Rochan]] and the other Nuunlaumud
+[[places/bayurinda/nuunlau/bal-rochan|Bal Rochan]] and the other Nuunlaumud
 settlements — the distinction between an oral memory and a
 written one is a real social fact, not just a technical one.
 

@@ -88,7 +88,7 @@ radiance, and what is in it]] and
 ## Nuunlaumud settlements
 
 The largest known Nuunlaumud settlement is
-[[places/bal-rochan|Bal Rochan]] — a city built around a single
+[[places/bayurinda/nuunlau/bal-rochan|Bal Rochan]] — a city built around a single
 concave boulder of lava-stone older than the surface
 civilisation, held by coral pillars and roofed with a dome of
 bone and seaweed grown into coral. _Bal Rochan_ is one of the

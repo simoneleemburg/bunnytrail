@@ -51,7 +51,7 @@ Nuunlau depends, in ways the surface understands only in broad
 outline, on access to Urouch. Without it, the slow systems by
 which a deep city breathes, lights itself, and holds together
 against the pressure of the long centuries cannot be sustained.
-[[places/bal-rochan|Bal Rochan]] runs on Urouch in this sense,
+[[places/bayurinda/nuunlau/bal-rochan|Bal Rochan]] runs on Urouch in this sense,
 as do all the other settled cities the compendium has heard of.
 _(Exactly how the substance is used — what cycles it enters,
 what intermediate forms it takes, what is consumed and what is
