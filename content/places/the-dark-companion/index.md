@@ -1,6 +1,6 @@
 The Dark Companion is the invisible second body of a
 neighbouring binary star system, visible from
-[[concepts/asthera|Asthera]] only by what it does to its
+[[cosmology/asthera|Asthera]] only by what it does to its
 companion star. A single star is observed; that star orbits
 something the eye cannot resolve. The thing it orbits is the
 Dark Companion.
@@ -10,7 +10,7 @@ Companion is. The cosmology has not settled the question, and
 the entry does not pretend otherwise. What it can record is
 what is known: the orbital fact, the cultural readings, and
 the more difficult fact that something about it bends the
-practice of [[concepts/nearing|Nearing]] when one travels
+practice of [[cosmology/nearing|Nearing]] when one travels
 within reach of it.
 
 ## What is observed
@@ -69,11 +69,11 @@ it.
 The compendium is on firmer ground here. Pilots who travel
 within reach of the Dark Companion report consistent effects.
 
-[[concepts/nearing|Nearing]] distorts near it. The familiar
+[[cosmology/nearing|Nearing]] distorts near it. The familiar
 loosening becomes less controlled — softer when the pilot
 intended firmness, harder to interrupt when the pilot intended
 release. The currents of
-[[concepts/interplanetary-travel|interplanetary travel]] bend
+[[cosmology/interplanetary-travel|interplanetary travel]] bend
 toward the Hollow Binary in ways the order's charts attempt to
 mark but cannot fully predict.
 
@@ -126,7 +126,7 @@ them.
   changed is a recognisable shape in the world's stories.
 
 None of these readings is doctrine. The
-[[social/knights-of-bellona|Knights of Bellona]] do not, in
+[[culture/knights-of-bellona|Knights of Bellona]] do not, in
 public, endorse one over another. The order's own term in
 its working charts is the Dark Companion, the most neutral of
 the available names. What the order says internally about the
@@ -156,8 +156,8 @@ cannot resolve which of these is true.
 
 The Dark Companion is not, in any reading currently endorsed,
 identified with the broken god whose shattering produced
-[[concepts/skyblood|Skyblood]] and litters
-[[concepts/the-void|the Void Between Worlds]]. The two
+[[cosmology/skyblood|Skyblood]] and litters
+[[cosmology/the-void|the Void Between Worlds]]. The two
 phenomena are old in different ways. Some cultural readings
 gesture at a connection; none of them are scholarly. The
 compendium notes the gesture and declines to confirm it.

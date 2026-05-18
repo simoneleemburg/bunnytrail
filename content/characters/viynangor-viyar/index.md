@@ -1,5 +1,5 @@
 Viynangor Viyar [[ot]] is one of the [[beings/naya|Naya]] whose name
-has been rendered into the [[languages/old-tongue|Old Tongue]] and
+has been rendered into the [[culture/languages/old-tongue|Old Tongue]] and
 entered the records of the Sister Worlds. As with all such names,
 the rendering is approximation; the readings disagree, and the
 disagreement is part of what the name carries.
@@ -8,7 +8,7 @@ disagreement is part of what the name carries.
 
 The principal accepted readings:
 
-- _Soul Mirror_ — the [[social/knights-of-bellona|Knights of
+- _Soul Mirror_ — the [[culture/knights-of-bellona|Knights of
 Bellona]] reading. The institutional shorthand most widely used
   across the worlds.
 - _Reflection of the Inner Self_ — the standing Bayurindan
@@ -31,8 +31,8 @@ back.
 
 Whatever else Viynangor Viyar is, it is the kind of
 [[beings/naya|Naya]] whose presence shows the
-[[social/eidolon-knight|Knight]] piloting its
-[[concepts/eidolons|Eidolon]] what they actually are. Not what
+[[culture/eidolon-knight|Knight]] piloting its
+[[cosmology/eidolons|Eidolon]] what they actually are. Not what
 they wish to be. Not what they fear. What they are.
 
 This makes the pairing distinctive in a way the worlds describe
@@ -42,7 +42,7 @@ Others speak of it as a long slow cost. Both speak truthfully.
 
 ## Status
 
-Viynangor Viyar is currently [[concepts/binding|bound]] in an
+Viynangor Viyar is currently [[cosmology/binding|bound]] in an
 Eidolon; the identity of the Knight piloting that Eidolon, the
 history of past pilots, and the specific lineage through which
 the name first entered the Old Tongue are not yet recorded

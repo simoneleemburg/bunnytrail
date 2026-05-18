@@ -10,10 +10,10 @@ harder to ignore than any star.
 
 ## On the name
 
-_Nebelheim_ is a [[languages/tholingian|Tholingian]] word — the
+_Nebelheim_ is a [[culture/languages/tholingian|Tholingian]] word — the
 name the people of [[places/tholingia|Tholingia]] use for their
 own world. It has become the name of record in the
-[[social/knights-of-bellona|Knights of Bellona]]'s rosters and
+[[culture/knights-of-bellona|Knights of Bellona]]'s rosters and
 in the compendium's pages because Tholingia is the region the
 order most often deals with, and because Tholingia is the
 region whose language has travelled furthest along the routes
@@ -44,12 +44,12 @@ breathing or molting.
 
 ## Binding on Nebelheim
 
-[[concepts/nareth|Nareth]]-touched practice on Nebelheim is regulated
-and restricted by the [[social/knights-of-bellona|Knights of
+[[cosmology/nareth|Nareth]]-touched practice on Nebelheim is regulated
+and restricted by the [[culture/knights-of-bellona|Knights of
 Bellona]], whose order is itself a Nebelheimic institution.
-[[social/eidolon-knight|Knighthood]] here is understood as
+[[culture/eidolon-knight|Knighthood]] here is understood as
 sacrifice and responsibility — closer to public duty than to
-private path. [[concepts/eidolons|Eidolons]] are used
+private path. [[cosmology/eidolons|Eidolons]] are used
 pragmatically: for defence, labour, and survival.
 
 ## Regions
@@ -59,7 +59,7 @@ fissures and ash-plains has broken the world up into named
 territories, each with its own working tongue and institutional
 life. The compendium currently records only one of these in any
 detail: [[places/tholingia|Tholingia]], the region whose working
-language is [[languages/tholingian|Tholingian]].
+language is [[culture/languages/tholingian|Tholingian]].
 
 _(The other named regions of Nebelheim, their boundaries, their
 relationships to one another, and the political shape of the

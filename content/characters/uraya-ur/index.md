@@ -1,10 +1,10 @@
 Uraya Ur [[ot]] is the serving Oracle of Witnessing within the
-[[social/oracle-triad|Oracle Triad]] of the
-[[social/knights-of-bellona|Knights of Bellona]], also known as the
+[[culture/oracle-triad|Oracle Triad]] of the
+[[culture/knights-of-bellona|Knights of Bellona]], also known as the
 Watcher of Spiraling Echoes.
 
 She is of the [[beings/naya|Naya]], a primordial being native to
-[[concepts/nareth|Nareth]], the resonant substrate. Like all Naya,
+[[cosmology/nareth|Nareth]], the resonant substrate. Like all Naya,
 she has no fixed form there; identity and shape move with
 resonance rather than holding to any one settlement.
 
@@ -44,11 +44,11 @@ drift, held inside the discipline of the three.
 
 Uraya is one of the recognised exceptions in the cosmology.
 Almost every [[beings/naya|Naya]] present in
-[[concepts/asthera|Asthera]] is so through
-[[concepts/binding|binding]] — seated into an
-[[concepts/eidolons|Eidolon]] built for them. Uraya is not.
+[[cosmology/asthera|Asthera]] is so through
+[[cosmology/binding|binding]] — seated into an
+[[cosmology/eidolons|Eidolon]] built for them. Uraya is not.
 What sustains her in Asthera is the Triad: the continuous joint
-[[concepts/nearing|Nearing]] of the other two Oracles, held
+[[cosmology/nearing|Nearing]] of the other two Oracles, held
 intact across centuries, giving her enough to be present
 _through_. The partnership is, in effect, her vessel.
 

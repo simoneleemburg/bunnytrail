@@ -1,10 +1,10 @@
 Ngonawan Ilyardi [[bay]] is the serving Oracle of Interpretation within the
-[[social/oracle-triad|Oracle Triad]] of the
-[[social/knights-of-bellona|Knights of Bellona]], also known as the
+[[culture/oracle-triad|Oracle Triad]] of the
+[[culture/knights-of-bellona|Knights of Bellona]], also known as the
 Sacred Serpent of Resonance.
 
 He belongs to a rare serpent-humanoid lineage native to the liminal,
-water-adjacent civilisations of [[concepts/asthera|Asthera]].
+water-adjacent civilisations of [[cosmology/asthera|Asthera]].
 
 ## In the Triad
 
@@ -12,8 +12,8 @@ Ngonawan hears the resonance. He perceives Naretic signal in fine
 grain — the shifting tonal substrate that carries
 [[beings/naya|Naya]] meaning before it has become anything a
 human can call a symbol. Where another practitioner of
-[[concepts/nearing|Nearing]] might come back from contact with
-[[concepts/nareth|Nareth]] holding sensation, image, dread, or
+[[cosmology/nearing|Nearing]] might come back from contact with
+[[cosmology/nareth|Nareth]] holding sensation, image, dread, or
 unspeakable certainty, Ngonawan finds the signal under the
 noise.
 
@@ -27,7 +27,7 @@ beautiful, unusable hearing.
 ## Identity
 
 Ngonawan is a trans man, and so — by the cosmology's recognised
-reading — [[concepts/nearborn|Nearborn]]. His identity is deeply
+reading — [[cosmology/nearborn|Nearborn]]. His identity is deeply
 tied to transformation and embodied transition.
 
 _(The serpent-humanoid lineage Ngonawan belongs to — its peoples,

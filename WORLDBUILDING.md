@@ -154,7 +154,7 @@ In practice:
   who speaks Thallish, what world they live on, how the words
   travelled. Those are new ideas the user has not added.
 - **When adding cross-references, prefer load-bearing connections
-  to decorative ones.** A `[[concepts/nearing|Nearing]]` link
+  to decorative ones.** A `[[cosmology/nearing|Nearing]]` link
   inside the Eidolon Knight entry is load-bearing: piloting _is_
   Nearing. A `[[places/sharazan|Sharazan]]` link in an entry that
   just mentions Sharazan in passing is decoration. Both are

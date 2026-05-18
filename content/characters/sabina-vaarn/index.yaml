@@ -8,5 +8,5 @@ summary: Oracle of the threefold Triad, holder of Endurance — the carrying of 
 tags: [oracle, oracle-triad, endurance]
 relations:
   - kind: serves-in
-    target: social/knights-of-bellona
+    target: culture/knights-of-bellona
     note: As serving Oracle of Endurance in the Triad.

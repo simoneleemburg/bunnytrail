@@ -1,10 +1,10 @@
 **Bal Rochan** [[ds]] is the largest of the
-[[languages/deep-speech|Nuunlaumud]] settlements on the floor of
-[[places/nuunlau|Nuunlau]], and the most populous —
+[[culture/languages/deep-speech|Nuunlaumud]] settlements on the floor of
+[[places/bayurinda/nuunlau|Nuunlau]], and the most populous —
 [[beings/aetherians|Aetherian]]-majority by some margin, with a
 share of older Nuunlaumud living and working alongside them.
 It is one of the few seafloor places the
-[[places/bayurinda-archipelago|archipelago]] knows by the deep's
+[[places/bayurinda/bayurinda-archipelago|archipelago]] knows by the deep's
 own name for it rather than by translation.
 
 It is, by every account that reaches the surface, built around a
@@ -20,8 +20,8 @@ roof.
 
 ## On the name
 
-_Bal Rochan_ is a [[languages/deep-speech|Deep Speech]] name and
-one of the words the [[languages/bayurindan|Bayurindan]]-speaking
+_Bal Rochan_ is a [[culture/languages/deep-speech|Deep Speech]] name and
+one of the words the [[culture/languages/bayurindan|Bayurindan]]-speaking
 archipelago has taken into its own usage without translation.
 What _Bal Rochan_ means in Deep Speech, and whether the
 Nuunlaumud themselves think of it as a name or as a description,
@@ -37,14 +37,14 @@ surface-side accounts are second-hand.
 What the archipelago does know reliably is that Bal Rochan is
 the centre of gravity for the inscription-stewardship work — the
 slow reading of the seafloor record from which the
-[[languages/old-tongue|Old Tongue]] has been reconstructed. That
+[[culture/languages/old-tongue|Old Tongue]] has been reconstructed. That
 work is chiefly [[beings/aetherians|Aetherian]] work now,
 carried on alongside the older Nuunlaumud who first began it. The
-[[social/oracle-triad|Oracle Triad]]'s long Old-Tongue chain
+[[culture/oracle-triad|Oracle Triad]]'s long Old-Tongue chain
 ultimately rests on Bal Rochan's scholarship.
 
 The archipelago also knows, from the same second-hand accounts,
-that Bal Rochan is **kept alive by [[concepts/urouch|Urouch]]** —
+that Bal Rochan is **kept alive by [[cosmology/urouch|Urouch]]** —
 the radioactive substance found in un-scavenged ruins on the
 seafloor and on which long-term life in the deep depends. A
 city of Bal Rochan's scale is, in plain terms, a sustained call

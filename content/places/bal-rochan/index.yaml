@@ -1,10 +1,10 @@
 name: Bal Rochan
 kind: settlement
 language: ds
-summary: The largest of the [[languages/deep-speech|Nuunlaumud]] settlements in [[places/nuunlau|Nuunlau]] — a seafloor city built around a single concave boulder of lava-stone older than the surface civilisation, held by coral pillars and roofed with a dome of bone and seaweed grown into coral. The name is one of the few _[[languages/deep-speech|Deep Speech]]_ words known to the surface.
+summary: The largest of the [[culture/languages/deep-speech|Nuunlaumud]] settlements in [[places/bayurinda/nuunlau|Nuunlau]] — a seafloor city built around a single concave boulder of lava-stone older than the surface civilisation, held by coral pillars and roofed with a dome of bone and seaweed grown into coral. The name is one of the few _[[culture/languages/deep-speech|Deep Speech]]_ words known to the surface.
 aliases: [Bal Rochan]
 tags: [city, seafloor, deep-architecture, lava-stone, coral, custodians]
 relations:
   - kind: located-in
-    target: places/nuunlau
+    target: places/bayurinda/nuunlau
     note: The largest known Nuunlaumud settlement.

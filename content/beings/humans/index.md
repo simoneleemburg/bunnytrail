@@ -1,7 +1,7 @@
 Humans are a prominent embodied people of Alteria — mortal,
 materially bound, and broadly recognisable as the kind of creature
 that walks, builds, remembers, and dies. They are native to
-[[concepts/asthera|Asthera]], the material plane.
+[[cosmology/asthera|Asthera]], the material plane.
 
 What makes them unusual in Alteria's cosmology is less their bodies
 than what their bodies hold. Humans sustain persistent, high-intensity
@@ -9,7 +9,7 @@ emotional experience — grief that lasts years, devotion that survives
 distance, the slow accumulations of love and resentment and hope — in
 a way that few other beings can. To embodied life this is simply how
 existence feels. To the [[beings/naya|Naya]], looking in from
-[[concepts/nareth|Nareth]], it is something rarer: a stability of
+[[cosmology/nareth|Nareth]], it is something rarer: a stability of
 feeling, and a vividness of feeling, that they cannot generate on
 their own.
 
@@ -17,12 +17,12 @@ their own.
 
 The Naya are drawn to humans for exactly this reason. Most of
 the cosmology's sustained Naya–human contact runs through
-[[concepts/binding|binding]] — but binding, in the strict
+[[cosmology/binding|binding]] — but binding, in the strict
 sense, is the pact between a Naya and an
-[[concepts/eidolons|Eidolon]], not between a Naya and a
+[[cosmology/eidolons|Eidolon]], not between a Naya and a
 person. What humans offer the Naya is something the bound Naya
 reaches for _through_ its vessel and the
-[[social/eidolon-knight|Knight]] piloting it: sustained
+[[culture/eidolon-knight|Knight]] piloting it: sustained
 contact with a kind of emotional life Naya cannot generate on
 their own substrate.
 

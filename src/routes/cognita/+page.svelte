@@ -33,13 +33,13 @@
 	<section class="legend">
 		<h2>How to read it</h2>
 		<dl>
-			<dt><a href="/concepts/asthera">Asthera</a> · the material</dt>
+			<dt><a href="/cosmology/asthera">Asthera</a> · the material</dt>
 			<dd>
 				The persistent layer. Bodies in their solid forms; orbits that keep; histories that stay put
 				long enough to be written down.
 			</dd>
 
-			<dt><a href="/concepts/nareth">Nareth</a> · the resonant</dt>
+			<dt><a href="/cosmology/nareth">Nareth</a> · the resonant</dt>
 			<dd>
 				The substrate beneath. The same bodies are here too, but as identity and memory rather than
 				stone — fluid, interconnected, available to drift and transformation.

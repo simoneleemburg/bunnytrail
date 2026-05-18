@@ -1,20 +1,20 @@
 _(This is a working name in the compendium's English register,
 formed from the surface-scholar loan_ Aether _for the breathable
 fluid the Aetherians' lungs are modified to accept. What the
-Aetherians call themselves, in [[languages/deep-speech|Deep
+Aetherians call themselves, in [[culture/languages/deep-speech|Deep
 Speech]] or in any tongue remembered from the surface, is not
 yet recorded here.)_
 
 The **Aetherians** are the populous majority of the
-[[languages/deep-speech|Nuunlaumud]] — the people of
-[[places/nuunlau|Nuunlau]] — and the second of the two peoples
+[[culture/languages/deep-speech|Nuunlaumud]] — the people of
+[[places/bayurinda/nuunlau|Nuunlau]] — and the second of the two peoples
 who live there. They are not the older Nuunlaumud, who pre-date
 the drowning; the Aetherians are the descendants of the **lost
 surface civilisation's survivors**, taken in by the older deep
 after the catastrophe and given the means to breathe water.
 
 What they have in common with the older Nuunlaumud is Nuunlau as
-home, [[languages/deep-speech|Deep Speech]] as working tongue,
+home, [[culture/languages/deep-speech|Deep Speech]] as working tongue,
 and the long stewardship of the seafloor. What they do not have
 in common is lineage: the Aetherians' ancestors are the people
 the inscriptions are _by_, not the people who first read them.
@@ -116,12 +116,12 @@ here.)_
 The Aetherians' tolerance of radioactive material is not an
 incidental quirk of their biology. It is a doorway.
 
-There is something on the floor of [[places/nuunlau|Nuunlau]] —
+There is something on the floor of [[places/bayurinda/nuunlau|Nuunlau]] —
 one of the **older things**, the structures the older
 Nuunlaumud describe as pre-dating the drowning and as not the
 work of the surface civilisation — that emits the radioactive
 material the Aetherian body is congenial to. The substance has
-a Deep-Speech name: **[[concepts/urouch|Urouch]]** [[ds]], small
+a Deep-Speech name: **[[cosmology/urouch|Urouch]]** [[ds]], small
 black pellets with a distinct blue shine, found in
 un-scavenged ruins on the seafloor. No new Urouch has been
 made since the drowning; what is in circulation is what is
@@ -131,10 +131,10 @@ own word. The Aetherians
 come to it deliberately. At doses high enough to produce
 visions, out-of-body experiences, and the rest of the
 mind-altering effects, what is happening is not poisoning. It is
-**[[concepts/nearing|Nearing]]**, in the same sense Tholingian
-oracles and [[social/eidolon-knight|Eidolon Knights]] use the
+**[[cosmology/nearing|Nearing]]**, in the same sense Tholingian
+oracles and [[culture/eidolon-knight|Eidolon Knights]] use the
 word: an embodied being drifting close to
-[[concepts/nareth|Nareth]] without crossing into it. The visions
+[[cosmology/nareth|Nareth]] without crossing into it. The visions
 are contact with [[beings/naya|Naya]]. The out-of-body
 experiences are the loosening of attachment to form that Nearing
 produces in any practitioner. The Aetherians have a path to it
@@ -142,9 +142,9 @@ that is built into them, mediated by a substance their seafloor
 makes available, and routinely walked.
 
 This is Aetherian Nearing. It looks nothing like the
-[[social/knights-of-bellona|Knights of Bellona]]'s practice —
-there is no [[concepts/skyblood|Skyblood]] stabilisation, no
-order's structures, no chosen [[concepts/eidolons|Eidolon]], no
+[[culture/knights-of-bellona|Knights of Bellona]]'s practice —
+there is no [[cosmology/skyblood|Skyblood]] stabilisation, no
+order's structures, no chosen [[cosmology/eidolons|Eidolon]], no
 ritual cohort in the order's sense. There is the radiance, the
 body, the long inherited practice of going to the older things
 and coming back. The safety architecture is the Aetherian form
@@ -158,7 +158,7 @@ life is not whether they _can_ touch Naya but how often, how
 deep, in what company, and toward what end.
 
 _(The Aetherians have a Deep-Speech name for the substance —
-[[concepts/urouch|Urouch]] — but their names for the older
+[[cosmology/urouch|Urouch]] — but their names for the older
 things they go to, for the practice itself, and for the
 organisation of safe return — by lineage, by elder teachers,
 by ritual cohort, by city — are not yet recorded here. The
@@ -196,15 +196,15 @@ from the survivors of that civilisation, are the ones who read
 them. The mechanism by which they read them is worth being
 precise about.
 
-The inscriptions are written in a **[[languages/old-tongue#the-inscriptional-script-and-its-second-life|script]]
+The inscriptions are written in a **[[culture/languages/old-tongue#the-inscriptional-script-and-its-second-life|script]]
 the Aetherians themselves use every day** — the same notational
 system, carried out of the drowned surface civilisation by their
 ancestors, fitted across the long generations to
-[[languages/deep-speech|Deep Speech]], the language they
+[[culture/languages/deep-speech|Deep Speech]], the language they
 actually speak. Their daily literacy is in the script the
 inscriptions are written in. What is unfamiliar to them in the
 inscriptions is the _language_ — the
-[[languages/old-tongue|Old Tongue]] their ancestors spoke and
+[[culture/languages/old-tongue|Old Tongue]] their ancestors spoke and
 they no longer do. The Aetherians' relationship to the
 inscriptions is therefore not the relationship of archaeologists
 to opaque marks; it is the relationship of literate people
@@ -222,7 +222,7 @@ is centuries of oral commentary on what the marks mean, held in
 voice and lineage, against what the Aetherians can read in the
 marks themselves. The two registers of memory check one another.
 
-The [[social/oracle-triad|Oracle Triad]]'s long Old-Tongue chain
+The [[culture/oracle-triad|Oracle Triad]]'s long Old-Tongue chain
 ultimately rests on this joint scholarship — which is to say, on
 the surface civilisation's descendants reading their own
 ancestors in the script of those ancestors, in a language they

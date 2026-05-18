@@ -4,7 +4,7 @@ to be a single country. The land is Nebelheimic in temperament:
 geothermal, weather-marked, built against pressure rather than
 in defiance of it.
 
-It is the place of origin of the [[languages/tholingian|Tholingian]]
+It is the place of origin of the [[culture/languages/tholingian|Tholingian]]
 language, and the home country of two of the compendium's
 characters — [[characters/freya|Freya]] and
 [[characters/sabina-vaarn|Sabina Vaarn]]. The region is also,
@@ -15,14 +15,14 @@ have shaped both what it is and how it is known.
 ## The pillars and the routes outward
 
 Of all the regions of Nebelheim, Tholingia carries the most
-[[concepts/world-pillars|World Pillars]]. The compendium does
+[[cosmology/world-pillars|World Pillars]]. The compendium does
 not yet say how many — partly because the count is not a fixed
 number, and partly because what counts as "a Pillar" admits of
 some institutional argument — but the concentration is real and
 known, and it is the structural reason for Tholingia's place
 in the wider world.
 
-A Pillar is what makes [[concepts/interplanetary-travel|interplanetary
+A Pillar is what makes [[cosmology/interplanetary-travel|interplanetary
 travel]] possible: a colossal Eidolon construct partially fused
 into the planet, the launch and arrival infrastructure by which
 a Knight leaves one world and survives reaching another. Each
@@ -45,7 +45,7 @@ What follows from that, materially:
   receive visitors from elsewhere, and is the part of Nebelheim
   where multilingual practice is most ordinary.
 - **The order's footing.** The
-  [[social/knights-of-bellona|Knights of Bellona]], although a
+  [[culture/knights-of-bellona|Knights of Bellona]], although a
   Nebelheim-wide institution by remit, are densest in Tholingia
   — because the Pillars are densest there, and the work of
   maintaining the Pillars is the order's. This proximity has
@@ -58,7 +58,7 @@ Tholingia — [[characters/freya|Freya]] and
 this proximity. Freya took the off-world routes outward and
 became an Eidolon Knight in the order; Sabina took a different
 path through the same institutional landscape and ended up as
-the Pilgrim of the [[social/oracle-triad|Oracle Triad]]. Neither
+the Pilgrim of the [[culture/oracle-triad|Oracle Triad]]. Neither
 trajectory is accidental. They are the two characteristic shapes
 a Tholingian life takes when it is touched by what passes through
 the region's Pillars.
@@ -66,7 +66,7 @@ the region's Pillars.
 ## A note on names
 
 Because Tholingia is the region of Nebelheim that travels and is
-travelled to most often, [[languages/tholingian|Tholingian]] is
+travelled to most often, [[culture/languages/tholingian|Tholingian]] is
 the working tongue most often heard along the routes between
 worlds. Off-worlders who learn _any_ Nebelheimic language usually
 learn Tholingian, and the planet's name in the compendium and in

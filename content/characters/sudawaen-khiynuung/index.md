@@ -1,5 +1,5 @@
 Sudawaen Khiynuung [[ot]] is one of the [[beings/naya|Naya]] whose name
-has been rendered into the [[languages/old-tongue|Old Tongue]] and
+has been rendered into the [[culture/languages/old-tongue|Old Tongue]] and
 entered the records of the Sister Worlds. The readings, as with
 all such names, disagree — and in this case the disagreement
 carries weight, because what the readings turn on is whether the
@@ -11,7 +11,7 @@ something that comes from far beyond any single self to hold.
 The principal accepted readings:
 
 - _Wrath of the Elders From Within_ — the
-  [[social/knights-of-bellona|Knights of Bellona]] reading. The
+  [[culture/knights-of-bellona|Knights of Bellona]] reading. The
   most widely used.
 - _Ancestral Thunder Beneath the Flesh_ — the Bayurindan
   reading. Preferred in mystical and contemplative contexts.
@@ -40,9 +40,9 @@ unready pilot, and the worlds do not speak of it lightly.
 
 ## Status
 
-Sudawaen Khiynuung is [[concepts/binding|bound]] in an
-[[concepts/eidolons|Eidolon]] currently piloted by the
-[[social/eidolon-knight|Knight]]
+Sudawaen Khiynuung is [[cosmology/binding|bound]] in an
+[[cosmology/eidolons|Eidolon]] currently piloted by the
+[[culture/eidolon-knight|Knight]]
 [[characters/mila|Mila]]. The history of past pilots, and the
 conditions under which the name first entered the Old Tongue,
 are not yet recorded here.

@@ -293,8 +293,8 @@
 
 	<figcaption>
 		Two planes, one cosmos — and not the whole of it. Alteria Cognita's eight planets persist as
-		form on <a href="/concepts/asthera">Asthera</a> and resonate as identity, memory and meaning on
-		<a href="/concepts/nareth">Nareth</a>. Across the long gulf, the neighbouring Hollow Binary
+		form on <a href="/cosmology/asthera">Asthera</a> and resonate as identity, memory and meaning on
+		<a href="/cosmology/nareth">Nareth</a>. Across the long gulf, the neighbouring Hollow Binary
 		turns around something the eye cannot resolve:
 		<a href="/places/the-dark-companion">the Dark Companion</a>.
 	</figcaption>

@@ -27,7 +27,7 @@ and probably first understood.
 
 Sharazan is a crossroads world by geography as much as by culture.
 Travel currents, ancient route networks,
-[[concepts/world-pillars|World Pillar]] paths, and old knight
+[[cosmology/world-pillars|World Pillar]] paths, and old knight
 roads all intersect across the cluster. The fragments
 are politically separate and historically distinct, but the
 atmosphere keeps them in conversation: civilisations of separation
@@ -43,8 +43,8 @@ Sharazani culture is expressive, strategic, and status-driven. The
 tone is splendor, ambition, and elegance — public, ornate, alert
 to display.
 
-[[social/eidolon-knight|Knighthood]] here is performance,
-mastery, and competition. [[concepts/eidolons|Eidolons]] are
+[[culture/eidolon-knight|Knighthood]] here is performance,
+mastery, and competition. [[cosmology/eidolons|Eidolons]] are
 elaborate, symbolic, and public; duels and displays shape
 social hierarchy. Where Bayurindan Knighthood is contemplative
 and Nebelheimic Knighthood is duty, Sharazani Knighthood is
@@ -54,13 +54,13 @@ theatre — and the theatre is taken entirely seriously.
 
 The name _Sharazan_ does not sit comfortably in any of the
 languages currently recorded in this compendium. It is not
-[[languages/old-tongue|Old Tongue]] (the
-[[languages/old-tongue|Old Tongue entry]] explicitly notes that
+[[culture/languages/old-tongue|Old Tongue]] (the
+[[culture/languages/old-tongue|Old Tongue entry]] explicitly notes that
 its provenance is not recorded there). It does not match the
-shapes [[languages/tholingian|Tholingian]] or
-[[languages/bayurindan|Bayurindan]] take. Whether it is a name
+shapes [[culture/languages/tholingian|Tholingian]] or
+[[culture/languages/bayurindan|Bayurindan]] take. Whether it is a name
 that one of Sharazan's own peoples gives the world, the name
-the [[social/knights-of-bellona|order]] uses for it, or a
+the [[culture/knights-of-bellona|order]] uses for it, or a
 borrowing from somewhere else again, is not yet recorded here.
 The other two Sister Worlds are known by names belonging to the
 working tongue of the people the order first met on them; the

@@ -1,6 +1,6 @@
 Bayurinda is a world of water. Open ocean covers nearly all of
 it; what land there is rises in one significant
-[[places/bayurinda-archipelago|archipelago]] and a scatter of
+[[places/bayurinda/bayurinda-archipelago|archipelago]] and a scatter of
 lesser islets and shoals. Two moons drag its tides into long
 overlapping rhythms. Storms are frequent, large, and structurally
 ordinary. The light through the water shifts with the moons and
@@ -33,7 +33,7 @@ patience that mythic material deserves. What is also recorded,
 plainly, is the material residue. Ruins of the older Bayurindan
 civilisation are found across the planet, on land and under
 water both: weathered foundations on the high places of the
-present [[places/bayurinda-archipelago|archipelago]], cliff-side
+present [[places/bayurinda/bayurinda-archipelago|archipelago]], cliff-side
 inscriptions on islets where nothing now lives, the occasional
 inland structure on a larger island that ought not, by any
 present account, to be where it is. The drowning was not
@@ -48,7 +48,7 @@ that the seas spared; this is disputed (see _Peoples_, below).
 The drowning is the central fact of Bayurindan history. Most of
 what the rest of [Alteria Cognita](/cognita) knows about
 Bayurinda — its scholarly tradition, the
-[[languages/old-tongue|Old Tongue]], the contemplative ethic, the
+[[culture/languages/old-tongue|Old Tongue]], the contemplative ethic, the
 patience that strikes outsiders as a kind of philosophical
 discipline — flows from it. That the story is mythic does not
 make it untrue. That it is true does not make the story any less
@@ -56,8 +56,8 @@ mythic.
 
 _The drowning_ is the English-language working term this
 compendium uses for the event. What the
-[[places/bayurinda-archipelago|archipelago]] calls it in
-[[languages/bayurindan|Bayurindan]], what the
+[[places/bayurinda/bayurinda-archipelago|archipelago]] calls it in
+[[culture/languages/bayurindan|Bayurindan]], what the
 [[#peoples-of-bayurinda|deep]] call it among themselves, and
 whether the lost surface civilisation had a single name for what
 happened to it at all — given how long the loss took, or did not
@@ -74,7 +74,7 @@ yet recorded here.)_
 The world is shared. Two peoples are known to the compendium,
 unequally:
 
-The [[places/bayurinda-archipelago|archipelago people]] live
+The [[places/bayurinda/bayurinda-archipelago|archipelago people]] live
 above and partly within the water, on the islands and in the
 sea-caves below them, in the place from which the world's name
 of record is taken. They claim, by long tradition, to be the
@@ -91,7 +91,7 @@ shape of what happened. The compendium records the dominant
 tradition, names the dispute, and does not settle it.
 
 Two peoples live in the deep waters of
-[[places/nuunlau|Nuunlau]]. The archipelago people call them
+[[places/bayurinda/nuunlau|Nuunlau]]. The archipelago people call them
 together the _Nuunlaumud_ [[bay]] — the word is formed from
 _Nuunlau_ by the Bayurindan suffix _-mud_ that derives a
 people-name from a place-name, and means, simply, _people of the
@@ -103,7 +103,7 @@ The **older Nuunlaumud** are an older people — older than the
 drowning, by the most credible accounts; older than Bayurindan
 history can quite reach. They are mostly bipedal,
 pressure-adapted, and were already at home in
-[[places/nuunlau|Nuunlau]] long before the surface civilisation
+[[places/bayurinda/nuunlau|Nuunlau]] long before the surface civilisation
 above them drowned.
 
 The **[[beings/aetherians|Aetherians]]** are the populous
@@ -119,8 +119,8 @@ archipelago meets them. Scholarship on the other Sister Worlds
 refers to them collectively as _the deep_, or by various
 respectful circumlocutions. What the older Nuunlaumud and the
 Aetherians call themselves, in their own working tongue (which
-is [[languages/deep-speech|Deep Speech]], not
-[[languages/bayurindan|Bayurindan]]), is not yet recorded here.
+is [[culture/languages/deep-speech|Deep Speech]], not
+[[culture/languages/bayurindan|Bayurindan]]), is not yet recorded here.
 
 The relationship between the archipelago and the Nuunlaumud is
 the central social fact of present Bayurindan life. The
@@ -129,7 +129,7 @@ inscription-stewardship work falling chiefly to the Aetherians —
 have been, across the long centuries since the drowning, the
 **custodians** of what the lost civilisation made: its records,
 its practices, its scholarly inheritance, its
-[[languages/old-tongue|Old Tongue]]. The archipelago people
+[[culture/languages/old-tongue|Old Tongue]]. The archipelago people
 inherit that material from them, slowly, by patient contact, and
 carry it up to where it can travel further.
 
@@ -139,7 +139,7 @@ of the world's politics are not yet recorded here.)_
 
 ## On the name
 
-_Bayurinda_ is the [archipelago people](/places/bayurinda-archipelago)'s
+_Bayurinda_ is the [archipelago people](/places/bayurinda/bayurinda-archipelago)'s
 name for themselves and their place. It travelled outward when
 those people first met Knights from
 [[places/nebelheim|Nebelheim]]: the Nebelheimers carried the
@@ -197,13 +197,13 @@ what can be recovered, does not value haste.
 Where Nebelheim regulates Knighthood as public duty, Bayurinda
 treats it as a path to transcendence. [[beings/naya|Naya]] are
 not tools here. They are teachers. The practices of
-[[social/eidolon-knight|piloting]] are slower, ritualised, and
+[[culture/eidolon-knight|piloting]] are slower, ritualised, and
 far more stable than on the other Sister Worlds — something more
 like a tradition of contemplation than a discipline of mastery.
 
 In material terms, the order's interface with Bayurinda is the
-[[places/bayurinda-archipelago|archipelago]]: that is where the
-[[concepts/world-pillars|World Pillars]] stand, where off-world
+[[places/bayurinda/bayurinda-archipelago|archipelago]]: that is where the
+[[cosmology/world-pillars|World Pillars]] stand, where off-world
 Knights arrive, and where the diplomatic memory of contact with
 Cognita is kept. The contemplative tradition itself reaches the
 archipelago from below, by long instruction from the deep, and
@@ -218,12 +218,12 @@ older silence beneath both.
 Bayurinda is the world where the old work of decoding the Naya
 was done. Its earliest practitioners — known in the tradition as
 the **First Listeners** — entered prolonged
-[[concepts/nearing|Nearing]] states and attempted to record the
+[[cosmology/nearing|Nearing]] states and attempted to record the
 symbols revealed to them. They could not speak what they
 perceived; but they discovered that certain sounds, under the
 right conditions, produced sympathetic resonance with it. Refined
 across centuries, those resonance-patterns became the
-[[languages/old-tongue|Old Tongue]] — the ritual language by
+[[culture/languages/old-tongue|Old Tongue]] — the ritual language by
 which the Sister Worlds now approximate Naya names.
 
 The First Listeners were of the **lost surface civilisation**.

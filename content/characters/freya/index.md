@@ -1,21 +1,21 @@
-Freya [[tho]] is an [[social/eidolon-knight|Eidolon Knight]] of the
-[[social/knights-of-bellona|Knights of Bellona]]. She is from
+Freya [[tho]] is an [[culture/eidolon-knight|Eidolon Knight]] of the
+[[culture/knights-of-bellona|Knights of Bellona]]. She is from
 [[places/tholingia|Tholingia]], a region of
 [[places/nebelheim|Nebelheim]], and her name is Tholingian.
 
 ## Identity
 
 Freya is a trans woman, and so — by the cosmology's recognised
-reading — [[concepts/nearborn|Nearborn]]. She came to her own
+reading — [[cosmology/nearborn|Nearborn]]. She came to her own
 name through long work, and she carries it carefully.
 
 ## Reception by the order
 
 The order nearly did not take her.
 
-Knighthood is sustained [[concepts/nearing|Nearing]] toward a
-[[beings/naya|Naya]] [[concepts/binding|bound]] in an
-[[concepts/eidolons|Eidolon]], and the order screens
+Knighthood is sustained [[cosmology/nearing|Nearing]] toward a
+[[beings/naya|Naya]] [[cosmology/binding|bound]] in an
+[[cosmology/eidolons|Eidolon]], and the order screens
 candidates for the adaptive identity that practice demands.
 Freya was, by every internal account that has reached the
 compendium, on the margin. The doubt the order's examiners
@@ -47,7 +47,7 @@ crystalline edges, precise movement, an elegance that reads as
 almost fragile until it is tested.
 
 The Naya itself has not been rendered into the
-[[languages/old-tongue|Old Tongue]] in any reading the
+[[culture/languages/old-tongue|Old Tongue]] in any reading the
 compendium can record. Freya may know its true approximation;
 if so, she has not made it public.
 
@@ -76,7 +76,7 @@ of the more precise piloting partnerships the order knows.
 
 ## In transit
 
-During [[concepts/interplanetary-travel|interplanetary travel]],
+During [[cosmology/interplanetary-travel|interplanetary travel]],
 the Naya's Aspect Wings manifest as refracted, glass-like
 structures of resonance that bend light into patterns the pilot
 can almost recognise. The signature is distinctive enough that
