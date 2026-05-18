@@ -51,9 +51,6 @@ this file is not loaded by the site.
 - **World Anvil.** Pull across whatever from World Anvil should
   be kept. Triage first — not everything will survive the
   compendium's tone and "don't invent canon" rules.
-- **Remaining ChatGPT chat material.** There is more in the
-  planning conversations than has been distilled. Identify what
-  is canon, what is scaffolding, what should be discarded.
 - **Old conlang work (Thallish).** Thallish is confirmed as a
   named in-universe language (distinct from Old Tongue);
   _Asthera_ and _Nareth_ are Thallish words and are tagged
@@ -85,10 +82,3 @@ this file is not loaded by the site.
   something else. Think about it before importing pantheon and
   cosmogony material so the structure doesn't have to be
   retrofitted.
-
-- ~~**Heading IDs in the markdown renderer.**~~ _Done._ Headings
-  `<h1>`–`<h6>` now carry slugified `id` attributes (lowercase,
-  diacritic-stripped, non-alphanumerics collapsed to `-`).
-  Duplicate slugs within one body are disambiguated with `-2`,
-  `-3`, etc. Every existing `#section` link across content now
-  scrolls to the right section.
