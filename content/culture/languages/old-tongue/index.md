@@ -365,7 +365,7 @@ languages of a kind.
 Two of the Sister Worlds' working tongues have their own
 entries in the compendium so far:
 [[culture/languages/tholingian|Tholingian]], the language of
-[[places/tholingia|Tholingia]] on
+[[places/nebelheim/tholingia|Tholingia]] on
 [[places/nebelheim|Nebelheim]], and
 [[culture/languages/bayurindan|Bayurindan]], the working tongue of the
 archipelago people of [[places/bayurinda|Bayurinda]]. A third,

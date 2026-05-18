@@ -102,7 +102,7 @@ least one functioning Pillar there can be no Knights coming or
 going — but the count and the concentration vary.
 
 On [[places/nebelheim|Nebelheim]], the densest concentration of
-Pillars is in [[places/tholingia|Tholingia]], which carries
+Pillars is in [[places/nebelheim/tholingia|Tholingia]], which carries
 more than any other region of the world. This is the structural
 reason Tholingia is the region of Nebelheim most involved in
 interplanetary trade and contact, and the reason the order's

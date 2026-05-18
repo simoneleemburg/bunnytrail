@@ -1,5 +1,5 @@
 Tholingian [[tho]] is the working language of
-[[places/tholingia|Tholingia]], a region on
+[[places/nebelheim/tholingia|Tholingia]], a region on
 [[places/nebelheim|Nebelheim]]. It is one of several Nebelheimic
 tongues; on a world whose geography is broken up by calderas,
 fissures and ash-plains, no single language has ever covered

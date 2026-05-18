@@ -11,13 +11,13 @@ harder to ignore than any star.
 ## On the name
 
 _Nebelheim_ is a [[culture/languages/tholingian|Tholingian]] word — the
-name the people of [[places/tholingia|Tholingia]] use for their
+name the people of [[places/nebelheim/tholingia|Tholingia]] use for their
 own world. It has become the name of record in the
 [[culture/knights-of-bellona|Knights of Bellona]]'s rosters and
 in the compendium's pages because Tholingia is the region the
 order most often deals with, and because Tholingia is the
 region whose language has travelled furthest along the routes
-between worlds (see [[places/tholingia|Tholingia]] for why).
+between worlds (see [[places/nebelheim/tholingia|Tholingia]] for why).
 Other regions of the planet have their own names for it. None
 of those are yet recorded here.
 
@@ -58,7 +58,7 @@ Nebelheim is not a single country. Its geography of calderas,
 fissures and ash-plains has broken the world up into named
 territories, each with its own working tongue and institutional
 life. The compendium currently records only one of these in any
-detail: [[places/tholingia|Tholingia]], the region whose working
+detail: [[places/nebelheim/tholingia|Tholingia]], the region whose working
 language is [[culture/languages/tholingian|Tholingian]].
 
 _(The other named regions of Nebelheim, their boundaries, their
