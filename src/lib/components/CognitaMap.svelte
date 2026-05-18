@@ -266,7 +266,7 @@
 
 				<!-- The Dark Companion: drawn as a dashed empty circle,
 				     a hollow where a body should be. Linked to its entry. -->
-				<a href="/places/the-dark-companion">
+				<a href="/cosmology/black-holes/the-dark-companion">
 					<g class="dark-companion" transform={`translate(${DARK_COMPANION_X} ${AXIS_Y})`}>
 						<circle class="dark-halo" r="22" />
 						<circle class="dark-ring" r="11" />
@@ -296,7 +296,7 @@
 		form on <a href="/cosmology/asthera">Asthera</a> and resonate as identity, memory and meaning on
 		<a href="/cosmology/nareth">Nareth</a>. Across the long gulf, the neighbouring Hollow Binary
 		turns around something the eye cannot resolve:
-		<a href="/places/the-dark-companion">the Dark Companion</a>.
+		<a href="/cosmology/black-holes/the-dark-companion">the Dark Companion</a>.
 	</figcaption>
 </figure>
 

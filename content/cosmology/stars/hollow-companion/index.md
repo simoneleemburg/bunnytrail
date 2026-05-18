@@ -2,10 +2,10 @@ The Hollow Companion is the visible star of the
 [[cosmology/systems/hollow-binary|Hollow Binary]] — the body
 that can be seen, observed to orbit something the eye cannot
 resolve. That something is the
-[[places/the-dark-companion|Dark Companion]].
+[[cosmology/black-holes/the-dark-companion|Dark Companion]].
 
 The compendium follows the
-[[places/the-dark-companion|Dark Companion entry]] in its
+[[cosmology/black-holes/the-dark-companion|Dark Companion entry]] in its
 account of the Hollow Binary as a whole and of what the
 arrangement does to [[cosmology/nearing|Nearing]]. What is
 recorded here is what the visible star is, in itself: a star,

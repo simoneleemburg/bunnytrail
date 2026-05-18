@@ -1,9 +1,17 @@
 import { graph } from '$lib/server/graph';
 import { renderSummary } from '$lib/server/markdown';
-import type { Entity, EntityType } from '$lib/types';
+import type { Entity, EntityId, EntityType } from '$lib/types';
 
 type Card = ReturnType<typeof toCard>;
 export type ContainerNode = { container: Card; children: ContainerNode[] };
+export type OrbitNode = { entity: Card; children: OrbitNode[] };
+
+/**
+ * Structural ("gravitational") relation kinds that build the orbits
+ * tree. Both encode the same shape: child *belongs to* / *orbits*
+ * parent. We treat them uniformly when walking the tree.
+ */
+const ORBIT_KINDS = new Set(['member-of', 'orbits']);
 /**
  * Build the view-model for a type-index page. Caller has already
  * verified that `type` is a known type via `graph.hasType`.

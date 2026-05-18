@@ -310,7 +310,7 @@ working tongues of the Sister Worlds (Bayurinda itself is a
 is not yet recorded here). The name of
 [[characters/ngonawan-ilyardi|Ngonawan Ilyardi]] is Bayurindan
 and is marked accordingly. The cultural readings of
-[[places/the-dark-companion|the Dark Companion]] belong to
+[[cosmology/black-holes/the-dark-companion|the Dark Companion]] belong to
 various local traditions and are not Old Tongue. The
 cosmological terms [[cosmology/realms/asthera|Asthera]] and
 [[cosmology/realms/nareth|Nareth]] — names for the two great layers of

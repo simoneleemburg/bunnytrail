@@ -23,7 +23,7 @@
 		<p class="lede">
 			The chart extends a little past its own system. Across the long gulf, the neighbouring
 			<em>Hollow Binary</em> is visible from Cognita: a single companion star, and the unresolved
-			body it orbits — <a href="/places/the-dark-companion">the Dark Companion</a>, which gives off
+			body it orbits — <a href="/cosmology/black-holes/the-dark-companion">the Dark Companion</a>, which gives off
 			no light and is known only by what it does.
 		</p>
 	</header>
@@ -61,7 +61,7 @@
 			<dd>
 				The neighbouring system, drawn off to the right across a long gulf of interstellar space
 				(not to scale). Its visible companion star turns around a body the eye cannot resolve:
-				<a href="/places/the-dark-companion">the Dark Companion</a>, shown as a hollow rather than
+				<a href="/cosmology/black-holes/the-dark-companion">the Dark Companion</a>, shown as a hollow rather than
 				drawn solidly, because no light has ever come from it.
 			</dd>
 		</dl>
