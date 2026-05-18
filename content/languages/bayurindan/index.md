@@ -82,12 +82,16 @@ entry]].)
 - **Nuunlau** [[bay]] — the archipelago people's word for _the
   deep_ as a region: the deep-water reaches of
   [[places/bayurinda|Bayurinda]]'s ocean, distinct from the
-  shallows the archipelago itself inhabits. By extension,
-  scholarship sometimes uses _Nuunlau_ for the people who live
-  there, though strictly the word names the place, not the
-  people. (See [[languages/deep-speech|Deep Speech]] for the
-  deep's own tongue; an entry for the Nuunlau as a region, and
-  one for the deep as a people, are not yet written.)
+  shallows the archipelago itself inhabits. A region-name, not a
+  property-word, and not a name for the people who live there.
+
+- **Nuunlaumud** [[bay]] — the people of the _Nuunlau_: the
+  pressure-adapted, seafloor-dwelling people the compendium
+  otherwise calls _the deep_. Formed from _Nuunlau_ by the
+  Bayurindan suffix _-mud_, which derives a people-name from a
+  place-name. What the Nuunlaumud call themselves, in their own
+  tongue (see [[languages/deep-speech|Deep Speech]]), is not yet
+  recorded here.
 
 _(Other Bayurindan words and names in the compendium are not
 yet marked. Sweep deferred.)_

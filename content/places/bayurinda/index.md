@@ -97,9 +97,11 @@ live in cities of their own making along the long architecture
 of the ocean. The archipelago people call the waters where the
 deep live the _Nuunlau_ [[bay]] — Bayurindan distinguishes
 shallow and deep water as different nouns, not different
-adjectives — and refer to the deep, when they need to, as _those
-of the Nuunlau_. What the deep call themselves, in their own
-tongue (which is not [[languages/bayurindan|Bayurindan]] — see
+adjectives — and call the people themselves the _Nuunlaumud_
+[[bay]], formed from _Nuunlau_ by the Bayurindan suffix _-mud_
+that derives a people-name from a place-name. What the
+Nuunlaumud call themselves, in their own tongue (which is not
+[[languages/bayurindan|Bayurindan]] — see
 [[languages/deep-speech|Deep Speech]]), is not yet recorded
 here. Scholarship on the other Sister Worlds refers to them as
 _the deep_, or by various respectful circumlocutions.
