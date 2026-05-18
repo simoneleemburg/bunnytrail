@@ -9,9 +9,9 @@
 		summary?: string | null;
 		/**
 		 * Summary as inline HTML, pre-rendered via `renderSummary` with
-		 * `stripLinks: true` (the card is wrapped in an <a>, so nested
-		 * anchors aren't permitted). Prefer this; `summary` is kept as
-		 * a fallback.
+		 * `stripLinks: true` (the card title acts as a stretched link, so
+		 * nested anchors inside the summary would compete for clicks).
+		 * Prefer this; `summary` is kept as a fallback.
 		 */
 		summaryHtml?: string | null;
 		tags?: string[];
@@ -30,7 +30,7 @@
 	}: Props = $props();
 </script>
 
-<a class="entity-card" href={`/${id}`}>
+<article class="entity-card">
 	<div class="rule"></div>
 	<div class="eyebrow">
 		<span class="type">{kind ?? type}</span>
@@ -39,7 +39,9 @@
 			<span class="era">{era}</span>
 		{/if}
 	</div>
-	<h3 class="name">{name}</h3>
+	<h3 class="name">
+		<a class="card-link" href={`/${id}`}>{name}</a>
+	</h3>
 	{#if summaryHtml}
 		<p class="summary">{@html summaryHtml}</p>
 	{:else if summary}
@@ -48,18 +50,16 @@
 	{#if tags.length > 0}
 		<div class="tags">
 			{#each tags as tag (tag)}
-				<Tag label={tag} />
+				<Tag label={tag} href={`/tags/${encodeURIComponent(tag)}`} />
 			{/each}
 		</div>
 	{/if}
-</a>
+</article>
 
 <style>
 	.entity-card {
-		display: block;
+		position: relative;
 		padding: var(--space-4) 0 var(--space-5);
-		color: inherit;
-		text-decoration: none;
 	}
 
 	.rule {
@@ -87,7 +87,22 @@
 		color: var(--ink);
 	}
 
-	.entity-card:hover .name {
+	.card-link {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	/* Stretch the title's link over the whole card so empty space and
+	   the summary are clickable too. Real interactive children (tags)
+	   sit above this overlay via their own z-index and stay clickable. */
+	.card-link::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+	}
+
+	.entity-card:hover .card-link {
 		color: var(--accent);
 	}
 
@@ -99,6 +114,8 @@
 	}
 
 	.tags {
+		position: relative;
+		z-index: 2;
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--space-2) var(--space-3);
