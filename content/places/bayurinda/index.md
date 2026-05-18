@@ -90,31 +90,48 @@ that the question of "descent" simply does not map onto the
 shape of what happened. The compendium records the dominant
 tradition, names the dispute, and does not settle it.
 
-The **deep** are an older people — older than the drowning, by
-the most credible accounts; older than Bayurindan history can
-quite reach. They are mostly bipedal, pressure-adapted, and
-live in cities of their own making along the long architecture
-of the ocean. The archipelago people call the waters where the
-deep live _[[places/nuunlau|Nuunlau]]_ [[bay]] — Bayurindan
-distinguishes shallow and deep water as different nouns, not
-different adjectives — and call the people themselves the
-_Nuunlaumud_
-[[bay]], formed from _Nuunlau_ by the Bayurindan suffix _-mud_
-that derives a people-name from a place-name. What the
-Nuunlaumud call themselves, in their own tongue (which is not
-[[languages/bayurindan|Bayurindan]] — see
-[[languages/deep-speech|Deep Speech]]), is not yet recorded
-here. Scholarship on the other Sister Worlds refers to them as
-_the deep_, or by various respectful circumlocutions.
+Two peoples live in the deep waters of
+[[places/nuunlau|Nuunlau]]. The archipelago people call them
+together the _Nuunlaumud_ [[bay]] — the word is formed from
+_Nuunlau_ by the Bayurindan suffix _-mud_ that derives a
+people-name from a place-name, and means, simply, _people of the
+Nuunlau_. Bayurindan distinguishes shallow and deep water as
+different nouns, not different adjectives; _Nuunlau_ names the
+specific deep-water region the deep live in.
 
-The relationship between the archipelago and the deep is the
-central social fact of present Bayurindan life. The deep have
-been, across the long centuries since the drowning, the
-**custodians** of what the lost civilisation made — its records,
+The **older Nuunlaumud** are an older people — older than the
+drowning, by the most credible accounts; older than Bayurindan
+history can quite reach. They are mostly bipedal,
+pressure-adapted, and were already at home in
+[[places/nuunlau|Nuunlau]] long before the surface civilisation
+above them drowned.
+
+The **[[beings/aetherians|Aetherians]]** are the populous
+majority. They are not older; they are descendants of the
+surface civilisation's own survivors, taken in by the older
+Nuunlaumud after the drowning and given the means to breathe
+water. They are the people who, in the long centuries since,
+have done most of the work of reading their own ancestors'
+inscriptions back into a language the surface can hear.
+
+Together the two peoples make up the Nuunlaumud as the
+archipelago meets them. Scholarship on the other Sister Worlds
+refers to them collectively as _the deep_, or by various
+respectful circumlocutions. What the older Nuunlaumud and the
+Aetherians call themselves, in their own working tongue (which
+is [[languages/deep-speech|Deep Speech]], not
+[[languages/bayurindan|Bayurindan]]), is not yet recorded here.
+
+The relationship between the archipelago and the Nuunlaumud is
+the central social fact of present Bayurindan life. The
+Nuunlaumud — older people and Aetherians both, with the
+inscription-stewardship work falling chiefly to the Aetherians —
+have been, across the long centuries since the drowning, the
+**custodians** of what the lost civilisation made: its records,
 its practices, its scholarly inheritance, its
 [[languages/old-tongue|Old Tongue]]. The archipelago people
-inherit that material from the deep, slowly, by patient contact,
-and carry it up to where it can travel further.
+inherit that material from them, slowly, by patient contact, and
+carry it up to where it can travel further.
 
 _(Other peoples of Bayurinda, the exact protocols of contact
 between the archipelago and the deep, and the particular shape

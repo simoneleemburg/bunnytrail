@@ -1,0 +1,10 @@
+name: The Aetherians
+kind: people
+language: ds
+summary: The populous majority among the [[languages/deep-speech|Nuunlaumud]] of [[places/nuunlau|Nuunlau]] — descendants of the survivors of [[places/bayurinda|Bayurinda]]'s drowned surface civilisation, modified to breathe water and taken in by the older deep. They read their own ancestors' inscriptions, in a tongue not their own.
+aliases: [Aetherians, aether-breathers]
+tags: [nuunlau, seafloor, post-drowning, aether, water-breathers, custodians, inscriptions]
+relations:
+  - kind: located-in
+    target: places/nuunlau
+    note: The populous majority of the deep-water region.

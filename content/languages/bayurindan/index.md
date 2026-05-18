@@ -90,9 +90,12 @@ entry]].)
   pressure-adapted, seafloor-dwelling people the compendium
   otherwise calls _the deep_. Formed from _Nuunlau_ by the
   Bayurindan suffix _-mud_, which derives a people-name from a
-  place-name. What the Nuunlaumud call themselves, in their own
-  tongue (see [[languages/deep-speech|Deep Speech]]), is not yet
-  recorded here.
+  place-name. The word is an umbrella: it covers both the older
+  pre-drowning Nuunlaumud and the
+  [[beings/aetherians|Aetherians]] who joined them after the
+  drowning. What either group calls itself, in
+  [[languages/deep-speech|Deep Speech]] or in any tongue
+  remembered from the surface, is not yet recorded here.
 
 _(Other Bayurindan words and names in the compendium are not
 yet marked. Sweep deferred.)_

@@ -1,0 +1,147 @@
+_(This is a working name in the compendium's English register,
+formed from the surface-scholar loan_ Aether _for the breathable
+fluid the Aetherians' lungs are modified to accept. What the
+Aetherians call themselves, in [[languages/deep-speech|Deep
+Speech]] or in any tongue remembered from the surface, is not
+yet recorded here.)_
+
+The **Aetherians** are the populous majority of the
+[[languages/deep-speech|Nuunlaumud]] — the people of
+[[places/nuunlau|Nuunlau]] — and the second of the two peoples
+who live there. They are not the older Nuunlaumud, who pre-date
+the drowning; the Aetherians are the descendants of the **lost
+surface civilisation's survivors**, taken in by the older deep
+after the catastrophe and given the means to breathe water.
+
+What they have in common with the older Nuunlaumud is Nuunlau as
+home, [[languages/deep-speech|Deep Speech]] as working tongue,
+and the long stewardship of the seafloor. What they do not have
+in common is lineage: the Aetherians' ancestors are the people
+the inscriptions are _by_, not the people who first read them.
+
+## Origin
+
+The surface civilisation drowned. Some of its people did not.
+They were taken in by the older Nuunlaumud, who already lived on
+the seafloor and who possessed both the place and the means to
+keep them alive there. The biological modification that lets an
+Aetherian's lungs accept _Aether_ — the breathable fluid that
+fills them in place of air — is in origin a gift, or an
+inheritance, from those older Nuunlaumud, refined by Aetherian
+hands across the generations since.
+
+The modification is not made on the surface and cannot be
+undone. An Aetherian who is brought above water does not become
+human again; they suffocate the way a human brought to the
+seafloor would. The two adaptations are mirror processes, and
+the Aetherians live the wrong side of that mirror for the rest
+of Cognita's convenience.
+
+_(What the older Nuunlaumud's older means of breathing the deep
+was, before any of this — whether it is biological, or
+technological, or something else entirely, and whether the older
+people use_ Aether _too or use a different substance — is not
+yet recorded here.)_
+
+## Anatomy
+
+Aetherian anatomy reads as a long drift away from the human form
+their ancestors had:
+
+- Skin is thicker, and body hair has effectively disappeared.
+- The eyes are large and round, and very sensitive to light;
+  Aetherians can make out their surroundings in waters that
+  would be dark to a surface-dweller.
+- The nose and ears are small.
+- The fingers and feet are long, with small webs (_fleeces_, in
+  one surface scholar's rendering) between the toes and between
+  the fingers.
+- Adult Aetherians are smaller than humans — somewhere between
+  one-and-two-fifths and one-and-three-fifths of a metre is
+  typical.
+- They are more flexible and stronger than humans, well suited
+  to moving through water with grace.
+
+Their relationship to **radioactive material** is also unlike a
+human's. Ordinary exposure does not harm them. At high doses, it
+produces visions, out-of-body experiences, and other
+mind-altering effects. What on Bayurinda's seafloor is the
+source of this exposure, and how routine it is in Nuunlaumud
+life, is not yet recorded here.
+
+## How an Aetherian is born
+
+The Aetherians have, by deliberate design, a **two-stage birth**
+that has no human equivalent.
+
+The first stage is uterine, and slightly shorter than the human
+equivalent — roughly seven to eight months. What emerges from
+the uterus is not yet an Aetherian.
+
+The second stage is the **cocoon stage**. The newborn is sealed
+into a cocoon, suspended in a special fluid — a mix of _Aether_
+and other compounds that supports growth and cellular
+regeneration — and held there, in a state of coma, for between
+ten and twelve years. Across that time, more and more _Aether_
+is added to the fluid as the body grows toward the size it will
+need to be.
+
+The cocoon stage exists for one reason above all others: the
+body must be **large enough** before the modification that lets
+the lungs accept _Aether_ can be installed. The modification can
+only be installed once. If it is installed too early — into a
+body that has not yet grown enough — the Aetherian will, later,
+suffocate or develop breathing difficulties that cannot be
+fixed.
+
+The Aetherian stage begins when the cocoon is opened. The
+surgery happens within the first minute, long before the coma
+ends; the modification is installed, _Aether_ flows into the
+lungs, and the Aetherian wakes suddenly and strongly. (A
+temporary rebreathing apparatus is used if the cocoon-opening
+provokes spasms.) From there the Aetherian grows the rest of the
+way into themselves — muscle and skin hardness develop across
+the first six to eight years, and the social and practical
+education of an Aetherian's life begins.
+
+_(The Aetherian word for the device that is installed, the word
+for the fluid the cocoon holds, and the word for the cocoon
+stage itself — the compendium has English working terms for none
+of these and would prefer Deep-Speech ones. Not yet recorded
+here.)_
+
+## The modification debate
+
+Some Aetherians take the inherited modification as a starting
+point and **further enhance their bodies** beyond it. Others
+**strongly disapprove** of the practice.
+
+This is a real fault-line in Aetherian life and not a small one.
+What its terms are — whether the disagreement is religious, or
+about lineage with the older Nuunlaumud, or about what
+counts as the Aetherian form, or all of these at once — is not
+yet recorded here.
+
+## What the Aetherians read
+
+The **inscriptions** on the floor of Nuunlau are the work of the
+surface civilisation that drowned. The Aetherians, descended
+from the survivors of that civilisation, are the ones who read
+them.
+
+This is not how the inscription-stewardship started: the older
+Nuunlaumud were the first to find the inscriptions and the first
+to begin reading them, in a tongue not their own. But the
+sustained, generational work of reconstructing the
+[[languages/old-tongue|Old Tongue]] is now Aetherian work, in
+collaboration with the older people who began it. The
+[[social/oracle-triad|Oracle Triad]]'s long Old-Tongue chain
+ultimately rests on Aetherian scholarship — which is to say, on
+the surface civilisation's descendants reading their own
+ancestors, in a language they had to learn back, on a seafloor
+their ancestors did not live on.
+
+What the Aetherians make of this themselves — whether they
+think of the inscriptions as ancestral, or as belonging to a
+people they are no longer quite continuous with — is not yet
+recorded here.

@@ -7,13 +7,18 @@ diplomatic face of Bayurinda that the rest of Cognita meets,
 Nuunlau is what Bayurinda has been all along.
 
 It is the home of the [[languages/deep-speech|Nuunlaumud]] — the
-seafloor people the compendium otherwise calls _the deep_ — and
-it is where the inscriptions of the lost surface civilisation
-rest on the floor of the ocean, exactly where the drowning left
-them. Almost everything the
-[[languages/old-tongue|Old Tongue]] is, as a reconstructed
-language, has been reconstructed from inscriptions held in
-Nuunlau and by the people who live there.
+seafloor people the compendium otherwise calls _the deep_, in
+fact two peoples sharing the same waters: the older Nuunlaumud,
+who pre-date the drowning, and the
+[[beings/aetherians|Aetherians]], the populous majority,
+descendants of the surface civilisation's own survivors. It is
+where the inscriptions of the lost surface civilisation rest on
+the floor of the ocean, exactly where the drowning left them.
+Almost everything the [[languages/old-tongue|Old Tongue]] is, as
+a reconstructed language, has been reconstructed from
+inscriptions held in Nuunlau and by the
+[[beings/aetherians|Aetherians]] who live there — by, in other
+words, the descendants of the people the inscriptions are by.
 
 ## On the name
 
@@ -28,10 +33,13 @@ the shallows, not as the same place further down.
 
 The people of Nuunlau are the _[[languages/deep-speech|Nuunlaumud]]_
 in Bayurindan, formed by the suffix _-mud_ that derives a
-people-name from a place-name. Both _Nuunlau_ and _Nuunlaumud_
-are the archipelago's words; what the Nuunlaumud call their own
-home, and themselves, in their own tongue, is not yet recorded
-here.
+people-name from a place-name — literally, _people of the
+Nuunlau_. The word is an umbrella: it covers both the older
+Nuunlaumud and the [[beings/aetherians|Aetherians]], who share
+[[languages/deep-speech|Deep Speech]] as a working tongue. Both
+_Nuunlau_ and _Nuunlaumud_ are the archipelago's words; what
+the two peoples call their own home, and themselves, in their
+own tongue, is not yet recorded here.
 
 English-language scholarship usually treats _Nuunlau_ the way it
 treats _the Atlantic_ or _the Sahara_ — bare in subject position,
@@ -46,8 +54,10 @@ several distinct things:
 - The **inscriptions** — the seafloor record left by the lost
   surface civilisation when it drowned. These rest on Nuunlau's
   floor, in patterns the
-  [[languages/deep-speech|Nuunlaumud]] have spent centuries
-  reading and re-reading. (See
+  [[beings/aetherians|Aetherians]] have spent centuries reading
+  and re-reading — their own ancestors, in a tongue the
+  Aetherians had to learn back from the older Nuunlaumud who
+  first found the inscriptions. (See
   [[languages/old-tongue#how-it-survived--partly|Old Tongue: how
 it survived]].)
 - The **cities of the Nuunlaumud** — the seafloor settlements
