@@ -12,6 +12,12 @@
 <section class="hero">
 	<h1>Alteria</h1>
 	<p class="tagline">My sacred place of transformation.</p>
+	<p class="counter">
+		<em>
+			{data.totalEntities} entries{#if data.issues > 0}
+				· {data.issues} broken links{/if}
+		</em>
+	</p>
 	<div class="lede">
 		<p>
 			This shall be the name of my collective ideas and creations. This is where my world-building
@@ -63,18 +69,11 @@
 		<h2 class="section-heading">Tags</h2>
 		<div class="tag-row">
 			{#each data.tags as t (t.tag)}
-				<Tag label={t.tag} href={`/browse?tag=${encodeURIComponent(t.tag)}`} />
+				<Tag label={t.tag} href={`/tags/${encodeURIComponent(t.tag)}`} />
 			{/each}
 		</div>
 	</section>
 {/if}
-
-<p class="colophon">
-	<em>
-		{data.totalEntities} entries{#if data.issues > 0}
-			· {data.issues} broken links{/if}
-	</em>
-</p>
 
 <style>
 	.hero {
@@ -251,10 +250,11 @@
 		gap: var(--space-2) var(--space-4);
 	}
 
-	.colophon {
-		color: var(--ink-faint);
+	.counter {
 		font-size: var(--text-sm);
-		text-align: center;
-		margin-top: var(--space-8);
+		color: var(--ink-faint);
+		margin: 0 0 var(--space-5);
+		font-variant: small-caps;
+		letter-spacing: 0.06em;
 	}
 </style>

@@ -93,7 +93,7 @@
 					{#if data.entity.tags.length > 0}
 						<div class="tag-row">
 							{#each data.entity.tags as tag (tag)}
-								<Tag label={tag} />
+								<Tag label={tag} href={`/tags/${encodeURIComponent(tag)}`} />
 							{/each}
 						</div>
 					{/if}
