@@ -5,3 +5,4 @@ tags: [sister-worlds]
 relations:
   - kind: member-of
     target: cosmology/systems/sister-system
+    order: 0

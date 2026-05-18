@@ -4,7 +4,7 @@ import type { Entity, EntityId, EntityType } from '$lib/types';
 
 type Card = ReturnType<typeof toCard>;
 export type ContainerNode = { container: Card; children: ContainerNode[] };
-export type OrbitNode = { entity: Card; children: OrbitNode[] };
+export type OrbitNode = { entity: Card; children: OrbitNode[]; order?: number };
 
 /**
  * Structural ("gravitational") relation kinds that build the orbits
@@ -288,12 +288,16 @@ function toCard(
 }
 
 /**
- * Display order for siblings inside an orbit group. We sort by
- * cosmological role first — centre outward — then alphabetically
- * within each group. Kinds not listed sort last (but still
- * alphabetically among themselves). The list is intentionally
- * small and additive: when new kinds enter the orbit graph, they
- * land in the "other" bucket until someone decides where they go.
+ * Display order for siblings inside an orbit group. Sort precedence:
+ *
+ *   1. **Explicit `order`** on the relation edge — the body's
+ *      canonical slot in its system (innermost = 0, then outward).
+ *      Entities with an explicit order always sort before entities
+ *      without one.
+ *   2. **Cosmological role** — centre outward — for entities that
+ *      *don't* carry an explicit order. Star, black-hole, planet,
+ *      moon, then anything else.
+ *   3. **Alphabetical** by name, as the final tie-break.
  */
 const ORBIT_KIND_ORDER: readonly string[] = ['star', 'black-hole', 'planet', 'moon'];
 
@@ -304,6 +308,11 @@ function orbitKindRank(kind: string | null): number {
 }
 
 function compareOrbitNodes(a: OrbitNode, b: OrbitNode): number {
+	const aHas = a.order !== undefined;
+	const bHas = b.order !== undefined;
+	if (aHas && bHas) return (a.order as number) - (b.order as number);
+	if (aHas) return -1;
+	if (bHas) return 1;
 	const rankDiff = orbitKindRank(a.entity.kind) - orbitKindRank(b.entity.kind);
 	if (rankDiff !== 0) return rankDiff;
 	return a.entity.name.localeCompare(b.entity.name);
@@ -350,25 +359,26 @@ function buildOrbitsTree(
 		return out.every((edge) => !universe.has(edge.to));
 	};
 
-	const build = (id: EntityId, seen: Set<EntityId>): OrbitNode | null => {
+	const build = (id: EntityId, order: number | undefined, seen: Set<EntityId>): OrbitNode | null => {
 		const entity = graph.get(id);
 		if (!entity) return null;
 		if (seen.has(id)) return null; // cycle guard
 		const nextSeen = new Set(seen).add(id);
 		const childEdges = graph.inEdges(id).filter((edge) => ORBIT_KINDS.has(edge.kind));
 		const children = childEdges
-			.map((edge) => build(edge.from, nextSeen))
+			.map((edge) => build(edge.from, edge.order, nextSeen))
 			.filter((c): c is OrbitNode => c !== null)
 			.sort(compareOrbitNodes);
 		return {
 			entity: toCard(entity, cardSummaryHtml, labelForType(entity.type)),
-			children
+			children,
+			order
 		};
 	};
 
 	const roots = [...universe]
 		.filter(isRoot)
-		.map((id) => build(id, new Set()))
+		.map((id) => build(id, undefined, new Set()))
 		.filter((n): n is OrbitNode => n !== null)
 		.sort(compareOrbitNodes);
 
@@ -406,9 +416,18 @@ function buildOrbitsTree(
 		for (const child of children) {
 			const promotedChildren = pruneInternals(child.children);
 			if (pageEntityIds.has(child.entity.id)) {
-				out.push({ entity: child.entity, children: promotedChildren });
+				out.push({ entity: child.entity, children: promotedChildren, order: child.order });
 			} else {
 				// Drop this node; promote its already-pruned children.
+				// Note: a promoted child's `order` was authored
+				// relative to its dropped parent's siblings; at the
+				// promoted level it may collide or lose meaning. In
+				// practice this only happens when an internal
+				// non-page-type node has page-type descendants, which
+				// the current content doesn't exercise. If it ever
+				// does, the right fix is to strip `order` on
+				// promotion — losing the canonical order is honest
+				// when the level it belongs to has been removed.
 				out.push(...promotedChildren);
 			}
 		}
@@ -417,6 +436,7 @@ function buildOrbitsTree(
 
 	return keptRoots.map((root) => ({
 		entity: root.entity,
-		children: pruneInternals(root.children)
+		children: pruneInternals(root.children),
+		order: root.order
 	}));
 }

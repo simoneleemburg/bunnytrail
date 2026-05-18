@@ -6,3 +6,4 @@ tags: [ocean, drowned-civilisation, multiple-peoples, archipelago, mythic-past]
 relations:
   - kind: member-of
     target: cosmology/systems/sister-system
+    order: 1

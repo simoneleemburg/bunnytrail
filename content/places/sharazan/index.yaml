@@ -5,3 +5,4 @@ tags: [crossroads, fractured, atmosphere, splendor]
 relations:
   - kind: member-of
     target: cosmology/systems/sister-system
+    order: 2

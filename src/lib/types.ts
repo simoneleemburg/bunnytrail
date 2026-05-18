@@ -142,6 +142,14 @@ export interface Relation {
 	target: EntityId;
 	/** Optional short note explaining the relation. */
 	note?: string;
+	/**
+	 * Optional sort key for structural relations. Used today by the
+	 * orbits view to lay out a system's children in canonical order
+	 * (innermost-out, centre-first) rather than by alphabetical /
+	 * kind-rank fallback. Lower numbers sort first; entities without
+	 * an explicit order sort after those that have one.
+	 */
+	order?: number;
 }
 
 /** Meta loaded from the YAML sidecar. */
@@ -233,6 +241,8 @@ export interface Edge {
 	/** Either a typed relation kind, or "wikilink" for prose mentions. */
 	kind: string;
 	note?: string;
+	/** See `Relation.order`. */
+	order?: number;
 }
 
 /** Health-check problems detected at load time. */

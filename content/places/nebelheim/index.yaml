@@ -6,3 +6,4 @@ tags: [volcanic, tectonic, ash, duty]
 relations:
   - kind: member-of
     target: cosmology/systems/sister-system
+    order: 3
