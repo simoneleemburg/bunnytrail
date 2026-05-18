@@ -288,6 +288,28 @@ function toCard(
 }
 
 /**
+ * Display order for siblings inside an orbit group. We sort by
+ * cosmological role first — centre outward — then alphabetically
+ * within each group. Kinds not listed sort last (but still
+ * alphabetically among themselves). The list is intentionally
+ * small and additive: when new kinds enter the orbit graph, they
+ * land in the "other" bucket until someone decides where they go.
+ */
+const ORBIT_KIND_ORDER: readonly string[] = ['star', 'black-hole', 'planet', 'moon'];
+
+function orbitKindRank(kind: string | null): number {
+	if (!kind) return ORBIT_KIND_ORDER.length;
+	const idx = ORBIT_KIND_ORDER.indexOf(kind);
+	return idx === -1 ? ORBIT_KIND_ORDER.length : idx;
+}
+
+function compareOrbitNodes(a: OrbitNode, b: OrbitNode): number {
+	const rankDiff = orbitKindRank(a.entity.kind) - orbitKindRank(b.entity.kind);
+	if (rankDiff !== 0) return rankDiff;
+	return a.entity.name.localeCompare(b.entity.name);
+}
+
+/**
  * Walk `member-of` and `orbits` edges to produce the gravitational
  * tree visible from a type-index page.
  *
@@ -337,7 +359,7 @@ function buildOrbitsTree(
 		const children = childEdges
 			.map((edge) => build(edge.from, nextSeen))
 			.filter((c): c is OrbitNode => c !== null)
-			.sort((a, b) => a.entity.name.localeCompare(b.entity.name));
+			.sort(compareOrbitNodes);
 		return {
 			entity: toCard(entity, cardSummaryHtml, labelForType(entity.type)),
 			children
@@ -348,7 +370,7 @@ function buildOrbitsTree(
 		.filter(isRoot)
 		.map((id) => build(id, new Set()))
 		.filter((n): n is OrbitNode => n !== null)
-		.sort((a, b) => a.entity.name.localeCompare(b.entity.name));
+		.sort(compareOrbitNodes);
 
 	// Keep only trees that touch the page's type. The page-type's
 	// recursive set defines "this page is about these entities";
