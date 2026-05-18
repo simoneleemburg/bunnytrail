@@ -15,7 +15,7 @@ have shaped both what it is and how it is known.
 ## The pillars and the routes outward
 
 Of all the regions of Nebelheim, Tholingia carries the most
-[[cosmology/world-pillars|World Pillars]]. The compendium does
+[[cosmology/eidolons/world-pillars|World Pillars]]. The compendium does
 not yet say how many — partly because the count is not a fixed
 number, and partly because what counts as "a Pillar" admits of
 some institutional argument — but the concentration is real and

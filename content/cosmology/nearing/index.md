@@ -131,7 +131,7 @@ the same way twice.
 
 The technique requires enough initial velocity that the pilot
 does not stall — which is what the
-[[cosmology/world-pillars|World Pillars]] exist for,
+[[cosmology/eidolons/world-pillars|World Pillars]] exist for,
 slingshotting Eidolons up and outward fast enough that the
 drift can begin safely. Navigation is hazardous. A pilot who
 drifts too deeply may lose direction, emerge far from their

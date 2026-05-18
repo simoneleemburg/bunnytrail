@@ -27,7 +27,7 @@ and probably first understood.
 
 Sharazan is a crossroads world by geography as much as by culture.
 Travel currents, ancient route networks,
-[[cosmology/world-pillars|World Pillar]] paths, and old knight
+[[cosmology/eidolons/world-pillars|World Pillar]] paths, and old knight
 roads all intersect across the cluster. The fragments
 are politically separate and historically distinct, but the
 atmosphere keeps them in conversation: civilisations of separation

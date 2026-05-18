@@ -64,7 +64,7 @@ forces that broke whatever is broken there. A coherent pilot
 in working contact with their Naya can pass through. An
 incoherent one becomes part of it.
 
-This is why the [[cosmology/world-pillars|World Pillars]]
+This is why the [[cosmology/eidolons/world-pillars|World Pillars]]
 launch with such violence and catch with such precision. The
 Void is the cost of getting it wrong. The order's charts mark
 the worst regions and the practice teaches pilots to read for

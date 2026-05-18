@@ -202,7 +202,7 @@ change.
 Knighthood is the work of the Knights of Bellona, and has been
 for as long as the order has had Knights to send. The "old
 knight roads" of [[places/sharazan|Sharazan]] — ancient routes
-that intersect with [[cosmology/world-pillars|World Pillar]]
+that intersect with [[cosmology/eidolons/world-pillars|World Pillar]]
 paths and atmospheric travel currents — are part of the long
 material record of the order's interplanetary reach. Whether
 the role existed in some other form before the order took its

@@ -12,7 +12,7 @@ first Nearing is what makes the Eidolon move. The second is
 what makes the journey possible.
 
 The pilot has been thrown from their home world by a
-[[cosmology/world-pillars|World Pillar]]. What they do between
+[[cosmology/eidolons/world-pillars|World Pillar]]. What they do between
 launch and arrival is the practice this entry describes.
 
 ## Nearing the distance
