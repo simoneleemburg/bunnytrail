@@ -176,7 +176,7 @@
 	<title>{data.label.plural} · Alteria</title>
 </svelte:head>
 
-<PageHeader eyebrow="All" title={data.label.plural} />
+<PageHeader title={data.label.plural} />
 
 {#if data.description}
 	<p class="type-description">{data.description}</p>
