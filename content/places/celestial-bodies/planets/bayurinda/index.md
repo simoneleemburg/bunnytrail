@@ -139,7 +139,7 @@ of the world's politics are not yet recorded here.)_
 
 ## On the name
 
-_Bayurinda_ is the [archipelago people](/places/regions/bayurinda-archipelago)'s
+_Bayurinda_ is the [archipelago people](/places/regions/bayurinda/bayurinda-archipelago)'s
 name for themselves and their place. It travelled outward when
 those people first met Knights from
 [[nebelheim|Nebelheim]]: the Nebelheimers carried the

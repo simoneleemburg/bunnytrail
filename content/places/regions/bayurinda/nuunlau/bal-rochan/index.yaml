@@ -6,5 +6,5 @@ aliases: [Bal Rochan]
 tags: [city, seafloor, deep-architecture, lava-stone, coral, custodians]
 relations:
   - kind: located-in
-    target: places/regions/nuunlau
+    target: places/regions/bayurinda/nuunlau
     note: The largest known Nuunlaumud settlement.

@@ -17,5 +17,5 @@ tags:
   ]
 relations:
   - kind: native-to
-    target: places/regions/nuunlau
+    target: places/regions/bayurinda/nuunlau
     note: The populous majority of the deep-water region.
