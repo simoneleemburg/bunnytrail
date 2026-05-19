@@ -185,33 +185,46 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 			}
 			// Per-folder uniformity check: every entity directly under
 			// this folder (one path segment past `typePath`) must declare
-			// `meta.kind === kind`. Subfolders that are themselves
-			// type-declaring (e.g. a subtype under this type) are
-			// excluded — their entities answer to their own _type.yaml.
+			// `meta.kind === kind`, **or** declare a kind that this
+			// folder also registers via `subkinds:` (which means the
+			// folder explicitly welcomes that other kind nesting inside
+			// — e.g. `regions/` owning `kind: region` but also hosting
+			// `kind: settlement` entities physically nested under their
+			// region). Subfolders that are themselves type-declaring
+			// (e.g. a subtype under this type) are excluded — their
+			// entities answer to their own _type.yaml.
 			const typePrefix = `${typePath}/`;
 			const subtypePaths = [...typeMeta.keys()].filter(
 				(t) => t !== typePath && t.startsWith(typePrefix)
 			);
+			const allowedSubkinds = new Set<string>();
+			if (Array.isArray(meta.subkinds)) {
+				for (const entry of meta.subkinds) {
+					if (entry && typeof entry.kind === 'string') allowedSubkinds.add(entry.kind);
+				}
+			}
 			for (const entity of entities.values()) {
 				if (!entity.id.startsWith(typePrefix)) continue;
 				// Skip entities that belong to a nested subtype.
 				if (subtypePaths.some((sp) => entity.id === sp || entity.id.startsWith(`${sp}/`))) continue;
 				const entityKind = typeof entity.meta.kind === 'string' ? entity.meta.kind : null;
-				if (entityKind !== kind) {
-					issues.push({
-						kind: 'invalid-yaml',
-						entity: entity.id,
-						detail: `kind '${entityKind ?? '(missing)'}' does not match folder kind '${kind}' declared in ${typePath}/_type.yaml`
-					});
-				}
+				if (entityKind === kind) continue;
+				if (entityKind && allowedSubkinds.has(entityKind)) continue;
+				issues.push({
+					kind: 'invalid-yaml',
+					entity: entity.id,
+					detail: `kind '${entityKind ?? '(missing)'}' does not match folder kind '${kind}' declared in ${typePath}/_type.yaml`
+				});
 			}
 		}
 
 		// `subkinds`: extra kinds this folder registers but doesn't
-		// own on disk. Their entities live in some other folder and
-		// declare `kind:` directly on the entity. We don't run
-		// uniformity checks for them — there is no owning folder to
-		// check against.
+		// own on disk. Their entities may live in some other folder
+		// entirely (e.g. planets registered by celestial-bodies but
+		// living under places/) **or** they may physically nest inside
+		// this folder (e.g. settlements nested under regions). Either
+		// way, the entity declares `kind:` directly. The uniformity
+		// check above already exempts nested-inside subkinds.
 		if (Array.isArray(meta.subkinds)) {
 			for (const entry of meta.subkinds) {
 				if (!entry || typeof entry.kind !== 'string') {

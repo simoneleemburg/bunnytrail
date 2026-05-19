@@ -1,6 +1,6 @@
 **Nuunlau** [[bay]] is the deep-water region of
 [[bayurinda|Bayurinda]] — the long, lightless reaches of
-ocean below and beyond the [[bayurinda/bayurinda-archipelago|archipelago]]'s
+ocean below and beyond the [[bayurinda-archipelago|archipelago]]'s
 working shallows. It is the other half of the planet, and in
 many ways the older half: where the archipelago is the visible,
 diplomatic face of Bayurinda that the rest of Cognita meets,
@@ -88,7 +88,7 @@ radiance, and what is in it]] and
 ## Nuunlaumud settlements
 
 The largest known Nuunlaumud settlement is
-[[bayurinda/nuunlau/bal-rochan|Bal Rochan]] — a city built around a single
+[[nuunlau/bal-rochan|Bal Rochan]] — a city built around a single
 concave boulder of lava-stone older than the surface
 civilisation, held by coral pillars and roofed with a dome of
 bone and seaweed grown into coral. _Bal Rochan_ is one of the
@@ -102,7 +102,7 @@ recorded here.)_
 
 ## Relation to the archipelago
 
-Nuunlau and the [[bayurinda/bayurinda-archipelago|archipelago]]
+Nuunlau and the [[bayurinda-archipelago|archipelago]]
 are the two halves of present Bayurinda. The relationship is
 asymmetric: the archipelago is what off-world travel reaches
 first and what most off-worlders meet; Nuunlau is older,

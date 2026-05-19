@@ -23,10 +23,10 @@ speech.
 Almost nothing of Deep Speech itself is recorded in this
 compendium. What is known to the surface comes through the few
 words that have travelled up: notably
-_[[bayurinda/nuunlau/bal-rochan|Bal Rochan]]_, the deep's name for their
+_[[nuunlau/bal-rochan|Bal Rochan]]_, the deep's name for their
 largest settlement, and _[[materials/urouch|Urouch]]_, the
 deep's name for the radioactive substance on which long-term
-life in [[bayurinda/nuunlau|Nuunlau]] depends (pronounced with the
+life in [[nuunlau|Nuunlau]] depends (pronounced with the
 final _-ch_ as a soft _-sh_, roughly _oo-roush_). The
 archipelago people of Bayurinda render both names unchanged
 when they speak of them; the consonant cluster _-l R-_ in _Bal
@@ -39,7 +39,7 @@ surface civilisation, do not preserve Deep Speech at all.
 ## On the name
 
 In [[culture/languages/bayurindan|Bayurindan]], the deep waters where
-the seafloor people live are called _[[bayurinda/nuunlau|Nuunlau]]_
+the seafloor people live are called _[[nuunlau|Nuunlau]]_
 [[bay]] — a region-name — and the people themselves are the
 _Nuunlaumud_ [[bay]], formed from _Nuunlau_ by the Bayurindan
 suffix _-mud_ that derives a people-name from a place-name.
@@ -63,7 +63,7 @@ script]]** — the notational technology the surface civilisation
 invented for what is now called the
 [[culture/languages/old-tongue|Old Tongue]]. The surface survivors who
 became the Aetherians brought writing itself with them into
-[[bayurinda/nuunlau|Nuunlau]]; they kept it, and across the long
+[[nuunlau|Nuunlau]]; they kept it, and across the long
 generations they have fitted it to the language they adopted
 from the people who took them in. The retrofit was real work —
 Deep Speech's phonology is not the surface civilisation's — and
@@ -83,7 +83,7 @@ the older Nuunlaumud know, they hold in voice. What the
 Aetherians know, they hold in voice and in script. Where the
 two traditions touch — in shared scholarship, in the
 inscription-stewardship work, in everyday life in
-[[bayurinda/nuunlau/bal-rochan|Bal Rochan]] and the other Nuunlaumud
+[[nuunlau/bal-rochan|Bal Rochan]] and the other Nuunlaumud
 settlements — the distinction between an oral memory and a
 written one is a real social fact, not just a technical one.
 

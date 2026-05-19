@@ -174,7 +174,7 @@ here.)_
 The archipelago people have their own working tongue. The
 compendium does not yet record it; "Bayurindan" as the name of
 that language is used here as a placeholder, the way "Tholingian"
-is used for the working tongue of [[nebelheim/tholingia|Tholingia]].
+is used for the working tongue of [[tholingia|Tholingia]].
 Whether what the lost surface civilisation spoke is recoverable
 from the drowned record, whether the present archipelago tongue
 descends from it, and what the deep speak among themselves — are

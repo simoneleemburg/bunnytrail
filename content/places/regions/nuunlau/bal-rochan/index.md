@@ -1,10 +1,10 @@
 **Bal Rochan** [[ds]] is the largest of the
 [[culture/languages/deep-speech|Nuunlaumud]] settlements on the floor of
-[[bayurinda/nuunlau|Nuunlau]], and the most populous —
+[[nuunlau|Nuunlau]], and the most populous —
 [[beings/aetherians|Aetherian]]-majority by some margin, with a
 share of older Nuunlaumud living and working alongside them.
 It is one of the few seafloor places the
-[[bayurinda/bayurinda-archipelago|archipelago]] knows by the deep's
+[[bayurinda-archipelago|archipelago]] knows by the deep's
 own name for it rather than by translation.
 
 It is, by every account that reaches the surface, built around a

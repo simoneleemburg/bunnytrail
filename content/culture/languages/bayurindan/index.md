@@ -84,7 +84,7 @@ entry]].)
   [[bayurinda|Bayurinda]]'s ocean, distinct from the
   shallows the archipelago itself inhabits. A region-name, not a
   property-word, and not a name for the people who live there.
-  (See [[bayurinda/nuunlau|Nuunlau]].)
+  (See [[nuunlau|Nuunlau]].)
 
 - **Nuunlaumud** [[bay]] — the people of the _Nuunlau_: the
   pressure-adapted, seafloor-dwelling people the compendium
@@ -105,7 +105,7 @@ yet marked. Sweep deferred.)_
 Bayurindan shares its world with [[culture/languages/deep-speech|Deep
 Speech]], the unrelated working tongue of the
 _[[culture/languages/deep-speech|Nuunlaumud]]_ in
-[[bayurinda/nuunlau|Nuunlau]] on the seafloor. The two
+[[nuunlau|Nuunlau]] on the seafloor. The two
 languages are native to the same planet but, so far as the
 compendium records, share no common ancestry; they are two
 tongues that have lived on Bayurinda separately for as long as

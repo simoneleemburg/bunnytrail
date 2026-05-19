@@ -102,7 +102,7 @@ least one functioning Pillar there can be no Knights coming or
 going — but the count and the concentration vary.
 
 On [[nebelheim|Nebelheim]], the densest concentration of
-Pillars is in [[nebelheim/tholingia|Tholingia]], which carries
+Pillars is in [[tholingia|Tholingia]], which carries
 more than any other region of the world. This is the structural
 reason Tholingia is the region of Nebelheim most involved in
 interplanetary trade and contact, and the reason the order's
@@ -111,7 +111,7 @@ presence on the planet is densest there. The
 along the same routes, with the same consequences.
 
 On [[bayurinda|Bayurinda]], the Pillars in current use
-stand on the [[bayurinda/bayurinda-archipelago|archipelago]], for
+stand on the [[bayurinda-archipelago|archipelago]], for
 the obvious material reason that an above-water Pillar is far
 easier to build, maintain, reach, and depart from than one
 anchored on the floor of a deep ocean. The archipelago is

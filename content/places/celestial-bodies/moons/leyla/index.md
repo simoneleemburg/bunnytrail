@@ -5,7 +5,7 @@ many accounts, harder to ignore than any star.
 ## On the name
 
 _Leyla_ is a [[culture/languages/tholingian|Tholingian]] word — the name
-the people of [[nebelheim/tholingia|Tholingia]] use for the moon
+the people of [[tholingia|Tholingia]] use for the moon
 that hangs over their world. It has become the name of record in
 the compendium for the same reason _Nebelheim_ has: Tholingia is
 the region whose working language has travelled furthest along

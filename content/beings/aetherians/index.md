@@ -7,7 +7,7 @@ yet recorded here.)_
 
 The **Aetherians** are the populous majority of the
 [[culture/languages/deep-speech|Nuunlaumud]] — the people of
-[[bayurinda/nuunlau|Nuunlau]] — and the second of the two peoples
+[[nuunlau|Nuunlau]] — and the second of the two peoples
 who live there. They are not the older Nuunlaumud, who pre-date
 the drowning; the Aetherians are the descendants of the **lost
 surface civilisation's survivors**, taken in by the older deep
@@ -116,7 +116,7 @@ here.)_
 The Aetherians' tolerance of radioactive material is not an
 incidental quirk of their biology. It is a doorway.
 
-There is something on the floor of [[bayurinda/nuunlau|Nuunlau]] —
+There is something on the floor of [[nuunlau|Nuunlau]] —
 one of the **older things**, the structures the older
 Nuunlaumud describe as pre-dating the drowning and as not the
 work of the surface civilisation — that emits the radioactive

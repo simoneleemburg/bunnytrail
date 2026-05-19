@@ -1,6 +1,6 @@
 Bayurinda is a world of water. Open ocean covers nearly all of
 it; what land there is rises in one significant
-[[bayurinda/bayurinda-archipelago|archipelago]] and a scatter of
+[[bayurinda-archipelago|archipelago]] and a scatter of
 lesser islets and shoals. Two moons drag its tides into long
 overlapping rhythms. Storms are frequent, large, and structurally
 ordinary. The light through the water shifts with the moons and
@@ -33,7 +33,7 @@ patience that mythic material deserves. What is also recorded,
 plainly, is the material residue. Ruins of the older Bayurindan
 civilisation are found across the planet, on land and under
 water both: weathered foundations on the high places of the
-present [[bayurinda/bayurinda-archipelago|archipelago]], cliff-side
+present [[bayurinda-archipelago|archipelago]], cliff-side
 inscriptions on islets where nothing now lives, the occasional
 inland structure on a larger island that ought not, by any
 present account, to be where it is. The drowning was not
@@ -56,7 +56,7 @@ mythic.
 
 _The drowning_ is the English-language working term this
 compendium uses for the event. What the
-[[bayurinda/bayurinda-archipelago|archipelago]] calls it in
+[[bayurinda-archipelago|archipelago]] calls it in
 [[culture/languages/bayurindan|Bayurindan]], what the
 [[#peoples-of-bayurinda|deep]] call it among themselves, and
 whether the lost surface civilisation had a single name for what
@@ -74,7 +74,7 @@ yet recorded here.)_
 The world is shared. Two peoples are known to the compendium,
 unequally:
 
-The [[bayurinda/bayurinda-archipelago|archipelago people]] live
+The [[bayurinda-archipelago|archipelago people]] live
 above and partly within the water, on the islands and in the
 sea-caves below them, in the place from which the world's name
 of record is taken. They claim, by long tradition, to be the
@@ -91,7 +91,7 @@ shape of what happened. The compendium records the dominant
 tradition, names the dispute, and does not settle it.
 
 Two peoples live in the deep waters of
-[[bayurinda/nuunlau|Nuunlau]]. The archipelago people call them
+[[nuunlau|Nuunlau]]. The archipelago people call them
 together the _Nuunlaumud_ [[bay]] — the word is formed from
 _Nuunlau_ by the Bayurindan suffix _-mud_ that derives a
 people-name from a place-name, and means, simply, _people of the
@@ -103,7 +103,7 @@ The **older Nuunlaumud** are an older people — older than the
 drowning, by the most credible accounts; older than Bayurindan
 history can quite reach. They are mostly bipedal,
 pressure-adapted, and were already at home in
-[[bayurinda/nuunlau|Nuunlau]] long before the surface civilisation
+[[nuunlau|Nuunlau]] long before the surface civilisation
 above them drowned.
 
 The **[[beings/aetherians|Aetherians]]** are the populous
@@ -139,7 +139,7 @@ of the world's politics are not yet recorded here.)_
 
 ## On the name
 
-_Bayurinda_ is the [archipelago people](/places/celestial-bodies/planets/bayurinda/bayurinda-archipelago)'s
+_Bayurinda_ is the [archipelago people](/places/regions/bayurinda-archipelago)'s
 name for themselves and their place. It travelled outward when
 those people first met Knights from
 [[nebelheim|Nebelheim]]: the Nebelheimers carried the
@@ -202,7 +202,7 @@ far more stable than on the other Sister Worlds — something more
 like a tradition of contemplation than a discipline of mastery.
 
 In material terms, the order's interface with Bayurinda is the
-[[bayurinda/bayurinda-archipelago|archipelago]]: that is where the
+[[bayurinda-archipelago|archipelago]]: that is where the
 [[eidolons/world-pillars|World Pillars]] stand, where off-world
 Knights arrive, and where the diplomatic memory of contact with
 Cognita is kept. The contemplative tradition itself reaches the

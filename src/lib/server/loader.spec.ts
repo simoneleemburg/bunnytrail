@@ -417,5 +417,52 @@ describe('loadAll kind hierarchy', () => {
 		);
 		expect(placesIssues).toEqual([]);
 	});
+
+	it('allows entities of a registered subkind to physically nest inside the folder', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-subkinds-nest-'));
+		// /places/regions/ owns kind: region and also registers
+		// kind: settlement via subkinds. A settlement entity nested
+		// inside a region folder should NOT trip the uniformity rule.
+		await mkdir(join(dir, 'places', 'regions', 'nuunlau', 'bal-rochan'), { recursive: true });
+		await writeFile(join(dir, 'places', '_type.yaml'), 'singular: Place\nplural: Places');
+		await writeFile(
+			join(dir, 'places', 'regions', '_type.yaml'),
+			[
+				'singular: Region',
+				'plural: Regions',
+				'kind: region',
+				'subkinds:',
+				'  - kind: settlement',
+				'    kindParent: region'
+			].join('\n')
+		);
+		await writeFile(
+			join(dir, 'places', 'regions', 'nuunlau', 'index.yaml'),
+			'name: Nuunlau\nkind: region'
+		);
+		await writeFile(join(dir, 'places', 'regions', 'nuunlau', 'index.md'), 'The deep.');
+		await writeFile(
+			join(dir, 'places', 'regions', 'nuunlau', 'bal-rochan', 'index.yaml'),
+			'name: Bal Rochan\nkind: settlement'
+		);
+		await writeFile(
+			join(dir, 'places', 'regions', 'nuunlau', 'bal-rochan', 'index.md'),
+			'A seafloor city.'
+		);
+
+		const { kinds, issues } = await loadAll(dir);
+		expect(kinds.parent('settlement')).toBe('region');
+		expect(kinds.isKindOf('settlement', 'region')).toBe(true);
+		// The settlement is nested inside a kind: region folder, but
+		// its own kind: settlement is registered as a subkind of that
+		// folder — so no uniformity issue.
+		const settlementIssues = issues.filter(
+			(i) =>
+				i.kind === 'invalid-yaml' &&
+				i.entity === 'places/regions/nuunlau/bal-rochan' &&
+				i.detail.includes('does not match folder kind')
+		);
+		expect(settlementIssues).toEqual([]);
+	});
 });
 

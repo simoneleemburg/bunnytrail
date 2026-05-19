@@ -76,7 +76,7 @@ legibly marked.
 
 The reading of those inscriptions was begun by the **older
 Nuunlaumud** — the pre-drowning people of
-[[bayurinda/nuunlau|Nuunlau]], who had been at home in those waters
+[[nuunlau|Nuunlau]], who had been at home in those waters
 long before the drowning ever happened and who had no script of
 their own. They came to a writing system that was not theirs,
 in service of a language they did not speak, in stone left by a
@@ -151,7 +151,7 @@ The [[beings/aetherians|Aetherians]] write
 done so for as long as their tradition runs back — since
 shortly after the older Nuunlaumud took in the surface
 survivors and the survivors brought writing itself with them
-into [[bayurinda/nuunlau|Nuunlau]]. The older Nuunlaumud had no
+into [[nuunlau|Nuunlau]]. The older Nuunlaumud had no
 writing of their own and adopted none from the new arrivals;
 their tradition remained, and remains, **oral**. The
 inscriptional script is therefore one of the few cultural
@@ -365,7 +365,7 @@ languages of a kind.
 Two of the Sister Worlds' working tongues have their own
 entries in the compendium so far:
 [[culture/languages/tholingian|Tholingian]], the language of
-[[nebelheim/tholingia|Tholingia]] on
+[[tholingia|Tholingia]] on
 [[nebelheim|Nebelheim]], and
 [[culture/languages/bayurindan|Bayurindan]], the working tongue of the
 archipelago people of [[bayurinda|Bayurinda]]. A third,

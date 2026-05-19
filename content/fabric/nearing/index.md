@@ -88,7 +88,7 @@ with different safety structures.
 
 - **Aetherian Nearing.** The
   [[beings/aetherians|Aetherians]] of
-  [[bayurinda/nuunlau|Nuunlau]] reach the [[beings/naya|Naya]]
+  [[nuunlau|Nuunlau]] reach the [[beings/naya|Naya]]
   through a different doorway entirely: a **radiance** emitted
   by certain features on the floor of Nuunlau, to which the
   Aetherian body is uniquely congenial. Every Aetherian can

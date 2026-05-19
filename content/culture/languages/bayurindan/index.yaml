@@ -7,5 +7,5 @@ aliases: [Bayurindan tongue]
 tags: [bayurinda, archipelago, working-tongue]
 relations:
   - kind: spoken-in
-    target: places/celestial-bodies/planets/bayurinda/bayurinda-archipelago
+    target: places/regions/bayurinda-archipelago
     note: The principal language of the archipelago.
