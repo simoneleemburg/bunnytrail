@@ -35,7 +35,7 @@ of self.
 ## Binding
 
 The Naya enter the physical world by being
-[[cosmology/binding|bound]] into an [[cosmology/eidolons|Eidolon]]
+[[binding|bound]] into an [[eidolons|Eidolon]]
 — a constructed vessel built for them. Binding is the pact
 between the Naya and the vessel: one Naya, one Eidolon,
 durable. Without such a binding, a Naya cannot persist in
@@ -79,7 +79,7 @@ known to be reproducible.
 The Naya are not inherently destructive, nor inherently
 benevolent. Beyond that — what they are _drawn to_, why they
 seek out [[realms/asthera|Asthera]], what they are doing when
-they enter into a [[cosmology/binding|binding]] — is not a
+they enter into a [[binding|binding]] — is not a
 question this compendium answers in a single voice. By long
 tradition, especially in the scholarly registers of Bayurinda
 and in the working theology of the

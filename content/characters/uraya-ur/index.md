@@ -45,10 +45,10 @@ drift, held inside the discipline of the three.
 Uraya is one of the recognised exceptions in the cosmology.
 Almost every [[beings/naya|Naya]] present in
 [[realms/asthera|Asthera]] is so through
-[[cosmology/binding|binding]] — seated into an
-[[cosmology/eidolons|Eidolon]] built for them. Uraya is not.
+[[binding|binding]] — seated into an
+[[eidolons|Eidolon]] built for them. Uraya is not.
 What sustains her in Asthera is the Triad: the continuous joint
-[[cosmology/nearing|Nearing]] of the other two Oracles, held
+[[nearing|Nearing]] of the other two Oracles, held
 intact across centuries, giving her enough to be present
 _through_. The partnership is, in effect, her vessel.
 

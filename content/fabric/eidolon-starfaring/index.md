@@ -1,10 +1,10 @@
 Travel between worlds in Alteria is two
-[[cosmology/nearing|Nearings]] stacked.
+[[nearing|Nearings]] stacked.
 
 Any [[culture/eidolon-knight|Knight]] piloting an
-[[cosmology/eidolons|Eidolon]] is already Nearing — sustaining
+[[eidolons|Eidolon]] is already Nearing — sustaining
 working contact with the [[beings/naya|Naya]]
-[[cosmology/binding|bound]] in the vessel. That is what
+[[binding|bound]] in the vessel. That is what
 piloting is. To cross between worlds, the Knight must Near
 further: softening their attachment to ordinary space until
 distance itself stops behaving as a fixed constraint. The
@@ -12,7 +12,7 @@ first Nearing is what makes the Eidolon move. The second is
 what makes the journey possible.
 
 The pilot has been thrown from their home world by a
-[[cosmology/eidolons/world-pillars|World Pillar]]. What they do between
+[[eidolons/world-pillars|World Pillar]]. What they do between
 launch and arrival is the practice this entry describes.
 
 ## Nearing the distance
@@ -47,7 +47,7 @@ self-contained reality bubble — a sustained pocket of
 conditions in which the pilot and the Eidolon's Naya can
 continue to exist together. The bubble is sustained by the
 Naya's resonance, anchored by the Eidolon's
-[[cosmology/materials/skyblood|Skyblood]] core, and held in shape by the
+[[materials/skyblood|Skyblood]] core, and held in shape by the
 ongoing coherence of the pilot themselves.
 
 The bubble is what Nearing looks like, from inside, when the

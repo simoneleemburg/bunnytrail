@@ -3,7 +3,7 @@ Mila is an [[culture/eidolon-knight|Eidolon Knight]] of the
 
 ## Identity
 
-Mila is a cis woman, and not [[cosmology/nearborn|Nearborn]].
+Mila is a cis woman, and not [[nearborn|Nearborn]].
 She came to Knighthood by the order's more ordinary route —
 through screening, training, and demonstrated piloting
 capacity, in that order. Among those who have served alongside
@@ -14,10 +14,10 @@ not much inclined to soften herself for the comfort of others.
 
 Mila does not pilot a [[culture/eidolon-knight|chosen Eidolon]]
 in the order's preferred sense. The
-[[cosmology/eidolons|Eidolon]] she currently pilots is the one
+[[eidolons|Eidolon]] she currently pilots is the one
 in which the [[beings/naya|Naya]]
 [[characters/sudawaen-khiynuung|Sudawaen Khiynuung]] [[ot]] is
-[[cosmology/binding|bound]] — and she took it up under
+[[binding|bound]] — and she took it up under
 circumstances the compendium has not been given language for.
 
 What is recorded is this: the Eidolon was, at the moment Mila
@@ -60,7 +60,7 @@ suggests.
 
 ## In transit
 
-During [[cosmology/eidolon-starfaring|eidolon starfaring]],
+During [[eidolon-starfaring|eidolon starfaring]],
 Sudawaen Khiynuung's Aspect Wings manifest as crackling storm
 arcs — visible discharges that rip through the medium the
 Eidolon passes through. The signature is unmistakable.

@@ -12,7 +12,7 @@ Ngonawan hears the resonance. He perceives Naretic signal in fine
 grain — the shifting tonal substrate that carries
 [[beings/naya|Naya]] meaning before it has become anything a
 human can call a symbol. Where another practitioner of
-[[cosmology/nearing|Nearing]] might come back from contact with
+[[nearing|Nearing]] might come back from contact with
 [[realms/nareth|Nareth]] holding sensation, image, dread, or
 unspeakable certainty, Ngonawan finds the signal under the
 noise.
@@ -27,7 +27,7 @@ beautiful, unusable hearing.
 ## Identity
 
 Ngonawan is a trans man, and so — by the cosmology's recognised
-reading — [[cosmology/nearborn|Nearborn]]. His identity is deeply
+reading — [[nearborn|Nearborn]]. His identity is deeply
 tied to transformation and embodied transition.
 
 _(The serpent-humanoid lineage Ngonawan belongs to — its peoples,

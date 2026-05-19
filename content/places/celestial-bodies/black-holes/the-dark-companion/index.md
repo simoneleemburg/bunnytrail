@@ -10,7 +10,7 @@ Companion is. The cosmology has not settled the question, and
 the entry does not pretend otherwise. What it can record is
 what is known: the orbital fact, the cultural readings, and
 the more difficult fact that something about it bends the
-practice of [[cosmology/nearing|Nearing]] when one travels
+practice of [[nearing|Nearing]] when one travels
 within reach of it.
 
 ## What is observed
@@ -69,11 +69,11 @@ it.
 The compendium is on firmer ground here. Pilots who travel
 within reach of the Dark Companion report consistent effects.
 
-[[cosmology/nearing|Nearing]] distorts near it. The familiar
+[[nearing|Nearing]] distorts near it. The familiar
 loosening becomes less controlled — softer when the pilot
 intended firmness, harder to interrupt when the pilot intended
 release. The currents of
-[[cosmology/eidolon-starfaring|eidolon starfaring]] bend
+[[eidolon-starfaring|eidolon starfaring]] bend
 toward the Hollow Binary in ways the order's charts attempt to
 mark but cannot fully predict.
 
@@ -156,7 +156,7 @@ cannot resolve which of these is true.
 
 The Dark Companion is not, in any reading currently endorsed,
 identified with the broken god whose shattering produced
-[[cosmology/materials/skyblood|Skyblood]] and litters
+[[materials/skyblood|Skyblood]] and litters
 [[realms/the-void|the Void Between Worlds]]. The two
 phenomena are old in different ways. Some cultural readings
 gesture at a connection; none of them are scholarly. The

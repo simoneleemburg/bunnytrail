@@ -4,7 +4,7 @@ Nebelheim]], [[bayurinda|Bayurinda]], and
 [[sharazan|Sharazan]] — and their authority is one of the
 few institutions that does. The order maintains the
 [[culture/oracle-triad|Oracle Triad]], regulates the practice of
-[[cosmology/nearing|Nearing]], and trains and certifies every
+[[nearing|Nearing]], and trains and certifies every
 known [[culture/eidolon-knight|Eidolon Knight]] in the cosmology.
 
 The order takes its name from Bellona. _(Who Bellona was, the
@@ -45,7 +45,7 @@ The Knights of Bellona hold three intertwined responsibilities.
 
 The Knights of Bellona are the only known path to Knighthood
 across the Sister Worlds. The order does not teach the practice
-of [[cosmology/binding|binding]] outside its membership; it does
+of [[binding|binding]] outside its membership; it does
 not certify Knights trained elsewhere; it does not, in its
 public doctrine, acknowledge that Knighthood can be reached by
 any other route.
@@ -61,7 +61,7 @@ fill it.
 The order's recognised ideal of Knighthood is the _chosen
 Eidolon_: a Knight who, over time, comes into deepening
 working partnership with one particular vessel and the
-[[beings/naya|Naya]] [[cosmology/binding|bound]] inside it. The
+[[beings/naya|Naya]] [[binding|bound]] inside it. The
 fit becomes specific. The Knight learns the Naya's nature in
 detail; the pairing becomes legible to those around them as a
 single working thing.

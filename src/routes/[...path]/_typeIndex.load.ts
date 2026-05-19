@@ -184,9 +184,10 @@ export function loadTypeIndex(type: EntityType) {
 	// outgoing structural edges go nowhere (no parent in this
 	// graph). We only emit trees that include at least one entity of
 	// the current type's recursive set, so the view shows up only
-	// where it has something to say. (For `/places`, that means
-	// systems show up because they contain planets; for `/cosmology`,
-	// systems show up because they *are* cosmology entities.)
+	// where it has something to say. (For `/places/celestial-bodies`,
+	// that means systems show up because they contain celestial
+	// bodies; for `/places/systems`, the system entities themselves
+	// are roots.)
 	const orbits = buildOrbitsTree(type, cardSummaryHtml);
 
 	return {
@@ -400,7 +401,7 @@ function compareOrbitNodes(a: OrbitNode, b: OrbitNode): number {
  *      me").
  *   4. Keep only trees that touch the current type. We test this by
  *      asking whether any entity in the tree has the page's type as
- *      an ancestor in the type hierarchy. For `/cosmology`, systems
+ *      an ancestor in the type hierarchy. For `/fabric`, systems
  *      themselves match; for `/places`, planets match.
  */
 function buildOrbitsTree(
@@ -460,13 +461,13 @@ function buildOrbitsTree(
 
 	// Detect whether this page is the *home* of the orbits graph:
 	// the page where every root entity belongs to the page's type
-	// (e.g. on /cosmology, every system root is a cosmology
-	// entity). On the home page, the full tree renders — the view
+	// (e.g. on /places, every system root is a places entity).
+	// On the home page, the full tree renders — the view
 	// is showing you the actual shape of the cosmos, and pruning
 	// nodes that "belong somewhere else" doesn't apply because
 	// nothing does.
 	//
-	// On a non-home page (e.g. /places), the orbits view is
+	// On a non-home page (e.g. /culture), the orbits view is
 	// borrowing the structural shape to organise the page's
 	// entities. There, internal nodes that aren't of the page's
 	// type get pruned with promotion — their children flow up to

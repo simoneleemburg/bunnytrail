@@ -35,7 +35,7 @@ Listeners. They were of the **surface civilisation** of that age
 — a civilisation that no longer exists in the form it had then,
 and whose principal land masses and cities are now on the ocean
 floor (see [the drowning](/places/celestial-bodies/planets/bayurinda#the-drowning)).
-Through prolonged [[cosmology/nearing|Nearing]] states, they
+Through prolonged [[nearing|Nearing]] states, they
 reached far enough toward [[realms/nareth|Nareth]] to perceive
 Naya symbols directly, and they tried to record what they
 perceived.
@@ -120,7 +120,7 @@ the reconstructed Old Tongue from the deep, slowly, by patient
 contact across the threshold between water and air; they shaped
 what the deep taught them into a form that surface mouths in
 surface conditions could hold; and when the
-[[cosmology/eidolons/world-pillars|Pillars]] made travel between worlds
+[[eidolons/world-pillars|Pillars]] made travel between worlds
 possible, they carried that form outward to the other Sister
 Worlds. Every speaker of the Old Tongue on Nebelheim or
 Sharazan owes the practice, ultimately, to a chain that runs
@@ -310,7 +310,7 @@ working tongues of the Sister Worlds (Bayurinda itself is a
 is not yet recorded here). The name of
 [[characters/ngonawan-ilyardi|Ngonawan Ilyardi]] is Bayurindan
 and is marked accordingly. The cultural readings of
-[[cosmology/black-holes/the-dark-companion|the Dark Companion]] belong to
+[[black-holes/the-dark-companion|the Dark Companion]] belong to
 various local traditions and are not Old Tongue. The
 cosmological terms [[realms/asthera|Asthera]] and
 [[realms/nareth|Nareth]] — names for the two great layers of

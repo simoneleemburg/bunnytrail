@@ -8,7 +8,7 @@ this triad, by name, for centuries.
 The Triad is the working interpretive instrument of the
 [[culture/knights-of-bellona|Knights of Bellona]]. What the order
 provides materially — the rites, the regulation of
-[[cosmology/nearing|Nearing]], the public face of doctrine — is in
+[[nearing|Nearing]], the public face of doctrine — is in
 the end framing for the Triad's actual labour, which is the
 high-order translation of [[beings/naya|Naya]] symbol systems
 into [[culture/languages/old-tongue|Old Tongue]] names the Sister Worlds
@@ -60,7 +60,7 @@ absent, and the work breaks at that point and no further.
 [[characters/uraya-ur|Uraya]] is one of the recognised
 exceptions in the cosmology: a [[beings/naya|Naya]] present in
 [[realms/asthera|Asthera]] without being
-[[cosmology/binding|bound]] into an [[cosmology/eidolons|Eidolon]].
+[[binding|bound]] into an [[eidolons|Eidolon]].
 
 Sustained presence in Asthera without binding is not how the
 cosmology ordinarily works. A Naya without a vessel cannot
@@ -109,7 +109,7 @@ rule, not by case-by-case decision.
 
 The Triad has been these three, by name, for centuries. They have
 lived this long because they have lived Near — held in a
-prolonged [[cosmology/nearing|Nearing]] state, ageing only
+prolonged [[nearing|Nearing]] state, ageing only
 partially in the material world while the body's pace slows
 under the pressure of sustained resonance.
 

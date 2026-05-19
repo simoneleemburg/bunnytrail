@@ -43,7 +43,7 @@ congenial to, and the substance through which Aetherian Nearing
 is mediated. At low doses it sustains; at higher doses it opens
 the doorway. See
 [[beings/aetherians#the-radiance-and-what-is-in-it|the radiance,
-and what is in it]] and [[cosmology/nearing|Nearing]] for the
+and what is in it]] and [[nearing|Nearing]] for the
 practice.
 
 **It is life-support.** Long-term settlement on the seafloor of
@@ -63,7 +63,7 @@ moves _vessels_ of some kind through the deep — long-range
 craft, large enough to be called _motherships_ in the few
 surface translations available. The compendium does not yet
 record what these vessels are, where they go, how they relate
-(if at all) to the [[cosmology/eidolons/world-pillars|World Pillars]] as
+(if at all) to the [[eidolons/world-pillars|World Pillars]] as
 the canonical means of crossing between worlds, or even whether
 the surface accounts of them are accurate. This is held open.
 

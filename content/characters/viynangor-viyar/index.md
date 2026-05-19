@@ -32,7 +32,7 @@ back.
 Whatever else Viynangor Viyar is, it is the kind of
 [[beings/naya|Naya]] whose presence shows the
 [[culture/eidolon-knight|Knight]] piloting its
-[[cosmology/eidolons|Eidolon]] what they actually are. Not what
+[[eidolons|Eidolon]] what they actually are. Not what
 they wish to be. Not what they fear. What they are.
 
 This makes the pairing distinctive in a way the worlds describe
@@ -42,7 +42,7 @@ Others speak of it as a long slow cost. Both speak truthfully.
 
 ## Status
 
-Viynangor Viyar is currently [[cosmology/binding|bound]] in an
+Viynangor Viyar is currently [[binding|bound]] in an
 Eidolon; the identity of the Knight piloting that Eidolon, the
 history of past pilots, and the specific lineage through which
 the name first entered the Old Tongue are not yet recorded

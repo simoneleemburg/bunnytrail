@@ -44,7 +44,7 @@ carried on alongside the older Nuunlaumud who first began it. The
 ultimately rests on Bal Rochan's scholarship.
 
 The archipelago also knows, from the same second-hand accounts,
-that Bal Rochan is **kept alive by [[cosmology/materials/urouch|Urouch]]** —
+that Bal Rochan is **kept alive by [[materials/urouch|Urouch]]** —
 the radioactive substance found in un-scavenged ruins on the
 seafloor and on which long-term life in the deep depends. A
 city of Bal Rochan's scale is, in plain terms, a sustained call

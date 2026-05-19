@@ -15,14 +15,14 @@ have shaped both what it is and how it is known.
 ## The pillars and the routes outward
 
 Of all the regions of Nebelheim, Tholingia carries the most
-[[cosmology/eidolons/world-pillars|World Pillars]]. The compendium does
+[[eidolons/world-pillars|World Pillars]]. The compendium does
 not yet say how many — partly because the count is not a fixed
 number, and partly because what counts as "a Pillar" admits of
 some institutional argument — but the concentration is real and
 known, and it is the structural reason for Tholingia's place
 in the wider world.
 
-A Pillar is what makes [[cosmology/eidolon-starfaring|eidolon
+A Pillar is what makes [[eidolon-starfaring|eidolon
 starfaring]] possible: a colossal Eidolon construct partially fused
 into the planet, the launch and arrival infrastructure by which
 a Knight leaves one world and survives reaching another. Each

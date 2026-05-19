@@ -6,7 +6,7 @@ fissures and ash-plains, no single language has ever covered
 the whole. Tholingian is, however, the Nebelheimic tongue most
 often encountered _outside_ Nebelheim — because Tholingia is
 the region of the planet most thickly served by
-[[cosmology/eidolons/world-pillars|World Pillars]], and so the region the
+[[eidolons/world-pillars|World Pillars]], and so the region the
 rest of [Alteria Cognita](/cognita) most often arrives at and
 trades through. The language follows the routes. The name the
 compendium uses for the planet itself — _Nebelheim_ — is

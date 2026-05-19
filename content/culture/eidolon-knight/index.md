@@ -1,6 +1,6 @@
 An Eidolon Knight is a human who pilots an
-[[cosmology/eidolons|Eidolon]] — a vessel into which a
-[[beings/naya|Naya]] has been [[cosmology/binding|bound]]. The
+[[eidolons|Eidolon]] — a vessel into which a
+[[beings/naya|Naya]] has been [[binding|bound]]. The
 Knight is not party to the binding. The binding is between the
 Naya and the vessel; the Knight is the pilot the vessel works
 with, for as long as that pairing lasts.
@@ -17,7 +17,7 @@ does not.
 
 Piloting an Eidolon is sustained contact between the Knight and
 the Naya inside the vessel. It is, in the cosmology's own terms,
-a form of [[cosmology/nearing|Nearing]]: a controlled loosening
+a form of [[nearing|Nearing]]: a controlled loosening
 of the Knight's attachment to ordinary embodied identity, held
 long enough that the Knight can move with the vessel rather
 than against it. A Knight who cannot Near toward the Naya
@@ -96,14 +96,14 @@ inconsistently.
 
 In the order's screening, this is what is being looked for. The
 formal language varies. The substantive question is whether the
-candidate is [[cosmology/nearborn|Nearborn]] enough — adaptive
+candidate is [[nearborn|Nearborn]] enough — adaptive
 enough, already practised enough at holding a self under
 resonance — to survive sustained piloting Nearing without
 coming apart. The screening is imperfect. Candidates near the
 margin are sometimes rejected and sometimes admitted; the order
 has been wrong both ways.
 
-[[cosmology/materials/skyblood|Skyblood]] is what makes piloting possible
+[[materials/skyblood|Skyblood]] is what makes piloting possible
 materially. A Knight without access to a Skyblood-cored Eidolon
 is a Knight in spirit only.
 
@@ -202,7 +202,7 @@ change.
 Knighthood is the work of the Knights of Bellona, and has been
 for as long as the order has had Knights to send. The "old
 knight roads" of [[sharazan|Sharazan]] — ancient routes
-that intersect with [[cosmology/eidolons/world-pillars|World Pillar]]
+that intersect with [[eidolons/world-pillars|World Pillar]]
 paths and atmospheric travel currents — are part of the long
 material record of the order's interplanetary reach. Whether
 the role existed in some other form before the order took its

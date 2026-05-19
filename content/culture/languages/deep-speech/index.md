@@ -24,7 +24,7 @@ Almost nothing of Deep Speech itself is recorded in this
 compendium. What is known to the surface comes through the few
 words that have travelled up: notably
 _[[bayurinda/nuunlau/bal-rochan|Bal Rochan]]_, the deep's name for their
-largest settlement, and _[[cosmology/materials/urouch|Urouch]]_, the
+largest settlement, and _[[materials/urouch|Urouch]]_, the
 deep's name for the radioactive substance on which long-term
 life in [[bayurinda/nuunlau|Nuunlau]] depends (pronounced with the
 final _-ch_ as a soft _-sh_, roughly _oo-roush_). The

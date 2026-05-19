@@ -49,7 +49,7 @@ and restricted by the [[culture/knights-of-bellona|Knights of
 Bellona]], whose order is itself a Nebelheimic institution.
 [[culture/eidolon-knight|Knighthood]] here is understood as
 sacrifice and responsibility — closer to public duty than to
-private path. [[cosmology/eidolons|Eidolons]] are used
+private path. [[eidolons|Eidolons]] are used
 pragmatically: for defence, labour, and survival.
 
 ## Regions

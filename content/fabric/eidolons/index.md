@@ -1,7 +1,7 @@
 An Eidolon is a constructed vessel that allows a
 [[beings/naya|Naya]] to manifest physically on
 [[realms/asthera|Asthera]]. The Naya is
-[[cosmology/binding|bound]] into the vessel — seated durably
+[[binding|bound]] into the vessel — seated durably
 into a body built for its nature — and through the vessel
 becomes present in the material world. Without its Naya, the
 vessel is inert. Without the vessel, the Naya cannot persist
@@ -35,7 +35,7 @@ with the Naya's nature; an Eidolon for a Naya of storm is not
 the same vessel as an Eidolon for a Naya of stillness, and
 neither can be substituted for the other.
 
-At the centre of every Eidolon is a [[cosmology/materials/skyblood|Skyblood]]
+At the centre of every Eidolon is a [[materials/skyblood|Skyblood]]
 core, which makes the binding stable and lets the vessel act in
 the physical world. Without Skyblood, no binding holds. With it,
 the construct becomes something between a body, a tool, and a
@@ -50,9 +50,9 @@ In use — that is, when piloted — an Eidolon can:
 - sustain the pilot temporarily, with no need for food or air
   during use within limits
 - travel between worlds, through the practice of
-  [[cosmology/eidolon-starfaring|eidolon starfaring]] and
+  [[eidolon-starfaring|eidolon starfaring]] and
   the launch infrastructure of the
-  [[cosmology/eidolons/world-pillars|World Pillars]]
+  [[eidolons/world-pillars|World Pillars]]
 
 Use carries cost. Even successful piloting leaves the
 [[culture/eidolon-knight|Knight]] under physical and
@@ -69,7 +69,7 @@ that nature or against it. A poor fit produces unresponsive
 piloting, unstable control, and a Naya whose manifestation does
 not align with the Knight's intent.
 
-Piloting is itself a form of [[cosmology/nearing|Nearing]] —
+Piloting is itself a form of [[nearing|Nearing]] —
 sustained dissociative contact between the Knight and the Naya
 inside the vessel. It is treated in detail in the Eidolon
 Knight entry. What matters here is that piloting and binding

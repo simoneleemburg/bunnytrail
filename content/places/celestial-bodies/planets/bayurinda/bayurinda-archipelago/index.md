@@ -4,7 +4,7 @@ islands and many smaller ones, set in open ocean and battered by
 the long storms the world's two moons keep stirring up. It is
 also, in the rest of [Alteria Cognita](/cognita)'s eyes, the
 practical _face_ of Bayurinda — the place the
-[[cosmology/eidolons/world-pillars|World Pillars]] stand, the place
+[[eidolons/world-pillars|World Pillars]] stand, the place
 off-world Knights arrive, and the place from which the world's
 name was carried back to [[nebelheim|Nebelheim]] when
 contact was first made.
@@ -149,7 +149,7 @@ patience with what does not last.
 
 The archipelago is the part of Bayurinda the
 [[culture/knights-of-bellona|Knights of Bellona]] meet. The
-[[cosmology/eidolons/world-pillars|World Pillars]] on Bayurinda stand here;
+[[eidolons/world-pillars|World Pillars]] on Bayurinda stand here;
 the order's footing on the world is here. Off-world Knights
 arrive here, are received here, and are taught here whatever the
 archipelago has decided they are ready to learn.

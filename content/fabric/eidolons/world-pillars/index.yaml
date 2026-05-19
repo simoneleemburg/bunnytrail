@@ -4,5 +4,5 @@ summary: Massive ancient Eidolon constructs partially fused into the planets the
 tags: [ancient, infrastructure, travel, skyblood]
 relations:
   - kind: is-a
-    target: cosmology/eidolons
+    target: fabric/eidolons
     note: Each Pillar is itself an Eidolon — vast, ancient, partly fused into the world it serves.

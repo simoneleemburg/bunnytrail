@@ -19,9 +19,9 @@ their own.
 
 The Naya are drawn to humans for exactly this reason. Most of
 the cosmology's sustained Naya–human contact runs through
-[[cosmology/binding|binding]] — but binding, in the strict
+[[binding|binding]] — but binding, in the strict
 sense, is the pact between a Naya and an
-[[cosmology/eidolons|Eidolon]], not between a Naya and a
+[[eidolons|Eidolon]], not between a Naya and a
 person. What humans offer the Naya is something the bound Naya
 reaches for _through_ its vessel and the
 [[culture/eidolon-knight|Knight]] piloting it: sustained

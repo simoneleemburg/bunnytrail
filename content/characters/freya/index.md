@@ -6,16 +6,16 @@ Freya [[tho]] is an [[culture/eidolon-knight|Eidolon Knight]] of the
 ## Identity
 
 Freya is a trans woman, and so — by the cosmology's recognised
-reading — [[cosmology/nearborn|Nearborn]]. She came to her own
+reading — [[nearborn|Nearborn]]. She came to her own
 name through long work, and she carries it carefully.
 
 ## Reception by the order
 
 The order nearly did not take her.
 
-Knighthood is sustained [[cosmology/nearing|Nearing]] toward a
-[[beings/naya|Naya]] [[cosmology/binding|bound]] in an
-[[cosmology/eidolons|Eidolon]], and the order screens
+Knighthood is sustained [[nearing|Nearing]] toward a
+[[beings/naya|Naya]] [[binding|bound]] in an
+[[eidolons|Eidolon]], and the order screens
 candidates for the adaptive identity that practice demands.
 Freya was, by every internal account that has reached the
 compendium, on the margin. The doubt the order's examiners
@@ -76,7 +76,7 @@ of the more precise piloting partnerships the order knows.
 
 ## In transit
 
-During [[cosmology/eidolon-starfaring|eidolon starfaring]],
+During [[eidolon-starfaring|eidolon starfaring]],
 the Naya's Aspect Wings manifest as refracted, glass-like
 structures of resonance that bend light into patterns the pilot
 can almost recognise. The signature is distinctive enough that

@@ -42,7 +42,7 @@ The major recognised purposes:
 - To **answer**: to respond when a [[beings/naya|Naya]] reaches
   across from the other side and the situation requires a reply.
 - To **pilot**: to sustain working contact with a Naya bound
-  into an [[cosmology/eidolons|Eidolon]], allowing the Knight to
+  into an [[eidolons|Eidolon]], allowing the Knight to
   move with the vessel rather than against it. The
   [[culture/eidolon-knight|Eidolon Knight]]'s entire practice
   rests on this.
@@ -54,7 +54,7 @@ The major recognised purposes:
   Nareth by past events of sufficient intensity.
 
 Nearing is especially associated with oracles, experienced
-[[cosmology/eidolons|Eidolon]] pilots, Bayurindan mystics,
+[[eidolons|Eidolon]] pilots, Bayurindan mystics,
 [[beings/aetherians|Aetherian]] practitioners, and long-distance
 starfarers — though the practice itself is older and more
 diffuse than any of these traditions.
@@ -68,12 +68,12 @@ with different safety structures.
 - **The order's tradition.** The
   [[culture/knights-of-bellona|Knights of Bellona]] hold the
   cross-world institutional discipline of Nearing.
-  [[cosmology/materials/skyblood|Skyblood]] stabilisation, the
+  [[materials/skyblood|Skyblood]] stabilisation, the
   [[culture/oracle-triad|Oracle Triad]], the screening rites for
   Knighthood, and the long memory of what previous practitioners
   have brought back all sit under their authority. The order's
   framing is one of trained safety: serious Nearing belongs to
-  trained practitioners, and a person's [[cosmology/nearborn|Nearborn]]
+  trained practitioners, and a person's [[nearborn|Nearborn]]
   status is one of the factors the order weighs in deciding
   who is ready for sustained practice. This framing is
   sometimes received outside the order as a stronger claim than
@@ -131,7 +131,7 @@ the same way twice.
 
 The technique requires enough initial velocity that the pilot
 does not stall — which is what the
-[[cosmology/eidolons/world-pillars|World Pillars]] exist for,
+[[eidolons/world-pillars|World Pillars]] exist for,
 slingshotting Eidolons up and outward fast enough that the
 drift can begin safely. Navigation is hazardous. A pilot who
 drifts too deeply may lose direction, emerge far from their
@@ -196,14 +196,14 @@ Most people cannot remain Near without eventually losing
 coherence. Emotions bleed into one another. Memories become
 difficult to separate from visions. Identity erodes beneath the
 pressure of resonance. The recognised failure modes mirror the
-failure modes of piloting an [[cosmology/eidolons|Eidolon]]:
+failure modes of piloting an [[eidolons|Eidolon]]:
 dissolving into the resonance, distortion of the inner form,
 and the collapse of coherent selfhood.
 
 Because of this, serious Nearing is rarely done unsupported. The
 support takes different forms in different traditions: in the
 order's tradition, rituals, emotional anchors, companions, and
-[[cosmology/materials/skyblood|Skyblood]] stabilisation, with the
+[[materials/skyblood|Skyblood]] stabilisation, with the
 [[culture/oracle-triad|Oracle Triad]] as the long stabilising
 structure around the deepest practice; in
 [[beings/aetherians|Aetherian]] Nearing, the support is the

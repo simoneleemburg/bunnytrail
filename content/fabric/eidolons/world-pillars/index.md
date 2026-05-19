@@ -1,14 +1,14 @@
-World Pillars are colossal [[cosmology/eidolons|Eidolon]]
+World Pillars are colossal [[eidolons|Eidolon]]
 constructs partially fused into the planets they serve.
 Stone, metal, and root-bound matter braided into vast immovable
-forms, each cored in [[cosmology/materials/skyblood|Skyblood]] on a scale
+forms, each cored in [[materials/skyblood|Skyblood]] on a scale
 no smaller Eidolon could survive. They do not move. They endure.
 
 They are the launch and arrival infrastructure of
-[[cosmology/eidolon-starfaring|eidolon starfaring]] —
+[[eidolon-starfaring|eidolon starfaring]] —
 the way a Knight leaves one world for another, and the way
 they survive returning. Travel between worlds is
-[[cosmology/nearing|Nearing]] applied to space, sustained for
+[[nearing|Nearing]] applied to space, sustained for
 hours or days at a stretch. A pilot cannot begin that Nearing
 from a planet's surface. The Pillars are what make the
 beginning possible.
@@ -43,7 +43,7 @@ the Eidolon's smaller core, and the [[beings/naya|Naya]] bound
 in the vessel begins to vibrate at the Pillar's frequency.
 This stage is the most dangerous. Two distinct failures are
 possible. The Eidolon-and-Naya
-[[cosmology/binding|binding]] itself may not hold under the
+[[binding|binding]] itself may not hold under the
 resonance pressure — a binding that was sound for ordinary
 piloting can prove insufficient for the violence of launch,
 and the seating destabilises before release. Separately, the
@@ -62,7 +62,7 @@ moment the chains shatter or disengage, and the Eidolon is
 violently flung skyward.
 
 A successful launch ends with the pilot beginning the long
-controlled drift into [[cosmology/eidolon-starfaring|the
+controlled drift into [[eidolon-starfaring|the
 space between worlds]]. An unsuccessful one ends some other way.
 
 ## Catching

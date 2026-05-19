@@ -121,7 +121,7 @@ one of the **older things**, the structures the older
 Nuunlaumud describe as pre-dating the drowning and as not the
 work of the surface civilisation — that emits the radioactive
 material the Aetherian body is congenial to. The substance has
-a Deep-Speech name: **[[cosmology/materials/urouch|Urouch]]** [[ds]], small
+a Deep-Speech name: **[[materials/urouch|Urouch]]** [[ds]], small
 black pellets with a distinct blue shine, found in
 un-scavenged ruins on the seafloor. No new Urouch has been
 made since the drowning; what is in circulation is what is
@@ -131,7 +131,7 @@ own word. The Aetherians
 come to it deliberately. At doses high enough to produce
 visions, out-of-body experiences, and the rest of the
 mind-altering effects, what is happening is not poisoning. It is
-**[[cosmology/nearing|Nearing]]**, in the same sense Tholingian
+**[[nearing|Nearing]]**, in the same sense Tholingian
 oracles and [[culture/eidolon-knight|Eidolon Knights]] use the
 word: an embodied being drifting close to
 [[realms/nareth|Nareth]] without crossing into it. The visions
@@ -143,8 +143,8 @@ makes available, and routinely walked.
 
 This is Aetherian Nearing. It looks nothing like the
 [[culture/knights-of-bellona|Knights of Bellona]]'s practice —
-there is no [[cosmology/materials/skyblood|Skyblood]] stabilisation, no
-order's structures, no chosen [[cosmology/eidolons|Eidolon]], no
+there is no [[materials/skyblood|Skyblood]] stabilisation, no
+order's structures, no chosen [[eidolons|Eidolon]], no
 ritual cohort in the order's sense. There is the radiance, the
 body, the long inherited practice of going to the older things
 and coming back. The safety architecture is the Aetherian form
@@ -158,7 +158,7 @@ life is not whether they _can_ touch Naya but how often, how
 deep, in what company, and toward what end.
 
 _(The Aetherians have a Deep-Speech name for the substance —
-[[cosmology/materials/urouch|Urouch]] — but their names for the older
+[[materials/urouch|Urouch]] — but their names for the older
 things they go to, for the practice itself, and for the
 organisation of safe return — by lineage, by elder teachers,
 by ritual cohort, by city — are not yet recorded here. The

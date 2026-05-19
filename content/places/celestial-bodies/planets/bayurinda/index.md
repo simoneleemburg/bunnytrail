@@ -203,7 +203,7 @@ like a tradition of contemplation than a discipline of mastery.
 
 In material terms, the order's interface with Bayurinda is the
 [[bayurinda/bayurinda-archipelago|archipelago]]: that is where the
-[[cosmology/eidolons/world-pillars|World Pillars]] stand, where off-world
+[[eidolons/world-pillars|World Pillars]] stand, where off-world
 Knights arrive, and where the diplomatic memory of contact with
 Cognita is kept. The contemplative tradition itself reaches the
 archipelago from below, by long instruction from the deep, and
@@ -218,7 +218,7 @@ older silence beneath both.
 Bayurinda is the world where the old work of decoding the Naya
 was done. Its earliest practitioners — known in the tradition as
 the **First Listeners** — entered prolonged
-[[cosmology/nearing|Nearing]] states and attempted to record the
+[[nearing|Nearing]] states and attempted to record the
 symbols revealed to them. They could not speak what they
 perceived; but they discovered that certain sounds, under the
 right conditions, produced sympathetic resonance with it. Refined

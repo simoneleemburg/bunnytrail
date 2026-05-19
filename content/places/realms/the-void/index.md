@@ -18,8 +18,8 @@ between them are not clean.
 
 **Broken [[beings/naya|Naya]].** Naya who could not hold
 identity in some encounter — through failed
-[[cosmology/binding|binding]], through unsupported
-[[cosmology/nearing|Nearing]], through whatever it is that
+[[binding|binding]], through unsupported
+[[nearing|Nearing]], through whatever it is that
 breaks Naya — sometimes do not return to
 [[realms/nareth|Nareth]]. They dissipate instead into the
 medium between worlds, where their resonance lingers without
@@ -30,7 +30,7 @@ without a source.
 
 **Fragments of the old breaking.** The Void carries fragments
 of the same shattering that
-[[cosmology/materials/skyblood|Skyblood]] derives from — the breaking that
+[[materials/skyblood|Skyblood]] derives from — the breaking that
 by long tradition is called a shattered god, though that
 attribution varies between traditions and is not settled in
 this compendium. Whatever it was that broke, the breaking is
@@ -64,7 +64,7 @@ forces that broke whatever is broken there. A coherent pilot
 in working contact with their Naya can pass through. An
 incoherent one becomes part of it.
 
-This is why the [[cosmology/eidolons/world-pillars|World Pillars]]
+This is why the [[eidolons/world-pillars|World Pillars]]
 launch with such violence and catch with such precision. The
 Void is the cost of getting it wrong. The order's charts mark
 the worst regions and the practice teaches pilots to read for

@@ -40,8 +40,8 @@ unready pilot, and the worlds do not speak of it lightly.
 
 ## Status
 
-Sudawaen Khiynuung is [[cosmology/binding|bound]] in an
-[[cosmology/eidolons|Eidolon]] currently piloted by the
+Sudawaen Khiynuung is [[binding|bound]] in an
+[[eidolons|Eidolon]] currently piloted by the
 [[culture/eidolon-knight|Knight]]
 [[characters/mila|Mila]]. The history of past pilots, and the
 conditions under which the name first entered the Old Tongue,

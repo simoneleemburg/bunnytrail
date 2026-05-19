@@ -46,7 +46,7 @@ export interface EntityTypeLabels {
  * kind hierarchy: `kind` is the kind every entity in this folder
  * declares as its own `meta.kind`; `kindParent` is the supertype kind
  * it descends from. Both are optional; top-level type folders that
- * contain heterogeneous kinds (e.g. /cosmology, /places) typically
+ * contain heterogeneous kinds (e.g. /fabric, /places) typically
  * declare neither. See `KindTree` for the resulting structure.
  */
 export interface EntityTypeMeta {

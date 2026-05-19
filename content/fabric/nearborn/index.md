@@ -1,8 +1,8 @@
 A Nearborn is a person whose self was never fully bounded by
 [[realms/asthera|Asthera]]'s rules from the beginning of life.
 Where most embodied selves take their shape from the material
-layer and only later — through [[cosmology/nearing|Nearing]],
-[[cosmology/binding|binding]], or other deliberate practice — open
+layer and only later — through [[nearing|Nearing]],
+[[binding|binding]], or other deliberate practice — open
 themselves to the resonant layer, a Nearborn begins already
 partially in [[realms/nareth|Nareth]]. They do not have to
 learn to near. They began near.
@@ -87,8 +87,8 @@ framing of Nearborn identity, is what the
 [[culture/eidolon-knight|order]] looks for when it screens
 candidates for Knighthood.
 
-Piloting an [[cosmology/eidolons|Eidolon]] is sustained
-[[cosmology/nearing|Nearing]] toward the [[beings/naya|Naya]]
+Piloting an [[eidolons|Eidolon]] is sustained
+[[nearing|Nearing]] toward the [[beings/naya|Naya]]
 bound in the vessel. The practice rewards **adaptive
 identity** — a self that bends and recomposes under contact
 without fracturing. The

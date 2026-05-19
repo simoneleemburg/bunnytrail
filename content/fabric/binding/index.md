@@ -1,5 +1,5 @@
 Binding is the pact by which a [[beings/naya|Naya]] is seated
-into an [[cosmology/eidolons|Eidolon]] — bound, in the strict
+into an [[eidolons|Eidolon]] — bound, in the strict
 sense, to the physical world by way of a vessel that can hold
 it. A Naya, in itself, is a being of
 [[realms/nareth|Nareth]]. It has no native foothold in
@@ -39,7 +39,7 @@ vessel is _for_. A binding made into a vessel whose shape
 disagrees with the Naya's nature does not stabilise; in
 practice, it does not complete.
 
-At the centre of every Eidolon is a [[cosmology/materials/skyblood|Skyblood]]
+At the centre of every Eidolon is a [[materials/skyblood|Skyblood]]
 core, and the core is what makes the binding possible at all.
 Skyblood stabilises the Naya's presence in physical matter the
 way nothing else does. Without it the seating cannot be sustained;
@@ -83,7 +83,7 @@ the rider.
 This is, very approximately, the relationship. Piloting
 itself is a sustained practice of contact between Knight and
 the Naya inside the vessel — a form of
-[[cosmology/nearing|Nearing]] toward the Naya through the
+[[nearing|Nearing]] toward the Naya through the
 Eidolon. It is its own discipline, treated in the
 [[culture/eidolon-knight|Eidolon Knight]] entry. What matters
 here is that the binding sits underneath all of that. The
