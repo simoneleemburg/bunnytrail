@@ -12,5 +12,11 @@ export async function load() {
 		count: t.count
 	}));
 
+	// Meta links sit after the type-folder links. `Kinds` is the
+	// global kind-hierarchy overview — handy for spotting kinds
+	// that should be promoted to their own folder or supertypes
+	// that have grown enough to need a hub.
+	nav.push({ href: '/kinds', label: 'Kinds', count: 0 });
+
 	return { nav };
 }
