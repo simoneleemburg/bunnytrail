@@ -1,5 +1,4 @@
 singular: Moon
 plural: Moons
-kindParent: celestial-body
 # TODO(worldbuilding): author a one-line description for the moons
 # kind page. Until then the page renders with no preamble.

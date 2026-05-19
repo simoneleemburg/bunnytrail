@@ -53,23 +53,22 @@ export interface KindMeta {
 	plural?: string;
 	/** A short editorial description shown on the kind's page. */
 	description?: string;
-	/**
-	 * Parent kind in the kind hierarchy. Must itself be a registered
-	 * kind. Omitted on root kinds.
-	 */
-	kindParent?: string;
 }
 
 /**
- * A loaded, validated kind from `src/kinds/`. The id is the file
- * stem (kebab-case). The body, when present, is the raw markdown
- * source of `src/kinds/<id>.md`; it is rendered on demand by the
- * markdown pipeline.
+ * A loaded, validated kind from `src/kinds/`. The id is the folder
+ * name (kebab-case). The body, when present, is the raw markdown
+ * source of `_kind.md` next to the yaml; it is rendered on demand
+ * by the markdown pipeline. The hierarchy is purely structural:
+ * `parent` is the id of the containing folder's kind, or null for
+ * root kinds.
  */
 export interface Kind {
 	id: string;
 	meta: KindMeta;
-	/** Raw markdown body, or null if no `<id>.md` companion exists. */
+	/** Parent kind id (the enclosing folder), or null at the root. */
+	parent: string | null;
+	/** Raw markdown body, or null if no `_kind.md` companion exists. */
 	body: string | null;
 }
 

@@ -269,7 +269,7 @@ export function loadCollectionPage(path: string) {
 function serialiseKinds(): Record<string, string | null> {
 	const out: Record<string, string | null> = {};
 	for (const k of graph.kindRegistry().values()) {
-		out[k.id] = k.meta.kindParent ?? null;
+		out[k.id] = k.parent;
 	}
 	return out;
 }

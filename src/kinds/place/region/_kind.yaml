@@ -1,5 +1,4 @@
 singular: Region
 plural: Regions
-kindParent: place
 # TODO(worldbuilding): author a one-line description for the regions
 # kind page. Until then the page renders with no preamble.

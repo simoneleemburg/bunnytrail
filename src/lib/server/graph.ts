@@ -185,9 +185,9 @@ class Graph {
 
 	/**
 	 * Entities whose `meta.kind` is `kind` or any descendant of `kind`
-	 * in the kind hierarchy (computed from the registry's `kindParent`
-	 * links). Useful for supertype filters and pages that want every
-	 * member of a kind family.
+	 * in the kind hierarchy (computed from the registry's folder
+	 * nesting). Useful for supertype filters and pages that want
+	 * every member of a kind family.
 	 *
 	 * If `kind` is not in the registry, falls back to strict
 	 * `meta.kind === kind` matching — so free-form kinds keep working.
@@ -206,17 +206,17 @@ class Graph {
 	childKinds(parent: string): Kind[] {
 		const out: Kind[] = [];
 		for (const k of this.#kindRegistry.values()) {
-			if (k.meta.kindParent === parent) out.push(k);
+			if (k.parent === parent) out.push(k);
 		}
 		out.sort((a, b) => a.id.localeCompare(b.id));
 		return out;
 	}
 
-	/** Top-level registered kinds (no `kindParent`). */
+	/** Top-level registered kinds (no parent). */
 	topLevelKinds(): Kind[] {
 		const out: Kind[] = [];
 		for (const k of this.#kindRegistry.values()) {
-			if (!k.meta.kindParent) out.push(k);
+			if (k.parent === null) out.push(k);
 		}
 		out.sort((a, b) => a.id.localeCompare(b.id));
 		return out;
@@ -225,12 +225,13 @@ class Graph {
 	#descendantsInclusive(kind: string): Set<string> {
 		const seen = new Set<string>([kind]);
 		if (!this.#kindRegistry.has(kind)) return seen;
-		// BFS over child kinds. The registry guards against cycles.
+		// BFS over child kinds. The registry guards against cycles by
+		// construction (it's a tree on disk).
 		const queue = [kind];
 		while (queue.length) {
 			const cur = queue.shift()!;
 			for (const k of this.#kindRegistry.values()) {
-				if (k.meta.kindParent === cur && !seen.has(k.id)) {
+				if (k.parent === cur && !seen.has(k.id)) {
 					seen.add(k.id);
 					queue.push(k.id);
 				}

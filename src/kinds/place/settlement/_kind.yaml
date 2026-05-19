@@ -1,6 +1,5 @@
 singular: Settlement
 plural: Settlements
-kindParent: place
 # Settlements *live in* regions structurally (Bal Rochan sits inside
 # Nuunlau) but aren't a *kind of* region — a city isn't "a region that
 # happens to be small". Parenting to `place` keeps settlements as their

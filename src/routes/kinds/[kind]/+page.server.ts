@@ -101,7 +101,7 @@ export async function load({ params }: { params: { kind: string } }) {
 	// Parent breadcrumb-ish link (one hop up the kind tree). Only
 	// shown when the parent is itself a registered kind in the
 	// registry, so the link goes somewhere with a page.
-	const parentId = kind.meta.kindParent ?? null;
+	const parentId = kind.parent;
 	const parent = parentId && registry.has(parentId)
 		? {
 				id: parentId,
@@ -130,7 +130,7 @@ function labelForType(type: string): string | null {
 function buildKindTreeFromRegistry() {
 	const declarations = new Map<string, string | null>();
 	for (const k of graph.kindRegistry().values()) {
-		declarations.set(k.id, k.meta.kindParent ?? null);
+		declarations.set(k.id, k.parent);
 	}
 	return buildKindTree(declarations);
 }

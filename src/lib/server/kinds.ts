@@ -1,34 +1,32 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
+import type { Dirent } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import type { HealthIssue, Kind, KindMeta } from '$lib/types';
 
 /**
- * Where the central kind registry lives. Each kind is a sibling
- * `<kind>.yaml` plus an optional `<kind>.md` prose file. Override
- * with `ALTERIA_KINDS_DIR` for testing.
+ * Where the central kind registry lives. The directory mirrors the
+ * kind hierarchy as a folder tree: each kind is a directory named
+ * after its id, optionally containing `_kind.yaml` (label overrides
+ * + description) and `_kind.md` (editorial prose). Nesting expresses
+ * the parent/child relationship; there is no `kindParent` field.
+ *
+ * Override with `ALTERIA_KINDS_DIR` for testing.
  *
  * The registry sits outside `content/` on purpose: kinds are
  * structural metadata about the worldbuilding vocabulary, not
  * worldbuilding prose themselves. Their `.md` companions are the
  * one exception — short editorial blurbs that render on the kind's
- * supertype-self-page.
- */
-/**
- * Resolve the kinds directory at call time, not at module load,
- * so tests can override `ALTERIA_KINDS_DIR` per case. Production
- * code reads it once on first call and the value is stable from
- * then on.
+ * own page.
  */
 function defaultKindsDir(): string {
 	return process.env.ALTERIA_KINDS_DIR ?? resolve(process.cwd(), 'src/kinds');
 }
 
 /**
- * Back-compat export for callers that referenced the constant.
- * Resolved at import time of the caller, which is good enough for
- * production but should not be relied on in tests — pass the dir
- * to `loadKindRegistry` explicitly instead.
+ * Back-compat export. Resolved at import time of the caller, which
+ * is fine for production but should not be relied on in tests —
+ * pass the dir to `loadKindRegistry` explicitly instead.
  */
 export const KINDS_DIR = defaultKindsDir();
 
@@ -37,132 +35,159 @@ const KIND_ID_RE = /^[a-z][a-z0-9-]*$/;
 export interface KindLoadResult {
 	/** All loaded kinds, keyed by id. */
 	kinds: Map<string, Kind>;
-	/** Any problems encountered (malformed yaml, bad id, missing parent). */
+	/** Any problems encountered (malformed yaml, bad folder name). */
 	issues: HealthIssue[];
 }
 
 /**
- * Walk `src/kinds/` (or `ALTERIA_KINDS_DIR`) once and return every
- * declared kind plus any prose body. The directory is shallow by
- * design: kinds are flat; the hierarchy is expressed through
- * `kindParent` inside the yaml, not via filesystem nesting.
+ * Walk `src/kinds/` (or `ALTERIA_KINDS_DIR`) recursively and return
+ * every declared kind. Each subdirectory whose name passes
+ * `KIND_ID_RE` is a kind; its `_kind.yaml` (if present) supplies
+ * label and description overrides, and `_kind.md` (if present)
+ * supplies a prose body. A kind with no marker files is still
+ * registered with default labels — the folder existing is enough.
  *
- * If the directory does not exist, returns an empty registry with
- * no issues — callers should treat absence as "no kinds registered
- * yet" rather than an error.
+ * If the registry directory does not exist, returns an empty
+ * registry with no issues — callers should treat absence as "no
+ * kinds registered yet" rather than an error.
  */
 export async function loadKindRegistry(kindsDir: string = defaultKindsDir()): Promise<KindLoadResult> {
 	const kinds = new Map<string, Kind>();
 	const issues: HealthIssue[] = [];
 
-	let entries: string[];
+	const rootExists = await dirExists(kindsDir);
+	if (!rootExists) return { kinds, issues };
+
+	await walk(kindsDir, null, kinds, issues, kindsDir);
+
+	return { kinds, issues };
+}
+
+async function walk(
+	absDir: string,
+	parent: string | null,
+	kinds: Map<string, Kind>,
+	issues: HealthIssue[],
+	rootDir: string
+): Promise<void> {
+	let entries: Dirent[];
 	try {
-		entries = await readdir(kindsDir);
-	} catch {
-		return { kinds, issues };
+		entries = (await readdir(absDir, { withFileTypes: true })) as Dirent[];
+	} catch (err) {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: `${relTo(absDir, rootDir)}: cannot read directory (${err instanceof Error ? err.message : String(err)})`
+		});
+		return;
 	}
 
-	for (const name of entries.sort()) {
-		if (name.startsWith('.') || name.startsWith('_')) continue;
-		if (!name.endsWith('.yaml')) continue;
+	for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
+		if (entry.name.startsWith('.') || entry.name.startsWith('_')) continue;
+		if (!entry.isDirectory()) continue;
 
-		const id = name.slice(0, -'.yaml'.length);
+		const id = entry.name;
 		if (!KIND_ID_RE.test(id)) {
 			issues.push({
 				kind: 'invalid-yaml',
-				detail: `src/kinds/${name}: kind id must be kebab-case starting with a letter`
+				detail: `${relTo(join(absDir, id), rootDir)}: kind id must be kebab-case starting with a letter`
 			});
 			continue;
 		}
 
-		const yamlPath = join(kindsDir, name);
-		let raw: string;
-		try {
-			raw = await readFile(yamlPath, 'utf8');
-		} catch (err) {
+		const kindDir = join(absDir, id);
+		const meta = await loadKindMeta(kindDir, id, rootDir, issues);
+		const body = await readOptional(join(kindDir, '_kind.md'));
+
+		// First declaration wins; warn on the duplicate but keep
+		// walking so a sibling typo doesn't hide the rest of the
+		// tree from the consumer.
+		if (kinds.has(id)) {
 			issues.push({
 				kind: 'invalid-yaml',
-				detail: `src/kinds/${name}: cannot read (${err instanceof Error ? err.message : String(err)})`
+				detail: `${relTo(kindDir, rootDir)}: kind '${id}' is declared more than once`
 			});
-			continue;
+		} else {
+			kinds.set(id, { id, meta, parent, body });
 		}
 
-		let meta: KindMeta;
-		try {
-			const parsed = parseYaml(raw);
-			meta = (parsed && typeof parsed === 'object' ? parsed : {}) as KindMeta;
-		} catch (err) {
-			issues.push({
-				kind: 'invalid-yaml',
-				detail: `src/kinds/${name}: ${err instanceof Error ? err.message : String(err)}`
-			});
-			continue;
-		}
+		await walk(kindDir, id, kinds, issues, rootDir);
+	}
+}
 
-		// Light field validation. Anything unknown is preserved (yaml is
-		// already typed loosely) — we only complain about wrong shapes
-		// for fields we care about.
-		if (meta.kindParent !== undefined && typeof meta.kindParent !== 'string') {
-			issues.push({
-				kind: 'invalid-yaml',
-				detail: `src/kinds/${name}: kindParent must be a string`
-			});
-			continue;
-		}
-		for (const field of ['singular', 'plural', 'description'] as const) {
-			const value = meta[field];
-			if (value !== undefined && typeof value !== 'string') {
-				issues.push({
-					kind: 'invalid-yaml',
-					detail: `src/kinds/${name}: ${field} must be a string`
-				});
-				meta[field] = undefined;
-			}
-		}
+async function loadKindMeta(
+	kindDir: string,
+	id: string,
+	rootDir: string,
+	issues: HealthIssue[]
+): Promise<KindMeta> {
+	const yamlPath = join(kindDir, '_kind.yaml');
+	const raw = await readOptional(yamlPath);
+	if (raw === null) return {};
 
-		// Optional prose body. Read it eagerly so the renderer has
-		// uniform access via the registry without a separate fs hop.
-		const bodyPath = join(kindsDir, `${id}.md`);
-		let body: string | null = null;
-		try {
-			const st = await stat(bodyPath);
-			if (st.isFile()) body = await readFile(bodyPath, 'utf8');
-		} catch {
-			// no companion .md — fine.
-		}
+	let parsed: unknown;
+	try {
+		parsed = parseYaml(raw);
+	} catch (err) {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: `${relTo(yamlPath, rootDir)}: ${err instanceof Error ? err.message : String(err)}`
+		});
+		return {};
+	}
+	const meta: KindMeta =
+		parsed && typeof parsed === 'object' ? ({ ...(parsed as KindMeta) } as KindMeta) : {};
 
-		kinds.set(id, { id, meta, body });
+	// Light field validation. The yaml type is loose; we only
+	// complain about wrong shapes for the fields we care about,
+	// and we drop unknown extras silently. A stray `kindParent`
+	// field is now meaningless — warn so the author notices.
+	const dropped = (parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : {})
+		.kindParent;
+	if (dropped !== undefined) {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: `${relTo(yamlPath, rootDir)}: 'kindParent' is no longer supported — parent kind is derived from the folder hierarchy`
+		});
 	}
 
-	// Validate parent references after every kind is loaded so order
-	// inside the directory doesn't matter.
-	for (const k of kinds.values()) {
-		const parent = k.meta.kindParent;
-		if (parent === undefined) continue;
-		if (!kinds.has(parent)) {
+	for (const field of ['singular', 'plural', 'description'] as const) {
+		const value = meta[field];
+		if (value !== undefined && typeof value !== 'string') {
 			issues.push({
 				kind: 'invalid-yaml',
-				detail: `src/kinds/${k.id}.yaml: kindParent '${parent}' is not a registered kind`
+				detail: `${relTo(yamlPath, rootDir)}: ${field} must be a string`
 			});
+			meta[field] = undefined;
 		}
 	}
 
-	// Detect cycles by walking each kind's ancestry.
-	for (const k of kinds.values()) {
-		const seen = new Set<string>([k.id]);
-		let cur = k.meta.kindParent ?? null;
-		while (cur !== null) {
-			if (seen.has(cur)) {
-				issues.push({
-					kind: 'invalid-yaml',
-					detail: `src/kinds/${k.id}.yaml: kind cycle through '${cur}'`
-				});
-				break;
-			}
-			seen.add(cur);
-			cur = kinds.get(cur)?.meta.kindParent ?? null;
-		}
-	}
+	// id is taken from the folder name, not from the yaml.
+	void id;
 
-	return { kinds, issues };
+	return meta;
+}
+
+async function readOptional(path: string): Promise<string | null> {
+	try {
+		const st = await stat(path);
+		if (!st.isFile()) return null;
+		return await readFile(path, 'utf8');
+	} catch {
+		return null;
+	}
+}
+
+async function dirExists(path: string): Promise<boolean> {
+	try {
+		const st = await stat(path);
+		return st.isDirectory();
+	} catch {
+		return false;
+	}
+}
+
+function relTo(absPath: string, rootDir: string): string {
+	if (absPath === rootDir) return 'src/kinds';
+	if (absPath.startsWith(rootDir + '/')) return `src/kinds/${absPath.slice(rootDir.length + 1)}`;
+	return absPath;
 }

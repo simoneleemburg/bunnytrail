@@ -14,10 +14,22 @@ import { buildEdges, extractWikilinks, loadAll } from './loader';
  */
 async function seedKindsRegistry(kinds: Array<{ id: string; parent?: string }>): Promise<string> {
 	const dir = await mkdtemp(join(tmpdir(), 'alteria-kinds-reg-'));
-	for (const k of kinds) {
-		const yaml = ['singular: ' + cap(k.id), 'plural: ' + cap(k.id) + 's'];
-		if (k.parent) yaml.push('kindParent: ' + k.parent);
-		await writeFile(join(dir, `${k.id}.yaml`), yaml.join('\n'));
+	// The registry is a tree on disk: each kind is a folder; nesting
+	// expresses the parent/child relationship. Resolve children only
+	// after their parents have been created so the path exists.
+	const remaining = [...kinds];
+	const created = new Map<string, string>(); // id -> abs path
+	let safety = remaining.length * remaining.length + 1;
+	while (remaining.length > 0 && safety-- > 0) {
+		const idx = remaining.findIndex((k) => !k.parent || created.has(k.parent));
+		if (idx < 0) throw new Error('seedKindsRegistry: unresolvable parents in fixture');
+		const k = remaining.splice(idx, 1)[0];
+		const parentDir = k.parent ? created.get(k.parent)! : dir;
+		const kindDir = join(parentDir, k.id);
+		await mkdir(kindDir, { recursive: true });
+		const yaml = ['singular: ' + cap(k.id), 'plural: ' + cap(k.id) + 's'].join('\n');
+		await writeFile(join(kindDir, '_kind.yaml'), yaml);
+		created.set(k.id, kindDir);
 	}
 	return dir;
 }
@@ -267,7 +279,7 @@ describe('loadAll: kind validation', () => {
 		const dir = await mkdtemp(join(tmpdir(), 'alteria-reg-'));
 		const { kindRegistry } = await loadAll(dir);
 		expect(kindRegistry.has('celestial-body')).toBe(true);
-		expect(kindRegistry.get('star')?.meta.kindParent).toBe('celestial-body');
+		expect(kindRegistry.get('star')?.parent).toBe('celestial-body');
 	});
 });
 
