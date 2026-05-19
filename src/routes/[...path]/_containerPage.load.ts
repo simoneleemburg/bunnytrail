@@ -78,14 +78,32 @@ export function loadContainerPage(path: string) {
 		a.label.plural.localeCompare(b.label.plural)
 	);
 
-	// Prettified title from slug: "bayurinda" → "Bayurinda".
-	const title = slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+	// Prettified title from slug: "bayurinda" → "Bayurinda". If a
+	// cross-link entity shares the slug, prefer its authored name —
+	// it'll typically read better than the prettified slug
+	// (capitalisation, accents, multi-word names).
+	const title =
+		crossLink?.name ?? slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+
+	// Parent path is the type folder this container lives directly
+	// inside (e.g. `places/regions` for `/places/regions/bayurinda`).
+	// We surface its plural label as the page eyebrow — "Regions of"
+	// — so the title reads as a natural phrase: "Regions of /
+	// Bayurinda". When the parent isn't a registered type (which
+	// shouldn't happen in practice — folders only exist directly
+	// under types) we leave the eyebrow empty.
+	const parentPath = path.includes('/') ? path.slice(0, path.lastIndexOf('/')) : '';
+	let parentLabel: string | null = null;
+	if (parentPath && graph.hasType(parentPath as Parameters<typeof graph.typeInfo>[0])) {
+		parentLabel = graph.typeInfo(parentPath as Parameters<typeof graph.typeInfo>[0]).labels.plural;
+	}
 
 	return {
 		kind: 'container' as const,
 		path,
 		slug,
 		title,
+		eyebrow: parentLabel ? `${parentLabel} of` : null,
 		crossLink,
 		groups,
 		totalCount: direct.length

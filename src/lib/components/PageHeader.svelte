@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { page } from '$app/state';
+
 	interface Props {
 		title: string;
 		eyebrow?: string;
@@ -24,12 +26,38 @@
 	}
 
 	let { title, eyebrow, subtitle, subtitleHtml, language, sigil }: Props = $props();
+
+	// One-level-up navigation link. Strips the last URL segment from
+	// the current path; from a top-level page falls back to home
+	// (`/`), which is itself the roof — and from home, the link
+	// just points back at home (effectively a no-op, but the
+	// chrome stays consistent across every page).
+	const upLink = $derived.by(() => {
+		const path = page.url?.pathname ?? '/';
+		const segments = path.replace(/\/+$/, '').split('/').filter(Boolean);
+		if (segments.length <= 1) {
+			// At home or one level deep — fall back to home.
+			return { href: '/', label: 'Alteria' };
+		}
+		const parentSegs = segments.slice(0, -1);
+		const parentSlug = parentSegs[parentSegs.length - 1];
+		const label = parentSlug
+			.replace(/-/g, ' ')
+			.replace(/\b\w/g, (c) => c.toUpperCase());
+		return { href: '/' + parentSegs.join('/'), label };
+	});
 </script>
 
 <header class="page-header">
-	{#if eyebrow}
-		<div class="eyebrow">{eyebrow}</div>
-	{/if}
+	<div class="meta-row">
+		<a class="up-link" href={upLink.href} aria-label={`Up to ${upLink.label}`}>
+			<span class="up-arrow" aria-hidden="true">↑</span>{upLink.label}
+		</a>
+		{#if eyebrow}
+			<span class="meta-sep" aria-hidden="true">·</span>
+			<span class="eyebrow">{eyebrow}</span>
+		{/if}
+	</div>
 	<h1>
 		{#if sigil}<span class="sigil" aria-hidden="true">{sigil}</span>{/if}{title}{#if language}<sup
 				class="lang-tag"
@@ -50,12 +78,54 @@
 		margin-bottom: var(--space-6);
 	}
 
+	/* Single metadata row stacked above the title: `↑ Parent · Eyebrow`.
+	   Up-link and eyebrow share the same small-caps register so they
+	   read as one continuous label rather than two stacked eyebrows;
+	   the middle dot separates them. The whole row carries the
+	   row-level bottom margin, so individual elements don't fight
+	   over spacing. */
+	.meta-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0 var(--space-2);
+		margin-bottom: var(--space-2);
+	}
+
+	.meta-sep {
+		color: var(--ink-faint);
+		font-size: var(--text-xs);
+	}
+
 	.eyebrow {
 		font-size: var(--text-xs);
 		font-variant: small-caps;
 		letter-spacing: 0.12em;
 		color: var(--ink-faint);
-		margin-bottom: var(--space-2);
+	}
+
+	/* Discreet up-link in the metadata row. Same small-caps
+	   register as the eyebrow so the two read as one label;
+	   underline-on-hover signals the linkness. */
+	.up-link {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.35em;
+		font-family: var(--font-serif);
+		font-size: var(--text-xs);
+		font-variant: small-caps;
+		letter-spacing: 0.1em;
+		color: var(--ink-faint);
+		text-decoration: none;
+	}
+
+	.up-link:hover {
+		color: var(--accent);
+	}
+
+	.up-arrow {
+		font-variant: normal;
+		letter-spacing: 0;
 	}
 
 	h1 {

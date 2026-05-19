@@ -74,6 +74,21 @@ export function loadTypeIndex(type: EntityType) {
 			? renderEntityBody(selfPage, resolveLink, languageCodes)
 			: null;
 
+	// The bucket is the path segment(s) between the type root and
+	// the entity slug: `places/regions/bayurinda/nuunlau` under
+	// type `places/regions` gives bucket `bayurinda`. An entity
+	// whose id doesn't live under the current type (e.g. a
+	// kind-gathered entity from another folder) returns `''`,
+	// meaning "no folder grouping here". Same logic is used by
+	// the page-level folder chips and the folder-container
+	// grouping below.
+	const pathBucket = (id: EntityId): string => {
+		if (!id.startsWith(`${type}/`)) return '';
+		const rest = id.slice(type.length + 1);
+		const lastSlash = rest.lastIndexOf('/');
+		return lastSlash < 0 ? '' : rest.slice(0, lastSlash);
+	};
+
 	const subtypes = graph
 		.subtypesOf(type)
 		.map((sub) => {
@@ -113,7 +128,7 @@ export function loadTypeIndex(type: EntityType) {
 
 	// All entities of this exact type get flattened to cards once;
 	// the view decides which slots they appear in based on view-mode.
-	const cards = entities.map((e) => toCard(e, cardSummaryHtml));
+	const cards = entities.map((e) => toCard(e, cardSummaryHtml, undefined, pathBucket(e.id)));
 
 	// Descendants: every entity under this type at any depth (recurses
 	// through subtypes). Used by flat view-mode so a user browsing
@@ -123,7 +138,7 @@ export function loadTypeIndex(type: EntityType) {
 	const descendants = graph
 		.byTypeRecursive(type)
 		.filter((e) => e.type !== type)
-		.map((e) => toCard(e, cardSummaryHtml, labelForType(e.type)));
+		.map((e) => toCard(e, cardSummaryHtml, labelForType(e.type), pathBucket(e.id)));
 
 	// Supertype gather: entities whose `kind` descends from this
 	// folder's declared `kind`, but which live in some other folder
@@ -132,7 +147,7 @@ export function loadTypeIndex(type: EntityType) {
 	// home type as the eyebrow so the reader knows where it lives.
 	const kindGathered = descendantKindEntities
 		.filter((e) => !graph.byTypeRecursive(type).some((local) => local.id === e.id))
-		.map((e) => toCard(e, cardSummaryHtml, labelForType(e.type)));
+		.map((e) => toCard(e, cardSummaryHtml, labelForType(e.type), pathBucket(e.id)));
 
 	const flatAll = [...cards, ...descendants, ...kindGathered].sort((a, b) =>
 		a.name.localeCompare(b.name)
@@ -154,9 +169,9 @@ export function loadTypeIndex(type: EntityType) {
 			.filter((c): c is Entity => !!c && c.type === type)
 			.sort((a, b) => a.meta.name.localeCompare(b.meta.name))
 			.map(buildNode);
-		return { container: toCard(e, cardSummaryHtml), children };
+		return { container: toCard(e, cardSummaryHtml, undefined, pathBucket(e.id)), children };
 	};
-	const containers = entities
+	let containers = entities
 		.filter((e) => {
 			if (e.children.length === 0) return false;
 			// Only roots: parent must not be a same-type entity. (If
@@ -176,7 +191,137 @@ export function loadTypeIndex(type: EntityType) {
 	// includes the kind-gathered entities from other folders — they
 	// have no container relationship here, but they're conceptually
 	// part of this page's collection.
-	const standalone = [...cards.filter((c) => !containedIds.has(c.id)), ...kindGathered];
+	let standalone = [...cards.filter((c) => !containedIds.has(c.id)), ...kindGathered];
+
+	// Folder-container grouping. Some types organise entities by
+	// dropping them into purely-structural directories under the
+	// type root (e.g. `content/places/regions/bayurinda/nuunlau/`,
+	// where `bayurinda/` is just a grouping folder, not an entity).
+	// For nested view we wrap any entity-container OR standalone
+	// entity whose path-parent is one of these folders in a
+	// synthetic folder-container node, so the user sees the same
+	// "Within Bayurinda" grouping the filesystem implies.
+	//
+	// `pathBucket` (defined near the top of this function) maps an
+	// id to its bucket. An empty bucket means the entity lives
+	// directly under the type and needs no wrapping.
+
+	// Group same-type containers + standalone cards into buckets by
+	// path-parent folder.
+	const containerBuckets = new Map<string, ContainerNode[]>();
+	const loneBuckets = new Map<string, Card[]>();
+	const rootContainers: ContainerNode[] = [];
+	const rootStandalone: Card[] = [];
+
+	for (const node of containers) {
+		const b = pathBucket(node.container.id);
+		if (b === '') {
+			rootContainers.push(node);
+		} else {
+			if (!containerBuckets.has(b)) containerBuckets.set(b, []);
+			containerBuckets.get(b)!.push(node);
+		}
+	}
+	for (const card of standalone) {
+		const b = pathBucket(card.id);
+		if (b === '') {
+			rootStandalone.push(card);
+		} else {
+			if (!loneBuckets.has(b)) loneBuckets.set(b, []);
+			loneBuckets.get(b)!.push(card);
+		}
+	}
+
+	// Build a synthetic folder-container for each bucket. Children
+	// are the entity-containers (with their own nested structure
+	// intact) plus the standalone entities (wrapped as leaf nodes).
+	// Suffix-match resolves the folder slug to an entity elsewhere
+	// in the graph (e.g. the planet of the same name), surfacing
+	// its name on the heading; falling back to a prettified slug.
+	const allBuckets = new Set<string>([...containerBuckets.keys(), ...loneBuckets.keys()]);
+	const folderContainers: ContainerNode[] = [...allBuckets]
+		.sort()
+		.map((bucket) => {
+			const folderId = `${type}/${bucket}`;
+			const slug = bucket.slice(bucket.lastIndexOf('/') + 1);
+			const resolved = graph.resolveLink(slug);
+			const linked = resolved && resolved !== folderId ? graph.get(resolved) : null;
+			const name =
+				linked?.meta.name ?? slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+			const synth: Card = {
+				id: folderId,
+				slug,
+				name,
+				summary: null,
+				summaryHtml: null,
+				tags: [],
+				era: null,
+				kind: null,
+				sigil: null,
+				typeLabel: null,
+				folderPath: bucket,
+				synthetic: true,
+				crossLinkId: linked?.id ?? null
+			};
+			const bucketContainers = containerBuckets.get(bucket) ?? [];
+			const bucketLone = (loneBuckets.get(bucket) ?? []).map(
+				(card): ContainerNode => ({ container: card, children: [] })
+			);
+			return {
+				container: synth,
+				children: [...bucketContainers, ...bucketLone].sort((a, b) =>
+					a.container.name.localeCompare(b.container.name)
+				)
+			};
+		});
+
+	// Final shape: root-level entity-containers first, then folder
+	// containers (sorted alphabetically). Standalone grid drops to
+	// the entities that *don't* live inside any folder.
+	containers = [...rootContainers, ...folderContainers];
+	standalone = rootStandalone;
+
+	// Page-level folder list: every distinct *top-level* path-bucket
+	// (the first path segment under the type root) present in the
+	// entity set, with its display name and (optional) cross-link
+	// to an entity of the same slug elsewhere in the graph. The
+	// view renders these as a chip row alongside kind chips so the
+	// user can narrow to a single folder regardless of view-mode.
+	// Counts include every descendant in that folder subtree, so
+	// `Bayurinda 3` covers Nuunlau, Bayurinda Archipelago, and
+	// Bal Rochan-inside-Nuunlau alike. Nested sub-folders are not
+	// exposed as separate chips — the chip row mirrors top-level
+	// structural folders only, to keep filtering coarse and
+	// readable. Authors who want finer slicing can compose with
+	// kind/tag chips.
+	const folderCounts = new Map<string, number>();
+	for (const e of graph.byTypeRecursive(type)) {
+		const b = pathBucket(e.id);
+		if (b === '') continue;
+		const top = b.includes('/') ? b.slice(0, b.indexOf('/')) : b;
+		// Skip buckets that correspond to known subtypes — those
+		// already get their own "collection" tile, and a folder
+		// chip for them would duplicate that affordance. We only
+		// want chips for purely-structural folders (no
+		// `_type.yaml`).
+		if (graph.hasType(`${type}/${top}` as EntityType)) continue;
+		folderCounts.set(top, (folderCounts.get(top) ?? 0) + 1);
+	}
+	const folders = [...folderCounts.entries()]
+		.sort(([a], [b]) => a.localeCompare(b))
+		.map(([path, count]) => {
+			const slug = path;
+			const resolved = graph.resolveLink(slug);
+			const linked = resolved && resolved !== `${type}/${path}` ? graph.get(resolved) : null;
+			const name =
+				linked?.meta.name ?? slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+			return {
+				path,
+				name,
+				count,
+				crossLinkId: linked?.id ?? null
+			};
+		});
 
 	// Orbits tree: walks `member-of` and `orbits` edges across types,
 	// producing the gravitational shape — systems containing stars +
@@ -207,6 +352,7 @@ export function loadTypeIndex(type: EntityType) {
 		containers,
 		standalone,
 		orbits,
+		folders,
 		// `flat` is the full list in display order — used when the
 		// user switches to flat view. Includes descendants of subtypes
 		// so e.g. /culture in flat mode shows languages inline.
@@ -314,6 +460,7 @@ export function loadEverythingIndex() {
 		subtypes,
 		containers: [] as ContainerNode[],
 		orbits: [] as OrbitNode[],
+		folders: [] as Array<{ path: string; name: string; count: number; crossLinkId: EntityId | null }>,
 		// In nested view every entity belongs to one of the
 		// top-level-type collection tiles, so the standalone grid is
 		// empty — the user sees only the tiles. Flat view drops the
@@ -346,7 +493,8 @@ function rankTags(counts: Map<string, number>): Array<{ label: string; count: nu
 function toCard(
 	e: Entity,
 	cardSummaryHtml: (s: string | null | undefined) => string | null,
-	typeLabel?: string
+	typeLabel?: string,
+	folderPath: string = ''
 ) {
 	return {
 		id: e.id,
@@ -358,7 +506,23 @@ function toCard(
 		era: e.meta.era ?? null,
 		kind: typeof e.meta.kind === 'string' ? e.meta.kind : null,
 		sigil: typeof e.meta.sigil === 'string' ? e.meta.sigil : null,
-		typeLabel: typeLabel ?? null
+		typeLabel: typeLabel ?? null,
+		// Path of the entity's containing folder relative to the
+		// type root, e.g. `bayurinda` for
+		// `places/regions/bayurinda/nuunlau` under type
+		// `places/regions`. Empty string means the entity lives
+		// directly under the type root (no folder grouping). Used
+		// by the page-level folder chips so the user can narrow
+		// the view to entities living under a structural folder.
+		folderPath,
+		// Synthetic folder containers (no entity backing them) set
+		// `synthetic: true` so the view can render them as a folder
+		// heading rather than an entity card. `crossLinkId`, when
+		// present, is the canonical id of an entity elsewhere in
+		// the graph whose slug matches the folder slug — surfaced
+		// as a "→ X" jump from the folder heading.
+		synthetic: false as boolean,
+		crossLinkId: null as EntityId | null
 	};
 }
 

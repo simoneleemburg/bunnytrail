@@ -24,6 +24,7 @@
 	type ViewMode = 'nested' | 'flat' | 'orbits';
 	let viewMode = $state<ViewMode>('nested');
 	let activeKind = $state<string | null>(null);
+	let activeFolder = $state<string | null>(null);
 	let activeTags = $state<Set<string>>(new Set());
 	let showAllTags = $state(false);
 
@@ -129,8 +130,24 @@
 		return true;
 	}
 
-	function matchesFilters(card: { kind: string | null; tags: string[] }): boolean {
-		return matchesKind(card) && matchesTags(card);
+	function matchesFolder(card: { folderPath?: string; id: string }): boolean {
+		if (activeFolder === null) return true;
+		const fp = card.folderPath ?? '';
+		// Match exact bucket or any nested bucket. Containers
+		// living directly at the folder root (e.g. Nuunlau under
+		// `bayurinda/`) carry folderPath = `bayurinda`; Bal Rochan
+		// inside Nuunlau carries `bayurinda/nuunlau`. Both should
+		// pass the `bayurinda` filter.
+		return fp === activeFolder || fp.startsWith(`${activeFolder}/`);
+	}
+
+	function matchesFilters(card: {
+		kind: string | null;
+		tags: string[];
+		folderPath?: string;
+		id: string;
+	}): boolean {
+		return matchesKind(card) && matchesTags(card) && matchesFolder(card);
 	}
 
 	// Tags available for the page-level filter row: aggregated from
@@ -175,6 +192,28 @@
 	function clearTags() {
 		activeTags = new Set();
 	}
+
+	// Folder chips re-counted under the active kind+tag filters,
+	// so the row mirrors what the user can actually see. A folder
+	// with zero matches under the current selection is hidden —
+	// except the currently-active folder, which has to stay
+	// clickable to deselect. The folder set itself comes from the
+	// loader; we just narrow it. Top-level bucketing (everything
+	// under `bayurinda/...` rolls up into `bayurinda`) matches the
+	// loader's chip-construction logic.
+	const visibleFolders = $derived.by(() => {
+		const baseCounts = new Map<string, number>();
+		for (const e of filterEntitySet) {
+			const fp = e.folderPath ?? '';
+			if (fp === '') continue;
+			const top = fp.includes('/') ? fp.slice(0, fp.indexOf('/')) : fp;
+			if (!matchesKind(e) || !matchesTags(e)) continue;
+			baseCounts.set(top, (baseCounts.get(top) ?? 0) + 1);
+		}
+		return data.folders
+			.map((f) => ({ ...f, count: baseCounts.get(f.path) ?? 0 }))
+			.filter((f) => f.count > 0 || activeFolder === f.path);
+	});
 
 	// Subtype tiles only show in nested mode. Their counts, visibility
 	// and displayed tags all follow the active kind + tag filters: a
@@ -286,7 +325,7 @@
 		<em>No {data.label.plural.toLowerCase()} have been recorded yet.</em>
 	</p>
 {:else}
-	{#if kindCounts.length > 1 || hasViewToggle}
+	{#if kindCounts.length > 1 || hasViewToggle || visibleFolders.length > 0}
 		<nav class="filters" aria-label="Filter and view">
 			{#if kindCounts.length > 1}
 				<div class="filter-group" role="group" aria-label="Filter by kind">
@@ -308,6 +347,29 @@
 							onclick={() => (activeKind = kind)}
 						>
 							{kind}{#if info.supertype}<span class="count">{info.count}</span>{/if}
+						</button>
+					{/each}
+				</div>
+			{/if}
+			{#if visibleFolders.length > 0}
+				<div class="filter-group" role="group" aria-label="Filter by folder">
+					<button
+						type="button"
+						class="filter"
+						class:active={activeFolder === null}
+						onclick={() => (activeFolder = null)}
+					>
+						All folders
+					</button>
+					{#each visibleFolders as folder (folder.path)}
+						<button
+							type="button"
+							class="filter folder-chip"
+							class:active={activeFolder === folder.path}
+							title={folder.path}
+							onclick={() => (activeFolder = folder.path)}
+						>
+							{folder.name}<span class="count">{folder.count}</span>
 						</button>
 					{/each}
 				</div>
@@ -414,8 +476,19 @@
 	{/if}
 
 	{#snippet containerTree(node: RenderNode)}
-		<div class="container-group">
-			{#if node.containerMatches}
+		<div class="container-group" class:synthetic={node.container.synthetic}>
+			{#if node.container.synthetic}
+				<div class="folder-heading">
+					<h2>
+						<a href={`/${node.container.id}`}>{node.container.name}</a>
+					</h2>
+					{#if node.container.crossLinkId}
+						<a class="cross-link" href={`/${node.container.crossLinkId}`}>
+							see entity →
+						</a>
+					{/if}
+				</div>
+			{:else if node.containerMatches}
 				<EntityCard
 					id={node.container.id}
 					name={node.container.name}
@@ -836,6 +909,54 @@
 
 	.container-stub a:hover {
 		color: var(--accent);
+	}
+
+	.folder-heading {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-3);
+		/* No bottom rule — the first child card's own top rule
+		   already provides the dividing line, and stacking them
+		   reads as a double-rule clash. */
+		padding-bottom: var(--space-1);
+	}
+
+	.folder-heading h2 {
+		margin: 0;
+		font-size: var(--text-lg);
+		font-variant: small-caps;
+		letter-spacing: 0.06em;
+		font-weight: 600;
+	}
+
+	.folder-heading h2 a {
+		color: var(--ink);
+		text-decoration: none;
+	}
+
+	.folder-heading h2 a:hover {
+		color: var(--accent);
+	}
+
+	.folder-heading .cross-link {
+		font-size: var(--text-xs);
+		font-variant: small-caps;
+		letter-spacing: 0.1em;
+		color: var(--ink-faint);
+		text-decoration: none;
+	}
+
+	.folder-heading .cross-link:hover {
+		color: var(--accent);
+	}
+
+	/* Folder containers tighten their child-list indent — they're a
+	   scoping device, not a hierarchical nesting like entity-in-entity. */
+	.container-group.synthetic > .child-list {
+		margin-left: 0;
+		border-left: none;
+		padding-left: 0;
 	}
 
 	.child-list {

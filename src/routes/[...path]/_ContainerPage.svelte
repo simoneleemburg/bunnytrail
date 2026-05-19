@@ -7,19 +7,14 @@
 	}
 
 	let { data }: Props = $props();
-
-	let eyebrow = $derived(
-		data.crossLink
-			? `${data.crossLink.typeLabel}: ${data.crossLink.name}`
-			: `${data.totalCount} ${data.totalCount === 1 ? 'entry' : 'entries'}`
-	);
 </script>
 
-<PageHeader {eyebrow} title={data.title} />
+<PageHeader eyebrow={data.eyebrow ?? undefined} title={data.title} />
 
 {#if data.crossLink}
 	<p class="cross-link">
-		See also the entity: <a href={`/${data.crossLink.id}`}>{data.crossLink.name}</a>.
+		See also the {data.crossLink.typeLabel.toLowerCase()}:
+		<a href={`/${data.crossLink.id}`}>{data.crossLink.name}</a>.
 	</p>
 {/if}
 
