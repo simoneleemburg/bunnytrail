@@ -2,7 +2,11 @@
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import type { KindNode } from './+page.server';
 
-	let { data }: { data: { roots: KindNode[] } } = $props();
+	let {
+		data
+	}: {
+		data: { roots: KindNode[]; unregistered: { kind: string; count: number }[] };
+	} = $props();
 </script>
 
 <svelte:head>
@@ -48,6 +52,25 @@
 			{@render branch(root)}
 		{/each}
 	</ul>
+{/if}
+
+{#if data.unregistered.length > 0}
+	<section class="unregistered">
+		<h2 class="section-heading">Unregistered</h2>
+		<p class="section-note">
+			Free-form <code>kind:</code> values carried by entities but not declared in
+			any <code>_type.yaml</code>. Promote them into the hierarchy when their meaning
+			settles.
+		</p>
+		<ul class="unregistered-list">
+			{#each data.unregistered as item (item.kind)}
+				<li>
+					<span class="kind-name muted">{item.kind}</span>
+					<span class="kind-count">{item.count}</span>
+				</li>
+			{/each}
+		</ul>
+	</section>
 {/if}
 
 <style>
@@ -131,5 +154,44 @@
 		font-size: var(--text-xs);
 		font-variant: tabular-nums small-caps;
 		color: var(--ink-faint);
+	}
+
+	.unregistered {
+		margin-top: var(--space-7);
+	}
+
+	.section-heading {
+		font-family: var(--font-display);
+		font-size: var(--text-xl);
+		font-weight: 500;
+		margin: 0 0 var(--space-2);
+		color: var(--ink);
+	}
+
+	.section-note {
+		max-width: var(--prose-max);
+		color: var(--ink-soft);
+		margin: 0 0 var(--space-5);
+	}
+
+	.section-note code {
+		font-family: var(--font-mono, ui-monospace, monospace);
+		font-size: 0.92em;
+		color: var(--ink);
+	}
+
+	.unregistered-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2) var(--space-5);
+	}
+
+	.unregistered-list li {
+		display: inline-flex;
+		align-items: baseline;
+		gap: var(--space-2);
 	}
 </style>

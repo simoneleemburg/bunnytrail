@@ -64,5 +64,22 @@ export async function load() {
 		.sort((a, b) => a.localeCompare(b))
 		.map(build);
 
-	return { roots };
+	// Free-form kinds: every distinct `kind:` value carried by an
+	// entity that isn't registered in the kind tree. These are the
+	// informal kinds the worldbuilding has grown into — useful to
+	// see them in one place so you can decide which deserve to be
+	// promoted into the taxonomy and which should stay as
+	// folksonomy. Counts here are entity counts, not type counts.
+	const unregisteredCounts = new Map<string, number>();
+	for (const e of graph.all()) {
+		const k = e.meta.kind;
+		if (typeof k !== 'string' || !k) continue;
+		if (tree.has(k)) continue;
+		unregisteredCounts.set(k, (unregisteredCounts.get(k) ?? 0) + 1);
+	}
+	const unregistered = [...unregisteredCounts.entries()]
+		.map(([kind, count]) => ({ kind, count }))
+		.sort((a, b) => b.count - a.count || a.kind.localeCompare(b.kind));
+
+	return { roots, unregistered };
 }
