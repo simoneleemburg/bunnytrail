@@ -25,18 +25,136 @@ function slugifyHeading(text: string): string {
 }
 
 /**
+ * Single combined `[[…]]` rewriter, shared by body and summary
+ * rendering.
+ *
+ * The `inner` content of `[[inner]]` (or `[[inner|label]]`) may
+ * optionally end in `#anchor` to deep-link into the target page;
+ * a leading `#anchor` with no path (`[[#section|label]]`) is a
+ * same-page anchor link. The path part (before any `#`) is then
+ * classified in this order:
+ *
+ *   1. If the path contains a `/`, it is a wikilink path. Resolve via
+ *      `resolveLink` (exact + suffix match) and emit either a
+ *      `[label](/id#anchor)` markdown link or a broken-link sentinel.
+ *   2. Otherwise, if the inner is shaped like a language code
+ *      (2–8 lowercase letters, no anchor) and a registered language
+ *      exists, emit a `<sup class="lang-tag">` superscript anchor.
+ *   3. Otherwise, if the path is a sluglike token (lowercase + digits
+ *      + hyphens), treat it as a bare-slug wikilink and resolve it
+ *      the same way as (1). This is what makes `[[nuunlau]]` work
+ *      after wikilink-shortening.
+ *   4. Otherwise, fall back to a broken language-tag sentinel so
+ *      unknown short codes (e.g. `[[nbl]]`) still surface visibly.
+ *
+ * Wikilinks are rewritten to `[label](/id)` so marked handles them
+ * with the rest of the paragraph; language tags are emitted as raw
+ * HTML, which marked passes through.
+ *
+ * `stripLinks: true` is for callers that already wrap the rendered
+ * HTML in an outer `<a>` (entity cards). Wikilinks become their
+ * label text, and language-tag superscripts shed their inner anchor
+ * so the result has no nested anchors.
+ */
+function rewriteBrackets(
+	text: string,
+	resolveLink: LinkResolver,
+	languageCodes: Map<string, EntityId>,
+	stripLinks = false
+): string {
+	return text.replace(
+		/\[\[([^\]|]+?)(?:\|([^\]]+))?\]\]/g,
+		(whole, inner: string, label: string | undefined) => {
+			const wikiPath = /^[a-z][a-z0-9-]*(?:\/[a-z0-9-]+)+$/;
+			const slugOnly = /^[a-z][a-z0-9-]*$/;
+			const langShape = /^[a-z]{2,8}$/;
+			const anchorFrag = /^[a-z0-9][a-z0-9-]*$/;
+
+			// Split off optional `#anchor`. A leading `#` means same-page.
+			const hashIdx = inner.indexOf('#');
+			const path = hashIdx >= 0 ? inner.slice(0, hashIdx) : inner;
+			const anchor = hashIdx >= 0 ? inner.slice(hashIdx + 1) : '';
+			const anchorSuffix = anchor && anchorFrag.test(anchor) ? `#${anchor}` : '';
+
+			const fallbackLabel = (forPath: string): string => {
+				const slug = forPath.slice(forPath.lastIndexOf('/') + 1);
+				return slug.replace(/-/g, ' ') || anchor.replace(/-/g, ' ');
+			};
+
+			const renderWikilink = (forPath: string): string => {
+				const textOut = label ?? fallbackLabel(forPath);
+				if (stripLinks) return textOut;
+				const resolved = resolveLink(forPath);
+				if (resolved) return `[${textOut}](/${resolved}${anchorSuffix})`;
+				return `[${textOut}](/${forPath}${anchorSuffix} "broken-link")`;
+			};
+
+			const renderSameAnchor = (): string => {
+				const textOut = label ?? anchor.replace(/-/g, ' ');
+				if (stripLinks) return textOut;
+				if (!anchorSuffix) return `[${textOut}](/${path} "broken-link")`;
+				return `[${textOut}](${anchorSuffix})`;
+			};
+
+			const renderLangTag = (code: string, id: EntityId): string => {
+				if (stripLinks) {
+					return `<sup class="lang-tag" title="language: ${code}">${code}</sup>`;
+				}
+				return `<sup class="lang-tag"><a href="/${id}" title="language: ${code}">${code}</a></sup>`;
+			};
+
+			const renderBrokenLangTag = (code: string): string =>
+				`<sup class="lang-tag" data-broken="true" title="unknown language code: ${code}">${code}</sup>`;
+
+			// (0) Same-page anchor: `[[#section|label]]`. Path is empty.
+			if (path === '' && anchor) {
+				return renderSameAnchor();
+			}
+			// (1) Path has a slash → unambiguous wikilink path.
+			if (wikiPath.test(path)) {
+				return renderWikilink(path);
+			}
+			// (2) Lang-code shape with no anchor and registered → lang tag.
+			if (!anchor && langShape.test(inner) && languageCodes.has(inner)) {
+				return renderLangTag(inner, languageCodes.get(inner)!);
+			}
+			// (3) Sluglike path → try as a bare wikilink (suffix-match).
+			if (slugOnly.test(path) && resolveLink(path)) {
+				return renderWikilink(path);
+			}
+			// (4) Lang-code shape but unknown (no anchor) → broken lang tag.
+			if (!anchor && langShape.test(inner)) {
+				return renderBrokenLangTag(inner);
+			}
+			// (5) Sluglike but unresolved → broken wikilink (loud).
+			if (slugOnly.test(path)) {
+				return renderWikilink(path);
+			}
+			// Anything else (e.g. spaces, uppercase) — leave as-is.
+			return whole;
+		}
+	);
+}
+
+/**
  * Render a markdown body to HTML, converting:
  *
  *   • `[[type/slug]]`, `[[type/sub/slug]]`, `[[…/slug|label]]` —
  *     entity wikilinks. The path is resolved through `resolveLink`,
  *     which performs exact + suffix matching so wikilinks survive
- *     entity moves along the filesystem tree. Unresolved links get
- *     a `data-broken="true"` attribute so the UI can style them.
+ *     entity moves along the filesystem tree. Bare-slug wikilinks
+ *     (e.g. `[[nuunlau]]`) are also supported, as long as the slug
+ *     resolves unambiguously. Unresolved links get a
+ *     `data-broken="true"` attribute so the UI can style them.
  *   • `[[<code>]]` — inline language tags, where `<code>` is a short
  *     lowercase code defined on an entity in the `languages` type
  *     (e.g. `[[ot]]` for the Old Tongue). Rendered as a small
  *     superscript anchor next to the preceding word. Unknown codes
  *     are still rendered but marked with `data-broken="true"`.
+ *
+ * If `[[xxx]]` is shaped like both a lang code and a bare slug, the
+ * lang code wins when it is registered; otherwise the resolver is
+ * tried.
  *
  * Headings (`#`, `##`, `###`, …) get auto-generated `id` attributes
  * derived from their text content, so cross-page anchor links like
@@ -49,33 +167,7 @@ export function renderBody(
 	resolveLink: LinkResolver,
 	languageCodes: Map<string, EntityId> = new Map()
 ): string {
-	// Process inline language tags first. The regex deliberately
-	// requires no slash, so the wikilink regex below cannot collide.
-	// Codes are 2–8 lowercase letters.
-	const withLangTags = body.replace(/\[\[([a-z]{2,8})\]\]/g, (whole, code: string) => {
-		const id = languageCodes.get(code);
-		if (id) {
-			return `<sup class="lang-tag"><a href="/${id}" title="language: ${code}">${code}</a></sup>`;
-		}
-		return `<sup class="lang-tag" data-broken="true" title="unknown language code: ${code}">${code}</sup>`;
-	});
-
-	// Rewrite entity wikilinks to plain markdown links before handing
-	// off to marked, so that we get correct paragraph / list handling
-	// for free. Accepts paths of any depth (e.g.
-	// `[[culture/languages/tholingian]]`).
-	const rewritten = withLangTags.replace(
-		/\[\[([a-z][a-z0-9-]*(?:\/[a-z0-9-]+)+)(?:\|([^\]]+))?\]\]/g,
-		(_, path: string, label?: string) => {
-			const resolved = resolveLink(path);
-			const slug = path.slice(path.lastIndexOf('/') + 1);
-			const text = label ?? slug.replace(/-/g, ' ');
-			if (resolved) {
-				return `[${text}](/${resolved})`;
-			}
-			return `[${text}](/${path} "broken-link")`;
-		}
-	);
+	const rewritten = rewriteBrackets(body, resolveLink, languageCodes);
 
 	// Per-render heading-id state. Tracked here (not at module scope)
 	// so concurrent renders of different entities can't collide.
@@ -117,8 +209,8 @@ export function renderEntityBody(
  *
  * Summaries are single-line, no-block-element strings used in
  * page subtitles and entity cards. They may contain markdown
- * italics, em-dashes, `[label](/href)` links, `[[type/slug]]`
- * wikilinks, and `[[code]]` language tags. They MAY NOT contain
+ * italics, em-dashes, `[label](/href)` links, `[[type/slug]]` or
+ * `[[bare-slug]]` wikilinks, and `[[code]]` language tags. They MAY NOT contain
  * block-level constructs (paragraphs, lists, headings); those
  * are silently flattened by `parseInline`.
  *
@@ -136,30 +228,7 @@ export function renderSummary(
 ): string {
 	const { stripLinks = false } = options;
 
-	// Same two-pass rewrite as renderBody: language tags first, then
-	// entity wikilinks to plain markdown links.
-	const withLangTags = summary.replace(/\[\[([a-z]{2,8})\]\]/g, (_, code: string) => {
-		const id = languageCodes.get(code);
-		if (id) {
-			if (stripLinks) {
-				return `<sup class="lang-tag" title="language: ${code}">${code}</sup>`;
-			}
-			return `<sup class="lang-tag"><a href="/${id}" title="language: ${code}">${code}</a></sup>`;
-		}
-		return `<sup class="lang-tag" data-broken="true" title="unknown language code: ${code}">${code}</sup>`;
-	});
-
-	const rewritten = withLangTags.replace(
-		/\[\[([a-z][a-z0-9-]*(?:\/[a-z0-9-]+)+)(?:\|([^\]]+))?\]\]/g,
-		(_, path: string, label?: string) => {
-			const slug = path.slice(path.lastIndexOf('/') + 1);
-			const text = label ?? slug.replace(/-/g, ' ');
-			if (stripLinks) return text;
-			const resolved = resolveLink(path);
-			if (resolved) return `[${text}](/${resolved})`;
-			return `[${text}](/${path} "broken-link")`;
-		}
-	);
+	const rewritten = rewriteBrackets(summary, resolveLink, languageCodes, stripLinks);
 
 	let html = marked.parseInline(rewritten, { async: false }) as string;
 	html = html.replace(/title="broken-link"/g, 'data-broken="true"');

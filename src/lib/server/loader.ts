@@ -25,7 +25,13 @@ export const CONTENT_DIR = process.env.ALTERIA_CONTENT_DIR ?? resolve(process.cw
  * labelled) in markdown bodies. The path is one or more kebab-case
  * segments joined by `/`.
  */
-const WIKILINK_RE = /\[\[([a-z][a-z0-9-]*(?:\/[a-z0-9-]+)+)(?:\|[^\]]+)?\]\]/g;
+// Wikilink extractor regex. Matches both full paths and bare slugs,
+// with an optional `#anchor` fragment and an optional `|label`.
+// The anchor and label are dropped here; only the path part flows
+// into wikilink resolution. Bare lang-code matches (e.g. `[[ot]]`)
+// are also caught by this regex — the consumer filters those out
+// by checking against the language-code set before resolving.
+const WIKILINK_RE = /\[\[([a-z][a-z0-9-]*(?:\/[a-z0-9-]+)*)(?:#[a-z0-9][a-z0-9-]*)?(?:\|[^\]]+)?\]\]/g;
 
 export interface LoadResult {
 	entities: Map<EntityId, Entity>;
@@ -110,6 +116,21 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 		entity.children.sort();
 	}
 
+	// Build the language-code set so the wikilink resolver can skip
+	// over `[[ot]]`-style lang tags (the extractor catches them too,
+	// since they share the same `[[…]]` shape). A language code is
+	// only honoured if it sits on an entity in a `languages` type and
+	// is 2–8 lowercase letters.
+	const langCodes = new Set<string>();
+	for (const e of entities.values()) {
+		const isLang = e.type === 'languages' || e.type.endsWith('/languages');
+		if (!isLang) continue;
+		const code = (e.meta as { code?: unknown }).code;
+		if (typeof code === 'string' && /^[a-z]{2,8}$/.test(code)) {
+			langCodes.add(code);
+		}
+	}
+
 	// Resolve wikilinks: each entity's raw wikilink paths are mapped
 	// to canonical entity ids via `resolveWikilink`. Successful
 	// resolutions replace the raw path; failures (missing or
@@ -118,6 +139,10 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 	for (const entity of entities.values()) {
 		const resolved = new Set<EntityId>();
 		for (const raw of entity.wikilinks) {
+			// Lang-code shaped paths that match a registered language
+			// are handled by the markdown renderer, not wikilink
+			// resolution.
+			if (langCodes.has(raw)) continue;
 			const r = resolveWikilink(raw, entities);
 			if (r.id !== null) {
 				resolved.add(r.id);

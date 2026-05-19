@@ -90,6 +90,66 @@ describe('renderBody', () => {
 		expect(html).toContain('<a href="/places/bayurinda/sharazan">Sharazan</a>');
 		expect(html).not.toContain('href="/places/sharazan"');
 	});
+
+	it('resolves a bare-slug wikilink via the suffix-aware resolver', () => {
+		// Mimic the production resolver's suffix-match: `[[nuunlau]]`
+		// finds `places/regions/nuunlau` even though no slash is in
+		// the source.
+		const resolveBare = (path: string) => {
+			if (path === 'nuunlau') return 'places/regions/nuunlau';
+			return null;
+		};
+		const html = renderBody('See [[nuunlau|Nuunlau]] for context.', resolveBare, langs);
+		expect(html).toContain('<a href="/places/regions/nuunlau">Nuunlau</a>');
+	});
+
+	it('prefers a registered language code over a bare-slug wikilink', () => {
+		// `[[ot]]` is both lang-code shaped and slug-shaped. Lang
+		// wins when it is registered, even if a bare-slug resolver
+		// would also have matched.
+		const resolveAny = (_path: string) => 'characters/ot-the-character';
+		const html = renderBody('See [[ot]] for context.', resolveAny, langs);
+		expect(html).toContain('<sup class="lang-tag">');
+		expect(html).toContain('href="/languages/old-tongue"');
+		expect(html).not.toContain('characters/ot-the-character');
+	});
+
+	it('treats a bare lang-shaped token that does not resolve as a broken lang tag', () => {
+		const html = renderBody('Something [[nbl]] here.', exactResolver([]), langs);
+		expect(html).toMatch(/<sup class="lang-tag" data-broken="true"[^>]*>nbl<\/sup>/);
+	});
+
+	it('treats a longer bare slug as a broken wikilink, not a broken lang tag', () => {
+		// `bayurinda` is 9 chars — outside lang-code shape — so an
+		// unresolved bare slug should surface as a broken wikilink.
+		const html = renderBody('See [[bayurinda]] for context.', exactResolver([]), langs);
+		expect(html).toContain('data-broken="true"');
+		expect(html).not.toContain('lang-tag');
+	});
+
+	it('appends an anchor fragment to a wikilink href', () => {
+		const html = renderBody(
+			'See [[characters/kael#early-life|Kael, early]].',
+			resolve,
+			langs
+		);
+		expect(html).toContain('<a href="/characters/kael#early-life">Kael, early</a>');
+	});
+
+	it('appends an anchor fragment to a bare-slug wikilink href', () => {
+		const resolveBare = (path: string) =>
+			path === 'bayurinda' ? 'places/celestial-bodies/planets/bayurinda' : null;
+		const html = renderBody('See [[bayurinda#peoples-of-bayurinda|deep]].', resolveBare, langs);
+		expect(html).toContain(
+			'<a href="/places/celestial-bodies/planets/bayurinda#peoples-of-bayurinda">deep</a>'
+		);
+	});
+
+	it('renders a same-page anchor wikilink as a relative anchor link', () => {
+		const html = renderBody('See [[#section-two|the section]] below.', exactResolver([]), langs);
+		expect(html).toContain('<a href="#section-two">the section</a>');
+		expect(html).not.toContain('data-broken');
+	});
 });
 
 describe('renderSummary', () => {
@@ -145,5 +205,26 @@ describe('renderSummary', () => {
 	it('marks unknown wikilinks as broken', () => {
 		const html = renderSummary('See [[characters/nobody]].', resolve, langs);
 		expect(html).toContain('data-broken="true"');
+	});
+
+	it('resolves a bare-slug wikilink via the suffix-aware resolver', () => {
+		const resolveBare = (path: string) => {
+			if (path === 'nuunlau') return 'places/regions/nuunlau';
+			return null;
+		};
+		const html = renderSummary('The deep-water region of [[nuunlau|Nuunlau]].', resolveBare, langs);
+		expect(html).toContain('<a href="/places/regions/nuunlau">Nuunlau</a>');
+	});
+
+	it('strips a bare-slug wikilink to its label when stripLinks is true', () => {
+		const resolveBare = (path: string) => (path === 'nuunlau' ? 'places/regions/nuunlau' : null);
+		const html = renderSummary(
+			'The deep-water region of [[nuunlau|Nuunlau]].',
+			resolveBare,
+			langs,
+			{ stripLinks: true }
+		);
+		expect(html).toContain('Nuunlau');
+		expect(html).not.toContain('<a ');
 	});
 });
