@@ -15,7 +15,9 @@
 	<p class="counter">
 		<em>
 			{data.totalEntities} entries{#if data.issues > 0}
-				· {data.issues} broken links{/if}
+				· <a class="issues-link" href="/health"
+					>{data.issues} {data.issues === 1 ? 'issue' : 'issues'}</a
+				>{/if}
 		</em>
 	</p>
 	<div class="lede">
@@ -293,5 +295,19 @@
 		margin: 0 0 var(--space-5);
 		font-variant: small-caps;
 		letter-spacing: 0.06em;
+	}
+
+	/* The "N issues" segment of the counter is itself a link to the
+	   health dashboard. Borrow the counter's small-caps register so
+	   the row reads as one editorial label; underline-on-hover signals
+	   the link without making it shout. */
+	.issues-link {
+		color: inherit;
+		text-decoration: none;
+		border-bottom: 1px dotted currentColor;
+	}
+
+	.issues-link:hover {
+		color: var(--accent);
 	}
 </style>

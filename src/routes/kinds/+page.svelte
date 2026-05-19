@@ -59,8 +59,8 @@
 		<h2 class="section-heading">Unregistered</h2>
 		<p class="section-note">
 			Free-form <code>kind:</code> values carried by entities but not declared in
-			any <code>_type.yaml</code>. Promote them into the hierarchy when their meaning
-			settles.
+			the registry under <code>content_meta/kinds/</code>. Promote them into the
+			hierarchy when their meaning settles.
 		</p>
 		<ul class="unregistered-list">
 			{#each data.unregistered as item (item.kind)}
