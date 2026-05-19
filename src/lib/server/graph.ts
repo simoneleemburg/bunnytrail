@@ -6,6 +6,7 @@ import type {
 	EntityTypeInfo,
 	EntityTypeMeta,
 	HealthIssue,
+	Kind,
 	KindTree
 } from '$lib/types';
 import { buildKindTree, parentType, resolveTypeInfo } from '$lib/types';
@@ -27,6 +28,7 @@ class Graph {
 	#typesSet = new Set<EntityType>();
 	#typeMeta = new Map<EntityType, EntityTypeMeta>();
 	#kinds: KindTree = buildKindTree(new Map());
+	#kindRegistry: Map<string, Kind> = new Map();
 	#loaded = false;
 	#loading: Promise<void> | null = null;
 
@@ -34,7 +36,7 @@ class Graph {
 	async load(contentDir: string = CONTENT_DIR): Promise<void> {
 		if (this.#loading) return this.#loading;
 		this.#loading = (async () => {
-			const { entities, issues, types, typeMeta, kinds } = await loadAll(contentDir);
+			const { entities, issues, types, typeMeta, kinds, kindRegistry } = await loadAll(contentDir);
 			const edges = buildEdges(entities);
 			this.#entities = entities;
 			this.#outEdges = edges.out;
@@ -44,6 +46,7 @@ class Graph {
 			this.#typesSet = new Set(types);
 			this.#typeMeta = typeMeta;
 			this.#kinds = kinds;
+			this.#kindRegistry = kindRegistry;
 			this.#loaded = true;
 		})();
 		try {
@@ -122,6 +125,24 @@ class Graph {
 	/** The full kind hierarchy. See `KindTree` in `$lib/types`. */
 	kinds(): KindTree {
 		return this.#kinds;
+	}
+
+	/**
+	 * The central kind registry from `src/kinds/`. The map is the
+	 * graph's own — do not mutate. Returns an empty map when no
+	 * registry directory exists.
+	 *
+	 * During the kinds-decoupling migration this runs alongside
+	 * `kinds()`; once cutover is complete, `kinds()` will be derived
+	 * from this registry instead of from `_type.yaml` declarations.
+	 */
+	kindRegistry(): ReadonlyMap<string, Kind> {
+		return this.#kindRegistry;
+	}
+
+	/** A single registered kind by id, or undefined if not registered. */
+	kind(id: string): Kind | undefined {
+		return this.#kindRegistry.get(id);
 	}
 
 	/**

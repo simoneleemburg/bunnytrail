@@ -10,9 +10,11 @@ import type {
 	EntityType,
 	EntityTypeMeta,
 	HealthIssue,
+	Kind,
 	KindTree
 } from '$lib/types';
 import { buildKindTree } from '$lib/types';
+import { loadKindRegistry } from './kinds';
 
 /**
  * Where the canonical worldbuilding data lives, relative to the project root.
@@ -42,6 +44,14 @@ export interface LoadResult {
 	typeMeta: Map<EntityType, EntityTypeMeta>;
 	/** Kind hierarchy assembled from `kind` + `kindParent` declarations. */
 	kinds: KindTree;
+	/**
+	 * The central kind registry loaded from `src/kinds/`. Runs in
+	 * parallel with `kinds` during the kinds-decoupling migration;
+	 * empty when the registry directory is absent. The registry is
+	 * the long-term source of truth — `kinds` will eventually be
+	 * derived from it.
+	 */
+	kindRegistry: Map<string, Kind>;
 }
 
 /**
@@ -284,12 +294,20 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 		kinds = buildKindTree(new Map());
 	}
 
+	// Load the central kind registry (src/kinds/). Runs alongside
+	// `_type.yaml`-derived kinds during the migration. Issues from
+	// registry loading are folded into the main issues list so the
+	// health page surfaces them too.
+	const registryResult = await loadKindRegistry();
+	for (const issue of registryResult.issues) issues.push(issue);
+
 	return {
 		entities,
 		issues,
 		types: [...types].sort(),
 		typeMeta,
-		kinds
+		kinds,
+		kindRegistry: registryResult.kinds
 	};
 }
 

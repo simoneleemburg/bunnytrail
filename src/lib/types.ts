@@ -140,6 +140,44 @@ export function parentType(type: EntityType): EntityType | null {
 }
 
 /**
+ * Editorial metadata for a registered kind, loaded from
+ * `src/kinds/<kind>.yaml`. The registry is the long-term source of
+ * truth for kinds; during the kinds-decoupling migration it runs in
+ * parallel with the existing `_type.yaml`-derived `KindTree`. Once
+ * cutover is complete the tree will be derived from this registry.
+ *
+ * An optional sibling `src/kinds/<kind>.md` file holds prose for the
+ * kind's own page (the supertype-self-page that lists all entities
+ * of that kind, regardless of which folder they live in).
+ */
+export interface KindMeta {
+	/** Override the singular label. Defaults to title-cased kind id. */
+	singular?: string;
+	/** Override the plural label. Defaults to a naive pluralization. */
+	plural?: string;
+	/** A short editorial description shown on the kind's page. */
+	description?: string;
+	/**
+	 * Parent kind in the kind hierarchy. Must itself be a registered
+	 * kind. Omitted on root kinds.
+	 */
+	kindParent?: string;
+}
+
+/**
+ * A loaded, validated kind from `src/kinds/`. The id is the file
+ * stem (kebab-case). The body, when present, is the raw markdown
+ * source of `src/kinds/<id>.md`; it is rendered on demand by the
+ * markdown pipeline.
+ */
+export interface Kind {
+	id: string;
+	meta: KindMeta;
+	/** Raw markdown body, or null if no `<id>.md` companion exists. */
+	body: string | null;
+}
+
+/**
  * The kind hierarchy. Built once at load time from `_type.yaml`
  * declarations; queried by routes that want to filter by supertype,
  * walk descendants, or check is-a relationships.
