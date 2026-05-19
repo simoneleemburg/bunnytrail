@@ -15,11 +15,10 @@ export interface KindNode {
 /**
  * Global kind hierarchy overview. Walks the kind forest built from
  * every `_type.yaml`'s `kind:` + `kindParent:` declarations and
- * renders it as a tree. A kind that has a defining `_type.yaml`
- * (i.e. a registered type folder whose `kind:` matches) gets a
- * link to its type-index page; free-floating subkinds (registered
- * via `subkinds:` only, with no folder of their own) render muted
- * and unlinked.
+ * renders it as a tree. Linked nodes point at the kind's own
+ * `/kinds/<kind>` page when the kind is registered in `src/kinds/`;
+ * unregistered kinds (e.g. free-floating `subkinds:` entries) render
+ * muted and unlinked.
  *
  * This is an editorial overview page — useful for spotting kinds
  * that should be promoted to their own folder, supertypes that
@@ -29,10 +28,13 @@ export interface KindNode {
 export async function load() {
 	await graph.ready();
 
-	// Build kind → defining type. A type "defines" a kind when its
-	// own `_type.yaml` declares that kind via `kind:`. Subkind
-	// declarations (under `subkinds:`) don't count — they register
-	// the kind in the tree but don't give it a hub page.
+	const tree = graph.kinds();
+	const registry = graph.kindRegistry();
+
+	// Type-folder counts indexed by the kind that folder declares,
+	// so a linked kind tile can still show "how many entities sit
+	// under the canonical type folder" alongside the family-wide
+	// count from the registry.
 	const kindToType = new Map<string, EntityType>();
 	for (const t of graph.types()) {
 		const meta = graph.typeMetaRaw(t.type);
@@ -41,16 +43,17 @@ export async function load() {
 		}
 	}
 
-	const tree = graph.kinds();
-
 	function build(kind: string): KindNode {
+		const registered = registry.has(kind);
 		const type = kindToType.get(kind) ?? null;
 		const info = type ? graph.typeInfo(type) : null;
+		const label = registry.get(kind)?.meta.plural ?? info?.labels.plural ?? null;
+		const count = type ? graph.byType(type).length : null;
 		return {
 			kind,
-			href: type ? `/${type}` : null,
-			label: info ? info.labels.plural : null,
-			count: type ? graph.byType(type).length : null,
+			href: registered ? `/kinds/${kind}` : null,
+			label,
+			count,
 			children: tree
 				.children(kind)
 				.sort((a, b) => a.localeCompare(b))

@@ -3,6 +3,8 @@ import type { Dirent } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import type {
+	Collection,
+	CollectionMeta,
 	Edge,
 	Entity,
 	EntityId,
@@ -52,6 +54,15 @@ export interface LoadResult {
 	 * derived from it.
 	 */
 	kindRegistry: Map<string, Kind>;
+	/**
+	 * Collections discovered while walking `content/`, keyed by
+	 * folder path. Only folders that carry a `_collection.yaml`
+	 * marker are recorded; other folders are still browseable but
+	 * have no editorial metadata. A folder may host both a
+	 * `_collection.yaml` and a `_type.yaml` during the migration —
+	 * they coexist.
+	 */
+	collections: Map<string, Collection>;
 }
 
 /**
@@ -101,6 +112,7 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 	const issues: HealthIssue[] = [];
 	const types = new Set<EntityType>();
 	const typeMeta = new Map<EntityType, EntityTypeMeta>();
+	const collections = new Map<string, Collection>();
 
 	await walk({
 		absDir: contentDir,
@@ -111,7 +123,8 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 		entities,
 		issues,
 		types,
-		typeMeta
+		typeMeta,
+		collections
 	});
 
 	// Resolve children: for every entity whose `parent` is set, push its
@@ -307,7 +320,8 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 		types: [...types].sort(),
 		typeMeta,
 		kinds,
-		kindRegistry: registryResult.kinds
+		kindRegistry: registryResult.kinds,
+		collections
 	};
 }
 
@@ -325,18 +339,67 @@ interface WalkArgs {
 	issues: HealthIssue[];
 	types: Set<EntityType>;
 	typeMeta: Map<EntityType, EntityTypeMeta>;
+	collections: Map<string, Collection>;
 }
 
 async function walk(args: WalkArgs): Promise<void> {
-	const { absDir, relPath, contentDir, entities, issues, types, typeMeta } = args;
+	const { absDir, relPath, contentDir, entities, issues, types, typeMeta, collections } = args;
 
 	const typeYamlPath = join(absDir, '_type.yaml');
 	const indexYamlPath = join(absDir, 'index.yaml');
 	const indexMdPath = join(absDir, 'index.md');
+	const collectionYamlPath = join(absDir, '_collection.yaml');
+	const collectionMdPath = join(absDir, '_collection.md');
 
 	const hasTypeYaml = await exists(typeYamlPath);
 	const hasIndexYaml = await exists(indexYamlPath);
 	const hasIndexMd = await exists(indexMdPath);
+	const hasCollectionYaml = await exists(collectionYamlPath);
+	const hasCollectionMd = await exists(collectionMdPath);
+
+	// Load _collection.yaml if present. Collections are pure browsing
+	// metadata — they say nothing about kinds; a folder may carry
+	// both a `_type.yaml` (legacy / migration-era) and a
+	// `_collection.yaml` and they coexist. Skipped at the content
+	// root (relPath === '') because the root has no display label.
+	if (hasCollectionYaml && relPath) {
+		let meta: CollectionMeta = {};
+		try {
+			const raw = await readFile(collectionYamlPath, 'utf8');
+			const parsed = parseYaml(raw);
+			meta = (parsed && typeof parsed === 'object' ? parsed : {}) as CollectionMeta;
+		} catch (err) {
+			issues.push({
+				kind: 'invalid-yaml',
+				detail: `${collectionYamlPath}: ${err instanceof Error ? err.message : String(err)}`
+			});
+		}
+		let body: string | null = null;
+		if (hasCollectionMd) {
+			try {
+				body = await readFile(collectionMdPath, 'utf8');
+			} catch (err) {
+				issues.push({
+					kind: 'invalid-yaml',
+					detail: `${collectionMdPath}: ${err instanceof Error ? err.message : String(err)}`
+				});
+			}
+		}
+		collections.set(relPath, { path: relPath, meta, body });
+	} else if (hasCollectionMd && relPath) {
+		// A bare `_collection.md` without a yaml marker is treated as
+		// a collection with default labels — useful for folders that
+		// only need prose, no editorial overrides.
+		try {
+			const body = await readFile(collectionMdPath, 'utf8');
+			collections.set(relPath, { path: relPath, meta: {}, body });
+		} catch (err) {
+			issues.push({
+				kind: 'invalid-yaml',
+				detail: `${collectionMdPath}: ${err instanceof Error ? err.message : String(err)}`
+			});
+		}
+	}
 
 	// Load _type.yaml if present. The current folder *is* the type
 	// (its relPath is the type path); children descended from here
@@ -442,7 +505,8 @@ async function walk(args: WalkArgs): Promise<void> {
 			entities,
 			issues,
 			types,
-			typeMeta
+			typeMeta,
+			collections
 		});
 	}
 }

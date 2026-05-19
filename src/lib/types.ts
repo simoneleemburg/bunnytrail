@@ -178,6 +178,38 @@ export interface Kind {
 }
 
 /**
+ * Editorial metadata for a content collection — a folder under
+ * `content/` that groups entities together for browsing. Loaded
+ * from an optional `<folder>/_collection.yaml`. Every field is
+ * optional; the renderer falls back to a title-cased folder name
+ * when labels are absent.
+ *
+ * Collections are pure browsing structure: they say nothing about
+ * the *kind* of the entities they contain. A `places/celestial-bodies`
+ * collection might be retitled "The Sky" or split into "Inner System"
+ * and "Outer System" without disturbing the kind tree.
+ */
+export interface CollectionMeta {
+	/** The collection's display title. Defaults to a title-cased folder name. */
+	title?: string;
+	/** A short editorial description shown at the top of the collection page. */
+	description?: string;
+}
+
+/**
+ * A loaded collection. `path` is the folder path relative to
+ * `content/` (e.g. `places/celestial-bodies`). `body` is the raw
+ * markdown source of an optional sibling `_collection.md`, rendered
+ * on demand.
+ */
+export interface Collection {
+	path: string;
+	meta: CollectionMeta;
+	/** Raw markdown body, or null if no `_collection.md` companion exists. */
+	body: string | null;
+}
+
+/**
  * The kind hierarchy. Built once at load time from `_type.yaml`
  * declarations; queried by routes that want to filter by supertype,
  * walk descendants, or check is-a relationships.

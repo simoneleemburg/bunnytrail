@@ -1,4 +1,5 @@
 import type {
+	Collection,
 	Edge,
 	Entity,
 	EntityId,
@@ -29,6 +30,7 @@ class Graph {
 	#typeMeta = new Map<EntityType, EntityTypeMeta>();
 	#kinds: KindTree = buildKindTree(new Map());
 	#kindRegistry: Map<string, Kind> = new Map();
+	#collections: Map<string, Collection> = new Map();
 	#loaded = false;
 	#loading: Promise<void> | null = null;
 
@@ -36,7 +38,8 @@ class Graph {
 	async load(contentDir: string = CONTENT_DIR): Promise<void> {
 		if (this.#loading) return this.#loading;
 		this.#loading = (async () => {
-			const { entities, issues, types, typeMeta, kinds, kindRegistry } = await loadAll(contentDir);
+			const { entities, issues, types, typeMeta, kinds, kindRegistry, collections } =
+				await loadAll(contentDir);
 			const edges = buildEdges(entities);
 			this.#entities = entities;
 			this.#outEdges = edges.out;
@@ -47,6 +50,7 @@ class Graph {
 			this.#typeMeta = typeMeta;
 			this.#kinds = kinds;
 			this.#kindRegistry = kindRegistry;
+			this.#collections = collections;
 			this.#loaded = true;
 		})();
 		try {
@@ -143,6 +147,21 @@ class Graph {
 	/** A single registered kind by id, or undefined if not registered. */
 	kind(id: string): Kind | undefined {
 		return this.#kindRegistry.get(id);
+	}
+
+	/**
+	 * All collections recorded under `content/`, keyed by folder path.
+	 * Only folders carrying a `_collection.yaml` or `_collection.md`
+	 * marker are present; absence does not mean "non-existent folder",
+	 * just "no editorial metadata authored yet".
+	 */
+	collections(): ReadonlyMap<string, Collection> {
+		return this.#collections;
+	}
+
+	/** A single collection by its folder path, or undefined. */
+	collection(path: string): Collection | undefined {
+		return this.#collections.get(path);
 	}
 
 	/**

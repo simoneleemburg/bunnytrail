@@ -466,3 +466,62 @@ describe('loadAll kind hierarchy', () => {
 	});
 });
 
+describe('loadAll: collections', () => {
+	it('records folders carrying a _collection.yaml', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-'));
+		await mkdir(join(dir, 'places'), { recursive: true });
+		await writeFile(
+			join(dir, 'places', '_collection.yaml'),
+			'title: The Places\ndescription: Where things happen.'
+		);
+		const { collections } = await loadAll(dir);
+		const places = collections.get('places');
+		expect(places?.meta.title).toBe('The Places');
+		expect(places?.meta.description).toBe('Where things happen.');
+		expect(places?.body).toBe(null);
+	});
+
+	it('records folders carrying only a _collection.md (body but default labels)', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-'));
+		await mkdir(join(dir, 'fabric'), { recursive: true });
+		await writeFile(join(dir, 'fabric', '_collection.md'), 'The fabric of things.\n');
+		const { collections } = await loadAll(dir);
+		const fabric = collections.get('fabric');
+		expect(fabric?.meta).toEqual({});
+		expect(fabric?.body).toContain('fabric of things');
+	});
+
+	it('reads the body alongside the yaml when both exist', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-'));
+		await mkdir(join(dir, 'culture'), { recursive: true });
+		await writeFile(join(dir, 'culture', '_collection.yaml'), 'title: Culture');
+		await writeFile(join(dir, 'culture', '_collection.md'), 'Customs, languages, orders.\n');
+		const { collections } = await loadAll(dir);
+		const culture = collections.get('culture');
+		expect(culture?.meta.title).toBe('Culture');
+		expect(culture?.body).toContain('Customs');
+	});
+
+	it('coexists with _type.yaml in the same folder', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-'));
+		await mkdir(join(dir, 'places'), { recursive: true });
+		await writeFile(join(dir, 'places', '_type.yaml'), 'singular: Place\nplural: Places');
+		await writeFile(join(dir, 'places', '_collection.yaml'), 'title: The Sky');
+		const { collections, typeMeta, types } = await loadAll(dir);
+		expect(types).toContain('places');
+		expect(typeMeta.get('places')?.singular).toBe('Place');
+		expect(collections.get('places')?.meta.title).toBe('The Sky');
+	});
+
+	it('flags malformed _collection.yaml but still walks the folder', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-'));
+		await mkdir(join(dir, 'broken', 'inner'), { recursive: true });
+		await writeFile(join(dir, 'broken', '_collection.yaml'), 'title: [unclosed');
+		await writeFile(join(dir, 'broken', 'inner', 'index.yaml'), 'name: Inner\nkind: thing');
+		const { issues, entities } = await loadAll(dir);
+		expect(entities.has('broken/inner')).toBe(true);
+		expect(issues.some((i) => i.detail.includes('_collection.yaml'))).toBe(true);
+	});
+});
+
+

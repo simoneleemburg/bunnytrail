@@ -16,9 +16,9 @@
 <PageHeader title="Kinds" />
 
 <p class="lede">
-	The full hierarchy of kinds registered across every <code>_type.yaml</code> in
-	<code>content/</code>. Linked nodes have a folder of their own; unlinked
-	subkinds are registered inside another type's folder.
+	The full hierarchy of kinds across Alteria. Linked nodes have their
+	own page under <code>/kinds/</code>; unlinked entries are registered in
+	the kind tree but not yet authored as a kind page.
 </p>
 
 {#snippet branch(node: KindNode)}
