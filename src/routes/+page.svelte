@@ -69,6 +69,15 @@
 			</div>
 			<div class="count">{data.totalEntities}</div>
 		</a>
+		<a class="type-card type-card-meta" href="/kinds">
+			<div class="rule"></div>
+			<div class="label">Kinds</div>
+			<div class="description">
+				The hierarchy of kinds registered across every type folder — useful for
+				spotting where the taxonomy needs to shift.
+			</div>
+			<div class="count">{data.kindCount}</div>
+		</a>
 	</div>
 </section>
 
@@ -253,6 +262,17 @@
 	}
 
 	.type-card-everything .rule {
+		border-top-color: var(--accent-soft, var(--rule));
+	}
+
+	/* Same italic + accent-rule treatment as Everything — both
+	   are meta views over the whole graph rather than collections
+	   of entities. */
+	.type-card-meta .label {
+		font-style: italic;
+	}
+
+	.type-card-meta .rule {
 		border-top-color: var(--accent-soft, var(--rule));
 	}
 

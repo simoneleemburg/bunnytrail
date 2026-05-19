@@ -16,6 +16,7 @@ export async function load() {
 	return {
 		counts,
 		totalEntities: graph.all().length,
+		kindCount: graph.kinds().all().length,
 		tags: graph.tags().slice(0, 12),
 		issues: graph.issues().length
 	};
