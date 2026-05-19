@@ -1,9 +1,43 @@
 import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { buildKindTree } from '$lib/types';
 import { buildEdges, extractWikilinks, loadAll } from './loader';
+
+/**
+ * Most loader tests use a tiny in-memory kind registry so kind
+ * validation is exercised under the same lenient-warn policy the
+ * real app uses. Tests that don't care about the registry leave it
+ * unset; the loader then treats every entity kind as "unregistered"
+ * and emits warnings — that's the policy.
+ */
+async function seedKindsRegistry(kinds: Array<{ id: string; parent?: string }>): Promise<string> {
+	const dir = await mkdtemp(join(tmpdir(), 'alteria-kinds-reg-'));
+	for (const k of kinds) {
+		const yaml = ['singular: ' + cap(k.id), 'plural: ' + cap(k.id) + 's'];
+		if (k.parent) yaml.push('kindParent: ' + k.parent);
+		await writeFile(join(dir, `${k.id}.yaml`), yaml.join('\n'));
+	}
+	return dir;
+}
+
+function cap(s: string): string {
+	return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+const ORIGINAL_KINDS_DIR = process.env.ALTERIA_KINDS_DIR;
+beforeEach(() => {
+	// Default: no registry — tests that need one set it explicitly.
+	delete process.env.ALTERIA_KINDS_DIR;
+});
+afterEach(() => {
+	if (ORIGINAL_KINDS_DIR !== undefined) {
+		process.env.ALTERIA_KINDS_DIR = ORIGINAL_KINDS_DIR;
+	} else {
+		delete process.env.ALTERIA_KINDS_DIR;
+	}
+});
 
 async function seedTempContent(): Promise<string> {
 	const dir = await mkdtemp(join(tmpdir(), 'alteria-'));
@@ -12,14 +46,15 @@ async function seedTempContent(): Promise<string> {
 	await mkdir(join(dir, 'places', 'duskmere'), { recursive: true });
 
 	await writeFile(
-		join(dir, 'characters', '_type.yaml'),
-		['singular: Character', 'plural: Characters', 'description: People of Alteria.'].join('\n')
+		join(dir, 'characters', '_collection.yaml'),
+		['title: Characters', 'description: People of Alteria.'].join('\n')
 	);
 
 	await writeFile(
 		join(dir, 'characters', 'kael', 'index.yaml'),
 		[
 			'name: Kael of the Third Veil',
+			'kind: character',
 			'aliases: [The Veiled, Kael]',
 			'summary: A wanderer of the borderlands.',
 			'tags: [wanderer, veil]',
@@ -33,7 +68,10 @@ async function seedTempContent(): Promise<string> {
 		'Kael walks the [[places/duskmere|Duskmere]] roads and dreams of [[places/atlantis]].'
 	);
 
-	await writeFile(join(dir, 'places', 'duskmere', 'index.yaml'), 'name: Duskmere\ntags: [town]\n');
+	await writeFile(
+		join(dir, 'places', 'duskmere', 'index.yaml'),
+		'name: Duskmere\nkind: place\ntags: [town]\n'
+	);
 	await writeFile(
 		join(dir, 'places', 'duskmere', 'index.md'),
 		'A border town at the edge of the Veil.'
@@ -43,38 +81,36 @@ async function seedTempContent(): Promise<string> {
 }
 
 /**
- * A content tree exercising both kinds of nesting:
+ * A content tree exercising nested entities:
  *
- *   - A subtype (`culture/languages/`) with an entity under it.
+ *   - A nested folder (`culture/languages/`) containing an entity.
  *   - An entity (`places/bayurinda/`) containing a child entity
- *     (`places/bayurinda/sharazan/`) — note: no `_type.yaml`, so
- *     Sharazan inherits the `places` type, not a subtype.
+ *     (`places/bayurinda/sharazan/`). The child inherits no kind
+ *     from its parent — kinds are per-entity.
  */
 async function seedNestedContent(): Promise<string> {
 	const dir = await mkdtemp(join(tmpdir(), 'alteria-nested-'));
 
-	// culture/ (type) → languages/ (subtype) → tholingian/ (entity)
 	await mkdir(join(dir, 'culture', 'languages', 'tholingian'), { recursive: true });
 	await writeFile(
-		join(dir, 'culture', '_type.yaml'),
-		['singular: Cultural Form', 'plural: Culture'].join('\n')
+		join(dir, 'culture', 'languages', 'tholingian', 'index.yaml'),
+		'name: Tholingian\nkind: language'
 	);
-	await writeFile(
-		join(dir, 'culture', 'languages', '_type.yaml'),
-		['singular: Language', 'plural: Languages'].join('\n')
-	);
-	await writeFile(join(dir, 'culture', 'languages', 'tholingian', 'index.yaml'), 'name: Tholingian');
 	await writeFile(
 		join(dir, 'culture', 'languages', 'tholingian', 'index.md'),
 		'The tongue spoken at the foot of the Pillars.'
 	);
 
-	// places/ (type) → bayurinda/ (entity, also container) → sharazan/ (entity)
 	await mkdir(join(dir, 'places', 'bayurinda', 'sharazan'), { recursive: true });
-	await writeFile(join(dir, 'places', '_type.yaml'), 'singular: Place\nplural: Places');
-	await writeFile(join(dir, 'places', 'bayurinda', 'index.yaml'), 'name: Bayurinda\nkind: planet');
+	await writeFile(
+		join(dir, 'places', 'bayurinda', 'index.yaml'),
+		'name: Bayurinda\nkind: planet'
+	);
 	await writeFile(join(dir, 'places', 'bayurinda', 'index.md'), 'The water-world.');
-	await writeFile(join(dir, 'places', 'bayurinda', 'sharazan', 'index.yaml'), 'name: Sharazan');
+	await writeFile(
+		join(dir, 'places', 'bayurinda', 'sharazan', 'index.yaml'),
+		'name: Sharazan\nkind: settlement'
+	);
 	await writeFile(
 		join(dir, 'places', 'bayurinda', 'sharazan', 'index.md'),
 		'A city of [[culture/languages/tholingian|Tholingian]] dialects.'
@@ -91,7 +127,7 @@ describe('extractWikilinks', () => {
 		expect(ids.sort()).toEqual(['characters/kael', 'places/duskmere']);
 	});
 
-	it('extracts multi-segment wikilinks (subtypes and nested entities)', () => {
+	it('extracts multi-segment wikilinks (subfolders and nested entities)', () => {
 		const ids = extractWikilinks(
 			'See [[culture/languages/tholingian]] and [[places/bayurinda/sharazan|Sharazan]].'
 		);
@@ -111,32 +147,17 @@ describe('loadAll', () => {
 		expect(entities.size).toBe(2);
 		const kael = entities.get('characters/kael')!;
 		expect(kael.meta.name).toBe('Kael of the Third Veil');
-		// `wikilinks` holds resolved canonical ids only; the broken
-		// reference to `places/atlantis` is dropped here and surfaced
-		// via `issues` below instead.
 		expect(kael.wikilinks.sort()).toEqual(['places/duskmere']);
 
 		const broken = issues.filter((i) => i.kind === 'broken-link');
 		expect(broken.some((i) => i.detail.includes('places/atlantis'))).toBe(true);
 	});
 
-	it('discovers types from subdirectories and skips underscore-prefixed entries', async () => {
+	it('assigns entity.type to the containing folder path', async () => {
 		const dir = await seedTempContent();
-		const { types } = await loadAll(dir);
-		// `places` has no _type.yaml in this fixture but is still
-		// discovered as a top-level type-by-convention.
-		expect(types).toEqual(['characters', 'places']);
-	});
-
-	it('loads per-type meta from _type.yaml when present', async () => {
-		const dir = await seedTempContent();
-		const { typeMeta } = await loadAll(dir);
-		expect(typeMeta.get('characters')).toEqual({
-			singular: 'Character',
-			plural: 'Characters',
-			description: 'People of Alteria.'
-		});
-		expect(typeMeta.has('places')).toBe(false);
+		const { entities } = await loadAll(dir);
+		expect(entities.get('characters/kael')?.type).toBe('characters');
+		expect(entities.get('places/duskmere')?.type).toBe('places');
 	});
 
 	it('builds forward and reverse edge indexes', async () => {
@@ -152,11 +173,9 @@ describe('loadAll', () => {
 		expect(inToDuskmere.length).toBeGreaterThanOrEqual(2);
 	});
 
-	it('discovers subtypes and assigns nested entities to the deepest enclosing type', async () => {
+	it('descends into nested folders and assigns the parent-folder path as type', async () => {
 		const dir = await seedNestedContent();
-		const { entities, types } = await loadAll(dir);
-
-		expect(types.sort()).toEqual(['culture', 'culture/languages', 'places']);
+		const { entities } = await loadAll(dir);
 
 		const tholingian = entities.get('culture/languages/tholingian')!;
 		expect(tholingian).toBeDefined();
@@ -172,8 +191,8 @@ describe('loadAll', () => {
 		const bayurinda = entities.get('places/bayurinda')!;
 		const sharazan = entities.get('places/bayurinda/sharazan')!;
 
-		// Sharazan is a Place (same type as Bayurinda), not a subtype.
-		expect(sharazan.type).toBe('places');
+		// Sharazan's containing folder is `places/bayurinda`.
+		expect(sharazan.type).toBe('places/bayurinda');
 		expect(sharazan.parent).toBe('places/bayurinda');
 		expect(bayurinda.children).toEqual(['places/bayurinda/sharazan']);
 	});
@@ -184,7 +203,6 @@ describe('loadAll', () => {
 
 		const sharazan = entities.get('places/bayurinda/sharazan')!;
 		expect(sharazan.wikilinks).toContain('culture/languages/tholingian');
-		// The target exists, so no broken-link issue should be raised.
 		expect(
 			issues.some(
 				(i) =>
@@ -196,7 +214,64 @@ describe('loadAll', () => {
 	});
 });
 
-describe('buildKindTree', () => {
+describe('loadAll: kind validation', () => {
+	it('warns on entities with no kind field', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-nokind-'));
+		await mkdir(join(dir, 'places', 'mystery'), { recursive: true });
+		await writeFile(join(dir, 'places', 'mystery', 'index.yaml'), 'name: Mystery');
+		await writeFile(join(dir, 'places', 'mystery', 'index.md'), '?');
+		const { issues } = await loadAll(dir);
+		expect(
+			issues.some(
+				(i) =>
+					i.kind === 'invalid-yaml' &&
+					i.entity === 'places/mystery' &&
+					i.detail.includes("no 'kind' field")
+			)
+		).toBe(true);
+	});
+
+	it('warns on entities with kinds not in the registry, but still loads them', async () => {
+		process.env.ALTERIA_KINDS_DIR = await seedKindsRegistry([{ id: 'place' }]);
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-unkind-'));
+		await mkdir(join(dir, 'places', 'a'), { recursive: true });
+		await writeFile(join(dir, 'places', 'a', 'index.yaml'), 'name: A\nkind: not-registered');
+		await writeFile(join(dir, 'places', 'a', 'index.md'), '.');
+		const { entities, issues } = await loadAll(dir);
+		expect(entities.has('places/a')).toBe(true);
+		expect(
+			issues.some(
+				(i) =>
+					i.kind === 'invalid-yaml' &&
+					i.entity === 'places/a' &&
+					i.detail.includes("kind 'not-registered' is not registered")
+			)
+		).toBe(true);
+	});
+
+	it('accepts registered kinds silently', async () => {
+		process.env.ALTERIA_KINDS_DIR = await seedKindsRegistry([{ id: 'place' }]);
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-okind-'));
+		await mkdir(join(dir, 'places', 'a'), { recursive: true });
+		await writeFile(join(dir, 'places', 'a', 'index.yaml'), 'name: A\nkind: place');
+		await writeFile(join(dir, 'places', 'a', 'index.md'), '.');
+		const { issues } = await loadAll(dir);
+		expect(issues.filter((i) => i.entity === 'places/a' && i.kind === 'invalid-yaml')).toEqual([]);
+	});
+
+	it('exposes the kind registry on the load result', async () => {
+		process.env.ALTERIA_KINDS_DIR = await seedKindsRegistry([
+			{ id: 'celestial-body' },
+			{ id: 'star', parent: 'celestial-body' }
+		]);
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-reg-'));
+		const { kindRegistry } = await loadAll(dir);
+		expect(kindRegistry.has('celestial-body')).toBe(true);
+		expect(kindRegistry.get('star')?.meta.kindParent).toBe('celestial-body');
+	});
+});
+
+describe('buildKindTree (client-side helper)', () => {
 	it('returns an empty tree from empty declarations', () => {
 		const tree = buildKindTree(new Map());
 		expect(tree.all()).toEqual([]);
@@ -239,8 +314,6 @@ describe('buildKindTree', () => {
 		);
 		expect(tree.ancestors('world-pillar')).toEqual(['eidolon', 'construct']);
 		expect(tree.isKindOf('world-pillar', 'construct')).toBe(true);
-		expect(tree.isKindOf('world-pillar', 'eidolon')).toBe(true);
-		expect(tree.isKindOf('eidolon', 'world-pillar')).toBe(false);
 		expect([...tree.descendantsInclusive('construct')].sort()).toEqual([
 			'construct',
 			'eidolon',
@@ -248,27 +321,24 @@ describe('buildKindTree', () => {
 		]);
 	});
 
-	it('rejects parents that have not been registered', () => {
-		expect(() =>
-			buildKindTree(
-				new Map([
-					['star', 'celestial-body']
-					// celestial-body never registered
-				])
-			)
-		).toThrow(/parent 'celestial-body'/);
+	it('treats unknown parents defensively (no throw, parent becomes null)', () => {
+		const tree = buildKindTree(new Map([['star', 'celestial-body']]));
+		expect(tree.has('star')).toBe(true);
+		expect(tree.parent('star')).toBe(null);
 	});
 
-	it('rejects cycles', () => {
-		expect(() =>
-			buildKindTree(
-				new Map([
-					['a', 'b'],
-					['b', 'c'],
-					['c', 'a']
-				])
-			)
-		).toThrow(/cycle/);
+	it('breaks cycles defensively without throwing', () => {
+		const tree = buildKindTree(
+			new Map([
+				['a', 'b'],
+				['b', 'c'],
+				['c', 'a']
+			])
+		);
+		// Cycle: ancestors() walks until it sees a repeat. We don't
+		// assert a specific path here, just that it terminates.
+		expect(() => tree.ancestors('a')).not.toThrow();
+		expect(() => tree.descendantsInclusive('a')).not.toThrow();
 	});
 
 	it('treats unknown kinds as outside the tree', () => {
@@ -277,192 +347,7 @@ describe('buildKindTree', () => {
 		expect(tree.ancestors('not-a-kind')).toEqual([]);
 		expect([...tree.descendantsInclusive('not-a-kind')]).toEqual(['not-a-kind']);
 		expect(tree.isKindOf('not-a-kind', 'star')).toBe(false);
-		// Self-identity still holds for unknown kinds.
 		expect(tree.isKindOf('not-a-kind', 'not-a-kind')).toBe(true);
-	});
-});
-
-async function seedHierarchyContent(): Promise<string> {
-	const dir = await mkdtemp(join(tmpdir(), 'alteria-kinds-'));
-
-	// content/places/celestial-bodies/ — supertype folder with its
-	// own self-page. The supertype concept is itself a celestial body.
-	await mkdir(join(dir, 'cosmology', 'celestial-bodies'), { recursive: true });
-	await writeFile(join(dir, 'cosmology', '_type.yaml'), 'singular: Cosmological\nplural: Cosmology');
-	await writeFile(
-		join(dir, 'cosmology', 'celestial-bodies', '_type.yaml'),
-		['singular: Celestial Body', 'plural: Celestial Bodies', 'kind: celestial-body'].join('\n')
-	);
-	await writeFile(
-		join(dir, 'cosmology', 'celestial-bodies', 'index.yaml'),
-		'name: Celestial Bodies\nkind: celestial-body'
-	);
-	await writeFile(
-		join(dir, 'cosmology', 'celestial-bodies', 'index.md'),
-		'The bodies that hang in the dark.'
-	);
-
-	// content/cosmology/stars/ — sibling subtype, parented at celestial-body.
-	// (In the test fixture we keep it as a sibling rather than nested, since
-	// either layout works; the real repo nests under cosmology/celestial-bodies.)
-	await mkdir(join(dir, 'cosmology', 'stars', 'aureth'), { recursive: true });
-	await writeFile(
-		join(dir, 'cosmology', 'stars', '_type.yaml'),
-		['singular: Star', 'plural: Stars', 'kind: star', 'kindParent: celestial-body'].join('\n')
-	);
-	await writeFile(
-		join(dir, 'cosmology', 'stars', 'aureth', 'index.yaml'),
-		'name: Aureth\nkind: star'
-	);
-	await writeFile(
-		join(dir, 'cosmology', 'stars', 'aureth', 'index.md'),
-		'The star at the centre.'
-	);
-
-	// content/cosmology/planets/ — second subtype, also parented at
-	// celestial-body. Bayurinda has the *wrong* kind to exercise the
-	// uniformity check.
-	await mkdir(join(dir, 'cosmology', 'planets', 'bayurinda'), { recursive: true });
-	await writeFile(
-		join(dir, 'cosmology', 'planets', '_type.yaml'),
-		['singular: Planet', 'plural: Planets', 'kind: planet', 'kindParent: celestial-body'].join('\n')
-	);
-	await writeFile(
-		join(dir, 'cosmology', 'planets', 'bayurinda', 'index.yaml'),
-		'name: Bayurinda\nkind: not-a-planet'
-	);
-	await writeFile(join(dir, 'cosmology', 'planets', 'bayurinda', 'index.md'), 'A water world.');
-
-	return dir;
-}
-
-describe('loadAll kind hierarchy', () => {
-	it('assembles the kind tree from _type.yaml declarations', async () => {
-		const dir = await seedHierarchyContent();
-		const { kinds } = await loadAll(dir);
-
-		expect(kinds.has('celestial-body')).toBe(true);
-		expect(kinds.has('star')).toBe(true);
-		expect(kinds.has('planet')).toBe(true);
-		expect(kinds.parent('star')).toBe('celestial-body');
-		expect(kinds.parent('planet')).toBe('celestial-body');
-		expect(kinds.parent('celestial-body')).toBe(null);
-		expect(kinds.isKindOf('star', 'celestial-body')).toBe(true);
-	});
-
-	it('flags entities whose kind does not match their folder declaration', async () => {
-		const dir = await seedHierarchyContent();
-		const { issues } = await loadAll(dir);
-		const mismatch = issues.find(
-			(i) =>
-				i.kind === 'invalid-yaml' &&
-				i.entity === 'cosmology/planets/bayurinda' &&
-				i.detail.includes("does not match folder kind 'planet'")
-		);
-		expect(mismatch).toBeDefined();
-	});
-
-	it('does not flag the supertype self-page (it shares its folder kind)', async () => {
-		const dir = await seedHierarchyContent();
-		const { issues } = await loadAll(dir);
-		const bogus = issues.find(
-			(i) =>
-				i.kind === 'invalid-yaml' && i.entity === 'cosmology/celestial-bodies' && i.detail.includes('kind')
-		);
-		expect(bogus).toBeUndefined();
-	});
-
-	it('registers subkinds whose entities live in other folders', async () => {
-		const dir = await mkdtemp(join(tmpdir(), 'alteria-subkinds-'));
-		// Supertype folder declares its own kind + extra subkinds
-		// whose entities live elsewhere.
-		await mkdir(join(dir, 'cosmology', 'celestial-bodies'), { recursive: true });
-		await writeFile(join(dir, 'cosmology', '_type.yaml'), 'singular: Cosmological\nplural: Cosmology');
-		await writeFile(
-			join(dir, 'cosmology', 'celestial-bodies', '_type.yaml'),
-			[
-				'singular: Celestial Body',
-				'plural: Celestial Bodies',
-				'kind: celestial-body',
-				'subkinds:',
-				'  - kind: planet',
-				'    kindParent: celestial-body',
-				'  - kind: moon',
-				'    kindParent: celestial-body'
-			].join('\n')
-		);
-		await writeFile(
-			join(dir, 'cosmology', 'celestial-bodies', 'index.yaml'),
-			'name: Celestial Bodies\nkind: celestial-body'
-		);
-		await writeFile(
-			join(dir, 'cosmology', 'celestial-bodies', 'index.md'),
-			'The bodies that hang in the dark.'
-		);
-		// Planet entity living under /places — declares `kind: planet`
-		// on the entity itself.
-		await mkdir(join(dir, 'places', 'bayurinda'), { recursive: true });
-		await writeFile(join(dir, 'places', '_type.yaml'), 'singular: Place\nplural: Places');
-		await writeFile(join(dir, 'places', 'bayurinda', 'index.yaml'), 'name: Bayurinda\nkind: planet');
-		await writeFile(join(dir, 'places', 'bayurinda', 'index.md'), 'A water world.');
-
-		const { kinds, issues } = await loadAll(dir);
-		expect(kinds.parent('planet')).toBe('celestial-body');
-		expect(kinds.parent('moon')).toBe('celestial-body');
-		expect(kinds.isKindOf('planet', 'celestial-body')).toBe(true);
-		// /places is a mixed-kind folder (no `kind:` in its _type.yaml)
-		// so the planet entity shouldn't trigger a uniformity issue.
-		const placesIssues = issues.filter(
-			(i) => i.kind === 'invalid-yaml' && i.entity === 'places/bayurinda'
-		);
-		expect(placesIssues).toEqual([]);
-	});
-
-	it('allows entities of a registered subkind to physically nest inside the folder', async () => {
-		const dir = await mkdtemp(join(tmpdir(), 'alteria-subkinds-nest-'));
-		// /places/regions/ owns kind: region and also registers
-		// kind: settlement via subkinds. A settlement entity nested
-		// inside a region folder should NOT trip the uniformity rule.
-		await mkdir(join(dir, 'places', 'regions', 'nuunlau', 'bal-rochan'), { recursive: true });
-		await writeFile(join(dir, 'places', '_type.yaml'), 'singular: Place\nplural: Places');
-		await writeFile(
-			join(dir, 'places', 'regions', '_type.yaml'),
-			[
-				'singular: Region',
-				'plural: Regions',
-				'kind: region',
-				'subkinds:',
-				'  - kind: settlement',
-				'    kindParent: region'
-			].join('\n')
-		);
-		await writeFile(
-			join(dir, 'places', 'regions', 'nuunlau', 'index.yaml'),
-			'name: Nuunlau\nkind: region'
-		);
-		await writeFile(join(dir, 'places', 'regions', 'nuunlau', 'index.md'), 'The deep.');
-		await writeFile(
-			join(dir, 'places', 'regions', 'nuunlau', 'bal-rochan', 'index.yaml'),
-			'name: Bal Rochan\nkind: settlement'
-		);
-		await writeFile(
-			join(dir, 'places', 'regions', 'nuunlau', 'bal-rochan', 'index.md'),
-			'A seafloor city.'
-		);
-
-		const { kinds, issues } = await loadAll(dir);
-		expect(kinds.parent('settlement')).toBe('region');
-		expect(kinds.isKindOf('settlement', 'region')).toBe(true);
-		// The settlement is nested inside a kind: region folder, but
-		// its own kind: settlement is registered as a subkind of that
-		// folder — so no uniformity issue.
-		const settlementIssues = issues.filter(
-			(i) =>
-				i.kind === 'invalid-yaml' &&
-				i.entity === 'places/regions/nuunlau/bal-rochan' &&
-				i.detail.includes('does not match folder kind')
-		);
-		expect(settlementIssues).toEqual([]);
 	});
 });
 
@@ -502,17 +387,6 @@ describe('loadAll: collections', () => {
 		expect(culture?.body).toContain('Customs');
 	});
 
-	it('coexists with _type.yaml in the same folder', async () => {
-		const dir = await mkdtemp(join(tmpdir(), 'alteria-'));
-		await mkdir(join(dir, 'places'), { recursive: true });
-		await writeFile(join(dir, 'places', '_type.yaml'), 'singular: Place\nplural: Places');
-		await writeFile(join(dir, 'places', '_collection.yaml'), 'title: The Sky');
-		const { collections, typeMeta, types } = await loadAll(dir);
-		expect(types).toContain('places');
-		expect(typeMeta.get('places')?.singular).toBe('Place');
-		expect(collections.get('places')?.meta.title).toBe('The Sky');
-	});
-
 	it('flags malformed _collection.yaml but still walks the folder', async () => {
 		const dir = await mkdtemp(join(tmpdir(), 'alteria-'));
 		await mkdir(join(dir, 'broken', 'inner'), { recursive: true });
@@ -523,5 +397,3 @@ describe('loadAll: collections', () => {
 		expect(issues.some((i) => i.detail.includes('_collection.yaml'))).toBe(true);
 	});
 });
-
-

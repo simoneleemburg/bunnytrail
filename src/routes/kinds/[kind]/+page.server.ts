@@ -2,6 +2,7 @@ import { error } from '@sveltejs/kit';
 import { graph } from '$lib/server/graph';
 import { renderBody, renderSummary } from '$lib/server/markdown';
 import type { Entity } from '$lib/types';
+import { buildKindTree } from '$lib/types';
 
 export interface KindCard {
 	id: string;
@@ -33,7 +34,7 @@ export async function load({ params }: { params: { kind: string } }) {
 		throw error(404, `Unknown kind: ${kindId}`);
 	}
 
-	const tree = graph.kinds();
+	const tree = buildKindTreeFromRegistry();
 	const registry = graph.kindRegistry();
 
 	const resolveLink = (path: string) => graph.resolveLink(path);
@@ -122,11 +123,16 @@ export async function load({ params }: { params: { kind: string } }) {
 }
 
 function labelForType(type: string): string | null {
-	try {
-		return graph.typeInfo(type).labels.singular;
-	} catch {
-		return null;
+	if (!type) return null;
+	return graph.folderLabels(type).singular;
+}
+
+function buildKindTreeFromRegistry() {
+	const declarations = new Map<string, string | null>();
+	for (const k of graph.kindRegistry().values()) {
+		declarations.set(k.id, k.meta.kindParent ?? null);
 	}
+	return buildKindTree(declarations);
 }
 
 function titleCase(slug: string): string {

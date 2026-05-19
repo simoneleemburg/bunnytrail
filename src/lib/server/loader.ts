@@ -10,12 +10,9 @@ import type {
 	EntityId,
 	EntityMeta,
 	EntityType,
-	EntityTypeMeta,
 	HealthIssue,
-	Kind,
-	KindTree
+	Kind
 } from '$lib/types';
-import { buildKindTree } from '$lib/types';
 import { loadKindRegistry } from './kinds';
 
 /**
@@ -40,90 +37,67 @@ const WIKILINK_RE = /\[\[([a-z][a-z0-9-]*(?:\/[a-z0-9-]+)*)(?:#[a-z0-9][a-z0-9-]
 export interface LoadResult {
 	entities: Map<EntityId, Entity>;
 	issues: HealthIssue[];
-	/** All type paths discovered (top-level + subtypes), sorted. */
-	types: EntityType[];
-	/** Per-type meta loaded from `<typePath>/_type.yaml`, if present. */
-	typeMeta: Map<EntityType, EntityTypeMeta>;
-	/** Kind hierarchy assembled from `kind` + `kindParent` declarations. */
-	kinds: KindTree;
 	/**
-	 * The central kind registry loaded from `src/kinds/`. Runs in
-	 * parallel with `kinds` during the kinds-decoupling migration;
-	 * empty when the registry directory is absent. The registry is
-	 * the long-term source of truth — `kinds` will eventually be
-	 * derived from it.
+	 * The central kind registry loaded from `src/kinds/`. The sole
+	 * source of truth for kind metadata and hierarchy.
 	 */
 	kindRegistry: Map<string, Kind>;
 	/**
 	 * Collections discovered while walking `content/`, keyed by
 	 * folder path. Only folders that carry a `_collection.yaml`
-	 * marker are recorded; other folders are still browseable but
-	 * have no editorial metadata. A folder may host both a
-	 * `_collection.yaml` and a `_type.yaml` during the migration —
-	 * they coexist.
+	 * marker (or a bare `_collection.md`) are recorded; other
+	 * folders are still browseable but have no editorial metadata.
 	 */
 	collections: Map<string, Collection>;
 }
 
 /**
- * List the top-level types: immediate subdirectories of `contentDir`
- * that contain (directly or transitively) a `_type.yaml`. Hidden and
- * underscore-prefixed directories are skipped.
- *
- * Kept around as a convenience for callers that only want the
- * top-level type slugs (e.g. nav). For the full set of types
- * including subtypes, use `loadAll().types`.
+ * List the top-level browseable folders: immediate subdirectories of
+ * `contentDir`. Hidden and underscore-prefixed directories are skipped.
  */
 export async function discoverTypes(contentDir: string = CONTENT_DIR): Promise<EntityType[]> {
 	const entries = await readDirents(contentDir);
-	const types: EntityType[] = [];
+	const out: EntityType[] = [];
 	for (const entry of entries) {
 		if (!entry.isDirectory()) continue;
 		if (entry.name.startsWith('.') || entry.name.startsWith('_')) continue;
-		types.push(entry.name);
+		out.push(entry.name);
 	}
-	types.sort();
-	return types;
+	out.sort();
+	return out;
 }
 
 /**
- * Walk `content/` recursively and load every entity and type.
+ * Walk `content/` recursively and load every entity and collection.
  *
  * A folder is classified by which marker files it contains:
  *
- *   - `_type.yaml` only       → a type/subtype container.
  *   - `index.yaml` (+/`-` md) → an entity. May itself contain child
- *                               entity folders (e.g. a planet with
- *                               cities nested under it). The child
- *                               entities inherit the enclosing
- *                               *type*, not their parent entity.
- *   - both                    → an entity that also declares a
- *                               subtype for its children. (Possible
- *                               but unusual.)
- *   - neither                 → an implicit grouping; we still
- *                               descend into it.
+ *                               entity folders.
+ *   - `_collection.yaml`      → an editorial collection (browse
+ *                               page metadata). Does not affect kind.
+ *   - both                    → an entity that also acts as a
+ *                               collection (rare).
+ *   - neither                 → an implicit grouping; descended into.
  *
- * Each entity's `type` is the path to the nearest enclosing
- * `_type.yaml`. Each entity's `id` is its full path under
- * `contentDir`.
+ * Each entity's `type` is the relative path of its containing folder
+ * (one segment shorter than its `id`). Each entity's `id` is its
+ * full path under `contentDir`. The `type` field no longer carries
+ * kind semantics — it is just a folder-grouping convenience for
+ * consumers like `/everything` and the language-detection heuristic.
  */
 export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadResult> {
 	const entities = new Map<EntityId, Entity>();
 	const issues: HealthIssue[] = [];
-	const types = new Set<EntityType>();
-	const typeMeta = new Map<EntityType, EntityTypeMeta>();
 	const collections = new Map<string, Collection>();
 
 	await walk({
 		absDir: contentDir,
 		relPath: '',
-		currentType: null,
 		parentEntity: null,
 		contentDir,
 		entities,
 		issues,
-		types,
-		typeMeta,
 		collections
 	});
 
@@ -140,10 +114,9 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 	}
 
 	// Build the language-code set so the wikilink resolver can skip
-	// over `[[ot]]`-style lang tags (the extractor catches them too,
-	// since they share the same `[[…]]` shape). A language code is
-	// only honoured if it sits on an entity in a `languages` type and
-	// is 2–8 lowercase letters.
+	// over `[[ot]]`-style lang tags. A language code is only honoured
+	// if it sits on an entity in a `languages` folder and is 2–8
+	// lowercase letters.
 	const langCodes = new Set<string>();
 	for (const e of entities.values()) {
 		const isLang = e.type === 'languages' || e.type.endsWith('/languages');
@@ -154,17 +127,10 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 		}
 	}
 
-	// Resolve wikilinks: each entity's raw wikilink paths are mapped
-	// to canonical entity ids via `resolveWikilink`. Successful
-	// resolutions replace the raw path; failures (missing or
-	// ambiguous) become `broken-link` issues. This pass also
-	// deduplicates the resolved list.
+	// Resolve wikilinks.
 	for (const entity of entities.values()) {
 		const resolved = new Set<EntityId>();
 		for (const raw of entity.wikilinks) {
-			// Lang-code shaped paths that match a registered language
-			// are handled by the markdown renderer, not wikilink
-			// resolution.
 			if (langCodes.has(raw)) continue;
 			const r = resolveWikilink(raw, entities);
 			if (r.id !== null) {
@@ -188,8 +154,7 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 		entity.wikilinks = [...resolved];
 	}
 
-	// Detect broken relation targets. (Wikilink issues were emitted
-	// during resolution above.)
+	// Detect broken relation targets.
 	for (const entity of entities.values()) {
 		for (const rel of entity.meta.relations ?? []) {
 			if (!entities.has(rel.target)) {
@@ -202,124 +167,37 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 		}
 	}
 
-	// Build the kind hierarchy from `_type.yaml` `kind` + `kindParent`
-	// declarations. Validation happens in two stages:
-	//   • Per-folder uniformity: a folder declaring `kind: X` must
-	//     contain only entities whose `meta.kind === X`. Mismatches
-	//     become invalid-yaml issues so the editor sees them on the
-	//     entity, but they don't block tree construction.
-	//   • Tree-level integrity: every named `kindParent` must
-	//     correspond to some declared `kind`, and there must be no
-	//     cycles. These are structural errors; we surface them as
-	//     invalid-yaml issues and fall back to an empty kind tree
-	//     rather than throwing, so the dev server stays up.
-	const declarations = new Map<string, string | null>();
-	for (const [typePath, meta] of typeMeta) {
-		const kind = typeof meta.kind === 'string' ? meta.kind : null;
-		const kindParent = typeof meta.kindParent === 'string' ? meta.kindParent : null;
-		if (!kind && kindParent) {
-			issues.push({
-				kind: 'invalid-yaml',
-				detail: `${typePath}/_type.yaml: kindParent '${kindParent}' declared without kind`
-			});
-		} else if (kind) {
-			if (declarations.has(kind) && declarations.get(kind) !== kindParent) {
-				issues.push({
-					kind: 'invalid-yaml',
-					detail: `${typePath}/_type.yaml: kind '${kind}' redeclared with different parent`
-				});
-			} else {
-				declarations.set(kind, kindParent);
-			}
-			// Per-folder uniformity check: every entity directly under
-			// this folder (one path segment past `typePath`) must declare
-			// `meta.kind === kind`, **or** declare a kind that this
-			// folder also registers via `subkinds:` (which means the
-			// folder explicitly welcomes that other kind nesting inside
-			// — e.g. `regions/` owning `kind: region` but also hosting
-			// `kind: settlement` entities physically nested under their
-			// region). Subfolders that are themselves type-declaring
-			// (e.g. a subtype under this type) are excluded — their
-			// entities answer to their own _type.yaml.
-			const typePrefix = `${typePath}/`;
-			const subtypePaths = [...typeMeta.keys()].filter(
-				(t) => t !== typePath && t.startsWith(typePrefix)
-			);
-			const allowedSubkinds = new Set<string>();
-			if (Array.isArray(meta.subkinds)) {
-				for (const entry of meta.subkinds) {
-					if (entry && typeof entry.kind === 'string') allowedSubkinds.add(entry.kind);
-				}
-			}
-			for (const entity of entities.values()) {
-				if (!entity.id.startsWith(typePrefix)) continue;
-				// Skip entities that belong to a nested subtype.
-				if (subtypePaths.some((sp) => entity.id === sp || entity.id.startsWith(`${sp}/`))) continue;
-				const entityKind = typeof entity.meta.kind === 'string' ? entity.meta.kind : null;
-				if (entityKind === kind) continue;
-				if (entityKind && allowedSubkinds.has(entityKind)) continue;
-				issues.push({
-					kind: 'invalid-yaml',
-					entity: entity.id,
-					detail: `kind '${entityKind ?? '(missing)'}' does not match folder kind '${kind}' declared in ${typePath}/_type.yaml`
-				});
-			}
-		}
-
-		// `subkinds`: extra kinds this folder registers but doesn't
-		// own on disk. Their entities may live in some other folder
-		// entirely (e.g. planets registered by celestial-bodies but
-		// living under places/) **or** they may physically nest inside
-		// this folder (e.g. settlements nested under regions). Either
-		// way, the entity declares `kind:` directly. The uniformity
-		// check above already exempts nested-inside subkinds.
-		if (Array.isArray(meta.subkinds)) {
-			for (const entry of meta.subkinds) {
-				if (!entry || typeof entry.kind !== 'string') {
-					issues.push({
-						kind: 'invalid-yaml',
-						detail: `${typePath}/_type.yaml: subkinds entry missing kind`
-					});
-					continue;
-				}
-				const subKind = entry.kind;
-				const subParent = typeof entry.kindParent === 'string' ? entry.kindParent : null;
-				if (declarations.has(subKind) && declarations.get(subKind) !== subParent) {
-					issues.push({
-						kind: 'invalid-yaml',
-						detail: `${typePath}/_type.yaml: subkind '${subKind}' redeclared with different parent`
-					});
-					continue;
-				}
-				declarations.set(subKind, subParent);
-			}
-		}
-	}
-
-	let kinds: KindTree;
-	try {
-		kinds = buildKindTree(declarations);
-	} catch (err) {
-		issues.push({
-			kind: 'invalid-yaml',
-			detail: `kind tree: ${err instanceof Error ? err.message : String(err)}`
-		});
-		kinds = buildKindTree(new Map());
-	}
-
-	// Load the central kind registry (src/kinds/). Runs alongside
-	// `_type.yaml`-derived kinds during the migration. Issues from
-	// registry loading are folded into the main issues list so the
-	// health page surfaces them too.
+	// Load the central kind registry. The registry is the sole
+	// source of truth for kind metadata and hierarchy.
 	const registryResult = await loadKindRegistry();
 	for (const issue of registryResult.issues) issues.push(issue);
+
+	// Validate entity kinds against the registry. Lenient: every
+	// entity must declare a non-empty `kind`, and unregistered
+	// kinds emit a health-page warning but still load. Entities
+	// with no `kind` field get the same warning.
+	for (const entity of entities.values()) {
+		const k = (entity.meta as { kind?: unknown }).kind;
+		if (typeof k !== 'string' || k.length === 0) {
+			issues.push({
+				kind: 'invalid-yaml',
+				entity: entity.id,
+				detail: `entity has no 'kind' field`
+			});
+			continue;
+		}
+		if (!registryResult.kinds.has(k)) {
+			issues.push({
+				kind: 'invalid-yaml',
+				entity: entity.id,
+				detail: `kind '${k}' is not registered in src/kinds/`
+			});
+		}
+	}
 
 	return {
 		entities,
 		issues,
-		types: [...types].sort(),
-		typeMeta,
-		kinds,
 		kindRegistry: registryResult.kinds,
 		collections
 	};
@@ -330,38 +208,29 @@ interface WalkArgs {
 	absDir: string;
 	/** Path of this folder relative to `contentDir` (`''` for the root). */
 	relPath: string;
-	/** Closest enclosing type path, or `null` while still under `content/`. */
-	currentType: EntityType | null;
-	/** Closest enclosing *entity* id, or `null` if we're directly under a type. */
+	/** Closest enclosing *entity* id, or `null` if no enclosing entity. */
 	parentEntity: EntityId | null;
 	contentDir: string;
 	entities: Map<EntityId, Entity>;
 	issues: HealthIssue[];
-	types: Set<EntityType>;
-	typeMeta: Map<EntityType, EntityTypeMeta>;
 	collections: Map<string, Collection>;
 }
 
 async function walk(args: WalkArgs): Promise<void> {
-	const { absDir, relPath, contentDir, entities, issues, types, typeMeta, collections } = args;
+	const { absDir, relPath, entities, issues, collections } = args;
 
-	const typeYamlPath = join(absDir, '_type.yaml');
 	const indexYamlPath = join(absDir, 'index.yaml');
 	const indexMdPath = join(absDir, 'index.md');
 	const collectionYamlPath = join(absDir, '_collection.yaml');
 	const collectionMdPath = join(absDir, '_collection.md');
 
-	const hasTypeYaml = await exists(typeYamlPath);
 	const hasIndexYaml = await exists(indexYamlPath);
 	const hasIndexMd = await exists(indexMdPath);
 	const hasCollectionYaml = await exists(collectionYamlPath);
 	const hasCollectionMd = await exists(collectionMdPath);
 
 	// Load _collection.yaml if present. Collections are pure browsing
-	// metadata — they say nothing about kinds; a folder may carry
-	// both a `_type.yaml` (legacy / migration-era) and a
-	// `_collection.yaml` and they coexist. Skipped at the content
-	// root (relPath === '') because the root has no display label.
+	// metadata. Skipped at the content root (relPath === '').
 	if (hasCollectionYaml && relPath) {
 		let meta: CollectionMeta = {};
 		try {
@@ -388,8 +257,7 @@ async function walk(args: WalkArgs): Promise<void> {
 		collections.set(relPath, { path: relPath, meta, body });
 	} else if (hasCollectionMd && relPath) {
 		// A bare `_collection.md` without a yaml marker is treated as
-		// a collection with default labels — useful for folders that
-		// only need prose, no editorial overrides.
+		// a collection with default labels.
 		try {
 			const body = await readFile(collectionMdPath, 'utf8');
 			collections.set(relPath, { path: relPath, meta: {}, body });
@@ -401,51 +269,15 @@ async function walk(args: WalkArgs): Promise<void> {
 		}
 	}
 
-	// Load _type.yaml if present. The current folder *is* the type
-	// (its relPath is the type path); children descended from here
-	// inherit this as their `currentType`.
-	let nextType = args.currentType;
-	if (hasTypeYaml && relPath) {
-		const thisType: EntityType = relPath;
-		types.add(thisType);
-		try {
-			const raw = await readFile(typeYamlPath, 'utf8');
-			const parsed = (parseYaml(raw) ?? {}) as EntityTypeMeta;
-			typeMeta.set(thisType, parsed);
-		} catch (err) {
-			issues.push({
-				kind: 'invalid-yaml',
-				detail: `${typeYamlPath}: ${err instanceof Error ? err.message : String(err)}`
-			});
-		}
-		nextType = thisType;
-	} else if (relPath && !relPath.includes('/') && !hasIndexYaml && !args.currentType) {
-		// Back-compat: a top-level folder without `_type.yaml` is
-		// treated as a type-by-convention (e.g. an old flat layout
-		// where someone hasn't written a `_type.yaml` yet). Subtypes
-		// must always be marked explicitly.
-		types.add(relPath);
-		nextType = relPath;
-	}
-
 	// Load index.yaml if present. The current folder is an entity.
 	let nextParentEntity = args.parentEntity;
 	if (hasIndexYaml && relPath) {
 		const id: EntityId = relPath;
 		const slug = leafOf(relPath);
-
-		if (!args.currentType && !hasTypeYaml) {
-			// An entity-folder sitting outside any declared type. Allowed
-			// but odd — record it under a synthetic root type so it
-			// still loads, and warn.
-			issues.push({
-				kind: 'invalid-yaml',
-				entity: id,
-				detail: `${indexYamlPath}: entity is not inside any _type.yaml-declared type`
-			});
-		}
-
-		const entityType = args.currentType ?? '';
+		// `type` is the parent-folder path: one segment shorter than
+		// `id`. For an entity directly under the content root, `type`
+		// is the empty string.
+		const entityType = parentOf(relPath);
 
 		let meta: EntityMeta | null = null;
 		try {
@@ -482,13 +314,8 @@ async function walk(args: WalkArgs): Promise<void> {
 			});
 		}
 
-		// Children of this folder are *child entities* of this entity.
 		nextParentEntity = id;
 	}
-
-	// A folder that has neither marker but is the root (relPath === '')
-	// is the contentDir itself. Otherwise it's an implicit grouping;
-	// we descend into it but treat it as transparent.
 
 	// Recurse into subdirectories.
 	const dirents = await readDirents(absDir);
@@ -499,13 +326,10 @@ async function walk(args: WalkArgs): Promise<void> {
 		await walk({
 			absDir: join(absDir, entry.name),
 			relPath: childRel,
-			currentType: nextType,
 			parentEntity: nextParentEntity,
-			contentDir,
+			contentDir: args.contentDir,
 			entities,
 			issues,
-			types,
-			typeMeta,
 			collections
 		});
 	}
@@ -535,11 +359,6 @@ export function extractWikilinks(body: string): EntityId[] {
  *   3. Otherwise — return `null` and let the caller raise a
  *      `broken-link` issue. Ambiguous suffix matches also fall
  *      into this case; the issue's `detail` will explain.
- *
- * The point of step 2 is that wikilinks survive entity moves
- * along the filesystem tree. `[[places/sharazan]]` stays valid
- * after Sharazan moves into `places/bayurinda/sharazan/`, as
- * long as no other entity's id ends in `places/sharazan`.
  */
 export function resolveWikilink(
 	rawPath: string,
@@ -578,6 +397,11 @@ function leafOf(path: string): string {
 	return idx < 0 ? path : path.slice(idx + 1);
 }
 
+function parentOf(path: string): string {
+	const idx = path.lastIndexOf('/');
+	return idx < 0 ? '' : path.slice(0, idx);
+}
+
 /** Build a forward + reverse edge index from a set of entities. */
 export function buildEdges(entities: Map<EntityId, Entity>): {
 	out: Map<EntityId, Edge[]>;
@@ -614,22 +438,4 @@ export function buildEdges(entities: Map<EntityId, Entity>): {
 	}
 
 	return { out: outIdx, in: inIdx };
-}
-
-/**
- * Return the type-path segment of an entity id, given the set of
- * known types. This is the path-prefix of `id` that matches a type.
- *
- * Returns `null` if no known type prefixes the id.
- */
-export function typeOf(id: EntityId, types: Set<EntityType>): EntityType | null {
-	// Try progressively shorter prefixes, longest first, so subtypes
-	// win over their parent types (`culture/languages/tholingian`
-	// matches `culture/languages` before `culture`).
-	const parts = id.split('/');
-	for (let i = parts.length - 1; i > 0; i--) {
-		const prefix = parts.slice(0, i).join('/');
-		if (types.has(prefix)) return prefix;
-	}
-	return null;
 }

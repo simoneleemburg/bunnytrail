@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import TypeIndex from '../[...path]/_TypeIndex.svelte';
+	import CollectionPage from '../[...path]/_CollectionPage.svelte';
 
 	let { data }: { data: PageData } = $props();
 </script>
 
-<TypeIndex {data} />
+<CollectionPage {data} />

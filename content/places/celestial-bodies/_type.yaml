@@ -1,8 +1,0 @@
-singular: Celestial Body
-plural: Celestial Bodies
-description: >-
-  The supertype that gathers everything the compendium records in the
-  sky — stars, black holes, planets, moons, and anything else that
-  the working cosmology treats as a body in space.
-kind: celestial-body
-kindParent: place

@@ -4,14 +4,12 @@ import type {
 	Entity,
 	EntityId,
 	EntityType,
-	EntityTypeInfo,
-	EntityTypeMeta,
+	FolderLabels,
 	HealthIssue,
-	Kind,
-	KindTree
+	Kind
 } from '$lib/types';
-import { buildKindTree, parentType, resolveTypeInfo } from '$lib/types';
-import { buildEdges, CONTENT_DIR, loadAll, resolveWikilink, typeOf } from './loader';
+import { folderLabels } from '$lib/types';
+import { buildEdges, CONTENT_DIR, loadAll, resolveWikilink } from './loader';
 
 /**
  * In-memory worldbuilding graph, built from the `content/` directory at boot
@@ -25,10 +23,6 @@ class Graph {
 	#outEdges = new Map<EntityId, Edge[]>();
 	#inEdges = new Map<EntityId, Edge[]>();
 	#issues: HealthIssue[] = [];
-	#types: EntityType[] = [];
-	#typesSet = new Set<EntityType>();
-	#typeMeta = new Map<EntityType, EntityTypeMeta>();
-	#kinds: KindTree = buildKindTree(new Map());
 	#kindRegistry: Map<string, Kind> = new Map();
 	#collections: Map<string, Collection> = new Map();
 	#loaded = false;
@@ -38,17 +32,12 @@ class Graph {
 	async load(contentDir: string = CONTENT_DIR): Promise<void> {
 		if (this.#loading) return this.#loading;
 		this.#loading = (async () => {
-			const { entities, issues, types, typeMeta, kinds, kindRegistry, collections } =
-				await loadAll(contentDir);
+			const { entities, issues, kindRegistry, collections } = await loadAll(contentDir);
 			const edges = buildEdges(entities);
 			this.#entities = entities;
 			this.#outEdges = edges.out;
 			this.#inEdges = edges.in;
 			this.#issues = issues;
-			this.#types = types;
-			this.#typesSet = new Set(types);
-			this.#typeMeta = typeMeta;
-			this.#kinds = kinds;
 			this.#kindRegistry = kindRegistry;
 			this.#collections = collections;
 			this.#loaded = true;
@@ -76,69 +65,9 @@ class Graph {
 		return [...this.#entities.values()];
 	}
 
-	/** Direct entities of a type — does not include entities of subtypes. */
-	byType(type: EntityType): Entity[] {
-		return this.all().filter((e) => e.type === type);
-	}
-
-	/** Entities of this type plus all subtypes (recursive). */
-	byTypeRecursive(type: EntityType): Entity[] {
-		return this.all().filter((e) => e.type === type || e.type.startsWith(`${type}/`));
-	}
-
 	/**
-	 * All type paths discovered (top-level + subtypes), each decorated
-	 * with display labels, the description from `_type.yaml` (if any),
-	 * and a live count of *direct* entities (not including subtypes).
-	 */
-	types(): (EntityTypeInfo & { count: number })[] {
-		return this.#types.map((type) => ({
-			...resolveTypeInfo(type, this.#typeMeta.get(type)),
-			count: this.byType(type).length
-		}));
-	}
-
-	/** Only top-level types (no parent). */
-	topLevelTypes(): (EntityTypeInfo & { count: number })[] {
-		return this.types().filter((t) => t.parent === null);
-	}
-
-	/** Direct subtypes of a given type. */
-	subtypesOf(type: EntityType): (EntityTypeInfo & { count: number })[] {
-		return this.types().filter((t) => t.parent === type);
-	}
-
-	/** Resolved info for a single type, with defaults applied. */
-	typeInfo(type: EntityType): EntityTypeInfo {
-		return resolveTypeInfo(type, this.#typeMeta.get(type));
-	}
-
-	/**
-	 * Raw `_type.yaml` meta for a type, or `null` if none. Useful for
-	 * callers that need fields outside the resolved `EntityTypeInfo`
-	 * surface — e.g. `kind` to detect supertype folders.
-	 */
-	typeMetaRaw(type: EntityType): EntityTypeMeta | null {
-		return this.#typeMeta.get(type) ?? null;
-	}
-
-	hasType(type: EntityType): boolean {
-		return this.#typesSet.has(type);
-	}
-
-	/** The full kind hierarchy. See `KindTree` in `$lib/types`. */
-	kinds(): KindTree {
-		return this.#kinds;
-	}
-
-	/**
-	 * The central kind registry from `src/kinds/`. The map is the
-	 * graph's own — do not mutate. Returns an empty map when no
-	 * registry directory exists.
-	 *
-	 * During the kinds-decoupling migration this runs alongside
-	 * `kinds()`; once cutover is complete, `kinds()` will be derived
-	 * from this registry instead of from `_type.yaml` declarations.
+	 * The central kind registry from `src/kinds/`. The sole source of
+	 * truth for kind metadata and hierarchy.
 	 */
 	kindRegistry(): ReadonlyMap<string, Kind> {
 		return this.#kindRegistry;
@@ -164,25 +93,153 @@ class Graph {
 		return this.#collections.get(path);
 	}
 
+	// ---------------------------------------------------------------------
+	// Folder helpers. After the kinds-decoupling cutover, folders are no
+	// longer typed — they are pure browsing structure. These helpers
+	// answer the structural questions the routes need: "is this a
+	// browseable folder?", "what entities live under it?", "what are its
+	// child folders?", "what label do we show?"
+	// ---------------------------------------------------------------------
+
+	/**
+	 * Display labels for a folder, derived from its `_collection.yaml`
+	 * (if any) and the folder's leaf segment. Always returns a usable
+	 * `{ singular, plural }` even for unknown folders.
+	 */
+	folderLabels(path: string): FolderLabels {
+		const leaf = path.includes('/') ? path.slice(path.lastIndexOf('/') + 1) : path;
+		const title = this.#collections.get(path)?.meta.title;
+		return folderLabels(leaf, title);
+	}
+
+	/** True if `path` is a browseable folder: it has at least one descendant entity, or it has a `_collection.yaml`. */
+	isFolder(path: string): boolean {
+		if (this.#collections.has(path)) return true;
+		const prefix = `${path}/`;
+		for (const id of this.#entities.keys()) {
+			if (id.startsWith(prefix)) return true;
+		}
+		return false;
+	}
+
+	/** Direct entities of a folder: id is exactly `${path}/${slug}` (no deeper). */
+	byFolder(path: string): Entity[] {
+		const prefix = `${path}/`;
+		return this.all().filter((e) => {
+			if (!e.id.startsWith(prefix)) return false;
+			return !e.id.slice(prefix.length).includes('/');
+		});
+	}
+
+	/** Entities at any depth under a folder. */
+	byFolderRecursive(path: string): Entity[] {
+		const prefix = `${path}/`;
+		return this.all().filter((e) => e.id.startsWith(prefix));
+	}
+
+	/**
+	 * Immediate child folders of `path`. A child folder is any path
+	 * one segment deeper than `path` that itself qualifies as a
+	 * browseable folder (has descendants or a `_collection.yaml`).
+	 * Pass `''` to list top-level folders.
+	 */
+	childFolders(path: string): string[] {
+		const prefix = path ? `${path}/` : '';
+		const seen = new Set<string>();
+		const consider = (full: string) => {
+			if (!full.startsWith(prefix)) return;
+			const rest = full.slice(prefix.length);
+			if (!rest) return;
+			const seg = rest.includes('/') ? rest.slice(0, rest.indexOf('/')) : rest;
+			if (!seg) return;
+			seen.add(path ? `${path}/${seg}` : seg);
+		};
+		for (const id of this.#entities.keys()) consider(id);
+		for (const cp of this.#collections.keys()) consider(cp);
+		// A path that exactly equals an entity is not a folder; remove.
+		const out: string[] = [];
+		for (const candidate of seen) {
+			// Must have descendants or a collection marker. The candidate
+			// itself being an entity id doesn't disqualify — an entity
+			// folder may also act as a container if it has children.
+			if (this.#collections.has(candidate)) {
+				out.push(candidate);
+				continue;
+			}
+			const pfx = `${candidate}/`;
+			for (const id of this.#entities.keys()) {
+				if (id.startsWith(pfx)) {
+					out.push(candidate);
+					break;
+				}
+			}
+		}
+		out.sort();
+		return out;
+	}
+
+	/** Convenience: top-level folders (immediate children of content root). */
+	topLevelFolders(): string[] {
+		return this.childFolders('');
+	}
+
 	/**
 	 * Entities whose `meta.kind` is `kind` or any descendant of `kind`
-	 * in the kind hierarchy. Useful for supertype filters and pages
-	 * that want every member of a kind family.
+	 * in the kind hierarchy (computed from the registry's `kindParent`
+	 * links). Useful for supertype filters and pages that want every
+	 * member of a kind family.
 	 *
-	 * If `kind` is not registered in the tree, falls back to strict
+	 * If `kind` is not in the registry, falls back to strict
 	 * `meta.kind === kind` matching — so free-form kinds keep working.
 	 */
 	byKindRecursive(kind: string): Entity[] {
-		const family = this.#kinds.has(kind) ? this.#kinds.descendantsInclusive(kind) : new Set([kind]);
+		const family = this.#descendantsInclusive(kind);
 		return this.all().filter((e) => typeof e.meta.kind === 'string' && family.has(e.meta.kind));
 	}
 
-	/** Resolve the type path of an entity id. */
-	typeOf(id: EntityId): EntityType | null {
-		return typeOf(id, this.#typesSet);
+	/** Direct entities of a registered kind id. */
+	byKind(kind: string): Entity[] {
+		return this.all().filter((e) => e.meta.kind === kind);
 	}
 
-	/** Child entities of an entity (filesystem-nested). */
+	/** Direct children of a registered kind in the registry tree. */
+	childKinds(parent: string): Kind[] {
+		const out: Kind[] = [];
+		for (const k of this.#kindRegistry.values()) {
+			if (k.meta.kindParent === parent) out.push(k);
+		}
+		out.sort((a, b) => a.id.localeCompare(b.id));
+		return out;
+	}
+
+	/** Top-level registered kinds (no `kindParent`). */
+	topLevelKinds(): Kind[] {
+		const out: Kind[] = [];
+		for (const k of this.#kindRegistry.values()) {
+			if (!k.meta.kindParent) out.push(k);
+		}
+		out.sort((a, b) => a.id.localeCompare(b.id));
+		return out;
+	}
+
+	#descendantsInclusive(kind: string): Set<string> {
+		const seen = new Set<string>([kind]);
+		if (!this.#kindRegistry.has(kind)) return seen;
+		// BFS over child kinds. The registry guards against cycles.
+		const queue = [kind];
+		while (queue.length) {
+			const cur = queue.shift()!;
+			for (const k of this.#kindRegistry.values()) {
+				if (k.meta.kindParent === cur && !seen.has(k.id)) {
+					seen.add(k.id);
+					queue.push(k.id);
+				}
+			}
+		}
+		return seen;
+	}
+
+	/** Direct children of an entity (filesystem-nested). */
 	children(id: EntityId): Entity[] {
 		const entity = this.#entities.get(id);
 		if (!entity) return [];
@@ -251,6 +308,8 @@ class Graph {
 	 *   • summary substring
 	 *   • tag exact match
 	 *   • body substring
+	 *
+	 * `filters.type` filters by containing-folder path (Entity.type).
 	 */
 	search(query: string, filters: { type?: EntityType; tag?: string } = {}): Entity[] {
 		const q = query.trim().toLowerCase();
@@ -307,29 +366,22 @@ class Graph {
 
 	/**
 	 * Map from short language code to the language entity's id. Built
-	 * from the `code` field on entities whose type matches the
-	 * `languages` collection — top-level `languages` or the subtype
-	 * `culture/languages`, whichever exists.
-	 *
-	 * Used by the markdown renderer to resolve `[[ot]]`-style inline
-	 * language tags.
+	 * from the `code` field on entities whose containing folder is
+	 * `languages` or ends in `/languages`. Used by the markdown
+	 * renderer to resolve `[[ot]]`-style inline language tags.
 	 */
 	languageCodes(): Map<string, EntityId> {
 		const out = new Map<string, EntityId>();
-		const langTypes = this.#types.filter((t) => t === 'languages' || t.endsWith('/languages'));
-		for (const t of langTypes) {
-			for (const e of this.byType(t)) {
-				const code = e.meta.code;
-				if (typeof code !== 'string' || !code) continue;
-				out.set(code, e.id);
-			}
+		for (const e of this.all()) {
+			const inLang = e.type === 'languages' || e.type.endsWith('/languages');
+			if (!inLang) continue;
+			const code = e.meta.code;
+			if (typeof code !== 'string' || !code) continue;
+			out.set(code, e.id);
 		}
 		return out;
 	}
 }
-
-// Re-export for callers that want path utilities without reaching into types.
-export { parentType };
 
 /** Singleton graph instance. */
 export const graph = new Graph();

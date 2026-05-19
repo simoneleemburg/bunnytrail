@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { TypeIndexData, ContainerNode, OrbitNode } from './_typeIndex.load';
+	import type { CollectionPageData, ContainerNode, OrbitNode } from './_collectionPage.load';
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import Tag from '$lib/components/Tag.svelte';
 	import { buildKindTree } from '$lib/types';
 
-	let { data }: { data: TypeIndexData } = $props();
+	let { data }: { data: CollectionPageData } = $props();
 
 	// Display caps for tags. Subtype tiles get a tight cap to keep
 	// the tile compact; the page-level filter starts collapsed at

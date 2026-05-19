@@ -14,7 +14,23 @@ import type { HealthIssue, Kind, KindMeta } from '$lib/types';
  * one exception — short editorial blurbs that render on the kind's
  * supertype-self-page.
  */
-export const KINDS_DIR = process.env.ALTERIA_KINDS_DIR ?? resolve(process.cwd(), 'src/kinds');
+/**
+ * Resolve the kinds directory at call time, not at module load,
+ * so tests can override `ALTERIA_KINDS_DIR` per case. Production
+ * code reads it once on first call and the value is stable from
+ * then on.
+ */
+function defaultKindsDir(): string {
+	return process.env.ALTERIA_KINDS_DIR ?? resolve(process.cwd(), 'src/kinds');
+}
+
+/**
+ * Back-compat export for callers that referenced the constant.
+ * Resolved at import time of the caller, which is good enough for
+ * production but should not be relied on in tests — pass the dir
+ * to `loadKindRegistry` explicitly instead.
+ */
+export const KINDS_DIR = defaultKindsDir();
 
 const KIND_ID_RE = /^[a-z][a-z0-9-]*$/;
 
@@ -35,7 +51,7 @@ export interface KindLoadResult {
  * no issues — callers should treat absence as "no kinds registered
  * yet" rather than an error.
  */
-export async function loadKindRegistry(kindsDir: string = KINDS_DIR): Promise<KindLoadResult> {
+export async function loadKindRegistry(kindsDir: string = defaultKindsDir()): Promise<KindLoadResult> {
 	const kinds = new Map<string, Kind>();
 	const issues: HealthIssue[] = [];
 

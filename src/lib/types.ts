@@ -8,143 +8,39 @@
  * Folders may nest to arbitrary depth. The shape of a folder is determined
  * by which marker files it contains:
  *
- *   - `_type.yaml` only          → a type container (or subtype container)
- *   - `index.yaml`               → an entity (with optional `_type.yaml`,
- *                                  which would declare its children's type)
- *   - neither                    → an implicit grouping (allowed but rare)
+ *   - `_collection.yaml`   → editorial metadata for a browse page (a
+ *                            *collection*). Pure browsing structure;
+ *                            says nothing about the *kind* of the
+ *                            entities it contains.
+ *   - `index.yaml`         → an entity (may also act as a collection).
+ *   - neither              → an implicit grouping (still browseable).
  *
  * The id of an entity is its full path under `content/`, e.g.
  * `culture/languages/tholingian` or `places/bayurinda/sharazan`. The id
  * always ends in the entity's own slug; slugs are kebab-case. The
- * entity's `type` is the path to the nearest enclosing `_type.yaml`.
+ * entity's `type` is the path of its containing folder — a grouping
+ * convenience for browse pages, not a semantic classification.
  *
- * Entity types are discovered at load time by walking `content/`. To
- * add a new type or subtype, create a folder with a `_type.yaml` in
- * it — no code change required.
+ * Kinds are declared centrally in `src/kinds/` (the registry); every
+ * entity carries a `kind` field that the loader validates against
+ * that registry.
  */
 
 /**
- * The slug-path of a type: a `/`-joined chain of folder names with a
- * `_type.yaml`. Top-level types are a single segment (`characters`);
- * subtypes are multi-segment (`culture/languages`).
+ * The slug-path of an entity's containing folder. Single-segment for
+ * top-level folders (`characters`); multi-segment for nested ones
+ * (`culture/languages`). An empty string for entities at the content
+ * root (rare).
+ *
+ * Kept around as a structural grouping hint for browse pages, tag
+ * pages, and the language-code heuristic. Not a semantic kind.
  */
 export type EntityType = string;
 
-/** Human-readable labels derived from a type slug. */
-export interface EntityTypeLabels {
-	singular: string;
-	plural: string;
-}
-
-/**
- * Meta about an entity type, loaded from `content/<type>/_type.yaml` when
- * present. Every field is optional; the loader fills in sensible defaults
- * (see `labelsFor`) so authors only have to specify what they want to
- * override.
- *
- * `kind` and `kindParent` together place this type folder into the
- * kind hierarchy: `kind` is the kind every entity in this folder
- * declares as its own `meta.kind`; `kindParent` is the supertype kind
- * it descends from. Both are optional; top-level type folders that
- * contain heterogeneous kinds (e.g. /fabric, /places) typically
- * declare neither. See `KindTree` for the resulting structure.
- */
-export interface EntityTypeMeta {
-	/** Override the singular label. Defaults to a naive singularization. */
-	singular?: string;
-	/** Override the plural label. Defaults to a title-cased folder name. */
-	plural?: string;
-	/** A short description of what this type means / is for. */
-	description?: string;
-	/**
-	 * The kind every entity directly under this folder declares. When
-	 * present, the loader enforces that every entity in the folder
-	 * has `meta.kind` matching this value. Also registers `kind` as a
-	 * known kind in the kind tree, so other folders can name it as
-	 * their `kindParent`.
-	 */
-	kind?: string;
-	/**
-	 * The parent of this folder's `kind` in the kind hierarchy.
-	 * Requires `kind` to also be declared. The named parent must
-	 * itself be declared as some other folder's `kind`. Cycles are
-	 * detected at load time and rejected.
-	 */
-	kindParent?: string;
-	/**
-	 * Extra kinds this folder *declares* but doesn't own on disk.
-	 * Useful when a supertype folder wants to register kinds whose
-	 * entities live elsewhere — e.g. `places/celestial-bodies`
-	 * declares `planet` and `moon` as descending from
-	 * `celestial-body`, even though planets and moons currently
-	 * live under `/places`. Each entry has the same shape as the
-	 * top-level `kind` + `kindParent` pair, and is subject to the
-	 * same cycle / missing-parent validation.
-	 */
-	subkinds?: Array<{ kind: string; kindParent?: string }>;
-}
-
-/** A fully-resolved type info, with defaults applied. */
-export interface EntityTypeInfo {
-	type: EntityType;
-	labels: EntityTypeLabels;
-	description: string | null;
-	/** The parent type path, if this is a subtype. `null` for top-level types. */
-	parent: EntityType | null;
-	/** The depth of this type — 0 for top-level, 1 for one level of subtype, etc. */
-	depth: number;
-}
-
-/**
- * Derive display labels from a type path. We label on the *leaf* segment
- * (the most specific part) and title-case it. Authors who want a
- * different label can override via `_type.yaml`.
- *
- * The leaf segment is assumed to be a plural noun in kebab-case (e.g.
- * `characters`, `star-systems`, `languages`).
- */
-export function labelsFor(type: EntityType): EntityTypeLabels {
-	const leaf = leafSegment(type);
-	const plural = titleCase(leaf);
-	const singular = naiveSingular(plural);
-	return { singular, plural };
-}
-
-/**
- * Combine a type path with optional author-supplied meta into a fully
- * resolved `EntityTypeInfo`. Missing labels fall back to the heuristic
- * in `labelsFor`.
- */
-export function resolveTypeInfo(
-	type: EntityType,
-	meta: EntityTypeMeta | null | undefined
-): EntityTypeInfo {
-	const defaults = labelsFor(type);
-	return {
-		type,
-		labels: {
-			singular: meta?.singular ?? defaults.singular,
-			plural: meta?.plural ?? defaults.plural
-		},
-		description: meta?.description ?? null,
-		parent: parentType(type),
-		depth: type.split('/').length - 1
-	};
-}
-
-/** The parent type path of a type, or `null` for top-level types. */
-export function parentType(type: EntityType): EntityType | null {
-	const idx = type.lastIndexOf('/');
-	if (idx < 0) return null;
-	return type.slice(0, idx);
-}
-
 /**
  * Editorial metadata for a registered kind, loaded from
- * `src/kinds/<kind>.yaml`. The registry is the long-term source of
- * truth for kinds; during the kinds-decoupling migration it runs in
- * parallel with the existing `_type.yaml`-derived `KindTree`. Once
- * cutover is complete the tree will be derived from this registry.
+ * `src/kinds/<kind>.yaml`. The registry is the sole source of truth
+ * for kind metadata and hierarchy.
  *
  * An optional sibling `src/kinds/<kind>.md` file holds prose for the
  * kind's own page (the supertype-self-page that lists all entities
@@ -209,88 +105,58 @@ export interface Collection {
 	body: string | null;
 }
 
+/** A folder display label, derived from a collection or a folder path. */
+export interface FolderLabels {
+	singular: string;
+	plural: string;
+}
+
 /**
- * The kind hierarchy. Built once at load time from `_type.yaml`
- * declarations; queried by routes that want to filter by supertype,
- * walk descendants, or check is-a relationships.
- *
- * Kinds form a forest (multiple root kinds, no cycles, every kind
- * has zero or one parent). A kind is *known* if some `_type.yaml`
- * declared it via `kind:`; unknown kinds (free-form strings authors
- * use without registering) are not part of the tree and answer
- * every query trivially (they are their own ancestor, have no
- * descendants).
+ * Lightweight kind-tree wrapper for client-side queries. Built from
+ * the wire-format `kind -> parent | null` map serialised by the
+ * server. Used by the collection page's kind-chip filter to resolve
+ * ancestor / descendant relationships without re-fetching.
  */
 export interface KindTree {
-	/** Every known kind, in arbitrary order. */
 	all(): string[];
-	/** Whether the kind has been registered by some `_type.yaml`. */
 	has(kind: string): boolean;
-	/** The kind's parent in the hierarchy, or null if root / unknown. */
 	parent(kind: string): string | null;
-	/** Direct children of this kind. */
 	children(kind: string): string[];
-	/** All ancestors (parent, grandparent, …), nearest first. */
 	ancestors(kind: string): string[];
-	/**
-	 * All descendants of this kind, including the kind itself. Useful
-	 * for "show every entity whose kind is-a celestial-body" queries.
-	 * Returns a Set for cheap membership tests.
-	 */
 	descendantsInclusive(kind: string): Set<string>;
-	/**
-	 * Whether `kind` is the same as or a descendant of `ancestor`.
-	 * Returns false for unknown kinds (they are not in the tree).
-	 */
 	isKindOf(kind: string | null | undefined, ancestor: string): boolean;
 }
 
 /**
- * Build a KindTree from a map of registered kinds to their (possibly
- * null) parent. Validates: every named parent must itself be
- * registered, and no cycles. Throws on either condition — these are
- * structural errors that should fail loud at load time, not silently
- * skew the UI.
+ * Build a `KindTree` from a `kind -> parent | null` map. Defensive:
+ * unknown parents are treated as null (root), cycles are broken at
+ * detection. The server-side registry guards both, but this helper
+ * runs on the client too and accepts whatever the wire sent.
  */
 export function buildKindTree(declarations: Map<string, string | null>): KindTree {
-	// Validate: every named parent is registered.
-	for (const [kind, parent] of declarations) {
-		if (parent !== null && !declarations.has(parent)) {
-			throw new Error(
-				`kind '${kind}' declares parent '${parent}', but '${parent}' is not registered by any _type.yaml`
-			);
-		}
-	}
-
-	// Validate: no cycles. Walk each kind's ancestor chain; reject
-	// if we revisit any kind.
-	for (const kind of declarations.keys()) {
-		const seen = new Set<string>([kind]);
-		let cur = declarations.get(kind) ?? null;
-		while (cur !== null) {
-			if (seen.has(cur)) {
-				throw new Error(`kind cycle detected involving '${kind}' → '${cur}'`);
-			}
-			seen.add(cur);
-			cur = declarations.get(cur) ?? null;
-		}
-	}
-
 	const childIdx = new Map<string, string[]>();
 	for (const [kind, parent] of declarations) {
 		if (parent === null) continue;
+		if (!declarations.has(parent)) continue;
 		const arr = childIdx.get(parent) ?? [];
 		arr.push(kind);
 		childIdx.set(parent, arr);
 	}
 	for (const arr of childIdx.values()) arr.sort();
 
+	const parentOf = (kind: string): string | null => {
+		const p = declarations.get(kind) ?? null;
+		return p !== null && declarations.has(p) ? p : null;
+	};
+
 	const ancestorsOf = (kind: string): string[] => {
 		const out: string[] = [];
-		let cur = declarations.get(kind) ?? null;
-		while (cur !== null) {
+		const seen = new Set<string>([kind]);
+		let cur = parentOf(kind);
+		while (cur !== null && !seen.has(cur)) {
 			out.push(cur);
-			cur = declarations.get(cur) ?? null;
+			seen.add(cur);
+			cur = parentOf(cur);
 		}
 		return out;
 	};
@@ -312,7 +178,7 @@ export function buildKindTree(declarations: Map<string, string | null>): KindTre
 	return {
 		all: () => [...declarations.keys()].sort(),
 		has: (kind) => declarations.has(kind),
-		parent: (kind) => declarations.get(kind) ?? null,
+		parent: parentOf,
 		children: (kind) => [...(childIdx.get(kind) ?? [])],
 		ancestors: ancestorsOf,
 		descendantsInclusive: descendantsOf,
@@ -325,21 +191,21 @@ export function buildKindTree(declarations: Map<string, string | null>): KindTre
 	};
 }
 
-/** The last segment of a type path. */
-export function leafSegment(type: EntityType): string {
-	const idx = type.lastIndexOf('/');
-	return idx < 0 ? type : type.slice(idx + 1);
-}
-
-function titleCase(slug: string): string {
+/**
+ * Title-case a kebab-case slug: `celestial-bodies` → `Celestial Bodies`.
+ */
+export function titleCaseSlug(slug: string): string {
 	return slug
 		.split('-')
 		.map((part) => (part ? part[0].toUpperCase() + part.slice(1) : part))
 		.join(' ');
 }
 
-function naiveSingular(word: string): string {
-	// Operate on the last whitespace-separated token so "Star Systems" → "Star System".
+/**
+ * Naive singularize: operates on the last whitespace-separated token.
+ * "Star Systems" → "Star System"; "Cities" → "City".
+ */
+export function naiveSingular(word: string): string {
 	const parts = word.split(' ');
 	const last = parts[parts.length - 1];
 	let singular = last;
@@ -348,6 +214,18 @@ function naiveSingular(word: string): string {
 	else if (/s$/i.test(last) && !/ss$/i.test(last)) singular = last.replace(/s$/i, '');
 	parts[parts.length - 1] = singular;
 	return parts.join(' ');
+}
+
+/**
+ * Derive `{ singular, plural }` labels for a folder, given the folder's
+ * leaf segment (e.g. `celestial-bodies`) and an optional override
+ * title from `_collection.yaml`. Plural defaults to the title-cased
+ * leaf; singular defaults to a naive singularization of the plural.
+ */
+export function folderLabels(leafSlug: string, title?: string | null): FolderLabels {
+	const plural = title?.trim() || titleCaseSlug(leafSlug);
+	const singular = naiveSingular(plural);
+	return { singular, plural };
 }
 
 /** A reference to another entity by its full path id. */
@@ -384,10 +262,11 @@ export interface EntityMeta {
 	/** Era / period label (purely a string for now). */
 	era?: string;
 	/**
-	 * Sub-type within an entity type — a free-form string used to keep
-	 * collections legible as they grow. For places: "planet", "city",
-	 * "ruin", "moon"; for characters: "mortal", "deity", "construct"; etc.
-	 * Surfaced in cards and the property list, and groupable in list views.
+	 * The kind of this entity — the primary semantic classification.
+	 * Must match an id in the central registry (`src/kinds/`) to
+	 * appear under that kind's page; unregistered values still load
+	 * but raise a health-page warning and only appear under the
+	 * "Unregistered" section on `/kinds`.
 	 */
 	kind?: string;
 	/**
@@ -400,20 +279,19 @@ export interface EntityMeta {
 	/** "active" | "deceased" | "lost" | "ruined" | anything else. */
 	status?: string;
 	/**
-	 * Short language code, used by entities of type `languages/`. The
-	 * markdown renderer recognises `[[<code>]]` as an inline language
-	 * tag and renders it as a small superscript link to the language's
-	 * page. Codes are short, lowercase, and globally unique across all
-	 * language entries (e.g. `ot` for the Old Tongue).
+	 * Short language code, used by entities in a `languages` folder.
+	 * The markdown renderer recognises `[[<code>]]` as an inline
+	 * language tag and renders it as a small superscript link to the
+	 * language's page. Codes are short, lowercase, and globally
+	 * unique across all language entries (e.g. `ot` for the Old
+	 * Tongue).
 	 */
 	code?: string;
 	/**
 	 * Language code of the entity's name, used when its name is in a
 	 * non-English / non-English-equivalent language. The page header
 	 * renders the code as a small superscript tag beside the title,
-	 * leading back to the language entry. Refers to a `code` declared
-	 * on an entity in the `languages` type (e.g. `language: ot` on a
-	 * Naya whose name is in the Old Tongue).
+	 * leading back to the language entry.
 	 */
 	language?: string;
 	/**
@@ -432,6 +310,10 @@ export interface EntityMeta {
 /** A loaded entity, ready to serve. */
 export interface Entity {
 	id: EntityId;
+	/**
+	 * The containing folder path. A grouping hint for browse / tag /
+	 * language-detection consumers; not a semantic kind.
+	 */
 	type: EntityType;
 	slug: string;
 	meta: EntityMeta;
@@ -445,8 +327,7 @@ export interface Entity {
 	mdPath: string;
 	/**
 	 * The id of the parent entity, if this entity's folder is nested
-	 * inside another entity's folder. `null` for top-level entities
-	 * within a type/subtype container.
+	 * inside another entity's folder. `null` for top-level entities.
 	 */
 	parent: EntityId | null;
 	/** Direct child entity ids (filesystem-nested under this entity). */

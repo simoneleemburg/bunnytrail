@@ -1,6 +1,0 @@
-singular: Moon
-plural: Moons
-# TODO(worldbuilding): author a one-line description for the moons
-# type-index page. Until then the page renders with no preamble.
-kind: moon
-kindParent: celestial-body

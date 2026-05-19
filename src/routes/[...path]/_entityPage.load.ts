@@ -1,4 +1,3 @@
-import { error } from '@sveltejs/kit';
 import { graph } from '$lib/server/graph';
 import { renderEntityBody, renderSummary } from '$lib/server/markdown';
 import type { Entity } from '$lib/types';
@@ -58,7 +57,7 @@ export function loadEntityPage(entity: Entity) {
 			if (!byChildType.has(t)) {
 				byChildType.set(t, {
 					type: t,
-					label: graph.typeInfo(t).labels,
+					label: t ? graph.folderLabels(t) : { singular: 'Entry', plural: 'Entries' },
 					entities: []
 				});
 			}
@@ -90,17 +89,16 @@ export function loadEntityPage(entity: Entity) {
 		extra.push({ key, value });
 	}
 
-	if (!graph.hasType(type)) {
-		// An entity not inside any declared type — should have been
-		// surfaced as an issue at load time; bail with a friendly 404.
-		error(404, `Entity ${id} has no resolvable type.`);
+	if (!graph.isFolder(type)) {
+		// An entity sitting at the content root (no containing folder)
+		// is allowed but unusual. Fall back to a generic label.
 	}
 
 	return {
 		kind: 'entity' as const,
 		id,
 		type,
-		typeLabel: graph.typeInfo(type).labels,
+		typeLabel: type ? graph.folderLabels(type) : { singular: 'Entry', plural: 'Entries' },
 		entity: {
 			id,
 			type,
