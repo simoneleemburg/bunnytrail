@@ -13,7 +13,7 @@ export interface KindNode {
 
 /**
  * Global kind hierarchy overview. Walks the kind registry
- * (`src/kinds/`) and renders it as a tree, linking each node to its
+ * (`content_meta/kinds/`) and renders it as a tree, linking each node to its
  * `/kinds/<kind>` page. Unregistered kinds (free-form `kind:`
  * values authors have used without registering) appear in a
  * separate section.

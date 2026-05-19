@@ -57,7 +57,7 @@ export async function load({ params }: { params: { kind: string } }) {
 	const singular = kind.meta.singular ?? titleCase(kindId);
 	const plural = kind.meta.plural ?? `${singular}s`;
 
-	// Optional prose body (src/kinds/<kindId>.md).
+	// Optional prose body (content_meta/kinds/<…>/<kindId>/_kind.md).
 	const bodyHtml = kind.body ? renderBody(kind.body, resolveLink, languageCodes) : null;
 
 	// Direct entities: those whose meta.kind === this kind. Shown

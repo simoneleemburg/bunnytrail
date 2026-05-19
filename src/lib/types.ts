@@ -21,7 +21,7 @@
  * entity's `type` is the path of its containing folder — a grouping
  * convenience for browse pages, not a semantic classification.
  *
- * Kinds are declared centrally in `src/kinds/` (the registry); every
+ * Kinds are declared centrally in `content_meta/kinds/` (the registry); every
  * entity carries a `kind` field that the loader validates against
  * that registry.
  */
@@ -39,12 +39,13 @@ export type EntityType = string;
 
 /**
  * Editorial metadata for a registered kind, loaded from
- * `src/kinds/<kind>.yaml`. The registry is the sole source of truth
- * for kind metadata and hierarchy.
+ * `content_meta/kinds/<…>/<kind>/_kind.yaml`. The registry is the
+ * sole source of truth for kind metadata and hierarchy; the folder
+ * tree expresses parent/child relationships.
  *
- * An optional sibling `src/kinds/<kind>.md` file holds prose for the
- * kind's own page (the supertype-self-page that lists all entities
- * of that kind, regardless of which folder they live in).
+ * An optional sibling `_kind.md` file holds prose for the kind's
+ * own page (the page that lists all entities of that kind,
+ * regardless of which content folder they live in).
  */
 export interface KindMeta {
 	/** Override the singular label. Defaults to title-cased kind id. */
@@ -56,7 +57,7 @@ export interface KindMeta {
 }
 
 /**
- * A loaded, validated kind from `src/kinds/`. The id is the folder
+ * A loaded, validated kind from `content_meta/kinds/`. The id is the folder
  * name (kebab-case). The body, when present, is the raw markdown
  * source of `_kind.md` next to the yaml; it is rendered on demand
  * by the markdown pipeline. The hierarchy is purely structural:
@@ -262,7 +263,7 @@ export interface EntityMeta {
 	era?: string;
 	/**
 	 * The kind of this entity — the primary semantic classification.
-	 * Must match an id in the central registry (`src/kinds/`) to
+	 * Must match an id in the central registry (`content_meta/kinds/`) to
 	 * appear under that kind's page; unregistered values still load
 	 * but raise a health-page warning and only appear under the
 	 * "Unregistered" section on `/kinds`.

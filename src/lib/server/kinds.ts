@@ -20,7 +20,7 @@ import type { HealthIssue, Kind, KindMeta } from '$lib/types';
  * own page.
  */
 function defaultKindsDir(): string {
-	return process.env.ALTERIA_KINDS_DIR ?? resolve(process.cwd(), 'src/kinds');
+	return process.env.ALTERIA_KINDS_DIR ?? resolve(process.cwd(), 'content_meta/kinds');
 }
 
 /**
@@ -40,7 +40,7 @@ export interface KindLoadResult {
 }
 
 /**
- * Walk `src/kinds/` (or `ALTERIA_KINDS_DIR`) recursively and return
+ * Walk `content_meta/kinds/` (or `ALTERIA_KINDS_DIR`) recursively and return
  * every declared kind. Each subdirectory whose name passes
  * `KIND_ID_RE` is a kind; its `_kind.yaml` (if present) supplies
  * label and description overrides, and `_kind.md` (if present)
@@ -187,7 +187,7 @@ async function dirExists(path: string): Promise<boolean> {
 }
 
 function relTo(absPath: string, rootDir: string): string {
-	if (absPath === rootDir) return 'src/kinds';
-	if (absPath.startsWith(rootDir + '/')) return `src/kinds/${absPath.slice(rootDir.length + 1)}`;
+	if (absPath === rootDir) return 'content_meta/kinds';
+	if (absPath.startsWith(rootDir + '/')) return `content_meta/kinds/${absPath.slice(rootDir.length + 1)}`;
 	return absPath;
 }

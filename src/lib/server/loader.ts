@@ -38,7 +38,7 @@ export interface LoadResult {
 	entities: Map<EntityId, Entity>;
 	issues: HealthIssue[];
 	/**
-	 * The central kind registry loaded from `src/kinds/`. The sole
+	 * The central kind registry loaded from `content_meta/kinds/`. The sole
 	 * source of truth for kind metadata and hierarchy.
 	 */
 	kindRegistry: Map<string, Kind>;
@@ -190,7 +190,7 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 			issues.push({
 				kind: 'invalid-yaml',
 				entity: entity.id,
-				detail: `kind '${k}' is not registered in src/kinds/`
+				detail: `kind '${k}' is not registered in content_meta/kinds/`
 			});
 		}
 	}

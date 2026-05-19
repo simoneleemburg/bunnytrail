@@ -66,7 +66,7 @@ class Graph {
 	}
 
 	/**
-	 * The central kind registry from `src/kinds/`. The sole source of
+	 * The central kind registry from `content_meta/kinds/`. The sole source of
 	 * truth for kind metadata and hierarchy.
 	 */
 	kindRegistry(): ReadonlyMap<string, Kind> {

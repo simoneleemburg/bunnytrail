@@ -33,7 +33,7 @@ const ORBIT_KINDS = new Set(['member-of', 'orbits']);
  *
  * The kind-filter at the top of the page applies to everything,
  * regardless of view-mode. Kind labels are pulled from the central
- * registry (`src/kinds/`).
+ * registry (`content_meta/kinds/`).
  */
 export function loadCollectionPage(path: string) {
 	const label = graph.folderLabels(path);
