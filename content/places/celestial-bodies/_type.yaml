@@ -5,3 +5,4 @@ description: >-
   sky — stars, black holes, planets, moons, and anything else that
   the working cosmology treats as a body in space.
 kind: celestial-body
+kindParent: place
