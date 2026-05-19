@@ -1,0 +1,10 @@
+name: The Bayurinda Archipelago
+kind: region
+language: bay
+summary: The principal above-water region of Bayurinda — caves below, rebuildable storm-architecture above. The diplomatic face the rest of Cognita meets. Home of the archipelago people, whose name for themselves became, by Nebelheimer mouths, the name of record for the whole world.
+aliases: [Bayurinda Archipelago, The Archipelago]
+tags: [archipelago, ocean, storms, caves, contact, diplomatic-face]
+relations:
+  - kind: region-of
+    target: places/celestial-bodies/planets/bayurinda
+    note: The principal above-water region of the planet.

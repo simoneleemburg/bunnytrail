@@ -1,7 +1,7 @@
 The Knights of Bellona are an interplanetary order. Their reach
-extends across the three Sister Worlds — [[places/nebelheim|
-Nebelheim]], [[places/bayurinda|Bayurinda]], and
-[[places/sharazan|Sharazan]] — and their authority is one of the
+extends across the three Sister Worlds — [[nebelheim|
+Nebelheim]], [[bayurinda|Bayurinda]], and
+[[sharazan|Sharazan]] — and their authority is one of the
 few institutions that does. The order maintains the
 [[culture/oracle-triad|Oracle Triad]], regulates the practice of
 [[cosmology/nearing|Nearing]], and trains and certifies every

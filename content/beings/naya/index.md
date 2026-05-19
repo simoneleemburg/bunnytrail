@@ -1,4 +1,4 @@
-The Naya [[bay]] are primordial beings native to [[cosmology/realms/nareth|Nareth]],
+The Naya [[bay]] are primordial beings native to [[realms/nareth|Nareth]],
 the resonant substrate of reality. They are not physical creatures in
 any usual sense, but expressions of fundamental states of existence —
 storm, growth, flame, frost, light, decay, and the elemental or
@@ -11,7 +11,7 @@ and adopted as the standard term across [Cognita](/cognita) along
 with the rest of the Bayurindan scholarly inheritance. Whether
 the lost surface civilisation called them by this word, by an
 ancestor of this word, or by something else again is not
-recorded here. What the [deep](/places/bayurinda#peoples-of-bayurinda)
+recorded here. What the [deep](/places/celestial-bodies/planets/bayurinda#peoples-of-bayurinda)
 call them is, as so often, not a thing this compendium yet
 knows.
 
@@ -24,7 +24,7 @@ situational and expressive — adopted for a meeting, a moment, a
 particular relation.
 
 Despite their origin in Nareth, the Naya are drawn toward
-[[cosmology/realms/asthera|Asthera]], the material layer of existence. Where
+[[realms/asthera|Asthera]], the material layer of existence. Where
 Nareth is fluid, Asthera offers stability, continuity, and embodied
 experience — and, most importantly, something the Naya cannot fully
 sustain on their own: persistent, high-intensity emotional experience.
@@ -39,7 +39,7 @@ The Naya enter the physical world by being
 — a constructed vessel built for them. Binding is the pact
 between the Naya and the vessel: one Naya, one Eidolon,
 durable. Without such a binding, a Naya cannot persist in
-[[cosmology/realms/asthera|Asthera]] in any sustained way. With one,
+[[realms/asthera|Asthera]] in any sustained way. With one,
 they have a body of sorts, and a foothold in the physical layer
 they can act through.
 
@@ -78,7 +78,7 @@ known to be reproducible.
 
 The Naya are not inherently destructive, nor inherently
 benevolent. Beyond that — what they are _drawn to_, why they
-seek out [[cosmology/realms/asthera|Asthera]], what they are doing when
+seek out [[realms/asthera|Asthera]], what they are doing when
 they enter into a [[cosmology/binding|binding]] — is not a
 question this compendium answers in a single voice. By long
 tradition, especially in the scholarly registers of Bayurinda

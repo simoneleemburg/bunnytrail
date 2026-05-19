@@ -1,10 +1,10 @@
 A Nearborn is a person whose self was never fully bounded by
-[[cosmology/realms/asthera|Asthera]]'s rules from the beginning of life.
+[[realms/asthera|Asthera]]'s rules from the beginning of life.
 Where most embodied selves take their shape from the material
 layer and only later — through [[cosmology/nearing|Nearing]],
 [[cosmology/binding|binding]], or other deliberate practice — open
 themselves to the resonant layer, a Nearborn begins already
-partially in [[cosmology/realms/nareth|Nareth]]. They do not have to
+partially in [[realms/nareth|Nareth]]. They do not have to
 learn to near. They began near.
 
 ## The in-universe reading of trans identity
@@ -32,20 +32,20 @@ question for generations and continue to.
 Even where the underlying explanation is agreed upon, the cultures
 of the Sister Worlds do very different things with it.
 
-- On [[places/nebelheim|Nebelheim]], Nearborn status is formally
+- On [[nebelheim|Nebelheim]], Nearborn status is formally
   recognised, regulated, and folded into the duties the order
   oversees. The Knights of Bellona conduct the recognition rites,
   and a Nearborn's path through public and ritual life is shaped
   by them. The framing is one of responsibility: a person known
   to be partially in Nareth has obligations of conduct and care.
-- On [[places/bayurinda|Bayurinda]], Nearborn status is
+- On [[bayurinda|Bayurinda]], Nearborn status is
   contemplative and unhurried. Recognition is something a person
   and their teachers arrive at gradually, often through study
   and ritual practice rather than declaration. The framing is
   one of unfolding: a Nearborn is understood to be on a longer
   path of self-knowing than other people, and the path is its
   own work.
-- On [[places/sharazan|Sharazan]], Nearborn identity is public,
+- On [[sharazan|Sharazan]], Nearborn identity is public,
   named, and worn. The recognition is performative: a person
   steps into their second name in a witnessed rite, and the
   community honours the change as a public fact about who they
@@ -97,7 +97,7 @@ substance, screening candidates for that capacity.
 
 Most cultures of the Sister Worlds hold that Nearborn make
 exceptional pilots — that a self already partially in
-[[cosmology/realms/nareth|Nareth]] is, by its nature, more prepared
+[[realms/nareth|Nareth]] is, by its nature, more prepared
 for the sustained Nearing piloting requires. The reasoning is
 intuitive: piloting asks an embodied self to remain coherent
 while opening to the resonant layer, and a Nearborn self has

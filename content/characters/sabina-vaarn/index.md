@@ -3,8 +3,8 @@ Sabina Vaarn [[tho]] is the serving Oracle of Endurance within the
 [[culture/knights-of-bellona|Knights of Bellona]], also known as the
 Pilgrim of Ages.
 
-She is a human, from [[places/nebelheim/tholingia|Tholingia]] on
-[[places/nebelheim|Nebelheim]]. Her name is Tholingian.
+She is a human, from [[nebelheim/tholingia|Tholingia]] on
+[[nebelheim|Nebelheim]]. Her name is Tholingian.
 
 ## In the Triad
 

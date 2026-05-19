@@ -4,6 +4,6 @@ summary: The most prominent embodied people of Asthera — mortal, materially bo
 tags: [asthera, binding, embodied]
 relations:
   - kind: native-to
-    target: places/nebelheim
+    target: places/celestial-bodies/planets/nebelheim
   - kind: native-to
-    target: places/bayurinda
+    target: places/celestial-bodies/planets/bayurinda

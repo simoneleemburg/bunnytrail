@@ -1,6 +1,6 @@
 Tholingian [[tho]] is the working language of
-[[places/nebelheim/tholingia|Tholingia]], a region on
-[[places/nebelheim|Nebelheim]]. It is one of several Nebelheimic
+[[nebelheim/tholingia|Tholingia]], a region on
+[[nebelheim|Nebelheim]]. It is one of several Nebelheimic
 tongues; on a world whose geography is broken up by calderas,
 fissures and ash-plains, no single language has ever covered
 the whole. Tholingian is, however, the Nebelheimic tongue most
@@ -63,7 +63,7 @@ it appears occasionally in older scholarship and would otherwise
 puzzle the reader:
 
 - _Blauheim_ — the pre-contact Tholingian name for
-  [[places/bayurinda|Bayurinda]]. It was used while the
+  [[bayurinda|Bayurinda]]. It was used while the
   Tholingians knew the world only as a destination of long
   voyages, and not as the home of anyone they had spoken to.
   When contact was established and the archipelago people's
@@ -92,5 +92,5 @@ yet recorded.
 
 _(The other languages of Nebelheim, their relationships to
 Tholingian, and the question of whether any of them share
-ancestry with the working tongues of [[places/bayurinda|Bayurinda]]
-or [[places/sharazan|Sharazan]] are not yet recorded here.)_
+ancestry with the working tongues of [[bayurinda|Bayurinda]]
+or [[sharazan|Sharazan]] are not yet recorded here.)_

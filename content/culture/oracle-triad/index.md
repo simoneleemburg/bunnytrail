@@ -59,7 +59,7 @@ absent, and the work breaks at that point and no further.
 
 [[characters/uraya-ur|Uraya]] is one of the recognised
 exceptions in the cosmology: a [[beings/naya|Naya]] present in
-[[cosmology/realms/asthera|Asthera]] without being
+[[realms/asthera|Asthera]] without being
 [[cosmology/binding|bound]] into an [[cosmology/eidolons|Eidolon]].
 
 Sustained presence in Asthera without binding is not how the
@@ -96,7 +96,7 @@ and a coupling held only formally would also not sustain
 Uraya's presence in Asthera. The translation depends on a
 synchronization no working contract can manufacture, and the
 synchronization is also what keeps the third of the three from
-drifting back to [[cosmology/realms/nareth|Nareth]].
+drifting back to [[realms/nareth|Nareth]].
 
 The Knights of Bellona arrange the order's life around this
 requirement. The Triad's sessions are protected. Their

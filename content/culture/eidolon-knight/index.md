@@ -161,7 +161,7 @@ a ceremonial duel above a Sharazani fragment are wearing the
 same authority. What differs is how the world around them reads
 the role.
 
-- On [[places/nebelheim|Nebelheim]] the Knight is read as a
+- On [[nebelheim|Nebelheim]] the Knight is read as a
   working figure: a guarantor of defence, labour, and survival,
   whose Eidolon is for what an Eidolon can practically do. The
   Nebelheimic relationship to a Knight is closer to a duty than
@@ -171,7 +171,7 @@ the role.
   failing. The order's regulation of piloting is, on Nebelheim,
   felt as continuous with the world's own discipline.
 
-- On [[places/bayurinda|Bayurinda]] the Knight is read as a
+- On [[bayurinda|Bayurinda]] the Knight is read as a
   contemplative. The cultural framing of piloting here is slow,
   ritualised, and treated as a long unfolding. A Knight may
   spend much of their tenure in study, in extended Nearing, or
@@ -182,7 +182,7 @@ the role.
   sense for long stretches without the world thinking anything
   is wrong.
 
-- On [[places/sharazan|Sharazan]] the Knight is read as a
+- On [[sharazan|Sharazan]] the Knight is read as a
   public figure. Knighthood there is invested with theatrical,
   status-bearing, and competitive meaning. Duels, exhibitions,
   and ceremonial encounters in Eidolon form are part of the
@@ -201,7 +201,7 @@ change.
 
 Knighthood is the work of the Knights of Bellona, and has been
 for as long as the order has had Knights to send. The "old
-knight roads" of [[places/sharazan|Sharazan]] — ancient routes
+knight roads" of [[sharazan|Sharazan]] — ancient routes
 that intersect with [[cosmology/eidolons/world-pillars|World Pillar]]
 paths and atmospheric travel currents — are part of the long
 material record of the order's interplanetary reach. Whether

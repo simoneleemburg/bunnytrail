@@ -74,7 +74,7 @@ export interface EntityTypeMeta {
 	/**
 	 * Extra kinds this folder *declares* but doesn't own on disk.
 	 * Useful when a supertype folder wants to register kinds whose
-	 * entities live elsewhere — e.g. `cosmology/celestial-bodies`
+	 * entities live elsewhere — e.g. `places/celestial-bodies`
 	 * declares `planet` and `moon` as descending from
 	 * `celestial-body`, even though planets and moons currently
 	 * live under `/places`. Each entry has the same shape as the

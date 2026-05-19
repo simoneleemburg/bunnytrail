@@ -1,6 +1,6 @@
 An Eidolon is a constructed vessel that allows a
 [[beings/naya|Naya]] to manifest physically on
-[[cosmology/realms/asthera|Asthera]]. The Naya is
+[[realms/asthera|Asthera]]. The Naya is
 [[cosmology/binding|bound]] into the vessel — seated durably
 into a body built for its nature — and through the vessel
 becomes present in the material world. Without its Naya, the
@@ -16,7 +16,7 @@ The binding between a Naya and its Eidolon is specific and
 durable. One Naya is seated into one vessel. The Naya does not
 move between Eidolons. The Eidolon is not refittable to a
 different Naya. If the vessel is destroyed, the Naya is not
-destroyed — it returns to [[cosmology/realms/nareth|Nareth]] — but the
+destroyed — it returns to [[realms/nareth|Nareth]] — but the
 Eidolon ends with it, and the pact does not transfer.
 
 A bound Eidolon outlives any single Knight who pilots it.
@@ -80,10 +80,10 @@ relationship with the bound vessel.
 ## Cultural variation
 
 The Sister Worlds approach Eidolons differently. On
-[[places/nebelheim|Nebelheim]] they are used pragmatically:
-defence, labour, survival. On [[places/bayurinda|Bayurinda]]
+[[nebelheim|Nebelheim]] they are used pragmatically:
+defence, labour, survival. On [[bayurinda|Bayurinda]]
 they are slower, more ritualised, treated as a path of practice.
-On [[places/sharazan|Sharazan]] they are elaborate, symbolic,
+On [[sharazan|Sharazan]] they are elaborate, symbolic,
 and public — duels and displays in Eidolon form shape social
 hierarchy.
 
@@ -99,8 +99,8 @@ language is not yet recorded here. It is not
 [[culture/languages/tholingian|Tholingian]], not
 [[culture/languages/bayurindan|Bayurindan]]. Whether it is
 [[culture/languages/thallish|Thallish]] (as
-[[cosmology/realms/asthera|Asthera]] and
-[[cosmology/realms/nareth|Nareth]] are), the
+[[realms/asthera|Asthera]] and
+[[realms/nareth|Nareth]] are), the
 [[culture/knights-of-bellona|order]]'s own working term in some
 register the order has not yet been recorded as using, or a
 word that travelled in from somewhere else again, is open. The

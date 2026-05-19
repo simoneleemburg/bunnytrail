@@ -519,7 +519,7 @@
 
 	/* Supertype self-page body. Mirrors the `.prose` rules used on
 	   entity pages so typography is consistent — when you land on
-	   `/cosmology/celestial-bodies` the reading experience is the
+	   `/places/celestial-bodies` the reading experience is the
 	   same as on any entity page, with the entity grid below. */
 	.self-body {
 		max-width: var(--prose-max);

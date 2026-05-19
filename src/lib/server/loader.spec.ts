@@ -285,7 +285,7 @@ describe('buildKindTree', () => {
 async function seedHierarchyContent(): Promise<string> {
 	const dir = await mkdtemp(join(tmpdir(), 'alteria-kinds-'));
 
-	// content/cosmology/celestial-bodies/ — supertype folder with its
+	// content/places/celestial-bodies/ — supertype folder with its
 	// own self-page. The supertype concept is itself a celestial body.
 	await mkdir(join(dir, 'cosmology', 'celestial-bodies'), { recursive: true });
 	await writeFile(join(dir, 'cosmology', '_type.yaml'), 'singular: Cosmological\nplural: Cosmology');

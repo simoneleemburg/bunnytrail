@@ -7,7 +7,7 @@ yet recorded here.)_
 
 The **Aetherians** are the populous majority of the
 [[culture/languages/deep-speech|Nuunlaumud]] — the people of
-[[places/bayurinda/nuunlau|Nuunlau]] — and the second of the two peoples
+[[bayurinda/nuunlau|Nuunlau]] — and the second of the two peoples
 who live there. They are not the older Nuunlaumud, who pre-date
 the drowning; the Aetherians are the descendants of the **lost
 surface civilisation's survivors**, taken in by the older deep
@@ -116,7 +116,7 @@ here.)_
 The Aetherians' tolerance of radioactive material is not an
 incidental quirk of their biology. It is a doorway.
 
-There is something on the floor of [[places/bayurinda/nuunlau|Nuunlau]] —
+There is something on the floor of [[bayurinda/nuunlau|Nuunlau]] —
 one of the **older things**, the structures the older
 Nuunlaumud describe as pre-dating the drowning and as not the
 work of the surface civilisation — that emits the radioactive
@@ -134,7 +134,7 @@ mind-altering effects, what is happening is not poisoning. It is
 **[[cosmology/nearing|Nearing]]**, in the same sense Tholingian
 oracles and [[culture/eidolon-knight|Eidolon Knights]] use the
 word: an embodied being drifting close to
-[[cosmology/realms/nareth|Nareth]] without crossing into it. The visions
+[[realms/nareth|Nareth]] without crossing into it. The visions
 are contact with [[beings/naya|Naya]]. The out-of-body
 experiences are the loosening of attachment to form that Nearing
 produces in any practitioner. The Aetherians have a path to it

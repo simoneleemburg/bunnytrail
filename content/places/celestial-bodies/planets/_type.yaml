@@ -1,0 +1,6 @@
+singular: Planet
+plural: Planets
+# TODO(worldbuilding): author a one-line description for the planets
+# type-index page. Until then the page renders with no preamble.
+kind: planet
+kindParent: celestial-body

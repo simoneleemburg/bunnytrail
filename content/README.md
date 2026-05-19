@@ -13,7 +13,7 @@ content/
 ```
 
 Entity ids are `<type>/<slug>`. Reference other entities from prose with
-wikilinks: `[[cosmology/realms/nareth]]` or `[[cosmology/realms/nareth|the resonant]]`.
+wikilinks: `[[realms/nareth]]` or `[[realms/nareth|the resonant]]`.
 
 ## Adding a new type
 

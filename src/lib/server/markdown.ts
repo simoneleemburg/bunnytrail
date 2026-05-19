@@ -40,7 +40,7 @@ function slugifyHeading(text: string): string {
  *
  * Headings (`#`, `##`, `###`, …) get auto-generated `id` attributes
  * derived from their text content, so cross-page anchor links like
- * `/places/bayurinda#on-the-name` actually scroll to the section.
+ * `/places/celestial-bodies/planets/bayurinda#on-the-name` actually scroll to the section.
  * Duplicate slugs within one body are disambiguated with `-2`, `-3`,
  * etc.
  */

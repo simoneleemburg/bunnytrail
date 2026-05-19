@@ -14,8 +14,8 @@ shattering itself, and what it left.
 What Skyblood does, on the other hand, is not a matter of
 tradition. It is the material substrate of almost every
 high-order practice in the Alteria cosmology — without it, the
-delicate interface between [[cosmology/realms/asthera|Asthera]] and
-[[cosmology/realms/nareth|Nareth]] cannot be held stably enough to be of
+delicate interface between [[realms/asthera|Asthera]] and
+[[realms/nareth|Nareth]] cannot be held stably enough to be of
 use.
 
 ## What it does

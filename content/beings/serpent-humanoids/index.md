@@ -4,7 +4,7 @@ to the wider Astheran world are not yet recorded here.)_
 
 The **serpent-humanoids** are a rare lineage of Asthera —
 serpentine in body, humanoid in bearing — native to
-[[places/bayurinda|Bayurinda]]. The compendium records them
+[[bayurinda|Bayurinda]]. The compendium records them
 so far only through the liminal, water-adjacent civilisations
 of that world, and through a single member,
 [[characters/ngonawan-ilyardi|Ngonawan Ilyardi]], the Sacred

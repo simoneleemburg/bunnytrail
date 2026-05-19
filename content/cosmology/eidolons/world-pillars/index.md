@@ -76,7 +76,7 @@ arrival is shaped to mirror the launch.
 If there is no Pillar at the destination capable of catching, or
 if the pilot misses the catch entirely, they do not land. They
 drift, burn, or pass into the storm-field of
-[[cosmology/realms/the-void|the Void Between Worlds]]. The Pillars
+[[realms/the-void|the Void Between Worlds]]. The Pillars
 make travel possible; they do not make it safe.
 
 ## What the Pillars are
@@ -101,8 +101,8 @@ some — every settled world does, by definition; without at
 least one functioning Pillar there can be no Knights coming or
 going — but the count and the concentration vary.
 
-On [[places/nebelheim|Nebelheim]], the densest concentration of
-Pillars is in [[places/nebelheim/tholingia|Tholingia]], which carries
+On [[nebelheim|Nebelheim]], the densest concentration of
+Pillars is in [[nebelheim/tholingia|Tholingia]], which carries
 more than any other region of the world. This is the structural
 reason Tholingia is the region of Nebelheim most involved in
 interplanetary trade and contact, and the reason the order's
@@ -110,8 +110,8 @@ presence on the planet is densest there. The
 [[culture/languages/tholingian|Tholingian]] language has travelled
 along the same routes, with the same consequences.
 
-On [[places/bayurinda|Bayurinda]], the Pillars in current use
-stand on the [[places/bayurinda/bayurinda-archipelago|archipelago]], for
+On [[bayurinda|Bayurinda]], the Pillars in current use
+stand on the [[bayurinda/bayurinda-archipelago|archipelago]], for
 the obvious material reason that an above-water Pillar is far
 easier to build, maintain, reach, and depart from than one
 anchored on the floor of a deep ocean. The archipelago is
@@ -120,16 +120,16 @@ sense that Tholingia is Nebelheim's: not its heart, but the part
 the order meets, and the part through which the rest of
 [Cognita](/cognita) knows the world.
 
-Whether [the lost surface civilisation](/places/bayurinda#the-drowning)
+Whether [the lost surface civilisation](/places/celestial-bodies/planets/bayurinda#the-drowning)
 of Bayurinda also had Pillars, and whether any of those are
 still standing — broken, drowned, or quietly maintained by the
-[deep](/places/bayurinda#peoples-of-bayurinda) — is not a
+[deep](/places/celestial-bodies/planets/bayurinda#peoples-of-bayurinda) — is not a
 question the compendium yet answers. The possibility is open;
 the matter is the archipelago's and the deep's to know.
 
 _(The Pillar count and distribution on
-[[places/sharazan|Sharazan]], and on the rest of
-[[places/nebelheim|Nebelheim]] outside Tholingia, are not yet
+[[sharazan|Sharazan]], and on the rest of
+[[nebelheim|Nebelheim]] outside Tholingia, are not yet
 recorded here.)_
 
 _(Detail on the Pillars' origin, the specific architecture of

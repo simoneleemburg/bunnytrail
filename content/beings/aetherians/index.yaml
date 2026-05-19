@@ -1,7 +1,7 @@
 name: The Aetherians
 kind: mortal
 language: ds
-summary: The populous majority among the [[culture/languages/deep-speech|Nuunlaumud]] of [[places/bayurinda/nuunlau|Nuunlau]] — descendants of the survivors of [[places/bayurinda|Bayurinda]]'s drowned surface civilisation, modified to breathe water and taken in by the older deep. They read their own ancestors' inscriptions, in a tongue not their own; and they reach the [[beings/naya|Naya]] through a radiance on the seafloor, in a form of [[cosmology/nearing|Nearing]] every Aetherian body is shaped for.
+summary: The populous majority among the [[culture/languages/deep-speech|Nuunlaumud]] of [[bayurinda/nuunlau|Nuunlau]] — descendants of the survivors of [[bayurinda|Bayurinda]]'s drowned surface civilisation, modified to breathe water and taken in by the older deep. They read their own ancestors' inscriptions, in a tongue not their own; and they reach the [[beings/naya|Naya]] through a radiance on the seafloor, in a form of [[cosmology/nearing|Nearing]] every Aetherian body is shaped for.
 aliases: [Aetherians, aether-breathers]
 tags:
   [
@@ -17,5 +17,5 @@ tags:
   ]
 relations:
   - kind: native-to
-    target: places/bayurinda/nuunlau
+    target: places/celestial-bodies/planets/bayurinda/nuunlau
     note: The populous majority of the deep-water region.

@@ -2,8 +2,8 @@ Binding is the pact by which a [[beings/naya|Naya]] is seated
 into an [[cosmology/eidolons|Eidolon]] — bound, in the strict
 sense, to the physical world by way of a vessel that can hold
 it. A Naya, in itself, is a being of
-[[cosmology/realms/nareth|Nareth]]. It has no native foothold in
-[[cosmology/realms/asthera|Asthera]]. The Eidolon is what gives it
+[[realms/nareth|Nareth]]. It has no native foothold in
+[[realms/asthera|Asthera]]. The Eidolon is what gives it
 one.
 
 This is the relationship the word _binding_ refers to: Eidolon
@@ -20,7 +20,7 @@ construct becomes the shape through which that Naya is present
 in the physical world. The Naya does not move between vessels.
 If the Eidolon is destroyed, the Naya is not destroyed — it
 returns to Nareth, or, in catastrophic cases, scatters into
-[[cosmology/realms/the-void|the Void Between Worlds]] — but the binding
+[[realms/the-void|the Void Between Worlds]] — but the binding
 ends with the vessel.
 
 A bound Naya does not need a Knight to exist. It does need a

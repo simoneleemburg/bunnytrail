@@ -1,5 +1,5 @@
 Nearing is a partially transcendent state in which an embodied
-being drifts closer to [[cosmology/realms/nareth|Nareth]] — the fluid
+being drifts closer to [[realms/nareth|Nareth]] — the fluid
 resonant layer of reality, where identity, emotion, memory,
 distance, and time become less fixed — without crossing into it.
 The word does the work of the idea: one _nears_. One does not
@@ -88,7 +88,7 @@ with different safety structures.
 
 - **Aetherian Nearing.** The
   [[beings/aetherians|Aetherians]] of
-  [[places/bayurinda/nuunlau|Nuunlau]] reach the [[beings/naya|Naya]]
+  [[bayurinda/nuunlau|Nuunlau]] reach the [[beings/naya|Naya]]
   through a different doorway entirely: a **radiance** emitted
   by certain features on the floor of Nuunlau, to which the
   Aetherian body is uniquely congenial. Every Aetherian can

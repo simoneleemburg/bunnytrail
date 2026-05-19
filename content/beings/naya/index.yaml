@@ -5,5 +5,5 @@ summary: Primordial beings native to Nareth — expressions of fundamental state
 tags: [nareth, resonance, binding]
 relations:
   - kind: native-to
-    target: cosmology/realms/nareth
+    target: places/realms/nareth
     note: Their realm of origin; the fluid layer from which they reach toward Asthera.

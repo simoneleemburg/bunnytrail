@@ -23,7 +23,7 @@ const ORBIT_KINDS = new Set(['member-of', 'orbits']);
  *     index page; we only advertise them here.
  *   • **Containers section** — entities that physically nest other
  *     entities of the same type beneath them on disk (e.g.
- *     `places/bayurinda/` containing `nuunlau` and
+ *     `places/celestial-bodies/planets/bayurinda/` containing `nuunlau` and
  *     `bayurinda-archipelago`). Each container is shown with its
  *     nested children inline. Only used in nested view-mode.
  *   • **Entity grid** — the flat list of entities. In nested mode
@@ -128,7 +128,7 @@ export function loadTypeIndex(type: EntityType) {
 	// Supertype gather: entities whose `kind` descends from this
 	// folder's declared `kind`, but which live in some other folder
 	// in the type tree (e.g. planets and moons under `/places` when
-	// the page is `cosmology/celestial-bodies`). Each one shows its
+	// the page is `places/celestial-bodies`). Each one shows its
 	// home type as the eyebrow so the reader knows where it lives.
 	const kindGathered = descendantKindEntities
 		.filter((e) => !graph.byTypeRecursive(type).some((local) => local.id === e.id))

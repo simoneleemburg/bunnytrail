@@ -20,7 +20,7 @@ it cannot always be untangled without awkwardness.)_
 
 ## Origin: the First Listeners
 
-The Old Tongue was developed on [[places/bayurinda|Bayurinda]],
+The Old Tongue was developed on [[bayurinda|Bayurinda]],
 in an age that is now held there as **myth**: long enough ago
 that no ordinary memory reaches it, ancient enough that the work
 survives only because it was preserved. The earliest mystics of
@@ -34,9 +34,9 @@ The mystics who undertook this work are remembered as the First
 Listeners. They were of the **surface civilisation** of that age
 — a civilisation that no longer exists in the form it had then,
 and whose principal land masses and cities are now on the ocean
-floor (see [the drowning](/places/bayurinda#the-drowning)).
+floor (see [the drowning](/places/celestial-bodies/planets/bayurinda#the-drowning)).
 Through prolonged [[cosmology/nearing|Nearing]] states, they
-reached far enough toward [[cosmology/realms/nareth|Nareth]] to perceive
+reached far enough toward [[realms/nareth|Nareth]] to perceive
 Naya symbols directly, and they tried to record what they
 perceived.
 
@@ -76,7 +76,7 @@ legibly marked.
 
 The reading of those inscriptions was begun by the **older
 Nuunlaumud** — the pre-drowning people of
-[[places/bayurinda/nuunlau|Nuunlau]], who had been at home in those waters
+[[bayurinda/nuunlau|Nuunlau]], who had been at home in those waters
 long before the drowning ever happened and who had no script of
 their own. They came to a writing system that was not theirs,
 in service of a language they did not speak, in stone left by a
@@ -151,7 +151,7 @@ The [[beings/aetherians|Aetherians]] write
 done so for as long as their tradition runs back — since
 shortly after the older Nuunlaumud took in the surface
 survivors and the survivors brought writing itself with them
-into [[places/bayurinda/nuunlau|Nuunlau]]. The older Nuunlaumud had no
+into [[bayurinda/nuunlau|Nuunlau]]. The older Nuunlaumud had no
 writing of their own and adopted none from the new arrivals;
 their tradition remained, and remains, **oral**. The
 inscriptional script is therefore one of the few cultural
@@ -215,7 +215,7 @@ symbols are and what human speech can carry.
 
 The Old Tongue is vowel-rich, flowing, and breath-heavy. It
 favours sustained tones, soft openings, and ceremonial cadence.
-Where the harsher tongues of [[places/nebelheim|Nebelheim]]
+Where the harsher tongues of [[nebelheim|Nebelheim]]
 have evolved against weather and stone, the Old Tongue evolved
 against resonance — and it has the shape of something meant to
 echo, not to cut.
@@ -312,8 +312,8 @@ is not yet recorded here). The name of
 and is marked accordingly. The cultural readings of
 [[cosmology/black-holes/the-dark-companion|the Dark Companion]] belong to
 various local traditions and are not Old Tongue. The
-cosmological terms [[cosmology/realms/asthera|Asthera]] and
-[[cosmology/realms/nareth|Nareth]] — names for the two great layers of
+cosmological terms [[realms/asthera|Asthera]] and
+[[realms/nareth|Nareth]] — names for the two great layers of
 existence — are [[culture/languages/thallish|Thallish]], not Old Tongue.
 The Old Tongue presupposes _Nareth_ as the name of the realm
 its work addresses; it did not coin it. Two of the compendium's
@@ -365,20 +365,20 @@ languages of a kind.
 Two of the Sister Worlds' working tongues have their own
 entries in the compendium so far:
 [[culture/languages/tholingian|Tholingian]], the language of
-[[places/nebelheim/tholingia|Tholingia]] on
-[[places/nebelheim|Nebelheim]], and
+[[nebelheim/tholingia|Tholingia]] on
+[[nebelheim|Nebelheim]], and
 [[culture/languages/bayurindan|Bayurindan]], the working tongue of the
-archipelago people of [[places/bayurinda|Bayurinda]]. A third,
+archipelago people of [[bayurinda|Bayurinda]]. A third,
 [[culture/languages/thallish|Thallish]], stands as a stub —
-the source of [[cosmology/realms/asthera|Asthera]] and
-[[cosmology/realms/nareth|Nareth]], but otherwise not yet imported.
+the source of [[realms/asthera|Asthera]] and
+[[realms/nareth|Nareth]], but otherwise not yet imported.
 The rest of [Cognita](/cognita)'s tongues are gestured at by
 the words they have left behind.
 
-_(The other working tongues of [[places/nebelheim|Nebelheim]]
+_(The other working tongues of [[nebelheim|Nebelheim]]
 beyond Tholingian, the working tongue or tongues of
-[[places/sharazan|Sharazan]], the language of
-[[places/bayurinda#peoples-of-bayurinda|the deep]], the
+[[sharazan|Sharazan]], the language of
+[[bayurinda#peoples-of-bayurinda|the deep]], the
 scholarly register the
 [[culture/knights-of-bellona|Knights of Bellona]] maintain
 across the worlds, the language of origin of \_Eidolon_ and the

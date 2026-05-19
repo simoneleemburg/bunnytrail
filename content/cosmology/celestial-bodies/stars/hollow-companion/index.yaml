@@ -1,7 +1,0 @@
-name: The Hollow Companion
-kind: star
-summary: The visible star of the Hollow Binary — the one that can be seen, orbiting something that cannot.
-tags: [binary, threshold]
-relations:
-  - kind: member-of
-    target: cosmology/systems/hollow-binary

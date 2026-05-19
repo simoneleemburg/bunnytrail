@@ -1,7 +1,7 @@
 _Urouch_ [[ds]] is the [[culture/languages/deep-speech|Deep Speech]] name
 for the substance the compendium has, until now, called
 **the radiance** — the radioactive material on the floor of
-[[places/bayurinda/nuunlau|Nuunlau]] that the
+[[bayurinda/nuunlau|Nuunlau]] that the
 [[beings/aetherians|Aetherians]] near by, and on which long-term
 life in the deep depends.
 
@@ -51,7 +51,7 @@ Nuunlau depends, in ways the surface understands only in broad
 outline, on access to Urouch. Without it, the slow systems by
 which a deep city breathes, lights itself, and holds together
 against the pressure of the long centuries cannot be sustained.
-[[places/bayurinda/nuunlau/bal-rochan|Bal Rochan]] runs on Urouch in this sense,
+[[bayurinda/nuunlau/bal-rochan|Bal Rochan]] runs on Urouch in this sense,
 as do all the other settled cities the compendium has heard of.
 _(Exactly how the substance is used — what cycles it enters,
 what intermediate forms it takes, what is consumed and what is
@@ -87,7 +87,7 @@ Long-uninspected ruins are matters of careful, often disputed,
 attention.
 
 The relationship between Urouch and the
-[[places/bayurinda/nuunlau#what-is-down-there|older things]] on the
+[[bayurinda/nuunlau#what-is-down-there|older things]] on the
 seafloor — the structures the older Nuunlaumud describe as
 pre-dating the drowning — is the question on which the deep is
 least settled, and on which the surface has least access to
