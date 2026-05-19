@@ -243,13 +243,10 @@ export function loadCollectionPage(path: string) {
 	const orbits = buildOrbitsTree(path, cardSummaryHtml);
 
 	return {
-		kind: 'type' as const,
+		kind: 'collection' as const,
 		type: path,
 		label,
 		description,
-		// The supertype self-page concept was removed when kinds were
-		// decoupled from folders. Kind prose lives at /kinds/<kind>.
-		selfBodyHtml: null as string | null,
 		subtypes,
 		containers,
 		standalone,
@@ -334,11 +331,10 @@ export function loadEverythingIndex() {
 		.map((e) => toCard(e, cardSummaryHtml, labelForFolder(e.type)));
 
 	return {
-		kind: 'type' as const,
+		kind: 'collection' as const,
 		type: '',
 		label: { singular: 'Entry', plural: 'Everything' },
 		description: 'Every entry in Alteria, in one place. Filter or flatten to taste.',
-		selfBodyHtml: null as string | null,
 		subtypes,
 		containers: [] as ContainerNode[],
 		orbits: [] as OrbitNode[],

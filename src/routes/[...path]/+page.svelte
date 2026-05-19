@@ -6,7 +6,7 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-{#if data.kind === 'type'}
+{#if data.kind === 'collection'}
 	<CollectionPage {data} />
 {:else}
 	<EntityPage {data} />
