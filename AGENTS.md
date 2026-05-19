@@ -5,11 +5,16 @@ Operational instructions for AI coding agents working in this repository.
 ## Project in one paragraph
 
 Alteria is a personal worldbuilding compendium. Canonical data lives in
-`content/` as one folder per entity: `content/<type>/<slug>/index.yaml`
-holds structured metadata and `index.md` holds the prose; sibling files
-(images, etc.) live alongside. Each type folder may also have a
-`_type.yaml` describing the labels + meaning of the type. A SvelteKit
-site loads it all on boot into an in-memory graph and renders it as a
+`content/` as one folder per entity:
+`content/<...collection-path>/<slug>/index.yaml` holds structured
+metadata and `index.md` holds the prose; sibling files (images, etc.)
+live alongside. Folders are **collections** — narrative groupings, the
+shelves of the field-notebook — and may carry an optional
+`_collection.yaml` describing their display label and prose. The
+**kinds** every entity declares (its taxonomic classification) live
+separately in `content_meta/kinds/` as a nested folder tree, each node
+optionally carrying a `_kind.yaml` and `_kind.md`. A SvelteKit site
+loads it all on boot into an in-memory graph and renders it as a
 browsable, cross-linked field-notebook. Cross-references use
 `[[type/slug]]` wikilinks; backlinks are built automatically.
 
@@ -82,16 +87,24 @@ register, the practical pre-save checklist — is in
 
 ## Where things live
 
-- **New worldbuilding entity** → `content/<type>/<slug>/index.{yaml,md}`
-  (plus any companion files — images, attachments — in the same folder)
-- **New entity type** → create a directory under `content/`. The loader
-  discovers types from the filesystem at boot, so the nav and routes pick
-  it up automatically. Display labels are derived from the folder name
-  (see `labelsFor` in `src/lib/types.ts`).
+- **New worldbuilding entity** → `content/<...collection-path>/<slug>/index.{yaml,md}`
+  (plus any companion files — images, attachments — in the same folder).
+  The entity's `kind:` field must match a kind registered in
+  `content_meta/kinds/`.
+- **New collection (narrative grouping)** → create a directory under
+  `content/`. The loader discovers collections from the filesystem at
+  boot, so the nav and routes pick them up automatically. Display labels
+  default to the folder name; override them by adding a
+  `_collection.yaml` with `title:` and an optional `description:` (see
+  `folderLabels` in `src/lib/types.ts`).
+- **New kind (taxonomy node)** → create a folder somewhere under
+  `content_meta/kinds/`, optionally with `_kind.yaml` (singular/plural
+  overrides, description) and `_kind.md` (long-form prose). The parent
+  kind is whichever folder it sits in; no `kindParent:` field needed.
 - **New UI primitive** → `src/lib/components/`. Existing primitives:
   `EntityCard`, `EntityLink`, `PageHeader`, `PropertyList`, `Tag`.
 - **Graph / loader logic** → `src/lib/server/`
-  (`loader.ts`, `graph.ts`, `markdown.ts`, `watcher.ts`).
+  (`loader.ts`, `graph.ts`, `kinds.ts`, `markdown.ts`, `watcher.ts`).
 - **Design tokens / base styles** → `src/lib/styles/`.
 
 ## Agent etiquette

@@ -103,7 +103,8 @@
 
 <article class="entity">
 	<PageHeader
-		eyebrow={data.entity.kind ?? data.typeLabel.singular}
+		breadcrumbs={data.breadcrumbs}
+		kindChip={data.kindChip}
 		title={data.entity.name}
 		subtitleHtml={data.entity.summaryHtml}
 		language={data.language ?? undefined}

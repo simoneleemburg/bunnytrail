@@ -1,6 +1,6 @@
 import { graph } from '$lib/server/graph';
 import { renderEntityBody, renderSummary } from '$lib/server/markdown';
-import type { Entity } from '$lib/types';
+import { titleCaseSlug, type Entity } from '$lib/types';
 
 /**
  * Build the view-model for an entity page. Returned shape is consumed
@@ -26,6 +26,40 @@ export function loadEntityPage(entity: Entity) {
 				code: langCode,
 				href: langTargetId ? `/${langTargetId}` : '#',
 				broken: !langTargetId
+			}
+		: null;
+
+	// Breadcrumb chain: every browseable folder on the path from the
+	// content root down to (and including) this entity's containing
+	// folder. We render plural folder labels because, per the new
+	// kind/collection split, parent folders are narrative
+	// collections, not taxonomic kinds — `Places › Celestial Bodies
+	// › Planets` reads as "where in the field-notebook you are",
+	// not "this is a planet which is a celestial body".
+	const breadcrumbs: { label: string; href: string }[] = [];
+	if (type) {
+		const segs = type.split('/');
+		for (let i = 1; i <= segs.length; i++) {
+			const prefix = segs.slice(0, i).join('/');
+			if (graph.isFolder(prefix)) {
+				breadcrumbs.push({
+					label: graph.folderLabels(prefix).plural,
+					href: `/${prefix}`
+				});
+			}
+		}
+	}
+
+	// Kind chip data for the header. We always emit something when
+	// the entity has a kind, even an unregistered one — broken
+	// chips are useful health signals, just like broken wikilinks.
+	const kindId = typeof entity.meta.kind === 'string' ? entity.meta.kind : null;
+	const kindObj = kindId ? graph.kind(kindId) : undefined;
+	const kindChip = kindId
+		? {
+				id: kindId,
+				label: kindObj?.meta.singular ?? titleCaseSlug(kindId),
+				broken: !kindObj
 			}
 		: null;
 
@@ -99,6 +133,8 @@ export function loadEntityPage(entity: Entity) {
 		id,
 		type,
 		typeLabel: type ? graph.folderLabels(type) : { singular: 'Entry', plural: 'Entries' },
+		breadcrumbs,
+		kindChip,
 		entity: {
 			id,
 			type,
@@ -108,7 +144,7 @@ export function loadEntityPage(entity: Entity) {
 			summaryHtml: summaryHtml(entity.meta.summary),
 			aliases: entity.meta.aliases ?? [],
 			tags: entity.meta.tags ?? [],
-			kind: typeof entity.meta.kind === 'string' ? entity.meta.kind : null,
+			kind: kindId,
 			sigil: typeof entity.meta.sigil === 'string' ? entity.meta.sigil : null
 		},
 		extra,

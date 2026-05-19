@@ -69,6 +69,19 @@ and connections that the structured fields don't already capture
 (e.g. `ocean`, `ruins`, `pilgrimage`, `border`). Keeping tags clean
 keeps them useful.
 
+### Kinds and collections are different axes
+
+Where an entity *lives* in `content/` is a **collection** — a
+narrative shelf in the field-notebook. What an entity *is* is its
+**kind** — a node in the taxonomy under `content_meta/kinds/`. The
+two are deliberately independent: the same kind can appear in
+several collections, and a single collection can hold many kinds.
+Pick the collection that makes the entry easy to find while
+browsing; pick the kind that's true regardless of where the entry
+ends up shelved. Moving an entity between collections changes its
+URL but not its kind; reclassifying its kind doesn't move the
+folder.
+
 ### Disputed truths are a feature, not a bug — when they belong
 
 For the kinds of facts that real long-lived cultures, archives, and

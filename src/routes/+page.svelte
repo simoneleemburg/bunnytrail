@@ -73,8 +73,9 @@
 			<div class="rule"></div>
 			<div class="label">Kinds</div>
 			<div class="description">
-				The hierarchy of kinds registered across every type folder — useful for
-				spotting where the taxonomy needs to shift.
+				The hierarchy of registered kinds — the taxonomy the entities
+				classify themselves into, independent of where they sit in
+				the collections.
 			</div>
 			<div class="count">{data.kindCount}</div>
 		</a>
