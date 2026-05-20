@@ -64,6 +64,13 @@ export async function load() {
 	const entities = graph.all();
 	const entitiesWithProse = entities.filter((e) => e.body.trim().length > 0).length;
 
+	// Book-shaped entities — those carrying a chapters/ subfolder —
+	// and the total number of chapter pages across all of them.
+	// Surfaced in the home-page counter so the size of the corpus
+	// reflects sub-pages too, not just top-level entities.
+	const booksWithChapters = entities.filter((e) => e.chapters.length > 0);
+	const totalChapters = booksWithChapters.reduce((n, e) => n + e.chapters.length, 0);
+
 	const kinds = [...graph.kindRegistry().values()];
 	const kindsWithProse = kinds.filter((k) => (k.body ?? '').trim().length > 0).length;
 
@@ -73,6 +80,8 @@ export async function load() {
 		collectionCount: folders.length,
 		totalEntities: entities.length,
 		entitiesWithProse,
+		totalChapters,
+		bookCount: booksWithChapters.length,
 		kindCount: kinds.length,
 		kindsWithProse,
 		tags: graph.tags().slice(0, 12),
