@@ -87,7 +87,7 @@ The sustained scholarly work of reconstruction — taking the
 inscriptions, transcribing them, debating them, deriving from
 them as much of the original Old Tongue practice as the marked
 stone can support — has fallen, since the Urouthi arrived,
-chiefly to **the [[beings/urouthi|Urouthi]]**. They are the
+chiefly to **the [[kinds/urouthi|Urouthi]]**. They are the
 surface civilisation's own descendants; they have a particular
 intimacy with the language those inscriptions encode, even
 though it is no longer their spoken tongue. The work they do is
@@ -146,7 +146,7 @@ their original use, and in surface-scholar shorthand they are
 still sometimes spoken of as one thing. They are not. The
 language is dead in living mouths; the script is not.
 
-The [[beings/urouthi|Urouthi]] write
+The [[kinds/urouthi|Urouthi]] write
 [[culture/languages/deep-speech|Deep Speech]] in this script. They have
 done so for as long as their tradition runs back — since
 shortly after the older Nuunlaumud took in the surface

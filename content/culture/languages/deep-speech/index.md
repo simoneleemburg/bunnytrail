@@ -8,7 +8,7 @@ The [[culture/languages/deep-speech|Nuunlaumud]] of
 language — the tongue that has lived on the seafloor for as long
 as the older Nuunlaumud have, separately from anything that
 travels on the surface. The
-[[beings/urouthi|Urouthi]] — the populous majority of the
+[[kinds/urouthi|Urouthi]] — the populous majority of the
 Nuunlaumud, descended from the surface civilisation's
 survivors — speak it too: they adopted it from the older people
 who took them in, and have spoken it across the long centuries
@@ -22,7 +22,7 @@ speech.
 
 Almost nothing of Deep Speech itself is recorded in this
 compendium. What is known to the surface comes through a few
-words that have travelled up: _[[beings/urouthi|Urouthi]]_,
+words that have travelled up: _[[kinds/urouthi|Urouthi]]_,
 the populous majority's name for themselves — _people of
 Urouch_, the radiance their lives are bent around;
 _[[materials/urouch|Urouch]]_, the deep's name for the
@@ -61,7 +61,7 @@ Deep Speech as substrate or loan-vocabulary is another.)_
 
 Deep Speech has a writing system, but the system did not
 originate with it. The
-[[beings/urouthi|Urouthi]] write Deep Speech in the
+[[kinds/urouthi|Urouthi]] write Deep Speech in the
 **[[culture/languages/old-tongue#the-inscriptional-script-and-its-second-life|inscriptional
 script]]** — the notational technology the surface civilisation
 invented for what is now called the
@@ -108,7 +108,7 @@ much travel between them.
 _(The Nuunlaumud's relationship to the
 [[culture/languages/old-tongue|Old Tongue]] — whose inscriptions they
 steward, and whose reconstruction the
-[[beings/urouthi|Urouthi]] have largely carried — is a
+[[kinds/urouthi|Urouthi]] have largely carried — is a
 relationship to a third language, not to anything in their own
 speech. The Old Tongue is not Deep Speech. That it is, for the
 Urouthi, the language of their own ancestors makes the

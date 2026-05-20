@@ -70,6 +70,20 @@ this file is not loaded by the site.
 
 ## Structural work
 
+- **Meta/content rule tension on kindred kinds.** WORLDBUILDING.md
+  says meta must not reference specific instances, but the
+  `naya`, `nguwari`, and especially `urouthi` `_kind.md` files
+  all do — Nareth, Nuunlau, Bayurinda, Vochran, Urouch, the
+  drowning, Deep Speech, the inscriptions. Urouthi is the most
+  flagrant: most of its prose is a single-population history
+  rather than a general kindred description. Decide whether to
+  (a) loosen the rule for kindred kinds, (b) reshape these
+  pages to keep only structural canon (anatomy, biology,
+  capacities) and move instance-history to relevant
+  `content/` pages (Nuunlau, a new "drowning" entry, etc.), or
+  (c) accept these as documented exceptions and tighten the
+  rule everywhere else. Worth deciding before the next kindred
+  migration.
 - **Multiple creation stories.** The compendium needs to be able
   to hold multiple creation stories and pieces of lore tied to
   specific cultural contexts, without flattening them into one

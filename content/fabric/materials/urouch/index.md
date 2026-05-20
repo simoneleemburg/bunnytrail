@@ -2,7 +2,7 @@ _Urouch_ [[ds]] is the [[culture/languages/deep-speech|Deep Speech]] name
 for the substance the compendium has, until now, called
 **the radiance** — the radioactive material on the floor of
 [[nuunlau|Nuunlau]] that the
-[[beings/urouthi|Urouthi]] near by, and on which long-term
+[[kinds/urouthi|Urouthi]] near by, and on which long-term
 life in the deep depends.
 
 _(The name is pronounced with the final consonant cluster soft —
@@ -14,7 +14,7 @@ older than living Deep Speech — is not yet recorded here.)\_
 
 The populous majority of the [[nuunlau|Nuunlau]] seafloor name
 themselves after Urouch: the
-[[beings/urouthi|Urouthi]] — _people of Urouch_ — bear in
+[[kinds/urouthi|Urouthi]] — _people of Urouch_ — bear in
 their own name the radiance their lives are bent around.
 
 ## What it looks like
@@ -47,7 +47,7 @@ compendium separates them only for the surface reader.
 congenial to, and the substance through which Urouthi Nearing
 is mediated. At low doses it sustains; at higher doses it opens
 the doorway. See
-[[beings/urouthi#the-radiance-and-what-is-in-it|the radiance,
+[[kinds/urouthi#the-radiance-and-what-is-in-it|the radiance,
 and what is in it]] and [[nearing|Nearing]] for the
 practice.
 

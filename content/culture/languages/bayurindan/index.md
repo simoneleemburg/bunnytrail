@@ -102,10 +102,10 @@ entry]].)
   Bayurindan suffix _-mud_, which derives a people-name from a
   place-name. The word is an umbrella: it covers both the older
   pre-drowning Nuunlaumud and the
-  [[beings/urouthi|Urouthi]] who joined them after the
+  [[kinds/urouthi|Urouthi]] who joined them after the
   drowning. The Urouthi's own Deep-Speech name for themselves
   is recorded — _Urouthi_, "people of Urouch" (see
-  [[beings/urouthi|Urouthi]]). What the **older** Nuunlaumud
+  [[kinds/urouthi|Urouthi]]). What the **older** Nuunlaumud
   call themselves, in
   [[culture/languages/deep-speech|Deep Speech]] or in any tongue
   remembered from before the drowning, is not yet recorded here.

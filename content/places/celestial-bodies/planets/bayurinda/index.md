@@ -106,7 +106,7 @@ pressure-adapted, and were already at home in
 [[nuunlau|Nuunlau]] long before the surface civilisation
 above them drowned.
 
-The **[[beings/urouthi|Urouthi]]** are the populous
+The **[[kinds/urouthi|Urouthi]]** are the populous
 majority. They are not older; they are descendants of the
 surface civilisation's own survivors, taken in by the older
 Nuunlaumud after the drowning and given the means to breathe

@@ -55,7 +55,7 @@ The major recognised purposes:
 
 Nearing is especially associated with oracles, experienced
 [[eidolons|Eidolon]] pilots, Bayurindan mystics,
-[[beings/urouthi|Urouthi]] practitioners, and long-distance
+[[kinds/urouthi|Urouthi]] practitioners, and long-distance
 starfarers — though the practice itself is older and more
 diffuse than any of these traditions.
 
@@ -87,7 +87,7 @@ with different safety structures.
   the tradition's own.
 
 - **Urouthi Nearing.** The
-  [[beings/urouthi|Urouthi]] of
+  [[kinds/urouthi|Urouthi]] of
   [[nuunlau|Nuunlau]] reach the [[kinds/naya|Naya]]
   through a different doorway entirely: a **radiance** emitted
   by certain features on the floor of Nuunlau, to which the
@@ -96,7 +96,7 @@ with different safety structures.
   safety architecture is the Urouthi form itself, refined
   across the long generations since the drowning. No
   Skyblood is used. The order's structures do not apply. (See
-  [[beings/urouthi#the-radiance-and-what-is-in-it|the
+  [[kinds/urouthi#the-radiance-and-what-is-in-it|the
 radiance, and what is in it]].)
 
 - **The starfaring layer.** Eidolon starfaring is itself a
@@ -206,7 +206,7 @@ order's tradition, rituals, emotional anchors, companions, and
 [[materials/skyblood|Skyblood]] stabilisation, with the
 [[culture/oracle-triad|Oracle Triad]] as the long stabilising
 structure around the deepest practice; in
-[[beings/urouthi|Urouthi]] Nearing, the support is the
+[[kinds/urouthi|Urouthi]] Nearing, the support is the
 Urouthi form itself and the inherited practice around safe
 return; in the Bayurindan mystical traditions, the long
 discipline of study. What is universal is that some structure
