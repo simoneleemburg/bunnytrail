@@ -170,7 +170,7 @@ them at all.
 Because the body's pace slows while Near, prolonged Nearing
 extends life. Food, breath, exhaustion, and aging all become
 less immediate. Practitioners can sustain journeys, meditative
-states, and working partnerships that would otherwise be
+states, and lasting bonds that would otherwise be
 impossible. Some ancient oracles have remained in prolonged
 Nearing states for centuries, ageing only partially in the
 material world.

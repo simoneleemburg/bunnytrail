@@ -1,9 +1,10 @@
-The Oracle Triad is not a role or an institutional office. It is a
-specific working partnership of three: the Sacred Serpent
-[[characters/ngonawan-ilyardi|Ngonawan Ilyardi]], the Pilgrim
-[[characters/sabina-vaarn|Sabina Vaarn]], and the
-[[kinds/naya|Naya]] [[characters/uraya-ur|Uraya Ur]]. It has been
-this triad, by name, for centuries.
+The Oracle Triad is an institution of three in and of itself.
+The three oracles have bonded for centuries, and have become
+integral in the functioning of the
+[[culture/knights-of-bellona|Knights of Bellona]]: the Sacred
+Serpent [[characters/ngonawan-ilyardi|Ngonawan Ilyardi]], the
+Pilgrim [[characters/sabina-vaarn|Sabina Vaarn]], and the
+[[kinds/naya|Naya]] [[characters/uraya-ur|Uraya Ur]].
 
 The Triad is the working interpretive instrument of the
 [[culture/knights-of-bellona|Knights of Bellona]]. What the order

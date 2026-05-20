@@ -52,8 +52,8 @@ not discuss them.
 ## The chosen Eidolon
 
 The order's recognised ideal of Knighthood is the _chosen
-Eidolon_: a Knight who, over time, comes into deepening
-working partnership with one particular vessel and the
+Eidolon_: a Knight who, over time, comes into a deepening
+bond with one particular vessel and the
 [[kinds/naya|Naya]] [[binding|bound]] inside it. The
 fit becomes specific. The Knight learns the Naya's nature in
 detail; the pairing becomes legible to those around them as a

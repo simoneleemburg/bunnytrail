@@ -31,7 +31,7 @@ spoken little about that period of her life.
 
 Freya pilots, in the order's own preferred sense, a chosen
 Eidolon. The vessel and its bound Naya are hers in the
-deepening working-partnership way the order trains toward —
+deepening-bond way the order trains toward —
 not by accident, not in a pinch, but by long fit.
 
 The Naya in her Eidolon is, by those who have served alongside

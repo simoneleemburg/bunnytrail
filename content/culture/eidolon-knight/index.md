@@ -59,7 +59,7 @@ produces what the order recognises as good piloting.
 
 The order's recognised ideal is the _chosen Eidolon_, sometimes
 called the _chosen Naya_: a Knight who, over time, comes into
-deepening working partnership with one particular Eidolon. The
+a deepening bond with one particular Eidolon. The
 fit becomes specific. The Knight learns the Naya's nature in
 detail. The Naya — by whatever indications a Naya can give —
 appears to accept the Knight's hand on the vessel.
