@@ -53,7 +53,7 @@ function expandCollectionIncludes(text: string, resolveCollection?: CollectionRe
 		const inner = bodyHtml ?? '';
 		return [
 			`<details class="collection-include">`,
-			`<summary><span class="collection-include-title">${escapeHtml(title)}</span> <a class="collection-include-link" href="${href}">visit &rarr;</a></summary>`,
+			`<summary><span class="collection-include-marker" aria-hidden="true">▸</span><span class="collection-include-title">${escapeHtml(title)}</span> <a class="collection-include-link" href="${href}">visit &rarr;</a></summary>`,
 			`<div class="collection-include-body">${inner}</div>`,
 			`</details>`
 		].join('');

@@ -629,10 +629,35 @@
 		display: flex;
 		align-items: baseline;
 		gap: var(--space-3);
+		list-style: none;
+		user-select: none;
+	}
+
+	.collection-body :global(details.collection-include > summary::-webkit-details-marker) {
+		display: none;
+	}
+
+	.collection-body :global(.collection-include-marker) {
+		display: inline-block;
+		font-size: 0.85em;
+		color: var(--ink-soft);
+		transition: transform 120ms ease-out;
+	}
+
+	.collection-body :global(details.collection-include[open] > summary .collection-include-marker) {
+		transform: rotate(90deg);
+	}
+
+	.collection-body :global(details.collection-include > summary:hover .collection-include-title),
+	.collection-body :global(details.collection-include > summary:hover .collection-include-marker) {
+		color: var(--ink);
 	}
 
 	.collection-body :global(.collection-include-title) {
 		font-style: italic;
+		text-decoration: underline dotted;
+		text-decoration-color: var(--ink-faint, var(--ink-soft));
+		text-underline-offset: 3px;
 	}
 
 	.collection-body :global(.collection-include-link) {
