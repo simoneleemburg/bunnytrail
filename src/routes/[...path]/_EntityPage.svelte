@@ -40,6 +40,8 @@
 				'located-in': 'Located here',
 				'is-a': 'Includes',
 				'member-of': 'Bodies',
+				'occurred-on': 'Events',
+				'occurred-in': 'Events',
 				orbits: 'Moons'
 			};
 			if (inverse[kind]) return inverse[kind];

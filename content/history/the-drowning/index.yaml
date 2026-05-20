@@ -4,4 +4,6 @@ summary: The submergence of the surface civilisation of Bayurinda. The central f
 relations:
   - kind: occurred-in
     target: history/pre-recorded
+  - kind: occurred-on
+    target: places/celestial/aureth-system/bayurinda
 tags: [bayurinda, deep-time]
