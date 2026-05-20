@@ -4,8 +4,11 @@ Operational instructions for AI coding agents working in this repository.
 
 ## Project in one paragraph
 
-Alteria is a personal worldbuilding compendium. Canonical data lives in
-`content/` as one folder per entity:
+Alteria is a personal worldbuilding compendium. Alteria is the
+universe; **regions** of that universe live as top-level folders under
+`content/` (currently just `content/aurethia/` — the Aureth system and
+its immediate neighbourhood, the part charted so far). Canonical data
+lives in `content/` as one folder per entity:
 `content/<...collection-path>/<slug>/index.yaml` holds structured
 metadata and `index.md` holds the prose; sibling files (images, etc.)
 live alongside. Folders are **collections** — narrative shelves of
@@ -13,11 +16,12 @@ the field-notebook — and may carry an optional `_collection.yaml`
 describing their display label and prose. The **kinds** every entity
 declares (its taxonomic classification) live separately in
 `content_meta/kinds/` as a nested folder tree, each node optionally
-carrying a `_kind.yaml` and `_kind.md`. On top of `kind:`, instances
-may declare additional **lenses** — spatial, temporal,
-account-relative, kind-affinity — as structured `relations:` or
-named pointer fields. A SvelteKit site loads it all on boot into an
-in-memory graph and renders it as a browsable, cross-linked
+carrying a `_kind.yaml` and `_kind.md`. Kinds are universal — they
+describe categories in the abstract and apply across regions. On top
+of `kind:`, instances may declare additional **lenses** — spatial,
+temporal, account-relative, kind-affinity — as structured `relations:`
+or named pointer fields. A SvelteKit site loads it all on boot into
+an in-memory graph and renders it as a browsable, cross-linked
 field-notebook. Cross-references in prose use `[[type/slug]]`
 wikilinks; backlinks and inverse relations are built automatically.
 
@@ -124,11 +128,12 @@ up automatically. The lenses in current use:
   `occurred-on`. Targets must be full entity ids; bare slugs are
   not resolved.
 - **Temporal.** `relations: - kind: occurred-in, target:
-history/<age>` against the four registered ages (`mythic`,
-  `pre-recorded`, `recorded`, `current`).
+aurethia/history/<age>` against the four registered ages (`mythic`,
+  `pre-recorded`, `recorded`, `current`) under
+  `content/aurethia/history/`.
 - **Account-relative.** Declared on the account entity:
-  `relations: - kind: records, target: history/<event-id>`. The
-  inverse appears on the event as "Recorded in: …".
+  `relations: - kind: records, target: aurethia/history/<event-id>`.
+  The inverse appears on the event as "Recorded in: …".
 - **Kind-affinity.** Named YAML fields with `kinds/<id>` values
   (`nativeBeings: [kinds/human]`, `traits: [kinds/nearborn]`).
   Curated inverse labels live in
@@ -159,17 +164,17 @@ WORLDBUILDING.md).
   `content_meta/kinds/`, optionally with `_kind.yaml` (singular/plural
   overrides, description) and `_kind.md` (long-form prose). The parent
   kind is whichever folder it sits in; no `kindParent:` field needed.
-- **New event** → `content/history/<slug>/index.{yaml,md}` with
+- **New event** → `content/aurethia/history/<slug>/index.{yaml,md}` with
   `kind: event`. Add temporal placement via
-  `relations: - kind: occurred-in, target: history/<age>` and
+  `relations: - kind: occurred-in, target: aurethia/history/<age>` and
   spatial placement via
   `relations: - kind: occurred-on, target: <place-entity-id>`.
-- **New age** → `content/history/<slug>/index.{yaml,md}` with
+- **New age** → `content/aurethia/history/<slug>/index.{yaml,md}` with
   `kind: age`. The four current ages were chosen deliberately;
   adding a fifth is a worldbuilding decision, not routine.
-- **New account** → `content/history/accounts/<slug>/index.{yaml,md}`
+- **New account** → `content/aurethia/history/accounts/<slug>/index.{yaml,md}`
   with `kind: account`. Add the events it records via `relations:
-  - kind: records, target: history/<event-id>`.
+  - kind: records, target: aurethia/history/<event-id>`.
 - **New relation verb** → just use it in YAML; the loader doesn't
   whitelist verbs. If the inverse direction wants a custom label,
   add it to `_EntityPage.svelte`'s `inverse` table. The fallback

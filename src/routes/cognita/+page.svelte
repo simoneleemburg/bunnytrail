@@ -16,7 +16,7 @@
 			known portion. The pieces that have a name, a shape, a place to stand.
 		</p>
 		<p class="lede">
-			<a href="/places/celestial/aureth-system/aureth">Aureth</a>, eight planets, and two parallel
+			<a href="/aurethia/places/celestial/aureth-system/aureth">Aureth</a>, eight planets, and two parallel
 			layers of being. Three of the planets — the habitable-zone worlds — are settled territory; the
 			others are sketches, their names still tentative.
 		</p>
@@ -24,7 +24,7 @@
 			The chart extends a little past its own system. Across the long gulf, the neighbouring
 			<em>Hollow Binary</em> is visible from Cognita: a single companion star, and the unresolved
 			body it orbits —
-			<a href="/places/celestial/hollow-binary/the-dark-companion">the Dark Companion</a>, which
+			<a href="/aurethia/places/celestial/hollow-binary/the-dark-companion">the Dark Companion</a>, which
 			gives off no light and is known only by what it does.
 		</p>
 	</header>
@@ -34,13 +34,13 @@
 	<section class="legend">
 		<h2>How to read it</h2>
 		<dl>
-			<dt><a href="/places/realms/asthera">Asthera</a> · the material</dt>
+			<dt><a href="/aurethia/places/realms/asthera">Asthera</a> · the material</dt>
 			<dd>
 				The persistent layer. Bodies in their solid forms; orbits that keep; histories that stay put
 				long enough to be written down.
 			</dd>
 
-			<dt><a href="/places/realms/nareth">Nareth</a> · the resonant</dt>
+			<dt><a href="/aurethia/places/realms/nareth">Nareth</a> · the resonant</dt>
 			<dd>
 				The substrate beneath. The same bodies are here too, but as identity and memory rather than
 				stone — fluid, interconnected, available to drift and transformation.
@@ -62,7 +62,7 @@
 			<dd>
 				The neighbouring system, drawn off to the right across a long gulf of interstellar space
 				(not to scale). Its visible companion star turns around a body the eye cannot resolve:
-				<a href="/places/celestial/hollow-binary/the-dark-companion">the Dark Companion</a>, shown
+				<a href="/aurethia/places/celestial/hollow-binary/the-dark-companion">the Dark Companion</a>, shown
 				as a hollow rather than drawn solidly, because no light has ever come from it.
 			</dd>
 		</dl>

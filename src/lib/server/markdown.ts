@@ -243,7 +243,7 @@ function rewriteBrackets(
  *
  * Headings (`#`, `##`, `###`, …) get auto-generated `id` attributes
  * derived from their text content, so cross-page anchor links like
- * `/places/celestial/aureth-system/bayurinda#on-the-name` actually scroll to the section.
+ * `/aurethia/places/celestial/aureth-system/bayurinda#on-the-name` actually scroll to the section.
  * Duplicate slugs within one body are disambiguated with `-2`, `-3`,
  * etc.
  */

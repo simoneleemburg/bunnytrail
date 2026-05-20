@@ -1,9 +1,0 @@
-name: Tholingia
-kind: region
-language: tho
-summary: A region of Nebelheim and the place of origin of the Tholingian language. The home country of both Freya and Sabina Vaarn, though their lives have led them in different directions.
-tags: [nebelheim, tholingian]
-relations:
-  - kind: region-of
-    target: places/celestial/aureth-system/nebelheim
-    note: A region on the planet of Nebelheim.
