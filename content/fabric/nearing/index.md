@@ -73,7 +73,7 @@ starting points and with different safety structures.
   Knighthood, and the long memory of what previous practitioners
   have brought back all sit under their authority. The order's
   framing is one of trained safety: serious Nearing belongs to
-  trained practitioners, and a person's [[nearborn|Nearborn]]
+  trained practitioners, and a person's [[kinds/nearborn|Nearborn]]
   status is one of the factors the order weighs in deciding
   who is ready for sustained practice. This framing is
   sometimes received outside the order as a stronger claim than

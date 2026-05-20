@@ -23,5 +23,5 @@ meaning. The holding is what makes the meaning possible.
 ## Identity
 
 Sabina is a trans woman, and so — by the cosmology's recognised
-reading — [[nearborn|Nearborn]]. The lived experience of
+reading — [[kinds/nearborn|Nearborn]]. The lived experience of
 her transformation is integral to her function in the Triad.

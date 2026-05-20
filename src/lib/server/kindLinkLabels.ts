@@ -15,7 +15,8 @@
  */
 
 const INVERSE_LABELS: Record<string, string> = {
-	nativeBeings: 'Native to'
+	nativeBeings: 'Native to',
+	traits: 'Of trait:'
 };
 
 /**

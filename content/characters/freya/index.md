@@ -6,7 +6,7 @@ Freya [[tho]] is an [[culture/eidolon-knight|Eidolon Knight]] of the
 ## Identity
 
 Freya is a trans woman, and so — by the cosmology's recognised
-reading — [[nearborn|Nearborn]]. She came to her own
+reading — [[kinds/nearborn|Nearborn]]. She came to her own
 name through long work, and she carries it carefully.
 
 ## Reception by the order

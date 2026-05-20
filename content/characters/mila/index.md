@@ -3,7 +3,7 @@ Mila is an [[culture/eidolon-knight|Eidolon Knight]] of the
 
 ## Identity
 
-Mila is a cis woman, and not [[nearborn|Nearborn]].
+Mila is a cis woman, and not [[kinds/nearborn|Nearborn]].
 She came to Knighthood by the order's more ordinary route —
 through screening, training, and demonstrated piloting
 capacity, in that order. Among those who have served alongside

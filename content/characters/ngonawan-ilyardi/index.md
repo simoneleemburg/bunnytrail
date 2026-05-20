@@ -24,5 +24,5 @@ beautiful, unusable hearing.
 ## Identity
 
 Ngonawan is a trans man, and so — by the cosmology's recognised
-reading — [[nearborn|Nearborn]]. His identity is deeply
+reading — [[kinds/nearborn|Nearborn]]. His identity is deeply
 tied to transformation and embodied transition.

@@ -96,7 +96,7 @@ inconsistently.
 
 In the order's screening, this is what is being looked for. The
 formal language varies. The substantive question is whether the
-candidate is [[nearborn|Nearborn]] enough — adaptive
+candidate is [[kinds/nearborn|Nearborn]] enough — adaptive
 enough, already practised enough at holding a self under
 resonance — to survive sustained piloting Nearing without
 coming apart. The screening is imperfect. Candidates near the
