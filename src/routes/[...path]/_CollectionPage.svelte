@@ -7,10 +7,10 @@
 
 	let { data }: { data: CollectionPageData } = $props();
 
-	// Display caps for tags. Subtype tiles get a tight cap to keep
+	// Display caps for tags. Subcollection tiles get a tight cap to keep
 	// the tile compact; the page-level filter starts collapsed at
 	// FILTER_TOP_N and reveals the rest behind a "show all" toggle.
-	const SUBTYPE_TAG_CAP = 6;
+	const SUBCOLLECTION_TAG_CAP = 6;
 	const FILTER_TOP_N = 8;
 
 	// Four orthogonal UI states:
@@ -32,9 +32,9 @@
 	let showAllTags = $state(false);
 
 	const hasContainers = $derived(data.containers.length > 0);
-	const hasSubtypes = $derived(data.subtypes.length > 0);
+	const hasSubcollections = $derived(data.subcollections.length > 0);
 	const hasOrbits = $derived(data.orbits.length > 0);
-	const hasViewToggle = $derived(hasContainers || hasSubtypes || hasOrbits);
+	const hasViewToggle = $derived(hasContainers || hasSubcollections || hasOrbits);
 
 	// Flatten the orbit forest into a single list of entity cards.
 	// Used in orbits mode to drive kind/tag chips and filter counts
@@ -220,12 +220,12 @@
 			.filter((f) => f.count > 0 || activeFolder === f.path);
 	});
 
-	// Subtype tiles only show in nested mode. Their counts, visibility
+	// Subcollection tiles only show in nested mode. Their counts, visibility
 	// and displayed tags all follow the active kind + tag filters: a
-	// subtype with zero matching entities is hidden entirely.
-	const visibleSubtypes = $derived.by(() => {
+	// subcollection with zero matching entities is hidden entirely.
+	const visibleSubcollections = $derived.by(() => {
 		if (viewMode !== 'nested') return [];
-		return data.subtypes
+		return data.subcollections
 			.map((sub) => {
 				// Re-derive count + tag list under the current filters.
 				// Kind narrows first; tag narrows the count further by
@@ -252,7 +252,7 @@
 				return {
 					...sub,
 					visibleCount: filteredCount,
-					displayTags: displayTags.slice(0, SUBTYPE_TAG_CAP)
+					displayTags: displayTags.slice(0, SUBCOLLECTION_TAG_CAP)
 				};
 			})
 			.filter((sub) => sub.visibleCount > 0);
@@ -440,23 +440,23 @@
 		</nav>
 	{/if}
 
-	{#if visibleSubtypes.length > 0}
-		<section class="subtypes" aria-label="Subtypes">
-			<ul class="subtype-list">
-				{#each visibleSubtypes as sub (sub.type)}
-					<li class="subtype">
-						<a class="subtype-link" href={`/${sub.type}`}>
-							<div class="subtype-eyebrow">
-								<span class="subtype-tag">Collection</span>
-								<span class="subtype-count">{sub.visibleCount}</span>
+	{#if visibleSubcollections.length > 0}
+		<section class="subcollections" aria-label="Subcollections">
+			<ul class="subcollection-list">
+				{#each visibleSubcollections as sub (sub.type)}
+					<li class="subcollection">
+						<a class="subcollection-link" href={`/${sub.type}`}>
+							<div class="subcollection-eyebrow">
+								<span class="subcollection-tag">Collection</span>
+								<span class="subcollection-count">{sub.visibleCount}</span>
 							</div>
-							<h3 class="subtype-label">{sub.plural}</h3>
+							<h3 class="subcollection-label">{sub.plural}</h3>
 						</a>
 						{#if sub.description}
-							<p class="subtype-description">{sub.description}</p>
+							<p class="subcollection-description">{sub.description}</p>
 						{/if}
 						{#if sub.displayTags.length > 0}
-							<ul class="subtype-tags">
+							<ul class="subcollection-tags">
 								{#each sub.displayTags as tag (tag.label)}
 									<li><Tag label={tag.label} href={`/tags/${tag.label}`} /></li>
 								{/each}
@@ -654,11 +654,11 @@
 		color: var(--ink-soft);
 	}
 
-	.subtypes {
+	.subcollections {
 		margin: 0 0 var(--space-7) 0;
 	}
 
-	.subtype-list {
+	.subcollection-list {
 		list-style: none;
 		padding: 0;
 		margin: 0;
@@ -667,7 +667,7 @@
 		gap: var(--space-4) var(--space-6);
 	}
 
-	.subtype {
+	.subcollection {
 		position: relative;
 		padding: var(--space-4);
 		margin: 0 calc(var(--space-4) * -1);
@@ -678,13 +678,13 @@
 			transform 150ms ease;
 	}
 
-	.subtype:hover {
+	.subcollection:hover {
 		background-color: var(--paper-warm);
 		box-shadow: var(--shadow-hover);
 		transform: translateY(-1px);
 	}
 
-	.subtype-link {
+	.subcollection-link {
 		display: block;
 		color: inherit;
 		text-decoration: none;
@@ -692,14 +692,14 @@
 
 	/* Stretched link covers the whole tile, so the description below
 	   is clickable too. No interactive children compete here. */
-	.subtype-link::after {
+	.subcollection-link::after {
 		content: '';
 		position: absolute;
 		inset: 0;
 		z-index: 1;
 	}
 
-	.subtype-eyebrow {
+	.subcollection-eyebrow {
 		display: flex;
 		align-items: baseline;
 		justify-content: space-between;
@@ -709,7 +709,7 @@
 		border-bottom: 1px solid var(--rule);
 	}
 
-	.subtype-tag {
+	.subcollection-tag {
 		font-family: var(--font-serif);
 		font-style: italic;
 		font-size: var(--text-xs);
@@ -717,7 +717,7 @@
 		color: var(--ink-faint);
 	}
 
-	.subtype-label {
+	.subcollection-label {
 		font-family: var(--font-display);
 		font-size: var(--text-lg);
 		font-weight: 500;
@@ -725,31 +725,31 @@
 		color: var(--ink);
 	}
 
-	.subtype:hover .subtype-label {
+	.subcollection:hover .subcollection-label {
 		color: var(--accent);
 	}
 
-	.subtype-count {
+	.subcollection-count {
 		font-size: var(--text-xs);
 		font-variant: tabular-nums small-caps;
 		color: var(--ink-faint);
 	}
 
-	.subtype-description {
+	.subcollection-description {
 		margin: var(--space-2) 0 0 0;
 		font-size: var(--text-sm);
 		color: var(--ink-soft);
 		line-height: var(--leading-normal);
 	}
 
-	.subtype-tags {
+	.subcollection-tags {
 		list-style: none;
 		padding: 0;
 		margin: var(--space-3) 0 0 0;
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--space-1) var(--space-2);
-		/* Lift tag links above the subtype-link::after overlay so they
+		/* Lift tag links above the subcollection-link::after overlay so they
 		   are independently clickable. */
 		position: relative;
 		z-index: 2;

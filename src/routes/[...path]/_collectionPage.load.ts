@@ -61,10 +61,10 @@ export function loadCollectionPage(path: string) {
 		return lastSlash < 0 ? '' : rest.slice(0, lastSlash);
 	};
 
-	// Child folders → "subtype" tiles. The same wire shape the page
+	// Child folders → "subcollection" tiles. The same wire shape the page
 	// has always used, so the existing view renders unchanged.
 	const childPaths = graph.childFolders(path);
-	const subtypes = childPaths
+	const subcollections = childPaths
 		.map((sub) => {
 			const subEntities = graph.byFolderRecursive(sub);
 			const subLabels = graph.folderLabels(sub);
@@ -138,7 +138,7 @@ export function loadCollectionPage(path: string) {
 	// themselves child collections get wrapped as synthetic
 	// container nodes so the user sees the filesystem grouping
 	// implicitly. Subfolders that are listed in `childPaths` (the
-	// subtype tiles) are excluded — their entities already get a
+	// subcollection tiles) are excluded — their entities already get a
 	// dedicated tile.
 	const childFolderSet = new Set(childPaths);
 	const containerBuckets = new Map<string, ContainerNode[]>();
@@ -250,7 +250,7 @@ export function loadCollectionPage(path: string) {
 		type: path,
 		label,
 		description,
-		subtypes,
+		subcollections,
 		containers,
 		standalone,
 		orbits,
@@ -285,7 +285,7 @@ export type CollectionPageData = ReturnType<typeof loadCollectionPage>;
  * Reuses the same data shape as the per-folder collection page so
  * the `_CollectionPage.svelte` component renders both. Differences:
  *
- *   • `subtypes` is filled with every top-level folder.
+ *   • `subcollections` is filled with every top-level folder.
  *   • `containers` is always empty (container nesting is local).
  *   • Every card carries its `typeLabel` so the grid shows what
  *     kind of folder each one lives in.
@@ -298,7 +298,7 @@ export function loadEverythingIndex() {
 		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;
 
 	const topPaths = graph.topLevelFolders();
-	const subtypes = topPaths
+	const subcollections = topPaths
 		.filter((p) => graph.byFolderRecursive(p).length > 0)
 		.map((p) => {
 			const subEntities = graph.byFolderRecursive(p);
@@ -338,7 +338,7 @@ export function loadEverythingIndex() {
 		type: '',
 		label: { singular: 'Entry', plural: 'Everything' },
 		description: 'Every entry in Alteria, in one place. Filter or flatten to taste.',
-		subtypes,
+		subcollections,
 		containers: [] as ContainerNode[],
 		orbits: [] as OrbitNode[],
 		folders: [] as Array<{
