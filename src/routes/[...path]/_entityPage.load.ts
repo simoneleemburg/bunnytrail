@@ -1,5 +1,5 @@
 import { graph } from '$lib/server/graph';
-import { renderEntityBody, renderSummary } from '$lib/server/markdown';
+import { makeCollectionResolver, renderEntityBody, renderSummary } from '$lib/server/markdown';
 import { titleCaseSlug, type Entity } from '$lib/types';
 
 /**
@@ -13,7 +13,15 @@ export function loadEntityPage(entity: Entity) {
 	const resolveLink = (path: string) => graph.resolveLink(path);
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();
-	const html = renderEntityBody(entity, resolveLink, languageCodes, kindIds);
+	const resolveCollection = makeCollectionResolver({
+		getCollection: (p) => graph.collection(p),
+		folderLabels: (p) => graph.folderLabels(p),
+		resolveLink,
+		languageCodes,
+		kindIds
+	});
+
+	const html = renderEntityBody(entity, resolveLink, languageCodes, kindIds, resolveCollection);
 
 	const summaryHtml = (s: string | null | undefined) =>
 		s ? renderSummary(s, resolveLink, languageCodes, { kindIds }) : null;

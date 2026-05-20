@@ -615,6 +615,39 @@
 		margin: var(--space-5) 0;
 	}
 
+	.collection-body :global(details.collection-include) {
+		margin: var(--space-5) 0;
+		border-left: 2px solid var(--ink-faint, var(--ink-soft));
+		padding: var(--space-2) var(--space-4);
+		background: var(--surface-soft, transparent);
+	}
+
+	.collection-body :global(details.collection-include > summary) {
+		cursor: pointer;
+		font-style: italic;
+		color: var(--ink-soft);
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-3);
+	}
+
+	.collection-body :global(.collection-include-title) {
+		font-style: italic;
+	}
+
+	.collection-body :global(.collection-include-link) {
+		font-size: var(--text-sm);
+		font-style: normal;
+	}
+
+	.collection-body :global(.collection-include-body) {
+		margin-top: var(--space-3);
+	}
+
+	.collection-body :global(.collection-include-body > *:last-child) {
+		margin-bottom: 0;
+	}
+
 	.filters {
 		display: flex;
 		flex-wrap: wrap;

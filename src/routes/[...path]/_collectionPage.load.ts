@@ -1,5 +1,5 @@
 import { graph } from '$lib/server/graph';
-import { renderBody, renderSummary } from '$lib/server/markdown';
+import { makeCollectionResolver, renderBody, renderSummary } from '$lib/server/markdown';
 import type { Entity, EntityId } from '$lib/types';
 
 type Card = ReturnType<typeof toCard>;
@@ -46,13 +46,20 @@ export function loadCollectionPage(path: string) {
 	const resolveLink = (p: string) => graph.resolveLink(p);
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();
+	const resolveCollection = makeCollectionResolver({
+		getCollection: (p) => graph.collection(p),
+		folderLabels: (p) => graph.folderLabels(p),
+		resolveLink,
+		languageCodes,
+		kindIds
+	});
 
 	// Optional long-form prose from `_collection.md`. Rendered the
 	// same way entity bodies are — wikilinks, kind-links, and
 	// language tags all resolve. Sits between the one-liner
 	// description and the filter chips on the collection page.
 	const bodyHtml = collection?.body
-		? renderBody(collection.body, resolveLink, languageCodes, kindIds)
+		? renderBody(collection.body, resolveLink, languageCodes, kindIds, resolveCollection)
 		: null;
 	const cardSummaryHtml = (s: string | null | undefined) =>
 		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;

@@ -9,6 +9,67 @@ import type { Entity, EntityId } from '$lib/types';
 export type LinkResolver = (rawPath: string) => EntityId | null;
 
 /**
+ * A function that resolves a `[[collection:<path>]]` directive to
+ * the data needed to render an inline fold-out: the collection's
+ * display title, its public href, and its body rendered to HTML.
+ * Returns `null` if the path does not name a known collection or
+ * the collection has no `_collection.md` body to fold out.
+ *
+ * Callers wire this against `graph.collection(path)`; tests can
+ * pass a simple stub. When omitted (or when it returns null) the
+ * directive is replaced with a broken-link sentinel so the gap is
+ * loud rather than silent.
+ */
+export type CollectionResolver = (
+	rawPath: string
+) => { title: string; href: string; bodyHtml: string | null } | null;
+
+/**
+ * Expand `[[collection:<path>]]` block directives.
+ *
+ * The directive is matched as a standalone line — it must sit on
+ * its own paragraph in the source, with nothing else on the line.
+ * Each match is replaced with a self-contained `<details>` block
+ * carrying the collection's title, a link to the collection page,
+ * and the collection's body rendered to HTML.
+ *
+ * When `resolveCollection` is omitted (or returns null) the
+ * directive is replaced with a broken-link sentinel that surfaces
+ * the missing reference in the rendered prose, matching how
+ * unresolved entity wikilinks behave.
+ *
+ * Collection bodies expanded this way are rendered with the
+ * collection resolver disabled, so an included collection cannot
+ * itself fold out further includes. This caps the recursion at
+ * one level and makes the rendered prose unambiguous.
+ */
+function expandCollectionIncludes(text: string, resolveCollection?: CollectionResolver): string {
+	return text.replace(/^[ \t]*\[\[collection:([^\]\s]+)\]\][ \t]*$/gm, (_, rawPath: string) => {
+		const resolved = resolveCollection?.(rawPath) ?? null;
+		if (!resolved) {
+			return `<p><a href="/${rawPath}" data-broken="true">collection:${rawPath}</a></p>`;
+		}
+		const { title, href, bodyHtml } = resolved;
+		const inner = bodyHtml ?? '';
+		return [
+			`<details class="collection-include">`,
+			`<summary><span class="collection-include-title">${escapeHtml(title)}</span> <a class="collection-include-link" href="${href}">visit &rarr;</a></summary>`,
+			`<div class="collection-include-body">${inner}</div>`,
+			`</details>`
+		].join('');
+	});
+}
+
+function escapeHtml(s: string): string {
+	return s
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#39;');
+}
+
+/**
  * Slugify a heading's text content into an anchor-safe id.
  *
  * Lowercase, ASCII-fold diacritics, collapse non-alphanumerics to
@@ -190,9 +251,11 @@ export function renderBody(
 	body: string,
 	resolveLink: LinkResolver,
 	languageCodes: Map<string, EntityId> = new Map(),
-	kindIds: ReadonlySet<string> = new Set()
+	kindIds: ReadonlySet<string> = new Set(),
+	resolveCollection?: CollectionResolver
 ): string {
-	const rewritten = rewriteBrackets(body, resolveLink, languageCodes, kindIds);
+	const expanded = expandCollectionIncludes(body, resolveCollection);
+	const rewritten = rewriteBrackets(expanded, resolveLink, languageCodes, kindIds);
 
 	// Per-render heading-id state. Tracked here (not at module scope)
 	// so concurrent renders of different entities can't collide.
@@ -225,9 +288,44 @@ export function renderEntityBody(
 	entity: Entity,
 	resolveLink: LinkResolver,
 	languageCodes: Map<string, EntityId> = new Map(),
-	kindIds: ReadonlySet<string> = new Set()
+	kindIds: ReadonlySet<string> = new Set(),
+	resolveCollection?: CollectionResolver
 ): string {
-	return renderBody(entity.body, resolveLink, languageCodes, kindIds);
+	return renderBody(entity.body, resolveLink, languageCodes, kindIds, resolveCollection);
+}
+
+/**
+ * Build a `CollectionResolver` from the graph primitives every
+ * page-load needs anyway. The resolver titles each disclosure as
+ * `<parent plural> of <leaf>` (e.g. "Regions of Nebelheim") so the
+ * fold-out's content is unambiguous from inside any entity's prose,
+ * and falls back to the leaf label when the collection is at the
+ * top level.
+ *
+ * The included collection's body is rendered with this same resolver
+ * unset, capping recursion at one level (see
+ * `expandCollectionIncludes`).
+ */
+export function makeCollectionResolver(deps: {
+	getCollection: (path: string) => { body: string | null } | undefined;
+	folderLabels: (path: string) => { singular: string; plural: string };
+	resolveLink: LinkResolver;
+	languageCodes: Map<string, EntityId>;
+	kindIds: ReadonlySet<string>;
+}): CollectionResolver {
+	const { getCollection, folderLabels, resolveLink, languageCodes, kindIds } = deps;
+	return (path) => {
+		const collection = getCollection(path);
+		if (!collection) return null;
+		const leaf = folderLabels(path).singular;
+		const parentPath = path.includes('/') ? path.slice(0, path.lastIndexOf('/')) : '';
+		const parentPlural = parentPath ? folderLabels(parentPath).plural : null;
+		const title = parentPlural ? `${parentPlural} of ${leaf}` : leaf;
+		const bodyHtml = collection.body
+			? renderBody(collection.body, resolveLink, languageCodes, kindIds)
+			: null;
+		return { title, href: `/${path}`, bodyHtml };
+	};
 }
 
 /**

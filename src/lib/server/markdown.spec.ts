@@ -175,6 +175,66 @@ describe('renderBody', () => {
 		expect(html).toContain('data-broken="true"');
 		expect(html).toContain('href="/kinds/human"');
 	});
+
+	describe('[[collection:<path>]] fold-out directive', () => {
+		const resolveCollection = (path: string) => {
+			if (path === 'places/regions/nebelheim') {
+				return {
+					title: 'Regions of Nebelheim',
+					href: '/places/regions/nebelheim',
+					bodyHtml: '<p>Continents kept apart by seas, lava streams, and tundra.</p>'
+				};
+			}
+			return null;
+		};
+
+		it('expands a known collection directive into a details block', () => {
+			const html = renderBody(
+				'## Regions\n\n[[collection:places/regions/nebelheim]]\n',
+				resolve,
+				langs,
+				new Set(),
+				resolveCollection
+			);
+			expect(html).toContain('<details class="collection-include">');
+			expect(html).toContain('<summary>');
+			expect(html).toContain('Regions of Nebelheim');
+			expect(html).toContain('href="/places/regions/nebelheim"');
+			expect(html).toContain('Continents kept apart');
+		});
+
+		it('marks an unknown collection directive as broken', () => {
+			const html = renderBody(
+				'[[collection:places/regions/nowhere]]\n',
+				resolve,
+				langs,
+				new Set(),
+				resolveCollection
+			);
+			expect(html).toContain('data-broken="true"');
+			expect(html).toContain('collection:places/regions/nowhere');
+		});
+
+		it('ignores inline (non-line-start) directive occurrences', () => {
+			const html = renderBody(
+				'See nearby [[collection:places/regions/nebelheim]] for context.',
+				resolve,
+				langs,
+				new Set(),
+				resolveCollection
+			);
+			expect(html).not.toContain('<details');
+			// And the text passes through as literal — neither expanded
+			// nor turned into an entity wikilink. The brackets simply
+			// don't match any of our patterns.
+			expect(html).toContain('collection:places/regions/nebelheim');
+		});
+
+		it('marks the directive broken when no resolver is supplied', () => {
+			const html = renderBody('[[collection:places/regions/nebelheim]]\n', resolve, langs);
+			expect(html).toContain('data-broken="true"');
+		});
+	});
 });
 
 describe('renderSummary', () => {

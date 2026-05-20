@@ -280,6 +280,39 @@
 		margin: var(--space-5) 0;
 	}
 
+	.prose :global(details.collection-include) {
+		margin: var(--space-5) 0;
+		border-left: 2px solid var(--ink-faint, var(--ink-soft));
+		padding: var(--space-2) var(--space-4);
+		background: var(--surface-soft, transparent);
+	}
+
+	.prose :global(details.collection-include > summary) {
+		cursor: pointer;
+		font-style: italic;
+		color: var(--ink-soft);
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-3);
+	}
+
+	.prose :global(.collection-include-title) {
+		font-style: italic;
+	}
+
+	.prose :global(.collection-include-link) {
+		font-size: var(--text-sm);
+		font-style: normal;
+	}
+
+	.prose :global(.collection-include-body) {
+		margin-top: var(--space-3);
+	}
+
+	.prose :global(.collection-include-body > *:last-child) {
+		margin-bottom: 0;
+	}
+
 	.sidebar {
 		display: flex;
 		flex-direction: column;

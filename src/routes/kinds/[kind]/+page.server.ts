@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { graph } from '$lib/server/graph';
 import { inverseLabelFor } from '$lib/server/kindLinkLabels';
-import { renderBody, renderSummary } from '$lib/server/markdown';
+import { renderBody, renderSummary, makeCollectionResolver } from '$lib/server/markdown';
 import type { Entity } from '$lib/types';
 import { buildKindTree } from '$lib/types';
 
@@ -75,7 +75,21 @@ export async function load({ params }: { params: { kind: string } }) {
 	const plural = kind.meta.plural ?? `${singular}s`;
 
 	// Optional prose body (content_meta/kinds/<…>/<kindId>/_kind.md).
-	const bodyHtml = kind.body ? renderBody(kind.body, resolveLink, languageCodes, kindIds) : null;
+	const bodyHtml = kind.body
+		? renderBody(
+				kind.body,
+				resolveLink,
+				languageCodes,
+				kindIds,
+				makeCollectionResolver({
+					getCollection: (p) => graph.collection(p),
+					folderLabels: (p) => graph.folderLabels(p),
+					resolveLink,
+					languageCodes,
+					kindIds
+				})
+			)
+		: null;
 
 	// Direct entities: those whose meta.kind === this kind. Shown
 	// first, under a section labelled with the singular form.
