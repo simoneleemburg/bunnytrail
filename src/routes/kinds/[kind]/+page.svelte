@@ -1,8 +1,7 @@
 <script lang="ts">
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import EntityLink from '$lib/components/EntityLink.svelte';
-	import PageHeader from '$lib/components/PageHeader.svelte';
-	import type { KindCard, KindRefSection, KindSection } from './+page.server';
+	import type { KindCard, KindRefSection, KindSliceNode } from './+page.server';
 
 	let {
 		data
@@ -13,54 +12,129 @@
 			plural: string;
 			description: string | null;
 			bodyHtml: string | null;
-			parent: { id: string; label: string } | null;
-			directHeading: string | null;
+			slice: KindSliceNode | null;
 			direct: KindCard[];
-			subkindSections: KindSection[];
 			kindRefSections: KindRefSection[];
 			backlinks: KindCard[];
 		};
 	} = $props();
 
-	// Hide the "Direct" heading when the page has no subkind sections —
-	// in that case the page is just a single grid and a section heading
-	// above it would be redundant noise.
-	const showDirectHeading = $derived(data.direct.length > 0 && data.subkindSections.length > 0);
-	const totalCount = $derived(
-		data.direct.length + data.subkindSections.reduce((n, s) => n + s.cards.length, 0)
-	);
+	// Tabs split the page into the editorial story (About: prose +
+	// a sidebar of cross-references) and the populated membership
+	// view (Instances: direct entity cards). Either tab is hidden
+	// when its content is empty; if only one has content the strip
+	// is skipped entirely and that tab's content renders unframed.
+	const hasRefs = $derived(data.kindRefSections.length > 0 || data.backlinks.length > 0);
+	const hasAbout = $derived(Boolean(data.description) || Boolean(data.bodyHtml) || hasRefs);
+	const hasInstances = $derived(data.direct.length > 0);
+	const tabCount = $derived((hasAbout ? 1 : 0) + (hasInstances ? 1 : 0));
+
+	let activeTab: 'about' | 'instances' = $state('about');
+	// If the default tab has no content, fall back to the other one
+	// on first render. Pure derivation from props — no effect needed.
+	const currentTab = $derived.by(() => {
+		if (activeTab === 'about' && !hasAbout && hasInstances) return 'instances';
+		if (activeTab === 'instances' && !hasInstances && hasAbout) return 'about';
+		return activeTab;
+	});
 </script>
 
 <svelte:head>
 	<title>{data.plural} · Kinds · Alteria</title>
 </svelte:head>
 
-{#if data.parent}
-	<p class="up">
-		<a href={`/kinds/${data.parent.id}`}>↑ {data.parent.label}</a>
-	</p>
-{/if}
+{#snippet branch(node: KindSliceNode)}
+	<li class="kind" class:current={node.isCurrent}>
+		{#if node.isCurrent}
+			<span class="kind-link">
+				<span class="kind-name">{node.kind}</span>
+				{#if node.label && node.label.toLowerCase() !== node.kind}
+					<span class="kind-label">{node.label}</span>
+				{/if}
+				<span class="kind-count">{node.count}</span>
+			</span>
+		{:else if node.href}
+			<a class="kind-link" href={node.href}>
+				<span class="kind-name">{node.kind}</span>
+				{#if node.label && node.label.toLowerCase() !== node.kind}
+					<span class="kind-label">{node.label}</span>
+				{/if}
+				<span class="kind-count">{node.count}</span>
+			</a>
+		{:else}
+			<span class="kind-name muted">{node.kind}</span>
+		{/if}
+		{#if node.children.length > 0}
+			<ul class="children">
+				{#each node.children as child (child.kind)}
+					{@render branch(child)}
+				{/each}
+			</ul>
+		{/if}
+	</li>
+{/snippet}
 
-<PageHeader title={data.plural} />
+<header class="kind-header">
+	<a class="up-link" href="/kinds" aria-label="Up to Kinds">
+		<span class="up-arrow" aria-hidden="true">↑</span>Kinds
+	</a>
+	{#if data.slice && (data.slice.children.length > 0 || !data.slice.isCurrent)}
+		<ul class="tree">
+			{@render branch(data.slice)}
+		</ul>
+	{/if}
+	<div class="double-rule"></div>
+</header>
 
-{#if data.description}
-	<p class="lede">{data.description}</p>
-{/if}
+{#snippet aboutPanel()}
+	<div class="about-layout" class:has-sidebar={hasRefs}>
+		<div class="about-main">
+			{#if data.description}
+				<p class="lede">{data.description}</p>
+			{/if}
 
-{#if data.bodyHtml}
-	<div class="prose">{@html data.bodyHtml}</div>
-{/if}
+			{#if data.bodyHtml}
+				<div class="prose">{@html data.bodyHtml}</div>
+			{/if}
+		</div>
 
-{#if totalCount === 0}
-	<p class="empty">
-		<em>No {data.plural.toLowerCase()} have been recorded yet.</em>
-	</p>
-{:else}
+		{#if hasRefs}
+			<aside class="sidebar">
+				{#each data.kindRefSections as section (section.field)}
+					<section class="ref-block">
+						<h2 class="ref-heading">{section.heading}</h2>
+						<ul class="ref-list">
+							{#each section.cards as card (card.id)}
+								<li>
+									<EntityLink id={card.id} name={card.name} summary={null} />
+									{#if card.typeLabel}<span class="ref-type">· {card.typeLabel}</span>{/if}
+								</li>
+							{/each}
+						</ul>
+					</section>
+				{/each}
+
+				{#if data.backlinks.length > 0}
+					<section class="ref-block">
+						<h2 class="ref-heading">Mentioned in</h2>
+						<ul class="ref-list">
+							{#each data.backlinks as card (card.id)}
+								<li>
+									<EntityLink id={card.id} name={card.name} summary={null} />
+									{#if card.typeLabel}<span class="ref-type">· {card.typeLabel}</span>{/if}
+								</li>
+							{/each}
+						</ul>
+					</section>
+				{/if}
+			</aside>
+		{/if}
+	</div>
+{/snippet}
+
+{#snippet instancesPanel()}
 	{#if data.direct.length > 0}
 		<section class="kind-section">
-			{#if showDirectHeading}
-				<h2 class="section-heading">{data.directHeading}</h2>
-			{/if}
 			<div class="grid">
 				{#each data.direct as card (card.id)}
 					<EntityCard
@@ -77,84 +151,146 @@
 			</div>
 		</section>
 	{/if}
+{/snippet}
 
-	{#each data.subkindSections as section (section.kind)}
-		<section class="kind-section">
-			<h2 class="section-heading">
-				{#if section.href}
-					<a href={section.href}>{section.heading}</a>
-				{:else}
-					{section.heading}
-				{/if}
-				<span class="section-count">{section.cards.length}</span>
-			</h2>
-			<div class="grid">
-				{#each section.cards as card (card.id)}
-					<EntityCard
-						id={card.id}
-						name={card.name}
-						type={card.typeLabel ?? section.heading}
-						kind={card.kind}
-						summaryHtml={card.summaryHtml}
-						tags={card.tags}
-						era={card.era}
-						sigil={card.sigil}
-					/>
-				{/each}
-			</div>
-		</section>
-	{/each}
-{/if}
+{#if tabCount > 1}
+	<div class="tabs" role="tablist" aria-label="Kind sections">
+		<button
+			type="button"
+			role="tab"
+			class="tab"
+			aria-selected={currentTab === 'about'}
+			class:active={currentTab === 'about'}
+			onclick={() => (activeTab = 'about')}
+		>
+			About
+		</button>
+		<button
+			type="button"
+			role="tab"
+			class="tab"
+			aria-selected={currentTab === 'instances'}
+			class:active={currentTab === 'instances'}
+			onclick={() => (activeTab = 'instances')}
+		>
+			Instances
+		</button>
+	</div>
 
-{#each data.kindRefSections as section (section.field)}
-	<section class="kind-section refs">
-		<h2 class="section-heading">
-			{section.heading}
-			<span class="section-count">{section.cards.length}</span>
-		</h2>
-		<ul class="backlinks-list">
-			{#each section.cards as card (card.id)}
-				<li>
-					<EntityLink id={card.id} name={card.name} summary={null} />
-					{#if card.typeLabel}<span class="backlink-type">· {card.typeLabel}</span>{/if}
-				</li>
-			{/each}
-		</ul>
-	</section>
-{/each}
-
-{#if data.backlinks.length > 0}
-	<section class="kind-section backlinks">
-		<h2 class="section-heading">
-			Mentioned in
-			<span class="section-count">{data.backlinks.length}</span>
-		</h2>
-		<ul class="backlinks-list">
-			{#each data.backlinks as card (card.id)}
-				<li>
-					<EntityLink id={card.id} name={card.name} summary={null} />
-					{#if card.typeLabel}<span class="backlink-type">· {card.typeLabel}</span>{/if}
-				</li>
-			{/each}
-		</ul>
-	</section>
+	<div role="tabpanel">
+		{#if currentTab === 'about'}
+			{@render aboutPanel()}
+		{:else}
+			{@render instancesPanel()}
+		{/if}
+	</div>
+{:else if hasAbout}
+	{@render aboutPanel()}
+{:else if hasInstances}
+	{@render instancesPanel()}
 {/if}
 
 <style>
-	.up {
-		margin: 0 0 var(--space-3) 0;
+	.tabs {
+		display: flex;
+		gap: var(--space-4);
+		margin: 0 0 var(--space-5) 0;
+	}
+
+	.tab {
+		appearance: none;
+		background: none;
+		border: none;
+		padding: 0 0 var(--space-2) 0;
+		font-family: var(--font-serif);
 		font-size: var(--text-sm);
 		font-variant: small-caps;
-		letter-spacing: 0.06em;
-	}
-
-	.up a {
+		letter-spacing: 0.12em;
 		color: var(--ink-faint);
-		text-decoration: none;
+		cursor: pointer;
+		border-bottom: 1px solid transparent;
+		transition: color 120ms ease, border-color 120ms ease;
 	}
 
-	.up a:hover {
+	.tab:hover {
 		color: var(--accent);
+	}
+
+	.tab.active {
+		color: var(--ink);
+		border-bottom-color: var(--accent);
+	}
+
+	/* Two-column About layout: prose left, references sidebar right.
+	   When there's nothing for the sidebar, fall back to a single
+	   column so the prose still claims the prose-max width on its
+	   own. Mirrors the entity-page layout pattern. */
+	.about-layout {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--space-7);
+		align-items: start;
+	}
+
+	.about-layout.has-sidebar {
+		grid-template-columns: minmax(0, var(--prose-max)) 16rem;
+	}
+
+	@media (max-width: 60rem) {
+		.about-layout.has-sidebar {
+			grid-template-columns: minmax(0, 1fr);
+			gap: var(--space-6);
+		}
+	}
+
+	.about-main {
+		min-width: 0;
+	}
+
+	.sidebar {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-5);
+		font-size: var(--text-sm);
+	}
+
+	.ref-block {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+	}
+
+	.ref-heading {
+		font-family: var(--font-serif);
+		font-size: var(--text-xs);
+		font-variant: small-caps;
+		letter-spacing: 0.12em;
+		color: var(--ink-faint);
+		font-weight: 500;
+		margin: 0;
+	}
+
+	.ref-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+	}
+
+	.ref-list li {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-2);
+		flex-wrap: wrap;
+	}
+
+	.ref-type {
+		color: var(--ink-faint);
+		font-size: var(--text-xs);
+		font-variant: small-caps;
+		letter-spacing: 0.06em;
 	}
 
 	.lede {
@@ -185,7 +321,108 @@
 		margin: var(--space-5) 0;
 	}
 
-	.empty {
+	.tree,
+	.children {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.tree {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+		margin: 0;
+	}
+
+	.kind-header {
+		margin-bottom: var(--space-6);
+	}
+
+	.kind-header .up-link {
+		display: flex;
+		align-items: baseline;
+		justify-content: flex-start;
+		width: fit-content;
+		gap: 0.35em;
+		font-family: var(--font-serif);
+		font-size: var(--text-xs);
+		font-variant: small-caps;
+		letter-spacing: 0.1em;
+		color: var(--ink-faint);
+		text-decoration: none;
+		margin-bottom: var(--space-2);
+	}
+
+	.kind-header .up-link:hover {
+		color: var(--accent);
+	}
+
+	.kind-header .up-arrow {
+		font-variant: normal;
+		letter-spacing: 0;
+	}
+
+	.kind-header .double-rule {
+		border-top: var(--rule-double);
+		margin-top: var(--space-3);
+	}
+
+	.children {
+		margin-left: var(--space-5);
+		padding-left: var(--space-5);
+		border-left: 1px solid var(--rule);
+		margin-top: var(--space-3);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+	}
+
+	.kind {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.kind-link {
+		display: inline-flex;
+		align-items: baseline;
+		gap: var(--space-3);
+		text-decoration: none;
+		color: inherit;
+		width: fit-content;
+	}
+
+	a.kind-link:hover .kind-name {
+		color: var(--accent);
+	}
+
+	.kind-name {
+		font-family: var(--font-display);
+		font-size: var(--text-lg);
+		color: var(--ink);
+	}
+
+	.kind-name.muted {
+		color: var(--ink-faint);
+		font-style: italic;
+		font-size: var(--text-base);
+	}
+
+	.kind.current > .kind-link .kind-name {
+		font-weight: 600;
+		color: var(--accent);
+	}
+
+	.kind-label {
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-style: italic;
+		color: var(--ink-soft);
+	}
+
+	.kind-count {
+		font-size: var(--text-xs);
+		font-variant: tabular-nums small-caps;
 		color: var(--ink-faint);
 	}
 
@@ -197,50 +434,9 @@
 		margin-bottom: 0;
 	}
 
-	.section-heading {
-		font-family: var(--font-display);
-		font-size: var(--text-xl);
-		font-weight: 500;
-		margin: 0 0 var(--space-4) 0;
-		color: var(--ink);
-		display: flex;
-		align-items: baseline;
-		gap: var(--space-3);
-	}
-
-	.section-heading a {
-		color: inherit;
-		text-decoration: none;
-	}
-
-	.section-heading a:hover {
-		color: var(--accent);
-	}
-
-	.section-count {
-		font-size: var(--text-xs);
-		font-variant: tabular-nums small-caps;
-		color: var(--ink-faint);
-	}
-
 	.grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
 		gap: var(--space-5) var(--space-6);
-	}
-
-	.backlinks-list {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-2);
-	}
-
-	.backlink-type {
-		color: var(--ink-faint);
-		font-size: var(--text-sm);
-		margin-left: var(--space-2);
 	}
 </style>
