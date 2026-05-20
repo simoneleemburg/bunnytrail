@@ -113,7 +113,17 @@
 				supertype: true
 			});
 		}
-		return [...merged.entries()].sort(([a], [b]) => a.localeCompare(b));
+		return [...merged.entries()]
+			.filter(([kind, info]) => {
+				// Hide chips that wouldn't narrow anything: a chip whose
+				// count equals the total visible set is a no-op filter
+				// (e.g. "place" on /places, "celestial-body" on
+				// /places/celestial). The currently-selected chip is
+				// kept regardless so the user can click it to clear.
+				if (kind === activeKind) return true;
+				return info.count < filterEntitySet.length;
+			})
+			.sort(([a], [b]) => a.localeCompare(b));
 	});
 
 	function matchesKind(card: { kind: string | null }): boolean {
@@ -162,11 +172,13 @@
 	// under both filters applied together).
 	const availableTags = $derived.by(() => {
 		const counts = new Map<string, number>();
+		let matchingTotal = 0;
 		for (const e of filterEntitySet) {
 			if (!matchesKind(e)) continue;
 			// Count under combined active-tag filter too — so the user
 			// sees what each tag *adds* to the current selection.
 			if (!matchesTags(e)) continue;
+			matchingTotal++;
 			for (const t of e.tags) {
 				counts.set(t, (counts.get(t) ?? 0) + 1);
 			}
@@ -178,6 +190,13 @@
 			if (!counts.has(t)) counts.set(t, 0);
 		}
 		return [...counts.entries()]
+			.filter(([label, count]) => {
+				// Hide tags that wouldn't narrow anything: a tag carried
+				// by every visible entity is a no-op filter. Active tags
+				// always stay so the user can deselect them.
+				if (activeTags.has(label)) return true;
+				return count < matchingTotal;
+			})
 			.map(([label, count]) => ({ label, count }))
 			.sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
 	});
