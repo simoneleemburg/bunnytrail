@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { graph } from '$lib/server/graph';
 import { loadEntityPage } from './_entityPage.load';
-import { loadCollectionPage } from './_collectionPage.load';
+import { loadAggregateShelfPage, loadCollectionPage } from './_collectionPage.load';
 import { loadChapterPage } from './_chapterPage.load';
 
 /**
@@ -16,12 +16,17 @@ import { loadChapterPage } from './_chapterPage.load';
  *   - path is a *browseable folder* (has
  *     a `_collection.yaml` or descendant
  *     entities)                             → collection page
+ *   - path is a single segment naming a
+ *     *union shelf* (a shelf-name found
+ *     under one or more regions)            → cross-region aggregate
+ *                                             shelf page
  *   - anything else                         → 404
  *
  * An entity and a folder are not mutually exclusive: an entity
  * folder may also contain child entities and a `_collection.yaml`.
  * Entities take precedence — the entity page already shows the
- * folder's children.
+ * folder's children. Real folders take precedence over aggregate
+ * shelves with the same name.
  */
 export async function load({ params }) {
 	await graph.ready();
@@ -49,6 +54,13 @@ export async function load({ params }) {
 
 	if (graph.isFolder(path)) {
 		return loadCollectionPage(path);
+	}
+
+	// Cross-region aggregate: a single segment that names a shelf
+	// living under one or more regions, but isn't itself a real
+	// top-level folder.
+	if (!path.includes('/') && graph.unionShelves().includes(path)) {
+		return loadAggregateShelfPage(path);
 	}
 
 	error(404, `Not found: ${path}`);

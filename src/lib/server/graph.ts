@@ -193,6 +193,65 @@ class Graph {
 	}
 
 	/**
+	 * Top-level folders are *regions* of the universe — distinct
+	 * cosmological neighbourhoods like `aurethia/`. Aliases
+	 * `topLevelFolders()` for now; if regional structure ever needs
+	 * its own filter (e.g. "real" regions vs scratch shelves), it
+	 * lives here.
+	 */
+	regions(): string[] {
+		return this.topLevelFolders();
+	}
+
+	/**
+	 * Union of immediate sub-shelves found across all regions. A
+	 * "shelf" is a single-segment folder name like `characters`,
+	 * `places`, `history`. The same name appearing under multiple
+	 * regions collapses to one entry.
+	 *
+	 * Returned sorted by display label, lower-case shelf id.
+	 */
+	unionShelves(): string[] {
+		const seen = new Set<string>();
+		for (const region of this.regions()) {
+			for (const childPath of this.childFolders(region)) {
+				const shelf = childPath.slice(region.length + 1);
+				if (shelf && !shelf.includes('/')) seen.add(shelf);
+			}
+		}
+		return [...seen].sort();
+	}
+
+	/**
+	 * Every entity living under a shelf-name across all regions.
+	 * E.g. `entitiesByShelfAcrossRegions('characters')` returns the
+	 * union of `aurethia/characters/*`, plus any future region's
+	 * `characters/*`. Sort is by display name.
+	 */
+	entitiesByShelfAcrossRegions(shelf: string): Entity[] {
+		const out: Entity[] = [];
+		for (const region of this.regions()) {
+			for (const e of this.byFolderRecursive(`${region}/${shelf}`)) out.push(e);
+		}
+		out.sort((a, b) => a.meta.name.localeCompare(b.meta.name));
+		return out;
+	}
+
+	/**
+	 * Per-region paths for a given shelf — i.e. the concrete folder
+	 * paths whose union the aggregate represents. A region is
+	 * included only if it actually has the shelf.
+	 */
+	regionShelfPaths(shelf: string): string[] {
+		const out: string[] = [];
+		for (const region of this.regions()) {
+			const candidate = `${region}/${shelf}`;
+			if (this.isFolder(candidate)) out.push(candidate);
+		}
+		return out;
+	}
+
+	/**
 	 * Entities whose `meta.kind` is `kind` or any descendant of `kind`
 	 * in the kind hierarchy (computed from the registry's folder
 	 * nesting). Useful for supertype filters and pages that want

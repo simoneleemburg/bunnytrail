@@ -1,10 +1,15 @@
 <script lang="ts">
 	import '$lib/styles/global.css';
 	import favicon from '$lib/assets/favicon.svg';
+	import { page } from '$app/stores';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
-		data: { nav: { href: string; label: string; count: number }[] };
+		data: {
+			nav: { href: string; label: string; count: number }[];
+			regionOptions: { value: string; label: string; selected: boolean }[];
+			selectedRegion: string | null;
+		};
 		children: Snippet;
 	}
 
@@ -25,6 +30,29 @@
 				{/each}
 				<span class="nav-sep" aria-hidden="true">·</span>
 				<a href="/kinds">Kinds</a>
+				{#if data.regionOptions.length > 1}
+					<span class="nav-sep" aria-hidden="true">·</span>
+					<form
+						class="region-form"
+						method="POST"
+						action="/api/region"
+					>
+						<!-- Send the user back to where they were so the
+						     selector feels in-place rather than navigational. -->
+						<input type="hidden" name="redirect" value={$page.url.pathname + $page.url.search} />
+						<label class="region-label">
+							<span class="region-label-text">Region</span>
+							<select
+								name="region"
+								onchange={(e) => (e.currentTarget.form as HTMLFormElement).requestSubmit()}
+							>
+								{#each data.regionOptions as opt (opt.value)}
+									<option value={opt.value} selected={opt.selected}>{opt.label}</option>
+								{/each}
+							</select>
+						</label>
+					</form>
+				{/if}
 			</nav>
 		</div>
 	</header>
@@ -97,6 +125,47 @@
 	.nav-sep {
 		color: var(--ink-faint);
 		font-size: var(--text-sm);
+	}
+
+	.region-form {
+		margin: 0;
+		padding: 0;
+	}
+
+	.region-label {
+		display: inline-flex;
+		align-items: baseline;
+		gap: var(--space-2);
+		font-size: var(--text-sm);
+		font-variant: small-caps;
+		letter-spacing: 0.08em;
+		color: var(--ink-soft);
+	}
+
+	.region-label-text {
+		color: var(--ink-faint);
+	}
+
+	.region-label select {
+		font: inherit;
+		font-variant: inherit;
+		letter-spacing: inherit;
+		color: var(--ink);
+		background: transparent;
+		border: none;
+		border-bottom: 1px solid var(--rule);
+		padding: 0 var(--space-1);
+		cursor: pointer;
+	}
+
+	.region-label select:hover {
+		border-bottom-color: var(--accent);
+		color: var(--accent);
+	}
+
+	.region-label select:focus-visible {
+		outline: none;
+		border-bottom-color: var(--accent);
 	}
 
 	main {

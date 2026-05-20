@@ -517,6 +517,99 @@ function labelForFolder(path: string): string {
 }
 
 /**
+ * View-model for a *cross-region aggregate shelf* — e.g. `/characters`,
+ * which gathers entities from every region's `<region>/characters/`
+ * folder and presents them as one collection.
+ *
+ * Aggregate pages mirror the shape of the per-folder collection page so
+ * the existing `_CollectionPage.svelte` renders both. Differences:
+ *
+ *   • Subcollection tiles are the *per-region* shelves (e.g.
+ *     `aurethia/characters`) rather than child folders, so a reader
+ *     can drill from "all characters" into one region's set.
+ *   • `containers`, `orbits`, and `folders` are empty — those views
+ *     describe local structure inside a single folder, not the
+ *     cross-region union.
+ *   • Cards carry their `typeLabel` showing which region they live
+ *     in, mirroring how the `/everything` index labels by folder.
+ *
+ * `shelf` is a single-segment shelf name like `characters` or `places`.
+ * Caller has already verified it exists under at least one region (via
+ * `graph.unionShelves()`).
+ */
+export function loadAggregateShelfPage(shelf: string) {
+	const resolveLink = (p: string) => graph.resolveLink(p);
+	const languageCodes = graph.languageCodes();
+	const kindIds = graph.kindIds();
+	const cardSummaryHtml = (s: string | null | undefined) =>
+		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;
+
+	const kindTree = buildLoaderKindTree();
+	const regionPaths = graph.regionShelfPaths(shelf);
+
+	// Subcollection tiles only earn their keep when they *narrow*
+	// the view. With a single region the tile would link to that
+	// region's shelf — i.e. exactly the content already on the page,
+	// just at a different URL. Hide the section in that case; show
+	// it only when the aggregate genuinely combines multiple regions.
+	const showSubcollections = regionPaths.length > 1;
+	const subcollections = showSubcollections
+		? regionPaths
+				.map((p) => buildSubcollectionEntry(p, kindTree))
+				.sort((a, b) => a.plural.localeCompare(b.plural))
+		: [];
+	const subcollectionTrees = showSubcollections
+		? regionPaths.map((p) => buildSubcollectionTree(p, '', cardSummaryHtml))
+		: [];
+
+	const entities = graph.entitiesByShelfAcrossRegions(shelf);
+
+	// Region label as the type-label on each card. With one region
+	// this just reads "Aurethia" everywhere; with several it lets a
+	// reader see at a glance which region each entry belongs to.
+	const regionLabel = (id: EntityId): string => {
+		const region = id.includes('/') ? id.slice(0, id.indexOf('/')) : id;
+		return graph.folderLabels(region).singular;
+	};
+
+	const flat = entities.map((e) => toCard(e, cardSummaryHtml, regionLabel(e.id)));
+
+	// Use the shelf's display label as if it lived at the content
+	// root. We borrow `_collection.yaml` titles from the *first*
+	// region that defines the shelf, on the grounds that the same
+	// shelf name across regions should mean the same kind of thing.
+	const labelSourcePath = regionPaths.find((p) => graph.collection(p)) ?? regionPaths[0];
+	const firstCollection = labelSourcePath ? graph.collection(labelSourcePath) : undefined;
+	const label = graph.folderLabels(labelSourcePath ?? shelf);
+	const description = firstCollection?.meta.description ?? null;
+
+	return {
+		kind: 'collection' as const,
+		type: shelf,
+		label,
+		description,
+		bodyHtml: null,
+		subcollections,
+		subcollectionTrees,
+		containers: [] as ContainerNode[],
+		orbits: [] as OrbitNode[],
+		folders: [] as Array<{
+			path: string;
+			name: string;
+			count: number;
+		}>,
+		// Index mode shows `standalone` as cards; we put the union
+		// there so the default view of an aggregate page renders
+		// the entities directly. Flat view uses `flat` (same data,
+		// minus any container-tree adjustments — which we don't have
+		// here, so the two are identical).
+		standalone: flat,
+		flat,
+		kindParents: serialiseKinds()
+	};
+}
+
+/**
  * Convert a tag-count map into a sorted array. Sort is by count
  * descending, breaking ties alphabetically.
  */
