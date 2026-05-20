@@ -14,7 +14,7 @@ name through long work, and she carries it carefully.
 The order nearly did not take her.
 
 Knighthood is sustained [[nearing|Nearing]] toward a
-[[beings/naya|Naya]] [[binding|bound]] in an
+[[kinds/naya|Naya]] [[binding|bound]] in an
 [[eidolons|Eidolon]], and the order screens
 candidates for the adaptive identity that practice demands.
 Freya was, by every internal account that has reached the

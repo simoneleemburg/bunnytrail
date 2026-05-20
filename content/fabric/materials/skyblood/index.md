@@ -23,7 +23,7 @@ use.
 Skyblood does three related things:
 
 - It **stabilises** [[binding|binding]] between humans and
-  [[beings/naya|Naya]] — the pact at the core of the cosmology's
+  [[kinds/naya|Naya]] — the pact at the core of the cosmology's
   meaningful encounters.
 - It **anchors identity** during the merging at the heart of an
   [[eidolons|Eidolon]], holding the human self coherent

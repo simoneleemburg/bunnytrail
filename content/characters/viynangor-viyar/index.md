@@ -1,4 +1,4 @@
-Viynangor Viyar [[ot]] is one of the [[beings/naya|Naya]] whose name
+Viynangor Viyar [[ot]] is one of the [[kinds/naya|Naya]] whose name
 has been rendered into the [[culture/languages/old-tongue|Old Tongue]] and
 entered the records of the Sister Worlds. As with all such names,
 the rendering is approximation; the readings disagree, and the
@@ -30,7 +30,7 @@ back.
 ## Nature
 
 Whatever else Viynangor Viyar is, it is the kind of
-[[beings/naya|Naya]] whose presence shows the
+[[kinds/naya|Naya]] whose presence shows the
 [[culture/eidolon-knight|Knight]] piloting its
 [[eidolons|Eidolon]] what they actually are. Not what
 they wish to be. Not what they fear. What they are.

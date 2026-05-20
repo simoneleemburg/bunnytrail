@@ -1,5 +1,5 @@
 The Old Tongue is the ritual language by which the Sister Worlds
-approximate the symbol systems of the [[beings/naya|Naya]]. It
+approximate the symbol systems of the [[kinds/naya|Naya]]. It
 is not a normal spoken language. It is a human attempt to map
 impossible Naya concepts into sound.
 
@@ -24,7 +24,7 @@ The Old Tongue was developed on [[bayurinda|Bayurinda]],
 in an age that is now held there as **myth**: long enough ago
 that no ordinary memory reaches it, ancient enough that the work
 survives only because it was preserved. The earliest mystics of
-that age first turned their attention to the [[beings/naya|Naya]]
+that age first turned their attention to the [[kinds/naya|Naya]]
 in earnest. Where other worlds, in other hands, might have
 approached the Naya as subjects of conquest or instruments of
 power, the Bayurindan tradition approached them as the proper

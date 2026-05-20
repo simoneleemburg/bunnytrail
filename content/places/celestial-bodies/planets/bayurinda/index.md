@@ -184,7 +184,7 @@ compendium uses it as it is used elsewhere: as a shorthand, with
 the understanding that the shorthand papers over real difference.
 
 The tradition, taken together, is introspective and patient. It
-treats time as long. It approaches [[beings/naya|Naya]] as
+treats time as long. It approaches [[kinds/naya|Naya]] as
 teachers rather than as instruments. Its dominant practice is a
 slow path of self-perfection through patient work, and its
 dominant tone is stillness, growth, and inner transformation.
@@ -195,7 +195,7 @@ what can be recovered, does not value haste.
 ## Knighthood on Bayurinda
 
 Where Nebelheim regulates Knighthood as public duty, Bayurinda
-treats it as a path to transcendence. [[beings/naya|Naya]] are
+treats it as a path to transcendence. [[kinds/naya|Naya]] are
 not tools here. They are teachers. The practices of
 [[culture/eidolon-knight|piloting]] are slower, ritualised, and
 far more stable than on the other Sister Worlds — something more

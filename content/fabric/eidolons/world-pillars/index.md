@@ -32,14 +32,14 @@ Pillar's launch rail — a carved alignment cut into the
 landscape, a furrow leading toward the Pillar's body — and bound
 in place with Skyblood chains and resonance cables. The chains
 hold the Eidolon's physical mass; the cables synchronize the
-[[beings/naya|Naya]] inside it. This second function is the
+[[kinds/naya|Naya]] inside it. This second function is the
 more demanding. A pilot whose Naya cannot be brought into
 coherence at this stage cannot be launched, and the launch is
 abandoned.
 
 **The Draw.** The Pillar pulls tension. Pressure builds along
 the rail. The Pillar's vast Skyblood core enters resonance with
-the Eidolon's smaller core, and the [[beings/naya|Naya]] bound
+the Eidolon's smaller core, and the [[kinds/naya|Naya]] bound
 in the vessel begins to vibrate at the Pillar's frequency.
 This stage is the most dangerous. Two distinct failures are
 possible. The Eidolon-and-Naya

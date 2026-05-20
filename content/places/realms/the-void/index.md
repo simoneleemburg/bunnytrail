@@ -16,7 +16,7 @@ has not committed itself in public to saying.
 Several distinct things are in the Void, and the boundaries
 between them are not clean.
 
-**Broken [[beings/naya|Naya]].** Naya who could not hold
+**Broken [[kinds/naya|Naya]].** Naya who could not hold
 identity in some encounter — through failed
 [[binding|binding]], through unsupported
 [[nearing|Nearing]], through whatever it is that

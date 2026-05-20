@@ -10,7 +10,7 @@ water-adjacent civilisations of [[realms/asthera|Asthera]].
 
 Ngonawan hears the resonance. He perceives Naretic signal in fine
 grain — the shifting tonal substrate that carries
-[[beings/naya|Naya]] meaning before it has become anything a
+[[kinds/naya|Naya]] meaning before it has become anything a
 human can call a symbol. Where another practitioner of
 [[nearing|Nearing]] might come back from contact with
 [[realms/nareth|Nareth]] holding sensation, image, dread, or

@@ -135,7 +135,7 @@ mind-altering effects, what is happening is not poisoning. It is
 oracles and [[culture/eidolon-knight|Eidolon Knights]] use the
 word: an embodied being drifting close to
 [[realms/nareth|Nareth]] without crossing into it. The visions
-are contact with [[beings/naya|Naya]]. The out-of-body
+are contact with [[kinds/naya|Naya]]. The out-of-body
 experiences are the loosening of attachment to form that Nearing
 produces in any practitioner. The Aetherians have a path to it
 that is built into them, mediated by a substance their seafloor

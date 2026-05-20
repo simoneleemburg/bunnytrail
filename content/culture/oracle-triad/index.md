@@ -2,7 +2,7 @@ The Oracle Triad is not a role or an institutional office. It is a
 specific working partnership of three: the Sacred Serpent
 [[characters/ngonawan-ilyardi|Ngonawan Ilyardi]], the Pilgrim
 [[characters/sabina-vaarn|Sabina Vaarn]], and the
-[[beings/naya|Naya]] [[characters/uraya-ur|Uraya Ur]]. It has been
+[[kinds/naya|Naya]] [[characters/uraya-ur|Uraya Ur]]. It has been
 this triad, by name, for centuries.
 
 The Triad is the working interpretive instrument of the
@@ -10,7 +10,7 @@ The Triad is the working interpretive instrument of the
 provides materially — the rites, the regulation of
 [[nearing|Nearing]], the public face of doctrine — is in
 the end framing for the Triad's actual labour, which is the
-high-order translation of [[beings/naya|Naya]] symbol systems
+high-order translation of [[kinds/naya|Naya]] symbol systems
 into [[culture/languages/old-tongue|Old Tongue]] names the Sister Worlds
 can act on.
 
@@ -58,7 +58,7 @@ absent, and the work breaks at that point and no further.
 ## Uraya, unbound
 
 [[characters/uraya-ur|Uraya]] is one of the recognised
-exceptions in the cosmology: a [[beings/naya|Naya]] present in
+exceptions in the cosmology: a [[kinds/naya|Naya]] present in
 [[realms/asthera|Asthera]] without being
 [[binding|bound]] into an [[eidolons|Eidolon]].
 

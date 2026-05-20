@@ -75,7 +75,7 @@ it survived]].)
   older things **emit a radiance** the
   [[beings/aetherians|Aetherians]] are uniquely congenial to,
   and that Aetherians come to them to **near**: contact with
-  the [[beings/naya|Naya]] is, among the Aetherians, mediated
+  the [[kinds/naya|Naya]] is, among the Aetherians, mediated
   by going to the older things and coming back. The radiance
   has a Deep-Speech name —
   **[[materials/urouch|Urouch]]** [[ds]] — and a physical form,

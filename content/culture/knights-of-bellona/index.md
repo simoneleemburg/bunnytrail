@@ -26,7 +26,7 @@ The Knights of Bellona hold three intertwined responsibilities.
   protection. The conditions of their practice, the protection
   of their working time, the discretion around their state, and
   the channels through which their translations of
-  [[beings/naya|Naya]] symbol systems reach the wider world are
+  [[kinds/naya|Naya]] symbol systems reach the wider world are
   all the order's keeping.
 - **Nearing.** The Knights are the institutional memory and
   discipline around Nearing. They decide what is sound practice,
@@ -61,7 +61,7 @@ fill it.
 The order's recognised ideal of Knighthood is the _chosen
 Eidolon_: a Knight who, over time, comes into deepening
 working partnership with one particular vessel and the
-[[beings/naya|Naya]] [[binding|bound]] inside it. The
+[[kinds/naya|Naya]] [[binding|bound]] inside it. The
 fit becomes specific. The Knight learns the Naya's nature in
 detail; the pairing becomes legible to those around them as a
 single working thing.

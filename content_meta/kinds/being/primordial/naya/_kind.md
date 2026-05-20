@@ -1,4 +1,4 @@
-The Naya [[bay]] are primordial beings native to [[realms/nareth|Nareth]],
+The Naya are primordial beings native to [[realms/nareth|Nareth]],
 the resonant substrate of reality. They are not physical creatures in
 any usual sense, but expressions of fundamental states of existence —
 storm, growth, flame, frost, light, decay, and the elemental or
@@ -65,14 +65,12 @@ reach across the threshold during contact with a Nearer, a
 fragment of expression carried in a Whisper. Sustained
 presence without binding is not how the cosmology works.
 
-The recognised exception is [[characters/uraya-ur|Uraya Ur]],
-who remains continuously present in Asthera as part of the
-[[culture/oracle-triad|Oracle Triad]] — sustained not by an
-Eidolon but by the partnership itself, the other two Oracles'
-joint Nearing of her held continuously enough to give her
-something to be present _through_. This is not a binding. It
-is a different and much rarer arrangement, and it is not
-known to be reproducible.
+The recognised exception is sustained presence held not by an
+Eidolon but by a partnership — other beings' joint
+[[nearing|Nearing]] of a single Naya, kept continuously
+enough to give them something to be present _through_. This
+is not a binding. It is a different and much rarer
+arrangement, and it is not known to be reproducible.
 
 ## What they are not
 

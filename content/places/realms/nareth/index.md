@@ -18,7 +18,7 @@ two cosmological terms (with [[realms/asthera|Asthera]]) that the
 Sister Worlds have adopted from that language for the great layers of
 existence. The [[culture/languages/old-tongue|Old Tongue]] presupposes the
 term but does not coin it — the Old Tongue was built for the
-[[beings/naya|Naya]] who live in Nareth, on the assumption that
+[[kinds/naya|Naya]] who live in Nareth, on the assumption that
 _Nareth_ was already its name.
 
 Who first carried _Nareth_ into the Sister Worlds' shared vocabulary,

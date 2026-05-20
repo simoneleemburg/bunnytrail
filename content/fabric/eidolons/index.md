@@ -1,5 +1,5 @@
 An Eidolon is a constructed vessel that allows a
-[[beings/naya|Naya]] to manifest physically on
+[[kinds/naya|Naya]] to manifest physically on
 [[realms/asthera|Asthera]]. The Naya is
 [[binding|bound]] into the vessel — seated durably
 into a body built for its nature — and through the vessel

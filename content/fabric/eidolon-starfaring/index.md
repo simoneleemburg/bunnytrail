@@ -3,7 +3,7 @@ Travel between worlds in Alteria is two
 
 Any [[culture/eidolon-knight|Knight]] piloting an
 [[eidolons|Eidolon]] is already Nearing — sustaining
-working contact with the [[beings/naya|Naya]]
+working contact with the [[kinds/naya|Naya]]
 [[binding|bound]] in the vessel. That is what
 piloting is. To cross between worlds, the Knight must Near
 further: softening their attachment to ordinary space until

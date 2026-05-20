@@ -65,7 +65,7 @@ vocabulary, marked where they first appear with the small
 superscript _bay_:
 
 - **Naya** [[bay]] — the name, in Bayurindan, of the
-  [[beings/naya|primordial beings of Nareth]]. It is the
+  [[kinds/naya|primordial beings of Nareth]]. It is the
   archipelago people's word and is used throughout the
   compendium because it is the word the order learned and
   carried outward. Whether the lost surface civilisation called

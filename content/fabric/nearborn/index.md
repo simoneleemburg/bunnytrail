@@ -88,7 +88,7 @@ framing of Nearborn identity, is what the
 candidates for Knighthood.
 
 Piloting an [[eidolons|Eidolon]] is sustained
-[[nearing|Nearing]] toward the [[beings/naya|Naya]]
+[[nearing|Nearing]] toward the [[kinds/naya|Naya]]
 bound in the vessel. The practice rewards **adaptive
 identity** — a self that bends and recomposes under contact
 without fracturing. The

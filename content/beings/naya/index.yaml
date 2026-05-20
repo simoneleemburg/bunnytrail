@@ -1,9 +1,0 @@
-name: The Naya
-kind: primordial
-language: bay
-summary: Primordial beings native to Nareth — expressions of fundamental states of existence, drawn toward Asthera for the stability and emotional intensity it offers. The word _Naya_ is Bayurindan, carried out to the Sister Worlds along the routes that carried the rest of the Bayurindan scholarly tradition.
-tags: [nareth, resonance, binding]
-relations:
-  - kind: native-to
-    target: places/realms/nareth
-    note: Their realm of origin; the fluid layer from which they reach toward Asthera.

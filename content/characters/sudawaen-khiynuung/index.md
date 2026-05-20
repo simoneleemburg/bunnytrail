@@ -1,4 +1,4 @@
-Sudawaen Khiynuung [[ot]] is one of the [[beings/naya|Naya]] whose name
+Sudawaen Khiynuung [[ot]] is one of the [[kinds/naya|Naya]] whose name
 has been rendered into the [[culture/languages/old-tongue|Old Tongue]] and
 entered the records of the Sister Worlds. The readings, as with
 all such names, disagree — and in this case the disagreement
@@ -28,7 +28,7 @@ something invented within a single life.
 ## Nature
 
 Whatever else Sudawaen Khiynuung is, it is the kind of
-[[beings/naya|Naya]] whose resonance does not soften with
+[[kinds/naya|Naya]] whose resonance does not soften with
 familiarity. Those who have come near it describe it as old in a
 way other Naya are not — less like presence than like weight,
 less like wrath in the immediate sense than like the long

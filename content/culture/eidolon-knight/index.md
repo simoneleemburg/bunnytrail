@@ -1,6 +1,6 @@
 An Eidolon Knight is a human who pilots an
 [[eidolons|Eidolon]] — a vessel into which a
-[[beings/naya|Naya]] has been [[binding|bound]]. The
+[[kinds/naya|Naya]] has been [[binding|bound]]. The
 Knight is not party to the binding. The binding is between the
 Naya and the vessel; the Knight is the pilot the vessel works
 with, for as long as that pairing lasts.

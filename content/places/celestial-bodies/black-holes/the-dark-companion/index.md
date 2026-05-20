@@ -170,7 +170,7 @@ the order maintains in public. Whether the order maintains it
 in private is a separate question.
 
 _(The Dark Companion's relationship to fallen
-[[beings/naya|Naya]], to the broader cosmology of cosmological
+[[kinds/naya|Naya]], to the broader cosmology of cosmological
 threat, and to whatever it is that lies beneath the
 shattering's account of cosmic entropy is not yet recorded
 here.)_

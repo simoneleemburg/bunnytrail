@@ -39,7 +39,7 @@ The major recognised purposes:
 - To **change**: to allow part of the self to drift and
   recompose in contact with Nareth, and to return slightly other
   than one was. The transformational practices rest on this.
-- To **answer**: to respond when a [[beings/naya|Naya]] reaches
+- To **answer**: to respond when a [[kinds/naya|Naya]] reaches
   across from the other side and the situation requires a reply.
 - To **pilot**: to sustain working contact with a Naya bound
   into an [[eidolons|Eidolon]], allowing the Knight to
@@ -88,7 +88,7 @@ with different safety structures.
 
 - **Aetherian Nearing.** The
   [[beings/aetherians|Aetherians]] of
-  [[nuunlau|Nuunlau]] reach the [[beings/naya|Naya]]
+  [[nuunlau|Nuunlau]] reach the [[kinds/naya|Naya]]
   through a different doorway entirely: a **radiance** emitted
   by certain features on the floor of Nuunlau, to which the
   Aetherian body is uniquely congenial. Every Aetherian can
