@@ -15,7 +15,7 @@
 	<p class="counter">
 		<em>
 			{data.totalEntities} entries ({data.entitiesWithProse} with prose) · {data.kindCount} kinds ({data.kindsWithProse}
-			documented) · {data.counts.length} collections{#if data.issues > 0}
+			documented) · {data.collectionCount} collections{#if data.issues > 0}
 				· <a class="issues-link" href="/health"
 					>{data.issues} {data.issues === 1 ? 'issue' : 'issues'}</a
 				>{/if}
@@ -64,25 +64,34 @@
 				<div class="count">{c.count}</div>
 			</a>
 		{/each}
-		<a class="type-card type-card-everything" href="/everything">
-			<div class="rule"></div>
-			<div class="label">Everything</div>
-			<div class="description">
-				One grid for the whole world. Filter by kind or tag, or flatten and skim.
-			</div>
-			<div class="count">{data.totalEntities}</div>
-		</a>
-		<a class="type-card type-card-meta" href="/kinds">
-			<div class="rule"></div>
-			<div class="label">Kinds</div>
-			<div class="description">
-				The hierarchy of registered kinds — the taxonomy the entities classify themselves into,
-				independent of where they sit in the collections.
-			</div>
-			<div class="count">{data.kindCount}</div>
-		</a>
 	</div>
 </section>
+
+{#if data.threads.length > 0}
+	<section class="threads">
+		<h2 class="section-heading">Starting threads</h2>
+		<div class="grid">
+			<a class="type-card type-card-thread" href="/everything">
+				<div class="rule"></div>
+				<div class="label">Everything</div>
+				<div class="description">
+					One grid for the whole world. Filter by kind or tag, or flatten and skim.
+				</div>
+				<div class="count">{data.totalEntities}</div>
+			</a>
+			{#each data.threads as t (t.type)}
+				<a class="type-card type-card-thread" href={`/${t.type}`}>
+					<div class="rule"></div>
+					<div class="label">{t.label}</div>
+					{#if t.description}
+						<div class="description">{t.description}</div>
+					{/if}
+					<div class="count">{t.count}</div>
+				</a>
+			{/each}
+		</div>
+	</section>
+{/if}
 
 {#if data.tags.length > 0}
 	<section class="tags-section">
@@ -260,23 +269,12 @@
 		font-style: italic;
 	}
 
-	.type-card-everything .label {
+	.type-card-thread .label {
 		font-style: italic;
 	}
 
-	.type-card-everything .rule {
-		border-top-color: var(--accent-soft, var(--rule));
-	}
-
-	/* Same italic + accent-rule treatment as Everything — both
-	   are meta views over the whole graph rather than collections
-	   of entities. */
-	.type-card-meta .label {
-		font-style: italic;
-	}
-
-	.type-card-meta .rule {
-		border-top-color: var(--accent-soft, var(--rule));
+	.threads {
+		margin-bottom: var(--space-8);
 	}
 
 	.tags-section {
