@@ -254,3 +254,7 @@ us through reconstruction.
 _(Detail on the First Listeners themselves — names, sequence,
 practices, and what exactly they perceived — is not yet recorded
 here, and much of it may now be beyond recovery.)_
+
+## Regions
+
+[[collection:places/regions/bayurinda]]
