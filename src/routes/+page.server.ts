@@ -19,10 +19,18 @@ export async function load() {
 		})
 		.filter((t) => t.count > 0);
 
+	const entities = graph.all();
+	const entitiesWithProse = entities.filter((e) => e.body.trim().length > 0).length;
+
+	const kinds = [...graph.kindRegistry().values()];
+	const kindsWithProse = kinds.filter((k) => (k.body ?? '').trim().length > 0).length;
+
 	return {
 		counts,
-		totalEntities: graph.all().length,
-		kindCount: graph.kindRegistry().size,
+		totalEntities: entities.length,
+		entitiesWithProse,
+		kindCount: kinds.length,
+		kindsWithProse,
 		tags: graph.tags().slice(0, 12),
 		issues: graph.issues().length
 	};

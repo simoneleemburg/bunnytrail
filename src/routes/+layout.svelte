@@ -35,7 +35,7 @@
 
 	<footer>
 		<div class="footer-inner">
-			<p>A field-notebook of worlds.</p>
+			<p>My sacred universe of imagination.</p>
 		</div>
 	</footer>
 </div>
