@@ -95,10 +95,10 @@ function buildSubcollectionTree(
 
 	// Subcollection's headline entity, if any: an entity sitting at
 	// `subPath` itself (e.g. `places/celestial/aureth-system` exists
-	// both as folder and as entity). The page links the section
-	// heading to that entity when present, otherwise to the
-	// subcollection's own collection page.
-	const linkedEntityId: EntityId | null = graph.get(subPath as EntityId) ? (subPath as EntityId) : null;
+	// both as folder and as entity). When present, that entity's
+	// own card is the section header — and its *children* become
+	// the tree roots, so we don't render the entity twice.
+	const headlineSource = graph.get(subPath as EntityId) ?? null;
 
 	const inSubcollection = (id: string) => id === subPath || id.startsWith(`${subPath}/`);
 
@@ -106,6 +106,7 @@ function buildSubcollectionTree(
 	// and the entity's slug — same shape the rest of the loader
 	// uses, so cards round-trip through the same render code.
 	const pathBucket = (id: EntityId): string => {
+		if (!pagePath) return '';
 		if (!id.startsWith(`${pagePath}/`)) return '';
 		const rest = id.slice(pagePath.length + 1);
 		const lastSlash = rest.lastIndexOf('/');
@@ -126,12 +127,23 @@ function buildSubcollectionTree(
 		};
 	};
 
-	const subEntities = graph.byFolderRecursive(subPath);
-	// Roots: entities under subPath whose parent is null or sits
-	// outside the subcollection. The subcollection's headline
-	// entity (if any) is always a root.
-	const roots = subEntities
-		.filter((e) => !e.parent || !inSubcollection(e.parent))
+	let rootEntities: Entity[];
+	if (headlineSource) {
+		// Headline entity is the section header — its filesystem
+		// children become the roots beneath it.
+		seen.add(headlineSource.id);
+		rootEntities = headlineSource.children
+			.map((cid) => graph.get(cid))
+			.filter((c): c is Entity => !!c && inSubcollection(c.id));
+	} else {
+		// Pure folder: walk every entity under subPath and pick
+		// those whose parent is null or sits outside subPath.
+		rootEntities = graph
+			.byFolderRecursive(subPath)
+			.filter((e) => !e.parent || !inSubcollection(e.parent));
+	}
+
+	const roots = rootEntities
 		.sort((a, b) => a.meta.name.localeCompare(b.meta.name))
 		.map(buildNode);
 
@@ -139,7 +151,7 @@ function buildSubcollectionTree(
 		path: subPath,
 		plural: labels.plural,
 		description,
-		linkedEntityId,
+		headlineEntity: headlineSource ? toCard(headlineSource, cardSummaryHtml, undefined, pathBucket(headlineSource.id)) : null,
 		roots
 	};
 }
@@ -159,15 +171,24 @@ export type OrbitNode = { entity: Card; children: OrbitNode[]; order?: number };
  * that live several folders deep, as long as their filesystem parent
  * chain stays inside the subcollection.
  *
- * Header metadata (`path`, `plural`, `description`, `linkedEntityId`)
- * matches the subcollection tile, so the page can render a single
- * heading row that links to the subcollection's own page.
+ * Two heading flavours:
+ *
+ *   • `headlineEntity` is set when the subcollection is also an
+ *     entity (e.g. `places/celestial/aureth-system` is both a folder
+ *     and an entity). The section heading shows that entity's name +
+ *     summary; the tree underneath holds its descendants directly,
+ *     skipping the headline entity itself (it's already in the
+ *     heading).
+ *   • `headlineEntity` is null when the subcollection is a pure
+ *     folder. The section heading shows `plural` (the folder's
+ *     pluralised label) + `description`; the tree underneath holds
+ *     every root entity inside the folder.
  */
 export type SubcollectionTree = {
 	path: string;
 	plural: string;
 	description: string | null;
-	linkedEntityId: EntityId | null;
+	headlineEntity: Card | null;
 	roots: ContainerNode[];
 };
 

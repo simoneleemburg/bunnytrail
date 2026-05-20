@@ -313,16 +313,24 @@
 	// Tree mode: each subcollection becomes a section with its own
 	// container tree. Trees follow the *filesystem* hierarchy
 	// (built server-side), not the page-folder containers used by
-	// Index mode, so they descend all the way down. Subcollections
-	// whose tree fully prunes under the active filters drop out.
+	// Index mode, so they descend all the way down.
+	//
+	// Section is kept when either the headline entity matches the
+	// active filters, or any node in the tree matches. A pure-folder
+	// subcollection with no surviving roots is dropped entirely.
 	const visibleSubcollectionTrees = $derived.by(() => {
 		if (viewMode !== 'tree') return [];
 		return data.subcollectionTrees
-			.map((sub) => ({
-				...sub,
-				roots: sub.roots.map(filterNode).filter((n): n is RenderNode => n !== null)
-			}))
-			.filter((sub) => sub.roots.length > 0);
+			.map((sub) => {
+				const roots = sub.roots
+					.map(filterNode)
+					.filter((n): n is RenderNode => n !== null);
+				const headlineMatches = sub.headlineEntity ? matchesFilters(sub.headlineEntity) : false;
+				return { ...sub, roots, headlineMatches };
+			})
+			.filter((sub) =>
+				sub.headlineEntity ? sub.headlineMatches || sub.roots.length > 0 : sub.roots.length > 0
+			);
 	});
 
 	// Orbits view renders the structural tree, but with a twist:
@@ -569,18 +577,35 @@
 	{#if visibleSubcollectionTrees.length > 0}
 		<section class="subcollection-trees" aria-label="Subcollection trees">
 			{#each visibleSubcollectionTrees as sub (sub.path)}
-				<section class="subcollection-tree" aria-label={sub.plural}>
-					<header class="subcollection-tree-heading">
-						<h2>
-							<a href={`/${sub.linkedEntityId ?? sub.path}`}>{sub.plural}</a>
-						</h2>
-						{#if sub.description}
-							<p class="subcollection-tree-description">{sub.description}</p>
-						{/if}
-					</header>
-					{#each sub.roots as root (root.container.id)}
-						{@render containerTree(root)}
-					{/each}
+				<section class="subcollection-tree" aria-label={sub.headlineEntity?.name ?? sub.plural}>
+					{#if sub.headlineEntity}
+						<EntityCard
+							id={sub.headlineEntity.id}
+							name={sub.headlineEntity.name}
+							type={data.label.singular}
+							kind={sub.headlineEntity.kind}
+							summaryHtml={sub.headlineEntity.summaryHtml}
+							tags={sub.headlineEntity.tags}
+							era={sub.headlineEntity.era}
+							sigil={sub.headlineEntity.sigil}
+						/>
+					{:else}
+						<header class="subcollection-tree-heading">
+							<h2>
+								<a href={`/${sub.path}`}>{sub.plural}</a>
+							</h2>
+							{#if sub.description}
+								<p class="subcollection-tree-description">{sub.description}</p>
+							{/if}
+						</header>
+					{/if}
+					{#if sub.roots.length > 0}
+						<div class="subcollection-tree-children">
+							{#each sub.roots as root (root.container.id)}
+								{@render containerTree(root)}
+							{/each}
+						</div>
+					{/if}
 				</section>
 			{/each}
 		</section>
@@ -1055,6 +1080,21 @@
 		margin: 0;
 		color: var(--ink-soft);
 		font-style: italic;
+	}
+
+	/* The descendants under a headline-entity card sit slightly
+	   indented so the visual hierarchy reads "this entity, and
+	   what lives inside it". Pure-folder sections skip the indent
+	   (their heading is just a label, not a container). */
+	.subcollection-tree:has(.subcollection-tree-heading) .subcollection-tree-children {
+		margin: 0;
+	}
+
+	.subcollection-tree-children {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+		margin-left: var(--space-4);
 	}
 
 	.container-group {
