@@ -86,17 +86,17 @@ across centuries of patient attention.
 The sustained scholarly work of reconstruction — taking the
 inscriptions, transcribing them, debating them, deriving from
 them as much of the original Old Tongue practice as the marked
-stone can support — has fallen, since the Aetherians arrived,
-chiefly to **the [[beings/aetherians|Aetherians]]**. They are the
+stone can support — has fallen, since the Urouthi arrived,
+chiefly to **the [[beings/urouthi|Urouthi]]**. They are the
 surface civilisation's own descendants; they have a particular
 intimacy with the language those inscriptions encode, even
 though it is no longer their spoken tongue. The work they do is
 in collaboration with the older Nuunlaumud who began it.
 
-There is a further reason the Aetherians are well-placed for
+There is a further reason the Urouthi are well-placed for
 this work, and it is the most consequential single fact about
 the inscriptional script's afterlife:
-[[#the-inscriptional-script-and-its-second-life|the Aetherians
+[[#the-inscriptional-script-and-its-second-life|the Urouthi
 use the same script to write Deep Speech]]. The notation that
 encoded the Old Tongue is, for them, not an archaeological
 puzzle but a daily literacy. They are reading inscriptions in a
@@ -124,7 +124,7 @@ surface conditions could hold; and when the
 possible, they carried that form outward to the other Sister
 Worlds. Every speaker of the Old Tongue on Nebelheim or
 Sharazan owes the practice, ultimately, to a chain that runs
-back from their teacher to the archipelago, to the Aetherians
+back from their teacher to the archipelago, to the Urouthi
 and the older Nuunlaumud, to the marked stone of a civilisation
 that no longer breathes air and could no longer correct anyone
 if it wanted to.
@@ -146,7 +146,7 @@ their original use, and in surface-scholar shorthand they are
 still sometimes spoken of as one thing. They are not. The
 language is dead in living mouths; the script is not.
 
-The [[beings/aetherians|Aetherians]] write
+The [[beings/urouthi|Urouthi]] write
 [[culture/languages/deep-speech|Deep Speech]] in this script. They have
 done so for as long as their tradition runs back — since
 shortly after the older Nuunlaumud took in the surface
@@ -164,7 +164,7 @@ The retrofit was, by every account that reaches the surface,
 work. Deep Speech's phonology is not the surface civilisation's
 phonology. The script has digraphs and repurposed glyphs in its
 Deep-Speech use that had different functions in its Old-Tongue
-use, and Aetherian orthographic tradition is, accordingly, its
+use, and Urouthi orthographic tradition is, accordingly, its
 own discipline. _(What those orthographic differences are in
 detail, and what they reveal about either language, is not yet
 recorded here.)_
@@ -175,7 +175,7 @@ The two consequences are easy to miss and worth saying flatly:
   reconstructed. The _script_ that encoded it is alive,
   encoding a different language, in continuous daily use among
   one of the populations on Bayurinda.
-- The Aetherians' relationship to the inscriptions is therefore
+- The Urouthi's relationship to the inscriptions is therefore
   not the relationship of archaeologists to an alien artefact.
   It is the relationship of literate people reading marks they
   know how to read, encoding a language they do not know how to
@@ -183,7 +183,7 @@ The two consequences are easy to miss and worth saying flatly:
   not at the script level.
 
 _(Whether the older Nuunlaumud's oral tradition includes
-anything the Aetherian written tradition has lost, and whether
+anything the Urouthi written tradition has lost, and whether
 the inscriptional script has changed in any noticeable way
 across its long second life as a Deep-Speech writing system,
 are open questions in this compendium.)_

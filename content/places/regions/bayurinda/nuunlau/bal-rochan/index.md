@@ -1,7 +1,7 @@
 **Bal Rochan** [[ds]] is the largest of the
 [[culture/languages/deep-speech|Nuunlaumud]] settlements on the floor of
 [[nuunlau|Nuunlau]], and the most populous —
-[[beings/aetherians|Aetherian]]-majority by some margin, with a
+[[beings/urouthi|Urouthi]]-majority by some margin, with a
 share of older Nuunlaumud living and working alongside them.
 It is one of the few seafloor places the
 [[bayurinda-archipelago|archipelago]] knows by the deep's
@@ -38,7 +38,7 @@ What the archipelago does know reliably is that Bal Rochan is
 the centre of gravity for the inscription-stewardship work — the
 slow reading of the seafloor record from which the
 [[culture/languages/old-tongue|Old Tongue]] has been reconstructed. That
-work is chiefly [[beings/aetherians|Aetherian]] work now,
+work is chiefly [[beings/urouthi|Urouthi]] work now,
 carried on alongside the older Nuunlaumud who first began it. The
 [[culture/oracle-triad|Oracle Triad]]'s long Old-Tongue chain
 ultimately rests on Bal Rochan's scholarship.

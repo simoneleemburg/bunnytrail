@@ -106,7 +106,7 @@ pressure-adapted, and were already at home in
 [[nuunlau|Nuunlau]] long before the surface civilisation
 above them drowned.
 
-The **[[beings/aetherians|Aetherians]]** are the populous
+The **[[beings/urouthi|Urouthi]]** are the populous
 majority. They are not older; they are descendants of the
 surface civilisation's own survivors, taken in by the older
 Nuunlaumud after the drowning and given the means to breathe
@@ -118,14 +118,14 @@ Together the two peoples make up the Nuunlaumud as the
 archipelago meets them. Scholarship on the other Sister Worlds
 refers to them collectively as _the deep_, or by various
 respectful circumlocutions. What the older Nuunlaumud and the
-Aetherians call themselves, in their own working tongue (which
+Urouthi call themselves, in their own working tongue (which
 is [[culture/languages/deep-speech|Deep Speech]], not
 [[culture/languages/bayurindan|Bayurindan]]), is not yet recorded here.
 
 The relationship between the archipelago and the Nuunlaumud is
 the central social fact of present Bayurindan life. The
-Nuunlaumud — older people and Aetherians both, with the
-inscription-stewardship work falling chiefly to the Aetherians —
+Nuunlaumud — older people and Urouthi both, with the
+inscription-stewardship work falling chiefly to the Urouthi —
 have been, across the long centuries since the drowning, the
 **custodians** of what the lost civilisation made: its records,
 its practices, its scholarly inheritance, its

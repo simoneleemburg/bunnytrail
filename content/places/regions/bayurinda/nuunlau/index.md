@@ -10,14 +10,14 @@ It is the home of the [[culture/languages/deep-speech|Nuunlaumud]] — the
 seafloor people the compendium otherwise calls _the deep_, in
 fact two peoples sharing the same waters: the older Nuunlaumud,
 who pre-date the drowning, and the
-[[beings/aetherians|Aetherians]], the populous majority,
+[[beings/urouthi|Urouthi]], the populous majority,
 descendants of the surface civilisation's own survivors. It is
 where the inscriptions of the lost surface civilisation rest on
 the floor of the ocean, exactly where the drowning left them.
 Almost everything the [[culture/languages/old-tongue|Old Tongue]] is, as
 a reconstructed language, has been reconstructed from
 inscriptions held in Nuunlau and by the
-[[beings/aetherians|Aetherians]] who live there — by, in other
+[[beings/urouthi|Urouthi]] who live there — by, in other
 words, the descendants of the people the inscriptions are by.
 
 ## On the name
@@ -35,7 +35,7 @@ The people of Nuunlau are the _[[culture/languages/deep-speech|Nuunlaumud]]_
 in Bayurindan, formed by the suffix _-mud_ that derives a
 people-name from a place-name — literally, _people of the
 Nuunlau_. The word is an umbrella: it covers both the older
-Nuunlaumud and the [[beings/aetherians|Aetherians]], who share
+Nuunlaumud and the [[beings/urouthi|Urouthi]], who share
 [[culture/languages/deep-speech|Deep Speech]] as a working tongue. Both
 _Nuunlau_ and _Nuunlaumud_ are the archipelago's words; what
 the two peoples call their own home, and themselves, in their
@@ -54,11 +54,11 @@ several distinct things:
 - The **inscriptions** — the seafloor record left by the lost
   surface civilisation when it drowned. These rest on Nuunlau's
   floor, in a [[culture/languages/old-tongue#the-inscriptional-script-and-its-second-life|script
-  the Aetherians still write in every day]], encoding a language —
+  the Urouthi still write in every day]], encoding a language —
   the [[culture/languages/old-tongue|Old Tongue]] — that their ancestors
   spoke and they no longer do. The reading of them was begun by
   the older Nuunlaumud, who had neither the language nor the
-  script; the sustained reconstruction is now Aetherian work, in
+  script; the sustained reconstruction is now Urouthi work, in
   collaboration with the older people who began it. (See
   [[culture/languages/old-tongue#how-it-survived--partly|Old Tongue: how
 it survived]].)
@@ -73,15 +73,15 @@ it survived]].)
   wholly natural or wholly something else is a question the
   compendium does not settle. What is recorded is that the
   older things **emit a radiance** the
-  [[beings/aetherians|Aetherians]] are uniquely congenial to,
-  and that Aetherians come to them to **near**: contact with
-  the [[kinds/naya|Naya]] is, among the Aetherians, mediated
+  [[beings/urouthi|Urouthi]] are uniquely congenial to,
+  and that Urouthi come to them to **near**: contact with
+  the [[kinds/naya|Naya]] is, among the Urouthi, mediated
   by going to the older things and coming back. The radiance
   has a Deep-Speech name —
   **[[materials/urouch|Urouch]]** [[ds]] — and a physical form,
   the small blue-shining black pellets the deep finds in
   un-scavenged ruins. (See
-  [[beings/aetherians#the-radiance-and-what-is-in-it|the
+  [[beings/urouthi#the-radiance-and-what-is-in-it|the
 radiance, and what is in it]] and
   [[materials/urouch|Urouch]].)
 

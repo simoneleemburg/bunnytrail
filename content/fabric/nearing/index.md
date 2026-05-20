@@ -55,7 +55,7 @@ The major recognised purposes:
 
 Nearing is especially associated with oracles, experienced
 [[eidolons|Eidolon]] pilots, Bayurindan mystics,
-[[beings/aetherians|Aetherian]] practitioners, and long-distance
+[[beings/urouthi|Urouthi]] practitioners, and long-distance
 starfarers — though the practice itself is older and more
 diffuse than any of these traditions.
 
@@ -86,23 +86,23 @@ with different safety structures.
   rather than a route to piloting; the safety architecture is
   the tradition's own.
 
-- **Aetherian Nearing.** The
-  [[beings/aetherians|Aetherians]] of
+- **Urouthi Nearing.** The
+  [[beings/urouthi|Urouthi]] of
   [[nuunlau|Nuunlau]] reach the [[kinds/naya|Naya]]
   through a different doorway entirely: a **radiance** emitted
   by certain features on the floor of Nuunlau, to which the
-  Aetherian body is uniquely congenial. Every Aetherian can
+  Urouthi body is uniquely congenial. Every Urouthi can
   near; the path is built into the biology and the place. The
-  safety architecture is the Aetherian form itself, refined
+  safety architecture is the Urouthi form itself, refined
   across the long generations since the drowning. No
   Skyblood is used. The order's structures do not apply. (See
-  [[beings/aetherians#the-radiance-and-what-is-in-it|the
+  [[beings/urouthi#the-radiance-and-what-is-in-it|the
 radiance, and what is in it]].)
 
 - **The starfaring layer.** Eidolon starfaring is itself a
   form of Nearing, and the long-distance starfarers practise it
   on top of piloting Nearing. The order trains for this; the
-  Aetherian tradition does not, for obvious reasons of
+  Urouthi tradition does not, for obvious reasons of
   location.
 
 These traditions are not in competition for what Nearing _is_.
@@ -206,8 +206,8 @@ order's tradition, rituals, emotional anchors, companions, and
 [[materials/skyblood|Skyblood]] stabilisation, with the
 [[culture/oracle-triad|Oracle Triad]] as the long stabilising
 structure around the deepest practice; in
-[[beings/aetherians|Aetherian]] Nearing, the support is the
-Aetherian form itself and the inherited practice around safe
+[[beings/urouthi|Urouthi]] Nearing, the support is the
+Urouthi form itself and the inherited practice around safe
 return; in the Bayurindan mystical traditions, the long
 discipline of study. What is universal is that some structure
 exists. Nearing without any structure — improvised, unwitnessed,

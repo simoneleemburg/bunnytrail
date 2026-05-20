@@ -1,0 +1,20 @@
+name: The Urouthi
+kind: mortal
+language: ds
+summary: The populous majority among the [[culture/languages/deep-speech|Nuunlaumud]] of [[nuunlau|Nuunlau]] — descendants of the survivors of [[bayurinda|Bayurinda]]'s drowned surface civilisation, modified to breathe water and taken in by the older deep. They read their own ancestors' inscriptions, in a tongue not their own; and they reach the [[kinds/naya|Naya]] through a radiance on the seafloor, in a form of [[nearing|Nearing]] every Urouthi body is shaped for. The name is their own, in [[culture/languages/deep-speech|Deep Speech]] — _people of [[materials/urouch|Urouch]]_, the radiance their lives are bent around.
+tags:
+  [
+    nuunlau,
+    seafloor,
+    post-drowning,
+    vochran,
+    water-breathers,
+    custodians,
+    inscriptions,
+    nearing,
+    naya-contact
+  ]
+relations:
+  - kind: native-to
+    target: places/regions/bayurinda/nuunlau
+    note: The populous majority of the deep-water region.

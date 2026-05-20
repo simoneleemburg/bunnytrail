@@ -8,32 +8,36 @@ The [[culture/languages/deep-speech|Nuunlaumud]] of
 language — the tongue that has lived on the seafloor for as long
 as the older Nuunlaumud have, separately from anything that
 travels on the surface. The
-[[beings/aetherians|Aetherians]] — the populous majority of the
+[[beings/urouthi|Urouthi]] — the populous majority of the
 Nuunlaumud, descended from the surface civilisation's
 survivors — speak it too: they adopted it from the older people
 who took them in, and have spoken it across the long centuries
 since.
 
-What the Aetherians' ancestors spoke, before the drowning, is
+What the Urouthi's ancestors spoke, before the drowning, is
 not preserved in any spoken tongue the surface has access to.
 Whatever fragments of it survive do so in the
 [[culture/languages/old-tongue|Old Tongue]] inscriptions, not in living
 speech.
 
 Almost nothing of Deep Speech itself is recorded in this
-compendium. What is known to the surface comes through the few
-words that have travelled up: notably
-_[[nuunlau/bal-rochan|Bal Rochan]]_, the deep's name for their
-largest settlement, and _[[materials/urouch|Urouch]]_, the
-deep's name for the radioactive substance on which long-term
-life in [[nuunlau|Nuunlau]] depends (pronounced with the
-final _-ch_ as a soft _-sh_, roughly _oo-roush_). The
-archipelago people of Bayurinda render both names unchanged
-when they speak of them; the consonant cluster _-l R-_ in _Bal
-Rochan_, foreign to Bayurindan's open-syllable phonology, marks
-the word audibly as not theirs, and _Urouch_'s soft sibilant
-ending sits no more comfortably in a Bayurindan mouth. The Old
-Tongue's recovered inscriptions, which come from the lost
+compendium. What is known to the surface comes through a few
+words that have travelled up: _[[beings/urouthi|Urouthi]]_,
+the populous majority's name for themselves — _people of
+Urouch_, the radiance their lives are bent around;
+_[[materials/urouch|Urouch]]_, the deep's name for the
+radioactive substance itself (pronounced with the final _-ch_
+as a soft _-sh_, roughly _oo-roush_);
+_[[materials/vochran|Vochran]]_, the breathable fluid
+that fills Urouthi lungs in place of air; and
+_[[nuunlau/bal-rochan|Bal Rochan]]_, the deep's name for
+their largest settlement. The archipelago people of Bayurinda
+render these words unchanged when they speak of them; the
+consonant cluster _-l R-_ in _Bal Rochan_, foreign to
+Bayurindan's open-syllable phonology, marks the word audibly
+as not theirs, and the soft sibilant endings of _Urouch_ and
+_Urouthi_ sit no more comfortably in a Bayurindan mouth. The
+Old Tongue's recovered inscriptions, which come from the lost
 surface civilisation, do not preserve Deep Speech at all.
 
 ## On the name
@@ -50,24 +54,24 @@ what they call their language, are not yet recorded here.
 _(Whether Deep Speech is a single language or a family of
 related tongues spoken across different seafloor settlements is
 an open question in this compendium. Whether anything of the
-surface civilisation's spoken language survives in Aetherian
+surface civilisation's spoken language survives in Urouthi
 Deep Speech as substrate or loan-vocabulary is another.)_
 
 ## How it is written
 
 Deep Speech has a writing system, but the system did not
 originate with it. The
-[[beings/aetherians|Aetherians]] write Deep Speech in the
+[[beings/urouthi|Urouthi]] write Deep Speech in the
 **[[culture/languages/old-tongue#the-inscriptional-script-and-its-second-life|inscriptional
 script]]** — the notational technology the surface civilisation
 invented for what is now called the
 [[culture/languages/old-tongue|Old Tongue]]. The surface survivors who
-became the Aetherians brought writing itself with them into
+became the Urouthi brought writing itself with them into
 [[nuunlau|Nuunlau]]; they kept it, and across the long
 generations they have fitted it to the language they adopted
 from the people who took them in. The retrofit was real work —
 Deep Speech's phonology is not the surface civilisation's — and
-Aetherian orthography is, accordingly, its own discipline.
+Urouthi orthography is, accordingly, its own discipline.
 
 The **older Nuunlaumud**, by contrast, have no writing of their
 own. They had none before the surface survivors arrived, and
@@ -78,9 +82,9 @@ of a language they did not speak, by people who themselves did
 not write.
 
 The practical consequence is that Deep Speech _as written_
-exists, in living daily use, only among the Aetherians. What
+exists, in living daily use, only among the Urouthi. What
 the older Nuunlaumud know, they hold in voice. What the
-Aetherians know, they hold in voice and in script. Where the
+Urouthi know, they hold in voice and in script. Where the
 two traditions touch — in shared scholarship, in the
 inscription-stewardship work, in everyday life in
 [[nuunlau/bal-rochan|Bal Rochan]] and the other Nuunlaumud
@@ -88,7 +92,7 @@ settlements — the distinction between an oral memory and a
 written one is a real social fact, not just a technical one.
 
 _(How the older Nuunlaumud feel about writing as a technology,
-how the Aetherians feel about an oral tradition that remembers
+how the Urouthi feel about an oral tradition that remembers
 things the script does not, and how these two registers of
 memory check one another in practice, are not yet recorded
 here.)_
@@ -104,8 +108,8 @@ much travel between them.
 _(The Nuunlaumud's relationship to the
 [[culture/languages/old-tongue|Old Tongue]] — whose inscriptions they
 steward, and whose reconstruction the
-[[beings/aetherians|Aetherians]] have largely carried — is a
+[[beings/urouthi|Urouthi]] have largely carried — is a
 relationship to a third language, not to anything in their own
 speech. The Old Tongue is not Deep Speech. That it is, for the
-Aetherians, the language of their own ancestors makes the
+Urouthi, the language of their own ancestors makes the
 work no less work, and no more easy.)_

@@ -2,7 +2,7 @@ _Urouch_ [[ds]] is the [[culture/languages/deep-speech|Deep Speech]] name
 for the substance the compendium has, until now, called
 **the radiance** — the radioactive material on the floor of
 [[nuunlau|Nuunlau]] that the
-[[beings/aetherians|Aetherians]] near by, and on which long-term
+[[beings/urouthi|Urouthi]] near by, and on which long-term
 life in the deep depends.
 
 _(The name is pronounced with the final consonant cluster soft —
@@ -11,6 +11,11 @@ roughly \_oo-roush_, with the `-ch` taking the value of a hushed
 carry in some surface languages. The morphology — whether
 _Urouch_ is one Deep-Speech root, a compound, or a borrowing
 older than living Deep Speech — is not yet recorded here.)\_
+
+The populous majority of the [[nuunlau|Nuunlau]] seafloor name
+themselves after Urouch: the
+[[beings/urouthi|Urouthi]] — _people of Urouch_ — bear in
+their own name the radiance their lives are bent around.
 
 ## What it looks like
 
@@ -28,21 +33,21 @@ rawer, is not yet recorded here. Surface scholars who have
 heard about Urouch describe it in the vocabulary of their own
 physics — _a high-grade fissile material_, in the phrasing of
 one Tholingian account — but this is a surface framing of a
-deep substance, and the compendium prefers the Aetherian and
+deep substance, and the compendium prefers the Urouthi and
 older-Nuunlaumud framings, neither of which carry well into
 surface vocabulary. _(See gap-note below.)_
 
 ## What it is for
 
 Urouch does three things in deep life that the surface knows
-about. They are not separable in Aetherian practice; the
+about. They are not separable in Urouthi practice; the
 compendium separates them only for the surface reader.
 
-**It is the radiance.** Urouch is what the Aetherian body is
-congenial to, and the substance through which Aetherian Nearing
+**It is the radiance.** Urouch is what the Urouthi body is
+congenial to, and the substance through which Urouthi Nearing
 is mediated. At low doses it sustains; at higher doses it opens
 the doorway. See
-[[beings/aetherians#the-radiance-and-what-is-in-it|the radiance,
+[[beings/urouthi#the-radiance-and-what-is-in-it|the radiance,
 and what is in it]] and [[nearing|Nearing]] for the
 practice.
 
@@ -100,7 +105,7 @@ now reveals itself, the compendium does not yet settle.
 
 _(Surface-scholar framing, gap-note. The physics-of-the-air
 description — fissile material, half-lives, decay products — is
-not how either the Aetherians or the older Nuunlaumud speak
+not how either the Urouthi or the older Nuunlaumud speak
 about Urouch, and translating it into that vocabulary loses
 most of what the substance \_is_ in deep life. The compendium
 records the surface framing as one tradition among several, not
