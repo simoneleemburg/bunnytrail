@@ -15,8 +15,8 @@
 	<p class="counter">
 		<em>
 			{data.totalEntities} entries ({data.entitiesWithProse} with prose){#if data.totalChapters > 0}
-				· {data.totalChapters} chapters across {data.bookCount}
-				{data.bookCount === 1 ? 'book' : 'books'}{/if} · {data.kindCount} kinds ({data.kindsWithProse}
+				· {data.totalChapters} chapters across {data.workCount}
+				{data.workCount === 1 ? 'work' : 'works'}{/if} · {data.kindCount} kinds ({data.kindsWithProse}
 			documented) · {data.collectionCount} collections{#if data.issues > 0}
 				· <a class="issues-link" href="/health"
 					>{data.issues} {data.issues === 1 ? 'issue' : 'issues'}</a
