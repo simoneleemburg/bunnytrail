@@ -14,7 +14,7 @@ their place _Bayurinda_. The world has carried the second of
 those names ever since.
 
 By long tradition the archipelago people claim to be the
-**remnant** of the [drowned civilisation](/places/celestial/planets/bayurinda#the-drowning):
+**remnant** of the [drowned civilisation](/places/celestial/aureth-system/bayurinda#the-drowning):
 the part of the old country that the seas did not take, and the
 people who survived above water are, in this account, the
 descendants of those who happened to be standing on land that
@@ -37,7 +37,7 @@ are the archipelago's own work, made and remade across
 generations.
 
 The caves are _not_ the drowned cities. There are ruins of the
-[lost surface civilisation](/places/celestial/planets/bayurinda#the-drowning) on
+[lost surface civilisation](/places/celestial/aureth-system/bayurinda#the-drowning) on
 the archipelago — weathered foundations on the high places, an
 inscription here, a buried hall there — but the great drowned
 cities themselves lie further out, on the wider ocean floor,
@@ -77,7 +77,7 @@ water may be older than any line of teaching that uses it.
 What is _not_ in the caves — and is sometimes mistakenly imagined
 to be, by visitors who have heard of the drowning and the deep
 in the same breath — is the lost civilisation itself. The
-[drowned cities](/places/celestial/planets/bayurinda#the-drowning) are not under
+[drowned cities](/places/celestial/aureth-system/bayurinda#the-drowning) are not under
 the archipelago's caves; they are out across the wider ocean
 floor, the deep's country and the deep's responsibility. What
 the archipelago carries of the old country is the **scattered
@@ -98,7 +98,7 @@ the deep.
 ## On the drowning, and descent
 
 The archipelago people's standing tradition is that they are the
-remnant of the [drowned civilisation](/places/celestial/planets/bayurinda#the-drowning):
+remnant of the [drowned civilisation](/places/celestial/aureth-system/bayurinda#the-drowning):
 those who happened to be on land that remained land when the seas
 came up. This is the account given in archipelago songs, in the
 liturgies that mark the storm seasons, and in the oldest of the
@@ -137,7 +137,7 @@ is the house, the boat, the season's nets — and so those things
 are made with care, used hard, and let go without bitterness when
 the storms claim them.
 
-This is the same world whose [contemplative tradition](/places/celestial/planets/bayurinda#culture-and-tone)
+This is the same world whose [contemplative tradition](/places/celestial/aureth-system/bayurinda#culture-and-tone)
 is held to flow from the drowning. Whether or not the archipelago
 people are descended from those who drowned, they live in a
 world whose history is unambiguously one of loss at civilisational
@@ -155,7 +155,7 @@ arrive here, are received here, and are taught here whatever the
 archipelago has decided they are ready to learn.
 
 What reaches off-world visitors through the archipelago is the
-material the [deep](/places/celestial/planets/bayurinda#peoples-of-bayurinda) have
+material the [deep](/places/celestial/aureth-system/bayurinda#peoples-of-bayurinda) have
 preserved — the
 [[culture/languages/old-tongue|Old Tongue]], the contemplative discipline,
 the patient eye for Naya — adapted by archipelago teachers into

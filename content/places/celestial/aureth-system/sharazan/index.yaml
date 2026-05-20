@@ -4,5 +4,5 @@ summary: A fractured atmospheric cluster — a wounded planet held in motion by 
 tags: [crossroads, fractured, atmosphere, splendor]
 relations:
   - kind: member-of
-    target: places/celestial/systems/aureth-system
+    target: places/celestial/aureth-system
     order: 2

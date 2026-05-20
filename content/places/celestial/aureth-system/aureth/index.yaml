@@ -5,5 +5,5 @@ summary: The star at the centre of the Aureth System — the source of light and
 tags: [sister-worlds]
 relations:
   - kind: member-of
-    target: places/celestial/systems/aureth-system
+    target: places/celestial/aureth-system
     order: 0

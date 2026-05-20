@@ -6,5 +6,5 @@ tags: [ocean, drowned-civilisation, multiple-peoples, archipelago, mythic-past]
 nativeBeings: [kinds/human, kinds/nguwari]
 relations:
   - kind: member-of
-    target: places/celestial/systems/aureth-system
+    target: places/celestial/aureth-system
     order: 1

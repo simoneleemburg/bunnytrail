@@ -1,8 +1,8 @@
 The Hollow Binary is the scholarly name for the binary system
 that lies near to, but apart from, the
-[[systems/aureth-system|Aureth System]]. Its two
+[[aureth-system|Aureth System]]. Its two
 bodies are a visible companion star and the
-[[black-holes/the-dark-companion|Dark Companion]] — an invisible
+[[the-dark-companion|Dark Companion]] — an invisible
 second body resolvable only by what it does to its companion.
 
 The system's name across the Sister Worlds is well-attested.

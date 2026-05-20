@@ -1,5 +1,5 @@
 Aureth is the star at the centre of the
-[[systems/aureth-system|Aureth System]]. Bayurinda,
+[[aureth-system|Aureth System]]. Bayurinda,
 Nebelheim, and Sharazan all orbit within its light; the day
 on each is the day Aureth defines for it.
 
