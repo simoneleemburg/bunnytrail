@@ -23,6 +23,8 @@
 				{#each data.nav as item (item.href)}
 					<a href={item.href}>{item.label}</a>
 				{/each}
+				<span class="nav-sep" aria-hidden="true">·</span>
+				<a href="/kinds">Kinds</a>
 			</nav>
 		</div>
 	</header>
@@ -73,6 +75,7 @@
 
 	nav {
 		display: flex;
+		align-items: baseline;
 		gap: var(--space-5);
 	}
 
@@ -86,6 +89,14 @@
 
 	nav a:hover {
 		color: var(--accent);
+	}
+
+	/* Quiet bullet between the folder group and the Kinds link —
+	   signals that Kinds is a different kind of destination
+	   (taxonomy, not a folder of entities) without shouting. */
+	.nav-sep {
+		color: var(--ink-faint);
+		font-size: var(--text-sm);
 	}
 
 	main {
