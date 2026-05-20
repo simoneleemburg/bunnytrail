@@ -5,12 +5,10 @@ companion star. A single star is observed; that star orbits
 something the eye cannot resolve. The thing it orbits is the
 Dark Companion.
 
-The compendium does not, in its own voice, say what the Dark
-Companion is. The cosmology has not settled the question, and
-the entry does not pretend otherwise. What it can record is
-what is known: the orbital fact, the cultural readings, and
-the more difficult fact that something about it bends the
-practice of [[nearing|Nearing]] when one travels
+What the Dark Companion _is_ remains unsettled across the
+Sister Worlds. What is known is the orbital fact, the cultural
+readings, and the more difficult fact that something about it
+bends the practice of [[nearing|Nearing]] when one travels
 within reach of it.
 
 ## What is observed
@@ -27,10 +25,6 @@ which are not advanced telescopically — have ever resolved it.
 The system is, in scholarly use, the _Hollow Binary_. The
 visible companion has its own name in each tradition. The
 Dark Companion has many.
-
-_(The name of the visible companion star in any settled
-scholarly use, and the catalogues of cultural names for both
-bodies, are not yet recorded here.)_
 
 ## What it is called
 
@@ -66,8 +60,8 @@ it.
 
 ## What it does to Nearing
 
-The compendium is on firmer ground here. Pilots who travel
-within reach of the Dark Companion report consistent effects.
+Pilots who travel within reach of the Dark Companion report
+consistent effects.
 
 [[nearing|Nearing]] distorts near it. The familiar
 loosening becomes less controlled — softer when the pilot
@@ -90,17 +84,9 @@ What is recorded, then, is this: the Dark Companion makes
 Nearing harder, and the harder Nearing fails in directions
 that are not always the failures Nearing usually fails in.
 
-_(Detail on the specific recorded distortions, on the few
-pilots who have travelled deliberately close to the Hollow
-Binary and what they brought back, and on the oracle
-traditions that read the Dark Companion's resonance from a
-distance is not yet recorded here.)_
-
 ## What the worlds say about it
 
 The Sister Worlds do not agree on what the Dark Companion is.
-The compendium records the readings without choosing among
-them.
 
 - On **Nebelheim**, the dominant reading is theological. The
   Dark Companion is the Ash-Eye — a wound in the sky left by
@@ -129,8 +115,7 @@ None of these readings is doctrine. The
 [[culture/knights-of-bellona|Knights of Bellona]] do not, in
 public, endorse one over another. The order's own term in
 its working charts is the Dark Companion, the most neutral of
-the available names. What the order says internally about the
-phenomenon is not part of the public record.
+the available names.
 
 ## Tradition and warning
 
@@ -149,8 +134,7 @@ it has, to attempt journeys or practices that ordinary
 Nearing cannot reach. The warnings are not unanimous. Some
 traditions hold that the routes still exist; some that they
 should be left alone; some that they have been used in living
-memory and the order is simply not saying so. The compendium
-cannot resolve which of these is true.
+memory and the order is simply not saying so.
 
 ## What it is not
 
@@ -159,18 +143,11 @@ identified with the broken god whose shattering produced
 [[materials/skyblood|Skyblood]] and litters
 [[realms/the-void|the Void Between Worlds]]. The two
 phenomena are old in different ways. Some cultural readings
-gesture at a connection; none of them are scholarly. The
-compendium notes the gesture and declines to confirm it.
+gesture at a connection; none of them are scholarly.
 
-The Dark Companion is also not, in any reading the compendium
-records, alive. It does not act with intent. What it does
+The Dark Companion is also not, in any reading currently
+recorded, alive. It does not act with intent. What it does
 near pilots and Nearing happens because of what it _is_, not
 because it has chosen to do anything. This is the position
 the order maintains in public. Whether the order maintains it
 in private is a separate question.
-
-_(The Dark Companion's relationship to fallen
-[[kinds/naya|Naya]], to the broader cosmology of cosmological
-threat, and to whatever it is that lies beneath the
-shattering's account of cosmic entropy is not yet recorded
-here.)_

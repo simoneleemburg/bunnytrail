@@ -2,6 +2,6 @@ name: Thallish
 kind: language
 language: tha
 code: tha
-summary: A language of [Alteria Cognita](/cognita) whose words have travelled further than the speakers themselves. Thallish supplies several of the compendium's standard cosmological terms — among them _Asthera_ and _Nareth_ — but the people who speak it, and the world they speak it on, are not yet recorded in this compendium.
+summary: A language of [Alteria Cognita](/cognita) whose words have travelled further than the speakers themselves. Thallish supplies several of the standard cosmological terms in use across the Sister Worlds — among them _Asthera_ and _Nareth_.
 aliases: [the Thallish tongue]
-tags: [cosmological-vocabulary, gap-noted]
+tags: [cosmological-vocabulary]

@@ -13,13 +13,3 @@ their birth. See
 [[kinds/urouthi#how-a-urouthi-is-born|How an Urouthi is born]]
 for the practice.
 
-The compendium uses _Vochran_ now in place of the older
-surface-scholar loan _Aether_, which was a guess from outside
-and has been retired.
-
-What Vochran is, structurally — whether it is biological in
-origin, refined from a deep substance, or something older than
-either — is not yet recorded here. Whether the older Nuunlaumud
-themselves use Vochran or use a different substance to breathe
-the deep is likewise not recorded here. The compendium notes
-the name and the use, and holds the rest open.

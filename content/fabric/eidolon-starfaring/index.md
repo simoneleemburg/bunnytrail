@@ -160,8 +160,3 @@ ordinary self-reference harder to maintain.
 
 The practice rewards the same adaptive identity all sustained
 Nearing rewards. It punishes the same failures.
-
-_(Detail on the duration of typical transits, the specific
-currents and routes between named worlds, the sub-disciplines
-of pilot navigation, and the lineage of Knights specialised
-in long-distance transit is not yet recorded here.)_

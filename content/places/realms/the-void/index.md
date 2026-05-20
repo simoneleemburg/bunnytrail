@@ -9,9 +9,7 @@ the long fall. The
 [[culture/knights-of-bellona|Knights of Bellona]] use a more
 neutral term in their charts: _the Void Between Worlds_. The
 neutrality is doctrinal. What the Void actually is, the order
-has not committed itself in public to saying.
-
-## What is in it
+has not committed itself in public to saying.## What is in it
 
 Several distinct things are in the Void, and the boundaries
 between them are not clean.
@@ -32,8 +30,8 @@ without a source.
 of the same shattering that
 [[materials/skyblood|Skyblood]] derives from — the breaking that
 by long tradition is called a shattered god, though that
-attribution varies between traditions and is not settled in
-this compendium. Whatever it was that broke, the breaking is
+attribution varies between traditions and is not universally
+held. Whatever it was that broke, the breaking is
 older than the order, older than the worlds' current arrangement
 of themselves, older than most of what is written down. These
 fragments are not Skyblood. Skyblood is what has been refined
@@ -84,9 +82,3 @@ That reading is contemplative rather than doctrinal, and the
 order does not endorse it. The order's own position is that
 the Void is dangerous, that it should be travelled through and
 not toward, and that what is in it is best left where it lies.
-
-_(Detail on the specific charted regions of the Void, the
-named storms and currents within it, the few Knights known to
-have travelled in the Void deliberately, and the deeper
-question of what the breaking was that the Void is full of is
-not yet recorded here.)_

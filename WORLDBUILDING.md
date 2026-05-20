@@ -17,14 +17,17 @@ The compendium is written as if compiled from many partial sources
 across many centuries — a real archive, not a wiki. That has
 specific consequences for voice:
 
-- **Incomplete.** It is fine, and often correct, to record that
-  something is not yet known. Gap-notes are first-class content.
+- **Incomplete.** Most of the world is not yet recorded here, and
+  that is the default state. The compendium reflects what has been
+  given a place — no more. Absence is silent; we don't narrate
+  what's missing.
 - **Partisan in places.** Where real long-lived custodians of this
   material would plausibly disagree, the compendium records the
   contest rather than resolving it.
-- **Honest about both.** Where something is settled in the world,
-  it is written plainly. Where it isn't, the gap or the dispute is
-  visible on the page, not hidden between entries.
+- **Honest about what is here.** Where something is settled in the
+  world, it is written plainly. Where the in-world record disputes
+  itself, the dispute is visible on the page rather than smoothed
+  into a single account.
 
 The compendium has the texture of a real archive. It is not the
 texture of a debate club, and it is not the texture of a wiki.
@@ -37,10 +40,12 @@ Editing prose for clarity, rhythm, and tone is fine. Adding new
 facts about the world is not — even small ones. If the user's brief
 says "rare amphibious people," don't extend it into specific
 habitats, customs, or history. If a character or place needs more
-detail than the brief provides, either ask the user, leave the text
-short, or make the gap explicit (a parenthetical italic note like
-_"How X came to Y is not yet recorded here."_ is preferred over
-silent omission, so the gap is visible later).
+detail than the brief provides, either ask the user or leave the
+text short. Don't narrate what's missing: silent omission is the
+correct treatment, and the world is limitless by definition — every
+entry is necessarily a fragment. If a missing thread feels worth
+returning to, add it to `QUESTIONS.md` instead of flagging it in
+the prose.
 
 ### Flag any inferences you do make
 
@@ -57,9 +62,10 @@ ritualised transit-rites" without a prompt.
 
 ### Empty is better than padded
 
-Short entries are fine. A stub entry with a one-line summary and a
-gap note is better than a paragraph of generic worldbuilding. The
-compendium grows by being fed real material, not filler.
+Short entries are fine. A one-line summary beats a paragraph of
+generic worldbuilding. The compendium grows by being fed real
+material, not filler — and the absent material is silently absent,
+not narrated as absent.
 
 ### Tags are for cross-cutting affinities, not duplicates of first-class fields
 
@@ -167,9 +173,9 @@ things genuinely do not admit of dispute and should not be hedged:
   the user later says they are disputed; don't invent a contrarian
   reading to "balance" a prompt;
 - stub material — a short entry doesn't need a manufactured
-  controversy. Gap-notes are the right tool for "we don't know
-  yet"; disputes are the right tool for "the in-world record itself
-  disagrees."
+  controversy. Silent omission is the right treatment for "we
+  don't know yet"; disputes are the right tool for "the in-world
+  record itself disagrees."
 
 ## Intersections
 
@@ -239,7 +245,8 @@ ones the world actually has, and they should be visible.
 ## Practical checklist before saving an edit
 
 - Did I add any new facts about the world? If yes, was each one
-  prompted? If not, remove or gap-note.
+  prompted? If not, remove it. If it's a thread worth returning
+  to, add it to `QUESTIONS.md`.
 - Did I make any inferences? If yes, am I going to flag them in
   chat after the edit?
 - Did I propagate a claim from one entry into another? If yes,
@@ -256,11 +263,12 @@ ones the world actually has, and they should be visible.
 - If I added a "native to" / "lives in" / "found on" relation, does
   it point from `content/` outward (toward a kind or another
   content entity), not from a meta doc inward at a specific place?
-- Is the entry padded? If yes, prefer a gap-note to filler.
+- Is the entry padded? If yes, cut it back. Don't replace filler
+  with a note about what's missing — just let it be short.
 
 ## When in doubt
 
-Ask the user. Short entries, visible gap-notes, and "is this what
-you meant?" are all cheaper than the cost of inventing canon that
-the user then has to either accept against their judgement or
-unwind.
+Ask the user. Short entries, an open question logged in
+`QUESTIONS.md`, and "is this what you meant?" are all cheaper than
+the cost of inventing canon that the user then has to either accept
+against their judgement or unwind.

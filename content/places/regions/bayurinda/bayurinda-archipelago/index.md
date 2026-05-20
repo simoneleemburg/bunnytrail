@@ -123,9 +123,6 @@ fashion, not said clearly to anyone the question would matter
 to. Scholarship on the other Sister Worlds is divided in much
 the same proportions as the archipelago itself.
 
-The compendium records the standing tradition as the standing
-tradition and names the dispute. It does not resolve it.
-
 ## Tone
 
 The Bayurindan ethic, as the archipelago lives it, is the
@@ -163,21 +160,7 @@ forms that travel. The deep themselves are not, ordinarily, met
 by visitors from elsewhere. The protocols by which one is
 admitted below are old, and are the archipelago's to keep.
 
-_(Detail on the archipelago's principal islands, settlements,
-governance, the protocols by which off-worlders are received,
-the relationship between archipelago lineages and deep lineages,
-and the festivals tied to the storm seasons is not yet recorded
-here.)_
-
 ## Language
 
-The archipelago people have their own working tongue. The
-compendium does not yet record it; "Bayurindan" as the name of
-that language is used here as a placeholder, the way "Tholingian"
-is used for the working tongue of [[tholingia|Tholingia]].
-Whether what the lost surface civilisation spoke is recoverable
-from the drowned record, whether the present archipelago tongue
-descends from it, and what the deep speak among themselves — are
-all questions deferred.
-
-_(A proper entry for the Bayurindan tongue is deferred.)_
+The archipelago people's working tongue is
+[[culture/languages/bayurindan|Bayurindan]].

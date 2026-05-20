@@ -10,26 +10,21 @@ harder to ignore than any star.
 
 ## On the name
 
-_Nebelheim_ is a [[culture/languages/tholingian|Tholingian]] word — the
-name the people of [[tholingia|Tholingia]] use for their
-own world. It has become the name of record in the
-[[culture/knights-of-bellona|Knights of Bellona]]'s rosters and
-in the compendium's pages because Tholingia is the region the
-order most often deals with, and because Tholingia is the
-region whose language has travelled furthest along the routes
-between worlds (see [[tholingia|Tholingia]] for why).
-Other regions of the planet have their own names for it. None
-of those are yet recorded here.
+_Nebelheim_ is a [[culture/languages/tholingian|Tholingian]]
+word — the name the people of [[tholingia|Tholingia]] use for
+their own world. It has become the name of record in the
+[[culture/knights-of-bellona|Knights of Bellona]]'s rosters,
+and the name in widest use across the Sister Worlds, because
+Tholingia is the region the order most often deals with, and
+because Tholingia is the region whose language has travelled
+furthest along the routes between worlds (see
+[[tholingia|Tholingia]] for why). Other regions of the planet
+have their own names for it.
 
-The adjective _Nebelheimic_, used throughout the compendium for
-the planet's culture and tone, is similarly Tholingian-derived,
-and similarly partial. Where the entry says "Nebelheimic
-culture," it is, in fairness, mostly speaking of what travels
-along Tholingian-marked routes.
-
-_(The other regional names for the planet, and the question of
-what the world is collectively called when the speaker is not
-Tholingian, are not yet recorded here.)_
+The adjective _Nebelheimic_, used for the planet's culture and
+tone, is similarly Tholingian-derived, and similarly partial.
+What is called "Nebelheimic culture" is, in fairness, mostly
+what travels along Tholingian-marked routes.
 
 ## Culture and tone
 
@@ -55,7 +50,3 @@ pragmatically: for defence, labour, and survival.
 ## Regions
 
 [[collection:places/regions/nebelheim]]
-
-_(Detail on Nebelheim's geography, settlements, history, and the
-specific institutions of its geothermal civilisations is not yet
-recorded here.)_

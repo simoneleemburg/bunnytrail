@@ -8,9 +8,7 @@ after the catastrophe and given the means to breathe water.
 
 The name is their own, in [[culture/languages/deep-speech|Deep
 Speech]]: _people of [[materials/urouch|Urouch]]_, the
-radiance their lives are bent around. What their drowned
-ancestors called themselves, in the surface tongue now lost as
-a spoken language, is not recorded here.
+radiance their lives are bent around.
 
 What they have in common with the older Nuunlaumud is Nuunlau as
 home, [[culture/languages/deep-speech|Deep Speech]] as working tongue,
@@ -35,12 +33,6 @@ human again; they suffocate the way a human brought to the
 seafloor would. The two adaptations are mirror processes, and
 the Urouthi live the wrong side of that mirror for the rest
 of Cognita's convenience.
-
-_(What the older Nuunlaumud's older means of breathing the deep
-was, before any of this — whether it is biological, or
-technological, or something else entirely, and whether the older
-people use Vochran too or use a different substance — is not
-yet recorded here.)_
 
 ## Anatomy
 
@@ -104,12 +96,6 @@ way into themselves — muscle and skin hardness develop across
 the first six to eight years, and the social and practical
 education of an Urouthi's life begins.
 
-_(The Urouthi word for the device that is installed, the word
-for the fluid the cocoon holds, and the word for the cocoon
-stage itself — the compendium has English working terms for none
-of these and would prefer Deep-Speech ones. Not yet recorded
-here.)_
-
 ## The radiance, and what is in it
 
 The Urouthi's tolerance of radioactive material is not an
@@ -157,21 +143,6 @@ body is shaped, in part, to do. The decision in an Urouthi
 life is not whether they _can_ touch Naya but how often, how
 deep, in what company, and toward what end.
 
-_(The Urouthi have Deep-Speech names for the substance —
-[[materials/urouch|Urouch]] — and the fluid —
-[[materials/vochran|Vochran]] — but their names for the
-older things they go to, for the practice itself, and for the
-organisation of safe return — by lineage, by elder teachers,
-by ritual cohort, by city — are not yet recorded here. The
-compendium would prefer Deep-Speech names for all of these
-and has only the two.)_
-
-_(Whether the older Nuunlaumud share this practice — whether the
-older things were a Naya-doorway for them before the Urouthi
-ever arrived, and whether what they gave their adopted people
-included the practice as well as the means to breathe — is also
-not yet recorded here.)_
-
 ## The modification debate
 
 Some Urouthi take the inherited modification as a starting
@@ -184,10 +155,7 @@ enhancement aim at — and some Urouthi enhancements aim at
 deeper or more sustained contact with the radiance, which is to
 say at deeper Nearing. Whether that makes the practice more
 sacred or more dangerous, more devout or more reckless, is
-exactly the kind of question Urouthi disagree about. The
-other terms of the debate — religious, lineage-shaped, about
-what counts as the Urouthi form, or some combination — are not
-yet recorded here.
+exactly the kind of question Urouthi disagree about.
 
 ## What the Urouthi read
 
@@ -229,8 +197,3 @@ the surface civilisation's descendants reading their own
 ancestors in the script of those ancestors, in a language they
 had to learn back, with the help of a people whose memory is
 older than writing.
-
-What the Urouthi make of this themselves — whether they
-think of the inscriptions as ancestral, or as belonging to a
-people they are no longer quite continuous with — is not yet
-recorded here.

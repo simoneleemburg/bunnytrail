@@ -8,15 +8,15 @@ impossible Naya concepts into sound.
 
 This is the principle on which the Old Tongue rests.
 
-_(A small terminological note. The name **Old Tongue** is, in
+A small terminological note. The name **Old Tongue** is, in
 surface-scholar usage, sometimes stretched to cover both the
 language and the
 [[#the-inscriptional-script-and-its-second-life|inscriptional
 script]] it was written in. The two are not the same thing: the
 language is dead and reconstructed; the script is still in
-living use, carrying a different language. The compendium tries
-to keep the two distinct, but the loose usage is old enough that
-it cannot always be untangled without awkwardness.)_
+living use, carrying a different language. Careful scholarship
+keeps the two distinct, but the loose usage is old enough that
+it cannot always be untangled without awkwardness.
 
 ## Origin: the First Listeners
 
@@ -129,12 +129,11 @@ and the older Nuunlaumud, to the marked stone of a civilisation
 that no longer breathes air and could no longer correct anyone
 if it wanted to.
 
-_(Which parts of the present Old Tongue are confidently the
-First Listeners' work, which are the Nuunlaumud's careful
+Which parts of the present Old Tongue are confidently the First
+Listeners' work, which are the Nuunlaumud's careful
 reconstruction, which are deep disagreement papered over for
 surface use, and which are archipelago adaptation to air, is
-not a question this compendium yet answers — and is itself a
-matter of long dispute on Bayurinda.)_
+itself a matter of long dispute on Bayurinda.
 
 ## The inscriptional script, and its second life
 
@@ -165,9 +164,7 @@ work. Deep Speech's phonology is not the surface civilisation's
 phonology. The script has digraphs and repurposed glyphs in its
 Deep-Speech use that had different functions in its Old-Tongue
 use, and Urouthi orthographic tradition is, accordingly, its
-own discipline. _(What those orthographic differences are in
-detail, and what they reveal about either language, is not yet
-recorded here.)_
+own discipline.
 
 The two consequences are easy to miss and worth saying flatly:
 
@@ -181,12 +178,6 @@ The two consequences are easy to miss and worth saying flatly:
   know how to read, encoding a language they do not know how to
   speak. The difficulty of the work is at the language level,
   not at the script level.
-
-_(Whether the older Nuunlaumud's oral tradition includes
-anything the Urouthi written tradition has lost, and whether
-the inscriptional script has changed in any noticeable way
-across its long second life as a Deep-Speech writing system,
-are open questions in this compendium.)_
 
 ## What kind of language it is
 
@@ -265,129 +256,3 @@ This is why Old Tongue names enter the historical record only
 slowly, and why so many Naya are still known to the worlds only
 by description, by emotional impression, or by silence.
 
-## Old Tongue words in this compendium
-
-The compendium contains many words that are not modern Sister
-World speech. Most of them are not Old Tongue. The Old Tongue
-is a specific ritual register used for a specific purpose —
-naming Naya — and almost everything in it is, accordingly, a
-Naya's name.
-
-What is recorded here in the Old Tongue is marked, where it
-appears in prose, with the small superscript _ot_ — a
-dictionary-style attribution, clickable, leading back to this
-entry. The principle is the same convention used elsewhere for
-language codes: a way to point at what register a word belongs
-to, without breaking the line of the sentence.
-
-What the convention marks:
-
-- [[characters/viynangor-viyar|Viynangor Viyar]] [[ot]] — the name of
-  a particular Naya, in the form the [[culture/oracle-triad|Oracle Triad]]
-  has rendered it. The accepted readings vary; the sound is
-  the same.
-- [[characters/sudawaen-khiynuung|Sudawaen Khiynuung]] [[ot]] — the name
-  of another Naya, similarly rendered.
-- [[characters/uraya-ur|Uraya Ur]] [[ot]] — the name of the Naya
-  who sits in the [[culture/oracle-triad|Oracle Triad]] itself. A
-  particular case: the Triad's distinctive labour is the
-  rendering of Naya names into the Old Tongue, and one of those
-  names is its own.
-
-Other Naya are named in the compendium without their Old Tongue
-names being recorded. [[characters/freya|Freya]]'s bound Naya is
-referred to by description and by her pilot's name rather than by
-an Old Tongue rendering. The absence reflects the difficulty of
-the work: the synesthetic encounter is common, but rendering it
-into an Old Tongue name is the Triad's distinctive labour, and
-most encounters never produce one.
-
-_Other names in the compendium have their own provenances._ The
-planet-names — Bayurinda, Sharazan, Nebelheim — belong to the
-working tongues of the Sister Worlds (Bayurinda itself is a
-[[culture/languages/bayurindan|Bayurindan]] word, and Nebelheim a
-[[culture/languages/tholingian|Tholingian]] one; Sharazan's provenance
-is not yet recorded here). The name of
-[[characters/ngonawan-ilyardi|Ngonawan Ilyardi]] is Bayurindan
-and is marked accordingly. The cultural readings of
-[[the-dark-companion|the Dark Companion]] belong to
-various local traditions and are not Old Tongue. The
-cosmological terms [[realms/asthera|Asthera]] and
-[[realms/nareth|Nareth]] — names for the two great layers of
-existence — are [[culture/languages/thallish|Thallish]], not Old Tongue.
-The Old Tongue presupposes _Nareth_ as the name of the realm
-its work addresses; it did not coin it. Two of the compendium's
-working-tongue names — [[characters/freya|Freya]] and
-[[characters/sabina-vaarn|Sabina Vaarn]] — are
-[[culture/languages/tholingian|Tholingian]] and are marked
-accordingly.
-
-## On the compendium's working register
-
-Many of the most-used words in this compendium are not in any
-of the named languages recorded here. _Knights of Bellona_,
-_Oracle Triad_, _World Pillar_, _Eidolon_, _Eidolon Knight_,
-_Skyblood_, _Nearing_, _Nearborn_, _Binding_, _Whispers_, _Aspect
-Wings_, _Resonance Veils_, _Sister Worlds_, _the First
-Listeners_, _the Drowning_, _the deep_, _the archipelago_ — all
-of them are written in the compendium's working English-language
-register, and not, in their present form, in
-[[culture/languages/old-tongue|Old Tongue]], [[culture/languages/tholingian|Tholingian]],
-[[culture/languages/bayurindan|Bayurindan]], or
-[[culture/languages/thallish|Thallish]].
-
-This is not an accident or a translation failure. It is the
-condition of the compendium. The cosmology of [Alteria
-Cognita](/cognita) is recorded across many languages — most of
-them not yet entered here — and a single working register has
-been adopted to hold the material together for readers who do
-not speak all of them. _Eidolon_ may yet turn out to be a
-borrowing from a tongue not currently recorded; _Knights of
-Bellona_ may yet turn out to be an English compromise across
-names each Sister World gives the order in its own speech; _the
-Drowning_ may yet turn out to be a gloss of a Bayurindan word
-this compendium has not recorded. Where the underlying tongue
-is known, the word is tagged; where it is not, the word stands
-as the compendium's working term and the question is held open.
-
-This entry is the place those questions live, until they
-resolve.
-
-## Sibling tongues
-
-The Sister Worlds are not, of course, a single linguistic
-community: each world has its own working speech — in places
-several — and the order's charts and rosters have their own
-scholarly register, and the cultural readings of Naya names
-emerge from translation traditions that are themselves
-languages of a kind.
-
-Two of the Sister Worlds' working tongues have their own
-entries in the compendium so far:
-[[culture/languages/tholingian|Tholingian]], the language of
-[[tholingia|Tholingia]] on
-[[nebelheim|Nebelheim]], and
-[[culture/languages/bayurindan|Bayurindan]], the working tongue of the
-archipelago people of [[bayurinda|Bayurinda]]. A third,
-[[culture/languages/thallish|Thallish]], stands as a stub —
-the source of [[realms/asthera|Asthera]] and
-[[realms/nareth|Nareth]], but otherwise not yet imported.
-The rest of [Cognita](/cognita)'s tongues are gestured at by
-the words they have left behind.
-
-_(The other working tongues of [[nebelheim|Nebelheim]]
-beyond Tholingian, the working tongue or tongues of
-[[sharazan|Sharazan]], the language of
-[[bayurinda#peoples-of-bayurinda|the deep]], the
-scholarly register the
-[[culture/knights-of-bellona|Knights of Bellona]] maintain
-across the worlds, the language of origin of \_Eidolon_ and the
-other compendium-register terms, and the lineages of
-translation that produce competing readings of Old Tongue names
-are not yet recorded here.)\_
-
-_(Detail on the deeper grammar of the Old Tongue, the lineages
-of its scholars, the specific musical and mathematical
-structures that underlie its resonance patterns, and the
-methods by which the First Listeners' earliest recordings were
-preserved is not yet recorded here.)_

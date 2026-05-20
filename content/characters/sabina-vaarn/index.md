@@ -25,6 +25,3 @@ meaning. The holding is what makes the meaning possible.
 Sabina is a trans woman, and so — by the cosmology's recognised
 reading — [[nearborn|Nearborn]]. The lived experience of
 her transformation is integral to her function in the Triad.
-
-_(How Sabina came to the order, her life before it, and the
-texture of her practice are not yet recorded here.)_

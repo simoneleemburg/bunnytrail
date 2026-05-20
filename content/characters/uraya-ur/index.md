@@ -56,8 +56,3 @@ This is not a binding. It depends on the partnership remaining
 intact. The arrangement is not known to be reproducible, and
 the order does not in its public doctrine claim to understand
 fully how it works.
-
-_(How Uraya first came to take the role of Oracle, the original
-conditions under which the partnership's sustaining function
-was discovered, and the question of what happens to her if the
-partnership ends are not yet recorded here.)_

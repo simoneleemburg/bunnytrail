@@ -31,10 +31,6 @@ being piloted, lives through it. The arrangement is not a
 gift in either direction. It is a relation; everyone involved
 is changed.
 
-_(What humans gain in their own terms from sustained contact
-with a Naya, beyond what is said in the Knighthood and
-Nearing entries, is not yet recorded here.)_
-
 ## Mortality, memory, and the cost
 
 Humans die. Asthera is the plane of persistence, but its persistence

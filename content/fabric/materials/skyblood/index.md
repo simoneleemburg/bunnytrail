@@ -8,8 +8,8 @@ tradition on more than one Sister World it was a god, and the
 phrase _the shattered god_ is in wide ritual and scholarly use,
 but the precise identity attributed to that god — and indeed
 whether _god_ is the right word at all — varies between
-traditions and is not settled here. What is not disputed is the
-shattering itself, and what it left.
+traditions. What is not disputed is the shattering itself, and
+what it left.
 
 What Skyblood does, on the other hand, is not a matter of
 tradition. It is the material substrate of almost every
@@ -49,9 +49,3 @@ Skyblood is sacred, scarce, and politically controlled. Who owns
 the deposits, who is permitted to refine it, and who is permitted
 to use it — and how much — are questions the worlds answer
 differently.
-
-_(Detail on the named traditions of the shattering — and on the
-versions of the story that do not call what was shattered a god
-at all — and the technologies of Skyblood's extraction and
-refinement, and the political structures that control it, are
-not yet recorded here.)_

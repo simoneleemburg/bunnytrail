@@ -7,13 +7,7 @@ few institutions that does. The order maintains the
 [[nearing|Nearing]], and trains and certifies every
 known [[culture/eidolon-knight|Eidolon Knight]] in the cosmology.
 
-The order takes its name from Bellona. _(Who Bellona was, the
-language her name belongs to, and how that name came to be
-attached to the order are not yet recorded here. Nor is the
-question of whether "Knights of Bellona" is the order's own name
-for itself in some single working tongue, an English-language
-gloss of names the order is given on each of the Sister Worlds,
-or some long-stabilised compromise between the two.)_
+The order takes its name from Bellona.
 
 ## What they do
 
@@ -53,8 +47,7 @@ any other route.
 Whether unsanctioned Knights exist somewhere outside the order's
 view is itself a question the order's silence makes difficult to
 assess. The order does not deny their existence; the order does
-not discuss them. The compendium can record the absence and not
-fill it.
+not discuss them.
 
 ## The chosen Eidolon
 
@@ -110,9 +103,3 @@ beings drawn from three different modes of existence. The order's
 inclusiveness is doctrinal: a Triad of any narrower composition
 would, by their reasoning, be unable to do what the Triad is for,
 and the order's broader work follows the same logic.
-
-_(Detail on the order's internal structure, ranks, and chain of
-authority; on the differences between its branches; on its
-political relationships with each Sister World; and on the
-history that brought the order to its current interplanetary
-reach is not yet recorded here.)_

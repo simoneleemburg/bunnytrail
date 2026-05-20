@@ -63,7 +63,7 @@ npm run format:check  # Prettier check
 
 When authoring or editing files under `content/`, read
 [`WORLDBUILDING.md`](./WORLDBUILDING.md). It is the editorial
-standard for this project: voice, gap-notes, disputed truths,
+standard for this project: voice, silent absence, disputed truths,
 intersections, the texture we are aiming for.
 
 The highest-priority reminders, in case you only read this file:
@@ -74,8 +74,11 @@ The highest-priority reminders, in case you only read this file:
 - **Flag any inferences you do make** in chat, after the edit.
   Don't bury small worldbuilding claims in otherwise-routine
   prose.
-- **Empty is better than padded.** A stub with a gap-note beats a
-  paragraph of generic worldbuilding.
+- **Empty is better than padded.** A short entry beats a paragraph
+  of generic worldbuilding. Don't narrate what's missing — Alteria
+  is limitless by definition, so every entry is a fragment. If a
+  missing thread feels worth returning to, add it to
+  `QUESTIONS.md`.
 - **Notice intersections; don't manufacture them.** Worlds come
   alive at the points where ideas connect — but the agent's job is
   to surface connections the user has already implied, not to

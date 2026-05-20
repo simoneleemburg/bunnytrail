@@ -17,22 +17,15 @@ in the order's preferred sense. The
 [[eidolons|Eidolon]] she currently pilots is the one
 in which the [[kinds/naya|Naya]]
 [[characters/sudawaen-khiynuung|Sudawaen Khiynuung]] [[ot]] is
-[[binding|bound]] — and she took it up under
-circumstances the compendium has not been given language for.
+[[binding|bound]].
 
 What is recorded is this: the Eidolon was, at the moment Mila
 came to it, in need of a pilot. She took it. She has been
-piloting it since. The conditions under which she took it, and
-who was lost in the events that left the vessel available, are
-not yet recorded here.
+piloting it since.
 
 The order's position on Mila's piloting is, in public, neutral.
 She is a Knight; the Eidolon is piloted; the work is being
-done. What the order says in its internal records about the
-unusualness of the pairing — about whether the order considers
-this a recognised path to piloting Sudawaen Khiynuung's
-Eidolon, or simply the situation as it stands — has not been
-made public.
+done.
 
 ## Her pilot's challenge
 
@@ -73,12 +66,5 @@ journey she is being carried through.
 
 ## With Freya
 
-Mila is the lover of [[characters/freya|Freya]]. The compendium
-notes the partnership; the texture of it is not its business to
-narrate.
+Mila is the lover of [[characters/freya|Freya]].
 
-_(Detail on Mila's origin world, her early life, the
-circumstances of her training, the specific events through
-which she came to pilot Sudawaen Khiynuung's Eidolon, and her
-standing in the order's internal hierarchy is not yet recorded
-here.)_

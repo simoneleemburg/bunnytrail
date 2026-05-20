@@ -8,12 +8,7 @@ The word _Naya_ is Bayurindan: the archipelago people's name for
 these beings, carried out to the other Sister Worlds by the
 [[culture/knights-of-bellona|order]] when contact was established,
 and adopted as the standard term across [Cognita](/cognita) along
-with the rest of the Bayurindan scholarly inheritance. Whether
-the lost surface civilisation called them by this word, by an
-ancestor of this word, or by something else again is not
-recorded here. What the [deep](/places/celestial/aureth-system/bayurinda#peoples-of-bayurinda)
-call them is, as so often, not a thing this compendium yet
-knows.
+with the rest of the Bayurindan scholarly inheritance.
 
 In Nareth, form is not fixed. The Naya exist in a fluid state where
 identity, shape, and even personality are continuously shaped by
@@ -77,8 +72,8 @@ arrangement, and it is not known to be reproducible.
 The Naya are not inherently destructive, nor inherently
 benevolent. Beyond that — what they are _drawn to_, why they
 seek out [[realms/asthera|Asthera]], what they are doing when
-they enter into a [[binding|binding]] — is not a
-question this compendium answers in a single voice. By long
+they enter into a [[binding|binding]] — is a
+question on which traditions differ. By long
 tradition, especially in the scholarly registers of Bayurinda
 and in the working theology of the
 [[culture/knights-of-bellona|order]], they are described as
@@ -86,10 +81,8 @@ exploratory: beings of resonance drawn toward meaning,
 experience, and the fragile structure of form within Asthera.
 Other traditions speak of them more cautiously, in terms of
 hunger, or of incompleteness, or of a reach that no single
-encounter explains. The compendium notes the
-established reading and does not, in its own voice, settle the
-question. What a Naya becomes in any given encounter is decided
-in the encounter itself.
+encounter explains. What a Naya becomes in any given encounter
+is decided in the encounter itself.
 
 ## Names and language
 

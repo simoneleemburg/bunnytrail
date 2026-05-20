@@ -17,18 +17,15 @@ Knighthood is sustained [[nearing|Nearing]] toward a
 [[kinds/naya|Naya]] [[binding|bound]] in an
 [[eidolons|Eidolon]], and the order screens
 candidates for the adaptive identity that practice demands.
-Freya was, by every internal account that has reached the
-compendium, on the margin. The doubt the order's examiners
-recorded was not whether she was Nearborn — that was not
-contested — but whether she was _Nearborn enough_: whether her
-self had the kind of stability under resonance pressure that
-piloting requires, or whether sustained Nearing toward a Naya
-would unmake her.
+Freya was, by every internal account, on the margin. The doubt
+the order's examiners recorded was not whether she was Nearborn
+— that was not contested — but whether she was _Nearborn
+enough_: whether her self had the kind of stability under
+resonance pressure that piloting requires, or whether sustained
+Nearing toward a Naya would unmake her.
 
-The doubts came down on her side, eventually. The internal
-record does not entirely explain how. Freya herself has
-spoken little about that period of her life, and the
-compendium does not press her on it.
+The doubts came down on her side, eventually. Freya herself has
+spoken little about that period of her life.
 
 ## Her chosen Eidolon
 
@@ -46,10 +43,9 @@ witnesses. The Eidolon's manifestation tends toward clarity:
 crystalline edges, precise movement, an elegance that reads as
 almost fragile until it is tested.
 
-The Naya itself has not been rendered into the
-[[culture/languages/old-tongue|Old Tongue]] in any reading the
-compendium can record. Freya may know its true approximation;
-if so, she has not made it public.
+The Naya's true approximation in the
+[[culture/languages/old-tongue|Old Tongue]] is not in public
+circulation. Freya may know it; if so, she has not made it so.
 
 ## Her pilot's challenge
 
@@ -92,11 +88,4 @@ in to it.
 
 ## With Mila
 
-Freya is the lover of [[characters/mila|Mila]]. The compendium
-notes the partnership; the texture of it is not its business to
-narrate.
-
-_(Detail on Freya's early life in [[tholingia|Tholingia]],
-the circumstances under which she came to the order, the name of
-the Naya in her chosen Eidolon, and her standing in the order's
-internal hierarchy is not yet recorded here.)_
+Freya is the lover of [[characters/mila|Mila]].

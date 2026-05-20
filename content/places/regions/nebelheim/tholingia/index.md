@@ -5,8 +5,7 @@ geothermal, weather-marked, built against pressure rather than
 in defiance of it.
 
 It is the place of origin of the [[culture/languages/tholingian|Tholingian]]
-language, and the home country of two of the compendium's
-characters — [[characters/freya|Freya]] and
+language, and the home country of [[characters/freya|Freya]] and
 [[characters/sabina-vaarn|Sabina Vaarn]]. The region is also,
 unevenly and unequally, the part of Nebelheim most connected to
 the rest of [Alteria Cognita](/cognita) — for reasons that
@@ -15,10 +14,9 @@ have shaped both what it is and how it is known.
 ## The pillars and the routes outward
 
 Of all the regions of Nebelheim, Tholingia carries the most
-[[eidolons/world-pillars|World Pillars]]. The compendium does
-not yet say how many — partly because the count is not a fixed
-number, and partly because what counts as "a Pillar" admits of
-some institutional argument — but the concentration is real and
+[[eidolons/world-pillars|World Pillars]] — how many is not a
+fixed number, and what counts as "a Pillar" admits of some
+institutional argument, but the concentration is real and
 known, and it is the structural reason for Tholingia's place
 in the wider world.
 
@@ -52,8 +50,8 @@ What follows from that, materially:
   shaped Tholingian culture in ways that are not always easy
   to tell apart from the order's culture.
 
-The two characters the compendium most closely follows from
-Tholingia — [[characters/freya|Freya]] and
+The two Tholingian lives most closely followed here —
+[[characters/freya|Freya]] and
 [[characters/sabina-vaarn|Sabina Vaarn]] — are both formed by
 this proximity. Freya took the off-world routes outward and
 became an Eidolon Knight in the order; Sabina took a different
@@ -69,16 +67,8 @@ Because Tholingia is the region of Nebelheim that travels and is
 travelled to most often, [[culture/languages/tholingian|Tholingian]] is
 the working tongue most often heard along the routes between
 worlds. Off-worlders who learn _any_ Nebelheimic language usually
-learn Tholingian, and the planet's name in the compendium and in
+learn Tholingian, and the planet's name in standard usage and in
 the order's rosters — _Nebelheim_ — is itself a Tholingian word.
 This is not because Tholingia is the heart of Nebelheim; it is
 because Tholingia is the part of Nebelheim that the rest of
 [Cognita](/cognita) meets.
-
-_(Detail on Tholingia's geography, settlements, institutions,
-the cultural life that produced both the Pilgrim of the Triad
-and a Knighthood-bound Nearborn, the exact count and disposition
-of its Pillars, the names and roles of its other major centres,
-and the question of what the rest of Nebelheim thinks of being
-known to outsiders by a Tholingian word is not yet recorded
-here.)_

@@ -61,9 +61,9 @@ diffuse than any of these traditions.
 
 ## Traditions of Nearing
 
-The compendium records several recognised traditions of Nearing,
-which approach the practice from different starting points and
-with different safety structures.
+Several recognised traditions of Nearing are practised across
+the Sister Worlds, which approach the practice from different
+starting points and with different safety structures.
 
 - **The order's tradition.** The
   [[culture/knights-of-bellona|Knights of Bellona]] hold the
@@ -107,8 +107,7 @@ radiance, and what is in it]].)
 
 These traditions are not in competition for what Nearing _is_.
 They differ on who reaches it, by what means, with what supports,
-and to what end. The compendium records them alongside one
-another and does not rank them.
+and to what end. None precedes the others.
 
 ## Nearing as travel
 

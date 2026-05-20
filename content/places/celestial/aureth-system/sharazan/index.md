@@ -50,23 +50,3 @@ social hierarchy. Where Bayurindan Knighthood is contemplative
 and Nebelheimic Knighthood is duty, Sharazani Knighthood is
 theatre — and the theatre is taken entirely seriously.
 
-## On the name
-
-The name _Sharazan_ does not sit comfortably in any of the
-languages currently recorded in this compendium. It is not
-[[culture/languages/old-tongue|Old Tongue]] (the
-[[culture/languages/old-tongue|Old Tongue entry]] explicitly notes that
-its provenance is not recorded there). It does not match the
-shapes [[culture/languages/tholingian|Tholingian]] or
-[[culture/languages/bayurindan|Bayurindan]] take. Whether it is a name
-that one of Sharazan's own peoples gives the world, the name
-the [[culture/knights-of-bellona|order]] uses for it, or a
-borrowing from somewhere else again, is not yet recorded here.
-The other two Sister Worlds are known by names belonging to the
-working tongue of the people the order first met on them; the
-same logic may apply to Sharazan, but it has not been written
-down here.
-
-_(Detail on individual fragments, their cultures, the structure of
-the route networks, and the politics of the cluster is not yet
-recorded here.)_

@@ -123,16 +123,5 @@ the order meets, and the part through which the rest of
 Whether [the lost surface civilisation](/places/celestial/aureth-system/bayurinda#the-drowning)
 of Bayurinda also had Pillars, and whether any of those are
 still standing — broken, drowned, or quietly maintained by the
-[deep](/places/celestial/aureth-system/bayurinda#peoples-of-bayurinda) — is not a
-question the compendium yet answers. The possibility is open;
-the matter is the archipelago's and the deep's to know.
-
-_(The Pillar count and distribution on
-[[sharazan|Sharazan]], and on the rest of
-[[nebelheim|Nebelheim]] outside Tholingia, are not yet
-recorded here.)_
-
-_(Detail on the Pillars' origin, the specific architecture of
-their alignment rails, how arrival catches differ from launch
-tethers, and what \(if anything\) is bound inside them is not
-yet recorded here.)_
+[deep](/places/celestial/aureth-system/bayurinda#peoples-of-bayurinda) —
+is the archipelago's and the deep's to know.

@@ -30,15 +30,6 @@ first time generally describes it as _shouting_. Both
 descriptions are unfair to the other tongue, and both contain a
 truth about it.
 
-_(The specific phonemes, the grammar, the script if there is
-one, and the relationship between Bayurindan and any older
-Bayurindan tongues — including whatever the lost surface
-civilisation spoke — are not yet recorded here. The question of
-whether present-day Bayurindan \_descends_ from the language of
-the drowned civilisation is, like much else about that
-civilisation, disputed. The deep's tongue is treated separately;
-see [[culture/languages/deep-speech|Deep Speech]].)\_
-
 ## On water
 
 Bayurindan distinguishes kinds of water where many other tongues
@@ -47,90 +38,65 @@ beyond the reefs, the brackish margins where freshwater currents
 meet the sea, the surface skin that the storms work on, and the
 still water held in cave-pools below — these are different
 nouns in Bayurindan, not different adjectives applied to one
-word. _[[#bayurindan-words-in-this-compendium|Nuunlau]]_ is the
-word for the deep waters specifically — the regions beyond the
-archipelago's working reach, where the seafloor people live —
-and is a region-name, not a property-word.
+word. _Nuunlau_ is the word for the deep waters specifically —
+the regions beyond the archipelago's working reach, where the
+seafloor people live — and is a region-name, not a
+property-word.
 
-_(The full vocabulary of Bayurindan water-words, and the social
-and ritual distinctions that go with them, is not yet recorded
-here. The compendium uses English working terms — "the
-shallows," "the deep," "the surface," "the caves" — wherever
-the specific Bayurindan word has not yet been written down.)_
+## Bayurindan vocabulary of note
 
-## Bayurindan words in this compendium
+A handful of Bayurindan words are in use across the Sister
+Worlds as base cosmological or anthropological vocabulary:
 
-The compendium uses several Bayurindan words as base
-vocabulary, marked where they first appear with the small
-superscript _bay_:
-
-- **Naya** [[bay]] — the name, in Bayurindan, of the
+- **Naya** — the name, in Bayurindan, of the
   [[kinds/naya|primordial beings of Nareth]]. It is the
-  archipelago people's word and is used throughout the
-  compendium because it is the word the order learned and
-  carried outward. Whether the lost surface civilisation called
-  them something else, whether the deep have their own term,
-  and what that term might be, are not recorded here.
+  archipelago people's word, carried outward by the order, and
+  the standard term across the Sister Worlds.
 
-- **Ngonawan Ilyardi** [[bay]] — the personal name of the
-  Pilgrim of the [[culture/oracle-triad|Oracle Triad]] in her
-  embodied life before the Triad. A Bayurindan name with the
-  language's characteristic shape: _ng-_ onset, fluent vowels,
-  the palatal _-ly-_ medial. (See [[characters/ngonawan-ilyardi|her
-entry]].)
+- **Ngonawan Ilyardi** — the personal name of the
+  Pilgrim of the [[culture/oracle-triad|Oracle Triad]]. A
+  Bayurindan name with the language's characteristic shape:
+  _ng-_ onset, fluent vowels, the palatal _-ly-_ medial.
+  (See [[characters/ngonawan-ilyardi|her entry]].)
 
-- **Nguwari** [[bay]] — the archipelago people's name for the
+- **Nguwari** — the archipelago people's name for the
   amphibious, serpentine-bodied kindred of
   [[bayurinda|Bayurinda]] who live at the half-tide line
   between the upper world and [[nuunlau|Nuunlau]]. Commonly
-  glossed in the compendium as _border swimmers_: those who
-  cross the seam between the worlds the archipelago and the
-  deep otherwise hold apart. What the Nguwari call themselves,
-  in whatever tongue or tongues are theirs, is not yet recorded
-  here. (See [[kinds/nguwari|Nguwari]].)
+  glossed as _border swimmers_: those who cross the seam
+  between the worlds the archipelago and the deep otherwise
+  hold apart. (See [[kinds/nguwari|Nguwari]].)
 
-- **Nuunlau** [[bay]] — the archipelago people's word for _the
-  deep_ as a region: the deep-water reaches of
+- **Nuunlau** — the archipelago people's word for _the deep_
+  as a region: the deep-water reaches of
   [[bayurinda|Bayurinda]]'s ocean, distinct from the
-  shallows the archipelago itself inhabits. A region-name, not a
-  property-word, and not a name for the people who live there.
-  (See [[nuunlau|Nuunlau]].)
+  shallows the archipelago itself inhabits. A region-name, not
+  a property-word, and not a name for the people who live
+  there. (See [[nuunlau|Nuunlau]].)
 
-- **Nuunlaumud** [[bay]] — the people of the _Nuunlau_: the
-  pressure-adapted, seafloor-dwelling people the compendium
-  otherwise calls _the deep_. Formed from _Nuunlau_ by the
-  Bayurindan suffix _-mud_, which derives a people-name from a
-  place-name. The word is an umbrella: it covers both the older
-  pre-drowning Nuunlaumud and the
+- **Nuunlaumud** — the people of the _Nuunlau_: the
+  pressure-adapted, seafloor-dwelling people otherwise called
+  _the deep_. Formed from _Nuunlau_ by the Bayurindan suffix
+  _-mud_, which derives a people-name from a place-name. The
+  word is an umbrella: it covers both the older pre-drowning
+  Nuunlaumud and the
   [[kinds/urouthi|Urouthi]] who joined them after the
   drowning. The Urouthi's own Deep-Speech name for themselves
-  is recorded — _Urouthi_, "people of Urouch" (see
-  [[kinds/urouthi|Urouthi]]). What the **older** Nuunlaumud
-  call themselves, in
-  [[culture/languages/deep-speech|Deep Speech]] or in any tongue
-  remembered from before the drowning, is not yet recorded here.
-
-_(Other Bayurindan words and names in the compendium are not
-yet marked. Sweep deferred.)_
+  is _Urouthi_, "people of Urouch" (see
+  [[kinds/urouthi|Urouthi]]).
 
 ## Sibling tongues
 
-Bayurindan shares its world with [[culture/languages/deep-speech|Deep
-Speech]], the unrelated working tongue of the
+Bayurindan shares its world with
+[[culture/languages/deep-speech|Deep Speech]], the unrelated
+working tongue of the
 _[[culture/languages/deep-speech|Nuunlaumud]]_ in
-[[nuunlau|Nuunlau]] on the seafloor. The two
-languages are native to the same planet but, so far as the
-compendium records, share no common ancestry; they are two
-tongues that have lived on Bayurinda separately for as long as
-either has lived there. What the lost surface civilisation spoke
-is largely lost with them, though
+[[nuunlau|Nuunlau]] on the seafloor. The two languages are
+native to the same planet but share no known common ancestry;
+they are two tongues that have lived on Bayurinda separately
+for as long as either has lived there. What the lost surface
+civilisation spoke is largely lost with them, though
 [the inscriptions](/culture/languages/old-tongue#how-it-survived--partly)
 preserve fragments of what was written, mostly in the
 specifically ritual register that became the
 [[culture/languages/old-tongue|Old Tongue]].
-
-_(The question of how Bayurindan relates to the working tongues
-of [[nebelheim|Nebelheim]] and
-[[sharazan|Sharazan]], and whether any of the Sister
-Worlds' languages share deep ancestry, is not yet recorded
-here.)_

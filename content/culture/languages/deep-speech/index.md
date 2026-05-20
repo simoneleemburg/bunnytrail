@@ -1,7 +1,3 @@
-_(This is a working name in the compendium's English register.
-The deep have their own name for the language they speak. It is
-not yet recorded here.)_
-
 The [[culture/languages/deep-speech|Nuunlaumud]] of
 [[bayurinda|Bayurinda]] do not speak
 [[culture/languages/bayurindan|Bayurindan]]. They speak their own
@@ -20,8 +16,8 @@ Whatever fragments of it survive do so in the
 [[culture/languages/old-tongue|Old Tongue]] inscriptions, not in living
 speech.
 
-Almost nothing of Deep Speech itself is recorded in this
-compendium. What is known to the surface comes through a few
+Almost nothing of Deep Speech itself has been carried to the
+surface. What is known to the surface comes through a few
 words that have travelled up: _[[kinds/urouthi|Urouthi]]_,
 the populous majority's name for themselves — _people of
 Urouch_, the radiance their lives are bent around;
@@ -48,14 +44,7 @@ the seafloor people live are called _[[nuunlau|Nuunlau]]_
 _Nuunlaumud_ [[bay]], formed from _Nuunlau_ by the Bayurindan
 suffix _-mud_ that derives a people-name from a place-name.
 _Nuunlaumud_ is therefore an exonym: the archipelago's name for
-them, not their own. What the Nuunlaumud call themselves, and
-what they call their language, are not yet recorded here.
-
-_(Whether Deep Speech is a single language or a family of
-related tongues spoken across different seafloor settlements is
-an open question in this compendium. Whether anything of the
-surface civilisation's spoken language survives in Urouthi
-Deep Speech as substrate or loan-vocabulary is another.)_
+them, not their own.
 
 ## How it is written
 
@@ -91,12 +80,6 @@ inscription-stewardship work, in everyday life in
 settlements — the distinction between an oral memory and a
 written one is a real social fact, not just a technical one.
 
-_(How the older Nuunlaumud feel about writing as a technology,
-how the Urouthi feel about an oral tradition that remembers
-things the script does not, and how these two registers of
-memory check one another in practice, are not yet recorded
-here.)_
-
 ## Sibling tongues
 
 Deep Speech sits alongside [[culture/languages/bayurindan|Bayurindan]]
@@ -105,11 +88,11 @@ The two are not, so far as is recorded here, related; they are
 two unrelated tongues that have lived on the same world without
 much travel between them.
 
-_(The Nuunlaumud's relationship to the
+The Nuunlaumud's relationship to the
 [[culture/languages/old-tongue|Old Tongue]] — whose inscriptions they
 steward, and whose reconstruction the
 [[kinds/urouthi|Urouthi]] have largely carried — is a
 relationship to a third language, not to anything in their own
 speech. The Old Tongue is not Deep Speech. That it is, for the
 Urouthi, the language of their own ancestors makes the
-work no less work, and no more easy.)_
+work no less work, and no more easy.

@@ -149,8 +149,8 @@ the cosmology; it does not teach piloting outside its
 membership; it does not certify Knights trained elsewhere.
 Whether unsanctioned Knights exist somewhere outside the
 order's view is itself a question the order's silence makes
-difficult to assess. What the compendium can record is that no
-other path to the role is publicly known.
+difficult to assess. No other path to the role is publicly
+known.
 
 ## How the worlds receive Knights
 
@@ -208,8 +208,3 @@ material record of the order's interplanetary reach. Whether
 the role existed in some other form before the order took its
 current shape is a question the order does not address in its
 public doctrine.
-
-_(Detail on individual named Knights, the histories of specific
-chosen-Eidolon pairings, the structure of the order's internal
-training, and the lineages of Knights in the historical record
-is not yet recorded here.)_

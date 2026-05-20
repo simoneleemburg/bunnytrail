@@ -42,13 +42,4 @@ Others speak of it as a long slow cost. Both speak truthfully.
 
 ## Status
 
-Viynangor Viyar is currently [[binding|bound]] in an
-Eidolon; the identity of the Knight piloting that Eidolon, the
-history of past pilots, and the specific lineage through which
-the name first entered the Old Tongue are not yet recorded
-here.
-
-_(Detail on Viynangor Viyar's recorded manifestations, the
-particular embodied perceptions associated with its resonance —
-colour, pressure, geometry — and the named Knights who have
-piloted its Eidolon across history is not yet recorded here.)_
+Viynangor Viyar is currently [[binding|bound]] in an Eidolon.

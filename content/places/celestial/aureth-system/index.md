@@ -5,8 +5,3 @@ the three Sister Worlds — [[bayurinda|Bayurinda]],
 — that orbit within its light. The system takes its name from
 the star; the worlds within it keep their own collective name as
 the Sister Worlds.
-
-_(The bodies beyond the three known worlds — outer planets,
-asteroidal material, anything the order's charts mark but the
-working compendium has not yet entered — are not yet recorded
-here.)_

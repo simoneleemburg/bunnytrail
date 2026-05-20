@@ -20,13 +20,9 @@ The peculiarity, by ordinary mythic standards, is that the
 myth is verifiable. The cities are still there. The deep walk
 through them.
 
-_(Bayurinda's two moons are not yet recorded separately here.)_
-
 ## The drowning
 
-The compendium does not yet record what brought the seas up, or
-the land down, or whether it was one event or many across long
-time. The drowning is held, on Bayurinda and elsewhere in
+The drowning is held, on Bayurinda and elsewhere in
 [Cognita](/cognita), as **myth** — the foundational story of
 the world's present shape — and is treated by scholars with the
 patience that mythic material deserves. What is also recorded,
@@ -54,25 +50,12 @@ discipline — flows from it. That the story is mythic does not
 make it untrue. That it is true does not make the story any less
 mythic.
 
-_The drowning_ is the English-language working term this
-compendium uses for the event. What the
-[[bayurinda-archipelago|archipelago]] calls it in
-[[culture/languages/bayurindan|Bayurindan]], what the
-[[#peoples-of-bayurinda|deep]] call it among themselves, and
-whether the lost surface civilisation had a single name for what
-happened to it at all — given how long the loss took, or did not
-take — are not yet recorded here.
-
-_(The catastrophe itself, its causes, its date, whether the old
-civilisation foresaw it or was overtaken by it, and the question
-of how the deep relate to the events of the drowning — having
-been there, by all accounts, before during and after — is not
-yet recorded here.)_
+_The drowning_ is the working English-language term for the event.
 
 ## Peoples of Bayurinda
 
-The world is shared. Two peoples are known to the compendium,
-unequally:
+The world is shared. Two peoples live on Bayurinda, unequally
+in the surface's knowing:
 
 The [[bayurinda-archipelago|archipelago people]] live
 above and partly within the water, on the islands and in the
@@ -87,8 +70,9 @@ can be drawn into the question at all — hold that the present
 archipelago people arrived later, or were always a coastal
 people distinct from the inland civilisation that drowned, or
 that the question of "descent" simply does not map onto the
-shape of what happened. The compendium records the dominant
-tradition, names the dispute, and does not settle it.
+shape of what happened. The dominant tradition is recorded here
+as the dominant tradition; the dispute is named, and not
+settled.
 
 Two peoples live in the deep waters of
 [[nuunlau|Nuunlau]]. The archipelago people call them
@@ -117,10 +101,7 @@ inscriptions back into a language the surface can hear.
 Together the two peoples make up the Nuunlaumud as the
 archipelago meets them. Scholarship on the other Sister Worlds
 refers to them collectively as _the deep_, or by various
-respectful circumlocutions. What the older Nuunlaumud and the
-Urouthi call themselves, in their own working tongue (which
-is [[culture/languages/deep-speech|Deep Speech]], not
-[[culture/languages/bayurindan|Bayurindan]]), is not yet recorded here.
+respectful circumlocutions.
 
 The relationship between the archipelago and the Nuunlaumud is
 the central social fact of present Bayurindan life. The
@@ -133,10 +114,6 @@ its practices, its scholarly inheritance, its
 inherit that material from them, slowly, by patient contact, and
 carry it up to where it can travel further.
 
-_(Other peoples of Bayurinda, the exact protocols of contact
-between the archipelago and the deep, and the particular shape
-of the world's politics are not yet recorded here.)_
-
 ## On the name
 
 _Bayurinda_ is the [archipelago people](/places/regions/bayurinda/bayurinda-archipelago)'s
@@ -145,24 +122,17 @@ those people first met Knights from
 [[nebelheim|Nebelheim]]: the Nebelheimers carried the
 name home, the order's rosters took it up, and from there it
 became the name of record across the Sister Worlds for the
-_world_ — not only for the archipelago. The compendium follows
-that convention, with the gap-note that it is a convention: the
-planet has no single proper name in any tongue it is yet known
-to speak.
+_world_ — not only for the archipelago. The convention is
+followed here, with the understanding that it is a convention:
+the planet has no single proper name in any tongue it is yet
+known to speak.
 
 Older Tholingian texts call the world _Blauheim_ [[tho]] — the
 pre-contact name, used while the Tholingians knew the place only
 as a destination of long voyages and not as the home of anyone
 they had spoken to. The word survives in archives, songs, and
 the occasional antiquarian, and is recorded here so that those
-who meet it elsewhere are not puzzled by it. The Tholingians had
-pre-contact names for the other off-world planets too, presumably;
-those are not yet recorded here.
-
-_(What the lost surface civilisation called the world, what the
-deep call it, and whether the archipelago people themselves have
-a name for the planet as distinct from their own place is not
-yet recorded here.)_
+who meet it elsewhere are not puzzled by it.
 
 ## Culture and tone
 
@@ -179,9 +149,9 @@ Sister Worlds is to speak of a tradition with three layers:
   inherits both of the above, lives them in its own weather-shaped
   way, and is the face that the rest of Cognita meets.
 
-The adjective _Bayurindan_ is older than this distinction and the
-compendium uses it as it is used elsewhere: as a shorthand, with
-the understanding that the shorthand papers over real difference.
+The adjective _Bayurindan_ is older than this distinction and
+is used here as elsewhere: as a shorthand, with the
+understanding that the shorthand papers over real difference.
 
 The tradition, taken together, is introspective and patient. It
 treats time as long. It approaches [[kinds/naya|Naya]] as
@@ -246,14 +216,10 @@ Listeners actually did, how much is the deep's best reading of
 ambiguous inscriptions, and how much is centuries of careful
 extrapolation, is itself a matter of long argument among the
 deep — and, in the small ways it surfaces, among the
-archipelago. The compendium credits the Listeners to Bayurinda,
+archipelago. The First Listeners are credited to Bayurinda,
 plainly, because Bayurinda is where they listened. The world
-they listened on, however, is gone, and what reaches us reaches
-us through reconstruction.
-
-_(Detail on the First Listeners themselves — names, sequence,
-practices, and what exactly they perceived — is not yet recorded
-here, and much of it may now be beyond recovery.)_
+they listened on, however, is gone, and what reaches the
+present reaches it through reconstruction.
 
 ## Regions
 

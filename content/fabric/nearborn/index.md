@@ -22,8 +22,7 @@ This is what is meant in the older texts by the claim that the
 Nearborn "carry their second name from before they were born."
 
 Whether the underlying claim is true is, like much else in this
-cosmology, not something the compendium is in a position to
-resolve. Different scholars within the
+cosmology, unresolved. Different scholars within the
 [[culture/knights-of-bellona|Knights of Bellona]] have argued the
 question for generations and continue to.
 
@@ -58,9 +57,8 @@ self-knowing does not fit the local template.
 
 ## The cultural-vs-actual gap
 
-The compendium is obliged to record that the cultural readings
-and the in-universe explanation do not always line up neatly in
-practice.
+The cultural readings and the in-universe explanation do not
+always line up neatly in practice.
 
 A culture can recognise the principle that Nearborn identity is
 real and still misapply the principle in individual cases. A
@@ -123,8 +121,3 @@ they will excel may, in fact, not be ready. The recognition
 rites for Nearborn identity are not the same as the screening
 rites for Knighthood, and confusing the two is a known
 failure mode.
-
-_(Detail on specific Nearborn recognition rites, named Nearborn
-in the historical record, and the institutional structures
-that support \(or fail\) Nearborn lives is not yet recorded
-here.)_

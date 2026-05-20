@@ -7,7 +7,7 @@ diplomatic face of Bayurinda that the rest of Cognita meets,
 Nuunlau is what Bayurinda has been all along.
 
 It is the home of the [[culture/languages/deep-speech|Nuunlaumud]] — the
-seafloor people the compendium otherwise calls _the deep_, in
+seafloor people otherwise called _the deep_, in
 fact two peoples sharing the same waters: the older Nuunlaumud,
 who pre-date the drowning, and the
 [[kinds/urouthi|Urouthi]], the populous majority,
@@ -37,9 +37,7 @@ people-name from a place-name — literally, _people of the
 Nuunlau_. The word is an umbrella: it covers both the older
 Nuunlaumud and the [[kinds/urouthi|Urouthi]], who share
 [[culture/languages/deep-speech|Deep Speech]] as a working tongue. Both
-_Nuunlau_ and _Nuunlaumud_ are the archipelago's words; what
-the two peoples call their own home, and themselves, in their
-own tongue, is not yet recorded here.
+_Nuunlau_ and _Nuunlaumud_ are the archipelago's words.
 
 English-language scholarship usually treats _Nuunlau_ the way it
 treats _the Atlantic_ or _the Sahara_ — bare in subject position,
@@ -63,15 +61,14 @@ several distinct things:
   [[culture/languages/old-tongue#how-it-survived--partly|Old Tongue: how
 it survived]].)
 - The **cities of the Nuunlaumud** — the seafloor settlements
-  the deep have built and inhabit. The
-  [[#nuunlaumud-settlements|specifics]] are not yet recorded
-  here.
+  the deep have built and inhabit. The largest is
+  [[#nuunlaumud-settlements|Bal Rochan]].
 - **Older things** — geological structures the older Nuunlaumud
   describe as pre-dating the drowning, including features the
   surface civilisation did not leave and could not have left.
   What these are, where they came from, and whether they are
   wholly natural or wholly something else is a question the
-  compendium does not settle. What is recorded is that the
+  deep themselves dispute. What is recorded is that the
   older things **emit a radiance** the
   [[kinds/urouthi|Urouthi]] are uniquely congenial to,
   and that Urouthi come to them to **near**: contact with
@@ -95,11 +92,6 @@ bone and seaweed grown into coral. _Bal Rochan_ is one of the
 few [[culture/languages/deep-speech|Deep Speech]] words the archipelago
 has taken into its own usage without translation.
 
-_(Other Nuunlaumud settlements — and the question of whether Bal
-Rochan's boulder-on-pillars architecture is the standard
-Nuunlaumud form or particular to that city — are not yet
-recorded here.)_
-
 ## Relation to the archipelago
 
 Nuunlau and the [[bayurinda-archipelago|archipelago]]
@@ -112,9 +104,3 @@ pressure and dark. The
 [[culture/oracle-triad|Oracle Triad]] is, in part, a long chain
 of translation between these two — Old Tongue from Nuunlau,
 through the archipelago, to the rest of Cognita.
-
-_(The customs by which the archipelago and the Nuunlaumud
-maintain contact, the protocols for surface visits to deep
-settlements and for Nuunlaumud presence in the shallows, and the
-question of how much of either's life the other actually sees,
-are not yet recorded here.)_

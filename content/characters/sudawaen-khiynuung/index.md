@@ -43,11 +43,4 @@ unready pilot, and the worlds do not speak of it lightly.
 Sudawaen Khiynuung is [[binding|bound]] in an
 [[eidolons|Eidolon]] currently piloted by the
 [[culture/eidolon-knight|Knight]]
-[[characters/mila|Mila]]. The history of past pilots, and the
-conditions under which the name first entered the Old Tongue,
-are not yet recorded here.
-
-_(Detail on Sudawaen Khiynuung's recorded manifestations, the
-specific embodied perceptions associated with its resonance, and
-the named Knights who have piloted its Eidolon across history is
-not yet recorded here.)_
+[[characters/mila|Mila]].

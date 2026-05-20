@@ -101,8 +101,3 @@ inferential, the Naya does not speak in any human sense, and
 the order's confidence on the point varies between centuries.
 The question is one of the central ethical conflicts of
 Alteria, and it is unlikely ever to be fully resolved.
-
-_(Detail on the construction rites by which Eidolons are
-built around their intended Naya, the histories of specific
-named bindings, and the disputed cases in which a binding's
-consent is questioned is not yet recorded here.)_

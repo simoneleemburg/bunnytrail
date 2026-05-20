@@ -26,8 +26,3 @@ beautiful, unusable hearing.
 Ngonawan is a trans man, and so — by the cosmology's recognised
 reading — [[nearborn|Nearborn]]. His identity is deeply
 tied to transformation and embodied transition.
-
-_(The Nguwari peoples Ngonawan belongs to — their internal
-divisions, their homelands, their relation to the wider Astheran
-world — are not yet recorded here. Neither is the story of how
-he came to the order.)_

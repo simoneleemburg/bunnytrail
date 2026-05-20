@@ -20,8 +20,3 @@ existence. The [[culture/languages/old-tongue|Old Tongue]] presupposes the
 term but does not coin it — the Old Tongue was built for the
 [[kinds/naya|Naya]] who live in Nareth, on the assumption that
 _Nareth_ was already its name.
-
-Who first carried _Nareth_ into the Sister Worlds' shared vocabulary,
-and what Thallish itself takes the word to denote in its native use,
-are not yet recorded here. (See [[culture/languages/thallish|Thallish]] for
-the gap-note.)

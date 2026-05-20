@@ -131,8 +131,3 @@ process, and the Triad is far along it.
 How much further the practice can be sustained, and what happens
 to the partnership when it cannot, are questions the order does
 not answer in public.
-
-_(Detail on the origins of the Triad, how the three first found
-each other, the exact mechanism by which the partnership
-sustains Uraya in Asthera, and the conditions under which the
-Triad might end is not yet recorded here.)_
