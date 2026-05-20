@@ -1,5 +1,6 @@
 import { error } from '@sveltejs/kit';
 import { graph } from '$lib/server/graph';
+import { inverseLabelFor } from '$lib/server/kindLinkLabels';
 import { renderBody, renderSummary } from '$lib/server/markdown';
 import type { Entity } from '$lib/types';
 import { buildKindTree } from '$lib/types';
@@ -22,6 +23,21 @@ export interface KindSection {
 	heading: string;
 	/** Whether this kind has its own /kinds/<kind> page. */
 	href: string | null;
+	cards: KindCard[];
+}
+
+/**
+ * A section listing entities that point at this kind via a
+ * structured YAML kind-link field (e.g. `nativeBeings:
+ * [kinds/<id>]`). The heading is the *inverse* label of the field
+ * — on `/kinds/human` a `nativeBeings` reference reads as
+ * "Native to". One section per (field) reference type.
+ */
+export interface KindRefSection {
+	/** The originating YAML field name (e.g. `nativeBeings`). */
+	field: string;
+	/** Display heading, from `kindLinkLabels.inverseLabelFor`. */
+	heading: string;
 	cards: KindCard[];
 }
 
@@ -118,6 +134,23 @@ export async function load({ params }: { params: { kind: string } }) {
 	// in the site.
 	const backlinks = graph.kindBacklinks(kindId).map(toCard);
 
+	// Structured YAML kind-references (e.g. a place's
+	// `nativeBeings: [kinds/<id>]` field) inverted onto this kind
+	// page. Each YAML field that points here becomes one section,
+	// headed by `inverseLabelFor(field)`. These are the load-bearing
+	// "what content depends on this kind" sections; they sit
+	// *above* the prose `Mentioned in` backlinks below.
+	const refsByField = graph.entitiesReferencingKind(kindId);
+	const kindRefSections: KindRefSection[] = [];
+	for (const [field, entities] of refsByField) {
+		kindRefSections.push({
+			field,
+			heading: inverseLabelFor(field),
+			cards: entities.map(toCard)
+		});
+	}
+	kindRefSections.sort((a, b) => a.heading.localeCompare(b.heading));
+
 	return {
 		kindId,
 		singular,
@@ -128,6 +161,7 @@ export async function load({ params }: { params: { kind: string } }) {
 		directHeading: direct.length > 0 ? plural : null,
 		direct,
 		subkindSections,
+		kindRefSections,
 		backlinks
 	};
 }

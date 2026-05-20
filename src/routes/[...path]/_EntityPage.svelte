@@ -48,6 +48,21 @@
 	}
 
 	/**
+	 * Humanise a YAML field name for use as a sidebar label on
+	 * structured kind-link blocks. `camelCase`, `kebab-case` and
+	 * `snake_case` all become space-separated words. The first
+	 * letter is *not* capitalised here — the dt element styling
+	 * (small-caps) handles visual register, so keeping the
+	 * underlying text lower-case avoids double-capitalisation.
+	 */
+	function humaniseField(field: string): string {
+		return field
+			.replace(/([a-z])([A-Z])/g, '$1 $2')
+			.replace(/[-_]/g, ' ')
+			.toLowerCase();
+	}
+
+	/**
 	 * Single flat stream of relationships, regardless of arrow direction.
 	 * Each (kind, direction) pair gets its own labelled bucket — so an
 	 * "is-a" pointing out reads as "is a" while an "is-a" pointing in
@@ -147,6 +162,22 @@
 			{#if data.extra.length > 0}
 				<section>
 					<PropertyList items={data.extra} />
+				</section>
+			{/if}
+
+			{#if data.kindRefs.length > 0}
+				<section class="kind-refs">
+					<dl>
+						{#each data.kindRefs as group (group.field)}
+							<dt>{humaniseField(group.field)}</dt>
+							<dd>
+								{#each group.items as item, i (item.id)}
+									{#if i > 0},
+									{/if}<a class="kind-ref" href={item.href}>{item.label}</a>
+								{/each}
+							</dd>
+						{/each}
+					</dl>
 				</section>
 			{/if}
 
@@ -254,6 +285,44 @@
 		flex-direction: column;
 		gap: var(--space-6);
 		font-size: var(--text-sm);
+	}
+
+	/* Structured kind references (e.g. nativeBeings → [kinds/human])
+	   rendered as a small dl that visually echoes PropertyList:
+	   small-caps dt label, anchor chips on the right. Distinct from
+	   PropertyList because each value is a link to /kinds/<id>, not
+	   plain text. */
+	.kind-refs dl {
+		margin: 0;
+		display: grid;
+		grid-template-columns: max-content 1fr;
+		column-gap: var(--space-4);
+		row-gap: var(--space-2);
+	}
+
+	.kind-refs dt {
+		font-size: var(--text-xs);
+		font-variant: small-caps;
+		letter-spacing: 0.08em;
+		color: var(--ink-faint);
+		font-weight: 500;
+		padding-top: 0.15em;
+	}
+
+	.kind-refs dd {
+		margin: 0;
+		color: var(--ink);
+	}
+
+	.kind-ref {
+		color: var(--accent);
+		text-decoration: none;
+		border-bottom: 1px solid transparent;
+	}
+
+	.kind-ref:hover {
+		color: var(--accent-soft);
+		border-bottom-color: var(--accent-soft);
 	}
 
 	.tag-row {

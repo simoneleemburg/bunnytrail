@@ -2,7 +2,7 @@
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import EntityLink from '$lib/components/EntityLink.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
-	import type { KindCard, KindSection } from './+page.server';
+	import type { KindCard, KindRefSection, KindSection } from './+page.server';
 
 	let {
 		data
@@ -17,6 +17,7 @@
 			directHeading: string | null;
 			direct: KindCard[];
 			subkindSections: KindSection[];
+			kindRefSections: KindRefSection[];
 			backlinks: KindCard[];
 		};
 	} = $props();
@@ -104,6 +105,23 @@
 		</section>
 	{/each}
 {/if}
+
+{#each data.kindRefSections as section (section.field)}
+	<section class="kind-section refs">
+		<h2 class="section-heading">
+			{section.heading}
+			<span class="section-count">{section.cards.length}</span>
+		</h2>
+		<ul class="backlinks-list">
+			{#each section.cards as card (card.id)}
+				<li>
+					<EntityLink id={card.id} name={card.name} summary={null} />
+					{#if card.typeLabel}<span class="backlink-type">· {card.typeLabel}</span>{/if}
+				</li>
+			{/each}
+		</ul>
+	</section>
+{/each}
 
 {#if data.backlinks.length > 0}
 	<section class="kind-section backlinks">

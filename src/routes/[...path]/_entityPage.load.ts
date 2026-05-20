@@ -118,9 +118,35 @@ export function loadEntityPage(entity: Entity) {
 	const extra: { key: string; value: unknown }[] = [];
 	for (const [key, value] of Object.entries(entity.meta)) {
 		if (HIDDEN.has(key)) continue;
+		// Kind-link fields are surfaced in their own block (kindRefs
+		// below), pre-rendered as chip links. Skip them here so the
+		// property sidebar doesn't also render the raw `kinds/<id>`
+		// strings as plain text.
+		if (key in entity.kindRefs) continue;
 		if (value === null || value === undefined || value === '') continue;
 		extra.push({ key, value });
 	}
+
+	// Structured kind-references declared in YAML, pre-rendered for
+	// the sidebar chip block. Each field becomes one group; each
+	// resolved kind id becomes one chip with the kind's singular
+	// label and an href into the /kinds/<id> page. Only resolved
+	// references appear here — unregistered ids were dropped (and
+	// surfaced on /health) during loading.
+	const kindRefs = Object.entries(entity.kindRefs)
+		.filter(([, ids]) => ids.length > 0)
+		.map(([field, ids]) => ({
+			field,
+			items: ids.map((kid) => {
+				const k = graph.kind(kid);
+				return {
+					id: kid,
+					label: k?.meta.singular ?? titleCaseSlug(kid),
+					href: `/kinds/${kid}`
+				};
+			})
+		}))
+		.sort((a, b) => a.field.localeCompare(b.field));
 
 	if (!graph.isFolder(type)) {
 		// An entity sitting at the content root (no containing folder)
@@ -147,6 +173,7 @@ export function loadEntityPage(entity: Entity) {
 			sigil: typeof entity.meta.sigil === 'string' ? entity.meta.sigil : null
 		},
 		extra,
+		kindRefs,
 		html,
 		language,
 		childGroups,
