@@ -303,9 +303,41 @@ export interface EntityMeta {
 	sigil?: string;
 	/** Structured relations. */
 	relations?: Relation[];
+	/**
+	 * Optional book-mode configuration for entities that carry a
+	 * `chapters/` subfolder of prose pages. Controls how those pages
+	 * are labelled and rendered.
+	 *
+	 *   - `format`: a named visual + naming preset.
+	 *     - `book` (default): "Chapter <N>", display serif.
+	 *     - `scrolls`: "Fragment <N>", archaic manuscript serif.
+	 *
+	 *   - `unitSingular` / `unitPlural`: optional manual overrides
+	 *     for the unit word. Useful when `format` doesn't already
+	 *     name what these pages are (e.g. "Letter", "Entry",
+	 *     "Canto"). When omitted the format's defaults apply.
+	 */
+	book?: BookMeta;
 	/** Arbitrary extra fields rendered in the property list sidebar. */
 	[key: string]: unknown;
 }
+
+/**
+ * Author-facing book-mode config. Mirrored into the loaded entity
+ * (resolved against defaults) as `Entity.book`.
+ */
+export interface BookMeta {
+	format?: BookFormat;
+	unitSingular?: string;
+	unitPlural?: string;
+}
+
+/**
+ * Named book-mode preset. New presets bind a unit name and a
+ * visual register; the chapter page picks them up via a
+ * `[data-book-format=…]` attribute.
+ */
+export type BookFormat = 'book' | 'scrolls';
 
 /** A loaded entity, ready to serve. */
 export interface Entity {
@@ -350,6 +382,54 @@ export interface Entity {
 	parent: EntityId | null;
 	/** Direct child entity ids (filesystem-nested under this entity). */
 	children: EntityId[];
+	/**
+	 * Ordered chapter list, when the entity carries a `chapters/`
+	 * subfolder of `*.md` files. Chapters are not entities — they
+	 * have no kind, no relations, no graph membership. Their prose is
+	 * rendered as a sub-page of the entity, and any wikilinks they
+	 * contain merge into the parent entity's `wikilinks` so backlinks
+	 * still attribute to the work as a whole.
+	 *
+	 * Empty when no `chapters/` folder is present.
+	 */
+	chapters: Chapter[];
+	/**
+	 * Resolved book-mode config: present when this entity is
+	 * book-shaped (has at least one chapter). Resolves the
+	 * author-facing `BookMeta` against defaults so consumers get a
+	 * fully-populated shape — `format`, `unitSingular`,
+	 * `unitPlural` are always set when `book` is non-null.
+	 */
+	book: ResolvedBookMeta | null;
+}
+
+/**
+ * Fully resolved book-mode config attached to a loaded entity.
+ * Defaults are filled in by the loader so the renderer doesn't
+ * have to know the preset table.
+ */
+export interface ResolvedBookMeta {
+	format: BookFormat;
+	unitSingular: string;
+	unitPlural: string;
+}
+
+/**
+ * A chapter / fragment / page within a book-shaped entity. Loaded
+ * from `<entity>/chapters/<NN-slug>.md`. Filename prefix `NN-`
+ * (one or more digits, hyphen) is required and drives ordering.
+ */
+export interface Chapter {
+	/** Slug from filename (without the `NN-` prefix or `.md` suffix). */
+	slug: string;
+	/** Numeric ordering from the filename prefix. */
+	order: number;
+	/** Display title. Derived from the first `# heading`, falling back to the slug. */
+	title: string;
+	/** Raw markdown body. */
+	body: string;
+	/** Absolute path on disk (for diagnostics). */
+	mdPath: string;
 }
 
 /** A directed edge in the graph, with provenance. */

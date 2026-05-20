@@ -66,6 +66,40 @@
 	}
 
 	/**
+	 * Format a chapter ordinal as a Roman numeral. Used for the
+	 * book-mode TOC and chapter-page eyebrows. Returns the original
+	 * number as a string for values outside 1..3999 (we don't expect
+	 * works that long, but the fallback keeps render safe).
+	 */
+	function romanise(n: number): string {
+		if (!Number.isFinite(n) || n < 1 || n > 3999) return String(n);
+		const pairs: [number, string][] = [
+			[1000, 'M'],
+			[900, 'CM'],
+			[500, 'D'],
+			[400, 'CD'],
+			[100, 'C'],
+			[90, 'XC'],
+			[50, 'L'],
+			[40, 'XL'],
+			[10, 'X'],
+			[9, 'IX'],
+			[5, 'V'],
+			[4, 'IV'],
+			[1, 'I']
+		];
+		let v = Math.floor(n);
+		let out = '';
+		for (const [k, r] of pairs) {
+			while (v >= k) {
+				out += r;
+				v -= k;
+			}
+		}
+		return out;
+	}
+
+	/**
 	 * Single flat stream of relationships, regardless of arrow direction.
 	 * Each (kind, direction) pair gets its own labelled bucket — so an
 	 * "is-a" pointing out reads as "is a" while an "is-a" pointing in
@@ -136,6 +170,22 @@
 	<div class="layout">
 		<div class="prose">
 			{@html data.html}
+
+			{#if data.chapters.length > 0}
+				<section class="chapters" aria-label={data.book?.unitPlural ?? 'Chapters'}>
+					<h2 class="chapters-heading">{data.book?.unitPlural ?? 'Chapters'}</h2>
+					<ol class="chapter-list">
+						{#each data.chapters as ch (ch.slug)}
+							<li class="chapter-item">
+								<a class="chapter-link" href={ch.href}>
+									<span class="chapter-numeral">{romanise(ch.order)}</span>
+									<span class="chapter-title">{ch.title}</span>
+								</a>
+							</li>
+						{/each}
+					</ol>
+				</section>
+			{/if}
 
 			{#if data.childGroups.length > 0}
 				<section class="children" aria-label="Contents">
@@ -508,5 +558,70 @@
 		color: var(--ink-soft);
 		font-size: var(--text-sm);
 		line-height: var(--leading-normal);
+	}
+
+	/* Book-mode table of contents on the cover (entity) page.
+	   The chapter pages themselves carry the strongly book-styled
+	   chrome; this TOC is a quieter on-ramp sitting inside the
+	   compendium-style entity layout. */
+	.chapters {
+		margin-top: var(--space-7);
+		padding-top: var(--space-5);
+		border-top: var(--rule-double);
+	}
+
+	.chapters-heading {
+		font-family: var(--font-display);
+		font-size: var(--text-lg);
+		font-weight: 500;
+		font-variant: small-caps;
+		letter-spacing: 0.06em;
+		color: var(--ink);
+		margin: 0 0 var(--space-4) 0;
+	}
+
+	.chapter-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+	}
+
+	.chapter-item {
+		padding: var(--space-2) 0;
+		border-bottom: 1px dotted var(--rule);
+	}
+
+	.chapter-item:last-child {
+		border-bottom: 0;
+	}
+
+	.chapter-link {
+		display: grid;
+		grid-template-columns: 3rem 1fr;
+		align-items: baseline;
+		gap: var(--space-3);
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.chapter-link:hover .chapter-title {
+		color: var(--accent);
+	}
+
+	.chapter-numeral {
+		font-family: var(--font-display);
+		font-variant: small-caps;
+		letter-spacing: 0.08em;
+		color: var(--ink-faint);
+		text-align: right;
+	}
+
+	.chapter-title {
+		font-family: var(--font-display);
+		font-size: var(--text-base);
+		color: var(--ink);
 	}
 </style>

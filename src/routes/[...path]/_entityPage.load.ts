@@ -126,7 +126,10 @@ export function loadEntityPage(entity: Entity) {
 		'kind',
 		'language',
 		'code',
-		'sigil'
+		'sigil',
+		// `book` is a structured config block surfaced via the
+		// chapter-list rendering, not as a sidebar property.
+		'book'
 	]);
 	const extra: { key: string; value: unknown }[] = [];
 	for (const [key, value] of Object.entries(entity.meta)) {
@@ -177,7 +180,14 @@ export function loadEntityPage(entity: Entity) {
 		language,
 		childGroups,
 		outEdges,
-		inEdges
+		inEdges,
+		chapters: entity.chapters.map((c) => ({
+			slug: c.slug,
+			order: c.order,
+			title: c.title,
+			href: `/${entity.id}/chapters/${c.slug}`
+		})),
+		book: entity.book
 	};
 }
 

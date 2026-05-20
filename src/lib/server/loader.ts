@@ -3,6 +3,9 @@ import type { Dirent } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import type {
+	BookFormat,
+	BookMeta,
+	Chapter,
 	Collection,
 	CollectionMeta,
 	Edge,
@@ -11,7 +14,8 @@ import type {
 	EntityMeta,
 	EntityType,
 	HealthIssue,
-	Kind
+	Kind,
+	ResolvedBookMeta
 } from '$lib/types';
 import { loadKindRegistry } from './kinds';
 
@@ -345,6 +349,18 @@ async function walk(args: WalkArgs): Promise<void> {
 			issues.push({ kind: 'missing-md', entity: id, detail: indexMdPath });
 		}
 
+		// Load `chapters/*.md` if present. Chapters are sub-pages of
+		// the entity, not entities themselves. Their wikilinks merge
+		// into the parent entity's `wikilinks` so backlinks attribute
+		// to the work as a whole.
+		const chapters = await loadChapters(join(absDir, 'chapters'), id, issues);
+		const wikilinksFromBody = extractWikilinks(body);
+		const wikilinksFromChapters = chapters.flatMap((c) => extractWikilinks(c.body));
+		const mergedWikilinks = [...new Set([...wikilinksFromBody, ...wikilinksFromChapters])];
+		const kindLinksFromBody = extractKindLinks(body);
+		const kindLinksFromChapters = chapters.flatMap((c) => extractKindLinks(c.body));
+		const mergedKindLinks = [...new Set([...kindLinksFromBody, ...kindLinksFromChapters])];
+
 		if (meta) {
 			entities.set(id, {
 				id,
@@ -352,13 +368,15 @@ async function walk(args: WalkArgs): Promise<void> {
 				slug,
 				meta,
 				body,
-				wikilinks: extractWikilinks(body),
-				kindLinks: extractKindLinks(body),
+				wikilinks: mergedWikilinks,
+				kindLinks: mergedKindLinks,
 				kindRefs: extractKindRefs(meta),
 				yamlPath: indexYamlPath,
 				mdPath: indexMdPath,
 				parent: args.parentEntity,
-				children: []
+				children: [],
+				chapters,
+				book: chapters.length > 0 ? resolveBookMeta(meta.book) : null
 			});
 		}
 
@@ -381,6 +399,122 @@ async function walk(args: WalkArgs): Promise<void> {
 			collections
 		});
 	}
+}
+
+/**
+ * Load chapter files from `<entity>/chapters/`. Each `*.md` file
+ * with a `NN-<slug>.md` filename becomes a chapter; the numeric
+ * prefix sets ordering. Files without a numeric prefix are skipped
+ * with a `broken-link` issue (treated as malformed).
+ *
+ * Chapters are not entities — they have no kind, no relations, no
+ * graph membership.
+ */
+async function loadChapters(
+	chaptersDir: string,
+	entityId: EntityId,
+	issues: HealthIssue[]
+): Promise<Chapter[]> {
+	const dirents = await readDirents(chaptersDir);
+	const out: Chapter[] = [];
+	for (const entry of dirents) {
+		if (!entry.isFile()) continue;
+		if (!entry.name.endsWith('.md')) continue;
+		if (entry.name.startsWith('.') || entry.name.startsWith('_')) continue;
+		const m = entry.name.match(/^(\d+)-([a-z0-9][a-z0-9-]*)\.md$/);
+		if (!m) {
+			issues.push({
+				kind: 'invalid-yaml',
+				entity: entityId,
+				detail: `chapter filename must match \`NN-slug.md\`: ${join(chaptersDir, entry.name)}`
+			});
+			continue;
+		}
+		const order = parseInt(m[1], 10);
+		const slug = m[2];
+		const mdPath = join(chaptersDir, entry.name);
+		let body = '';
+		try {
+			body = await readFile(mdPath, 'utf8');
+		} catch (err) {
+			issues.push({
+				kind: 'invalid-yaml',
+				entity: entityId,
+				detail: `${mdPath}: ${err instanceof Error ? err.message : String(err)}`
+			});
+			continue;
+		}
+		const title = extractChapterTitle(body) ?? humaniseSlug(slug);
+		// Strip the leading `# Heading` from the body so the chapter
+		// page's own header (Chapter <numeral> / <title>) doesn't get
+		// shadowed by a duplicate heading at the top of the prose.
+		const prosed = stripLeadingHeading(body);
+		out.push({ slug, order, title, body: prosed, mdPath });
+	}
+	out.sort((a, b) => a.order - b.order || a.slug.localeCompare(b.slug));
+	return out;
+}
+
+/**
+ * Pull the first markdown `# Heading` from a chapter body to use as
+ * its title. Returns `null` if no top-level heading is found.
+ */
+export function extractChapterTitle(body: string): string | null {
+	const m = body.match(/^\s*#\s+(.+?)\s*$/m);
+	return m ? m[1].trim() : null;
+}
+
+/**
+ * Strip a leading `# Heading` (and any blank lines after it) from a
+ * chapter body, leaving the prose proper. The chapter page's own
+ * header already renders the chapter title; keeping the heading in
+ * the body would render it twice. Only the *first* heading at the
+ * top of the file is removed; `##` and lower headings inside the
+ * body are preserved.
+ */
+export function stripLeadingHeading(body: string): string {
+	return body.replace(/^\s*#\s+.+?\n+/, '');
+}
+
+function humaniseSlug(slug: string): string {
+	return slug
+		.split('-')
+		.map((w) => (w.length ? w[0].toUpperCase() + w.slice(1) : w))
+		.join(' ');
+}
+
+/**
+ * Default unit-naming per book format. The chapter page reads
+ * these via `Entity.book` and renders the unit word in the eyebrow
+ * and prev/next labels.
+ */
+const BOOK_FORMAT_DEFAULTS: Record<BookFormat, { singular: string; plural: string }> = {
+	book: { singular: 'Chapter', plural: 'Chapters' },
+	scrolls: { singular: 'Fragment', plural: 'Fragments' }
+};
+
+/**
+ * Resolve author-facing `book:` YAML into a fully populated
+ * `ResolvedBookMeta`. Unknown formats fall back to `book`; manual
+ * `unitSingular` / `unitPlural` overrides win over the format
+ * defaults.
+ */
+export function resolveBookMeta(raw: unknown): ResolvedBookMeta {
+	const meta = (raw && typeof raw === 'object' ? raw : {}) as BookMeta;
+	const formatRaw = typeof meta.format === 'string' ? meta.format : 'book';
+	const format: BookFormat = formatRaw in BOOK_FORMAT_DEFAULTS ? (formatRaw as BookFormat) : 'book';
+	const defaults = BOOK_FORMAT_DEFAULTS[format];
+	return {
+		format,
+		unitSingular:
+			typeof meta.unitSingular === 'string' && meta.unitSingular.trim()
+				? meta.unitSingular.trim()
+				: defaults.singular,
+		unitPlural:
+			typeof meta.unitPlural === 'string' && meta.unitPlural.trim()
+				? meta.unitPlural.trim()
+				: defaults.plural
+	};
 }
 
 /**

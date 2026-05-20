@@ -480,3 +480,94 @@ describe('loadAll: collections', () => {
 		expect(issues.some((i) => i.detail.includes('_collection.yaml'))).toBe(true);
 	});
 });
+
+describe('loadAll: chapters', () => {
+	it('loads ordered chapters from <entity>/chapters/*.md and merges their wikilinks into the parent', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-chapters-'));
+		await mkdir(join(dir, 'works', 'scrolls', 'chapters'), { recursive: true });
+		await mkdir(join(dir, 'places', 'temple'), { recursive: true });
+		await writeFile(
+			join(dir, 'works', 'scrolls', 'index.yaml'),
+			'name: The Scrolls\nkind: account'
+		);
+		await writeFile(join(dir, 'works', 'scrolls', 'index.md'), 'Cover prose.\n');
+		await writeFile(join(dir, 'places', 'temple', 'index.yaml'), 'name: Temple\nkind: place');
+		await writeFile(join(dir, 'places', 'temple', 'index.md'), '.');
+
+		await writeFile(
+			join(dir, 'works', 'scrolls', 'chapters', '02-second-thing.md'),
+			'# Second Thing\n\nMore prose mentioning [[places/temple]].\n'
+		);
+		await writeFile(
+			join(dir, 'works', 'scrolls', 'chapters', '01-first-thing.md'),
+			'# First Thing\n\nOpening prose.\n'
+		);
+		await writeFile(
+			join(dir, 'works', 'scrolls', 'chapters', '10-tenth-thing.md'),
+			'# The Tenth\n\nLater prose.\n'
+		);
+
+		const { entities } = await loadAll(dir);
+		const scrolls = entities.get('works/scrolls')!;
+		expect(scrolls).toBeDefined();
+		expect(scrolls.chapters.map((c) => c.slug)).toEqual([
+			'first-thing',
+			'second-thing',
+			'tenth-thing'
+		]);
+		expect(scrolls.chapters.map((c) => c.order)).toEqual([1, 2, 10]);
+		expect(scrolls.chapters.map((c) => c.title)).toEqual([
+			'First Thing',
+			'Second Thing',
+			'The Tenth'
+		]);
+		// Wikilinks from chapters merge into the parent entity's
+		// wikilinks so backlinks attribute to the work as a whole.
+		expect(scrolls.wikilinks).toContain('places/temple');
+	});
+
+	it('flags malformed chapter filenames but still loads the entity', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-chapters-bad-'));
+		await mkdir(join(dir, 'works', 'scrolls', 'chapters'), { recursive: true });
+		await writeFile(
+			join(dir, 'works', 'scrolls', 'index.yaml'),
+			'name: The Scrolls\nkind: account'
+		);
+		await writeFile(join(dir, 'works', 'scrolls', 'index.md'), 'Cover prose.\n');
+		await writeFile(
+			join(dir, 'works', 'scrolls', 'chapters', 'no-prefix.md'),
+			'# Untitled\n\nProse.\n'
+		);
+		await writeFile(join(dir, 'works', 'scrolls', 'chapters', '01-good.md'), '# Good\n\nProse.\n');
+
+		const { entities, issues } = await loadAll(dir);
+		const scrolls = entities.get('works/scrolls')!;
+		expect(scrolls.chapters.map((c) => c.slug)).toEqual(['good']);
+		expect(issues.some((i) => i.detail.includes('no-prefix.md'))).toBe(true);
+	});
+
+	it('falls back to the slug when no `# heading` is present', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-chapters-slug-'));
+		await mkdir(join(dir, 'works', 'scrolls', 'chapters'), { recursive: true });
+		await writeFile(
+			join(dir, 'works', 'scrolls', 'index.yaml'),
+			'name: The Scrolls\nkind: account'
+		);
+		await writeFile(join(dir, 'works', 'scrolls', 'index.md'), 'Cover prose.\n');
+		await writeFile(
+			join(dir, 'works', 'scrolls', 'chapters', '01-some-untitled-thing.md'),
+			'No heading here, just prose.\n'
+		);
+
+		const { entities } = await loadAll(dir);
+		const scrolls = entities.get('works/scrolls')!;
+		expect(scrolls.chapters[0].title).toBe('Some Untitled Thing');
+	});
+
+	it('produces an empty chapters array when no chapters/ folder exists', async () => {
+		const dir = await seedTempContent();
+		const { entities } = await loadAll(dir);
+		const kael = entities.get('characters/kael')!;
+		expect(kael.chapters).toEqual([]);
+	});
+});

@@ -32,6 +32,17 @@
 	--font-display: 'Iowan Old Style', 'Cormorant Garamond', Palatino, Georgia, serif;
 	--font-mono: 'Iosevka', 'JetBrains Mono', 'SFMono-Regular', ui-monospace, monospace;
 
+	/* Archaic / manuscript register: used by book-mode entities
+	   declared as `format: scrolls`. IM Fell English is a 17th-c
+	   English Roman with deliberate ink-bleed irregularity — reads
+	   as hand-set type on rag paper. SC = small caps variant. */
+	--font-archaic:
+		'IM Fell English', 'EB Garamond', 'Cormorant Garamond', 'Iowan Old Style', Palatino, Georgia,
+		serif;
+	--font-archaic-sc:
+		'IM Fell English SC', 'IM Fell English', 'EB Garamond', 'Cormorant Garamond', Palatino, Georgia,
+		serif;
+
 	--text-xs: 0.75rem;
 	--text-sm: 0.875rem;
 	--text-base: 1.0625rem;
@@ -62,4 +73,15 @@
 
 	--page-max: 64rem;
 	--prose-max: 38rem;
+
+	/* ── Book mode ────────────────────────────────────────────── */
+	/* Used by chapter pages of book-shaped entities (works that
+	   carry a `chapters/` subfolder, e.g. the Bonedust Scrolls).
+	   Goal: feel like an open book set against the compendium —
+	   different surface, narrower measure, more leading, display
+	   serif for chapter heads. */
+	--book-page: var(--vellum);
+	--book-prose-max: 32rem;
+	--book-leading: 1.75;
+	--book-rule: 1px solid var(--rule);
 }
