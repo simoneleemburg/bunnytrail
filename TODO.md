@@ -69,6 +69,29 @@ this file is not loaded by the site.
 
 ## Structural work
 
+- **Model the missing kinds and clear unregistered-kind warnings.**
+  `/health` currently lists 17 entities across 8 unregistered
+  kinds: `action` (binding, eidolon-starfaring, nearing),
+  `construct` (eidolons, world-pillars), `language` (all five
+  language entries), `material` (skyblood, urouch, vochran),
+  `order` (knights-of-bellona), `phenomenon` (nearborn), `role`
+  (eidolon-knight), and `working partnership` (oracle-triad).
+  The taxonomy currently has only `being/*` and `place/*` trunks;
+  the rest need new trunks under `content_meta/kinds/`.
+  - Decide the taxonomy: which of these eight are real trunks
+    (`action`, `material`, `language`?), which are subdivisions
+    of a broader trunk (is `working partnership` an `order`?
+    is `role` a `culture/*` thing or a being-trunk thing?), and
+    which need renaming altogether (`construct` reads vague —
+    `eidolon` itself may be the kind, with world-pillars a
+    subkind).
+  - Author `_kind.yaml` (singular/plural overrides, description)
+    and `_kind.md` (long-form, where it earns it) for each.
+    Follow the meta/content rule — kind docs describe the
+    abstraction, not the specific instances.
+  - Fix any kind: fields on entities once their target kind
+    exists. `/health` should be clean of "is not registered"
+    warnings after this pass.
 - **Redesign the orbits view as a system/body diagram.** The
   current orbits view-mode on collection pages is a filter chip
   alongside _Nested_ and _Flat_ — useful for inspecting the
