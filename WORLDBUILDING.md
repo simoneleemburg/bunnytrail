@@ -35,7 +35,7 @@ texture of a debate club, and it is not the texture of a wiki.
 
 Editing prose for clarity, rhythm, and tone is fine. Adding new
 facts about the world is not — even small ones. If the user's brief
-says "rare serpent-humanoid lineage," don't extend it into specific
+says "rare amphibious people," don't extend it into specific
 habitats, customs, or history. If a character or place needs more
 detail than the brief provides, either ask the user, leave the text
 short, or make the gap explicit (a parenthetical italic note like

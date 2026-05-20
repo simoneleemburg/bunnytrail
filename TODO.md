@@ -66,9 +66,7 @@ this file is not loaded by the site.
 
 ## New entities to add
 
-- **Yuan-ti.** Add the yuan-ti species entry. This is presumably
-  Ngonawan's serpent-humanoid lineage (currently gap-noted on
-  his entry); confirm before linking.
+- _(none currently)_
 
 ## Structural work
 

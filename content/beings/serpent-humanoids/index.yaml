@@ -1,7 +1,0 @@
-name: Serpent-Humanoids
-kind: mortal
-summary: A rare lineage of serpentine-bodied peoples native to Bayurinda, recorded so far only through its liminal, water-adjacent civilisations. Their numbers are small; their homelands and traditions are not yet recorded in the compendium beyond what individual members carry with them.
-tags: [asthera, bayurinda, liminal, water-adjacent, gap-noted]
-relations:
-  - kind: native-to
-    target: places/celestial-bodies/planets/bayurinda
