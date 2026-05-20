@@ -13,7 +13,7 @@ Serpent of Resonance and Oracle of Interpretation in the
 
 What general claims the compendium can make about the
 serpent-humanoid peoples — their numbers, their distribution,
-their relation to the [[beings/humans|human]] majority of
+their relation to the [[kinds/human|human]] majority of
 Asthera, the part their bodies and languages play in the work
 they are known for — wait on further entries. What is recorded
 of them lives, for now, in the entries of the individuals who

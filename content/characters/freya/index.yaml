@@ -5,6 +5,3 @@ gender: woman
 role: Eidolon Knight
 summary: An Eidolon Knight of the Knights of Bellona. Nearborn, trans, and very nearly turned away from the order for doubts about her stability. The Naya in her chosen Eidolon manifests, in transit, through refracted glass-like Aspect Wings; her recognised pilot's challenge is presence.
 tags: [knight, eidolon, pilot, nearborn, protagonist]
-relations:
-  - kind: is-a
-    target: beings/humans

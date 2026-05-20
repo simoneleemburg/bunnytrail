@@ -5,6 +5,3 @@ language: tho
 role: Eidolon Knight
 summary: An Eidolon Knight of the Knights of Bellona, currently piloting the Eidolon in which the Naya Sudawaen Khiynuung is bound. She came to the vessel under circumstances that were not the order's preferred way to come to one. The Naya's nature amplifies her own; her recognised pilot's challenge is restraint.
 tags: [knight, eidolon, pilot, protagonist]
-relations:
-  - kind: is-a
-    target: beings/humans
