@@ -87,7 +87,7 @@ entry]].)
   cross the seam between the worlds the archipelago and the
   deep otherwise hold apart. What the Nguwari call themselves,
   in whatever tongue or tongues are theirs, is not yet recorded
-  here. (See [[beings/nguwari|Nguwari]].)
+  here. (See [[kinds/nguwari|Nguwari]].)
 
 - **Nuunlau** [[bay]] — the archipelago people's word for _the
   deep_ as a region: the deep-water reaches of

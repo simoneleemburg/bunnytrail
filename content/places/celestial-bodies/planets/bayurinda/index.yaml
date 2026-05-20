@@ -3,7 +3,7 @@ kind: planet
 language: bay
 summary: A water world whose mythic past sits on the sea-floor. Before what is now myth, Bayurinda had a great deal more land; a civilisation lived on it. Most of that civilisation is now underwater. The deep have been the custodians of what survived. The archipelago people inherit it from them, and gave the world its present name when first met by Nebelheimers.
 tags: [ocean, drowned-civilisation, multiple-peoples, archipelago, mythic-past]
-nativeBeings: [kinds/human]
+nativeBeings: [kinds/human, kinds/nguwari]
 relations:
   - kind: member-of
     target: places/systems/aureth-system
