@@ -38,9 +38,8 @@ this file is not loaded by the site.
   relationship between fallen Naya and the broken-god material
   before writing — they may be the same thing or two distinct
   registers of the same shattering.
-- **Moons.** Lock in the moons — which planets have how many,
-  their names, their bound or unbound status, their place in the
-  cosmology. Currently absent.
+- **Moons.** Lock in the moons of Bayurinda — We know she has two of them, 
+  but they're currently absent.
 - **Pantheon.** Move in the entire pantheon. Amon and Danu are
   the obvious ones the existing entries already gesture at
   obliquely ("the shattered god," "the shattering"); there is more.
