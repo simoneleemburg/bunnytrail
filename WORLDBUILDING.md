@@ -71,8 +71,8 @@ keeps them useful.
 
 ### Kinds and collections are different axes
 
-Where an entity *lives* in `content/` is a **collection** — a
-narrative shelf in the field-notebook. What an entity *is* is its
+Where an entity _lives_ in `content/` is a **collection** — a
+narrative shelf in the field-notebook. What an entity _is_ is its
 **kind** — a node in the taxonomy under `content_meta/kinds/`. The
 two are deliberately independent: the same kind can appear in
 several collections, and a single collection can hold many kinds.
@@ -81,6 +81,61 @@ browsing; pick the kind that's true regardless of where the entry
 ends up shelved. Moving an entity between collections changes its
 URL but not its kind; reclassifying its kind doesn't move the
 folder.
+
+### Content references meta; meta does not reference content
+
+The taxonomy under `content_meta/` describes **general** categories
+— what a human is in the abstract, what a phenomenon is, what makes
+something a celestial body. The instances under `content/` describe
+**specific** things — this person, this planet, this language.
+
+The reference relationship is strictly one-directional:
+
+- **Content may reference meta freely.** A character's prose can
+  say "she is [[kinds/human|human]] still"; a place's YAML can
+  declare `nativeBeings: [kinds/human]`; a culture's prose can
+  link to the kind page for the kind of phenomenon it venerates.
+- **Meta must never reference a specific instance.** The `human`
+  kind doc must not name which planets humans live on, which
+  kingdoms they founded, which Naya they bond, or which tongues
+  they speak. Those are facts about specific places, factions, and
+  events — they belong on the relevant `content/` page.
+
+The test is the abstraction question: **would this sentence stop
+being true if I deleted that specific place / character / language
+from the compendium?** If yes, it's an instance fact and belongs in
+`content/`. If no, it's a general fact and can stay in
+`content_meta/`.
+
+Variants are still meta. If humans of Asthera and humans of
+Nebelheim are meaningfully different _as a kindred_ — different
+biology, different lifespan, different intrinsic abilities — that's
+a sub-kind under `content_meta/kinds/being/mortal/human/`, not
+content. If they differ only in _what they have done with their
+lives_ — culture, language, history, polities — those facts live in
+`content/` on the relevant places, peoples, and characters.
+
+Allowed (lives in `content_meta/kinds/being/mortal/human/_kind.md`):
+
+> Humans are short-lived by the standards of the longer-lived
+> kindreds, and reproduce sexually within their own kind. They are
+> attested in several variants across the worlds, distinguished
+> chiefly by lifespan and by their relationship to dreaming.
+
+Not allowed in the same file:
+
+> Humans on Asthera mostly live in the kingdoms of the southern
+> continent; on Nebelheim they speak Old Tongue as a liturgical
+> language.
+
+The same direction applies to relations. A "where is this kind
+native?" fact is recorded on the **place** as
+`nativeBeings: [kinds/<id>]` (or the appropriate
+`native…: kinds/<id>` field for other kind families), pointing into
+the registry. A kind doc never declares "this kindred is native to
+[that planet]" — that would be the meta layer reaching down into a
+specific instance, which is exactly the direction this rule
+forbids.
 
 ### Disputed truths are a feature, not a bug — when they belong
 
@@ -195,6 +250,12 @@ ones the world actually has, and they should be visible.
   them.
 - Did I leave `kind` off the YAML? If yes, fill it in — every
   entity must declare its kind.
+- If I'm editing under `content_meta/`, did I name a specific
+  place, person, language, or event? If yes, that fact belongs in
+  `content/`, not in the meta layer.
+- If I added a "native to" / "lives in" / "found on" relation, does
+  it point from `content/` outward (toward a kind or another
+  content entity), not from a meta doc inward at a specific place?
 - Is the entry padded? If yes, prefer a gap-note to filler.
 
 ## When in doubt

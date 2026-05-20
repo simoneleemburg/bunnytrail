@@ -80,6 +80,12 @@ The highest-priority reminders, in case you only read this file:
   alive at the points where ideas connect — but the agent's job is
   to surface connections the user has already implied, not to
   invent new ones.
+- **Content references meta; meta does not reference content.**
+  Files under `content_meta/` describe general kinds; files under
+  `content/` describe specific instances. A specific place may
+  declare `nativeBeings: [kinds/human]`; the `human` kind doc may
+  not name which planet it lives on. See WORLDBUILDING.md for the
+  full rule.
 
 Everything else — disputed truths, tag hygiene, the in-world
 register, the practical pre-save checklist — is in
