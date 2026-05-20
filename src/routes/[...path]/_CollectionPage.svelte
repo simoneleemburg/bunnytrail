@@ -313,6 +313,10 @@
 	<p class="type-description">{data.description}</p>
 {/if}
 
+{#if data.bodyHtml}
+	<div class="collection-body">{@html data.bodyHtml}</div>
+{/if}
+
 {#if data.flat.length === 0}
 	<p class="empty">
 		<em>No {data.label.plural.toLowerCase()} have been recorded yet.</em>
@@ -578,6 +582,37 @@
 		margin: 0 0 var(--space-6) 0;
 		color: var(--ink-soft);
 		font-style: italic;
+	}
+
+	.collection-body {
+		max-width: var(--prose-max);
+		color: var(--ink);
+		margin: 0 0 var(--space-6) 0;
+	}
+
+	.collection-body :global(h2) {
+		font-size: var(--text-xl);
+		margin-top: var(--space-6);
+	}
+
+	.collection-body :global(h3) {
+		font-size: var(--text-lg);
+		margin-top: var(--space-5);
+	}
+
+	.collection-body :global(p),
+	.collection-body :global(ul),
+	.collection-body :global(ol) {
+		margin: 0 0 var(--space-4);
+	}
+
+	.collection-body :global(ul),
+	.collection-body :global(ol) {
+		padding-left: var(--space-5);
+	}
+
+	.collection-body :global(blockquote) {
+		margin: var(--space-5) 0;
 	}
 
 	.filters {

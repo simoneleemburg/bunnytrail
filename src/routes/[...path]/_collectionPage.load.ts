@@ -1,5 +1,5 @@
 import { graph } from '$lib/server/graph';
-import { renderSummary } from '$lib/server/markdown';
+import { renderBody, renderSummary } from '$lib/server/markdown';
 import type { Entity, EntityId } from '$lib/types';
 
 type Card = ReturnType<typeof toCard>;
@@ -46,6 +46,14 @@ export function loadCollectionPage(path: string) {
 	const resolveLink = (p: string) => graph.resolveLink(p);
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();
+
+	// Optional long-form prose from `_collection.md`. Rendered the
+	// same way entity bodies are — wikilinks, kind-links, and
+	// language tags all resolve. Sits between the one-liner
+	// description and the filter chips on the collection page.
+	const bodyHtml = collection?.body
+		? renderBody(collection.body, resolveLink, languageCodes, kindIds)
+		: null;
 	const cardSummaryHtml = (s: string | null | undefined) =>
 		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;
 
@@ -250,6 +258,7 @@ export function loadCollectionPage(path: string) {
 		type: path,
 		label,
 		description,
+		bodyHtml,
 		subcollections,
 		containers,
 		standalone,
@@ -338,6 +347,7 @@ export function loadEverythingIndex() {
 		type: '',
 		label: { singular: 'Entry', plural: 'Everything' },
 		description: 'Every entry in Alteria, in one place. Filter or flatten to taste.',
+		bodyHtml: null,
 		subcollections,
 		containers: [] as ContainerNode[],
 		orbits: [] as OrbitNode[],
@@ -345,7 +355,6 @@ export function loadEverythingIndex() {
 			path: string;
 			name: string;
 			count: number;
-			crossLinkId: EntityId | null;
 		}>,
 		standalone: [] as typeof allCards,
 		flat: allCards,
