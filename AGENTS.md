@@ -93,6 +93,32 @@ register, the practical pre-save checklist — is in
 
 ## Where things live
 
+Two orthogonal axes, each with its own home:
+
+- **Taxonomy** — what _kind_ of thing something is. Lives in
+  `content_meta/kinds/`. Hierarchical by abstraction
+  (`being/mortal/urouthi`). Answers "what is this?" via the
+  `kind:` field on entities.
+- **Topology** — where something sits in the world's structure.
+  Lives in `content/`. Hierarchical by containment
+  (`places/celestial/aureth-system/nebelheim/leyla`). Answers
+  "what contains this?" via folder placement and relations
+  (`parent`, `member-of`, `orbits`, `nativeBeings`).
+
+The two axes are independent. A moon is a `moon` regardless of
+which planet hosts it; a planet sits under its system regardless
+of what kind it is. Don't encode taxonomy in folder paths
+(`places/celestial/planets/` was wrong — that was kind-grouping
+masquerading as topology), and don't encode topology in kind
+pages (a kind doc describing which specific planet its members
+live on is the same mistake inverted; see the meta/content rule
+in WORLDBUILDING.md).
+
+Cross-axis truth travels through declared fields, not folder
+placement. If a place is home to a kind of being, say so with
+`nativeBeings: [kinds/urouthi]` — not by nesting the being under
+the place or vice versa.
+
 - **New worldbuilding entity** → `content/<...collection-path>/<slug>/index.{yaml,md}`
   (plus any companion files — images, attachments — in the same folder).
   The entity's `kind:` field must match a kind registered in
