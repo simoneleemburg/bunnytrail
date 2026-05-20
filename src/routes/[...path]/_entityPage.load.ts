@@ -187,7 +187,12 @@ export function loadEntityPage(entity: Entity) {
 			title: c.title,
 			href: `/${entity.id}/chapters/${c.slug}`
 		})),
-		book: entity.book
+		book: entity.book,
+		// Sub-page href for the author's-room companion document,
+		// when one exists. The entity page surfaces it as a small
+		// link at the foot of the prose; absent when the entity has
+		// no `craft.md`.
+		craftHref: entity.craft !== null ? `/${entity.id}/craft` : null
 	};
 }
 

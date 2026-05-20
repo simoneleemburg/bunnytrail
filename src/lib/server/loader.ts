@@ -361,6 +361,15 @@ async function walk(args: WalkArgs): Promise<void> {
 		const kindLinksFromChapters = chapters.flatMap((c) => extractKindLinks(c.body));
 		const mergedKindLinks = [...new Set([...kindLinksFromBody, ...kindLinksFromChapters])];
 
+		// Optional sibling `craft.md` — author's-room companion. Read
+		// raw and stash on the entity; deliberately *don't* merge any
+		// wikilinks or kind-links it contains into the entity's graph
+		// edges. Craft notes are about how the entity is written, not
+		// what's true in-world; conflating them would corrupt
+		// backlinks.
+		const craftMdPath = join(absDir, 'craft.md');
+		const craft = (await exists(craftMdPath)) ? await readFile(craftMdPath, 'utf8') : null;
+
 		if (meta) {
 			entities.set(id, {
 				id,
@@ -376,7 +385,8 @@ async function walk(args: WalkArgs): Promise<void> {
 				parent: args.parentEntity,
 				children: [],
 				chapters,
-				book: chapters.length > 0 ? resolveBookMeta(meta.book) : null
+				book: chapters.length > 0 ? resolveBookMeta(meta.book) : null,
+				craft
 			});
 		}
 

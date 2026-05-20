@@ -401,6 +401,23 @@ export interface Entity {
 	 * `unitPlural` are always set when `book` is non-null.
 	 */
 	book: ResolvedBookMeta | null;
+	/**
+	 * Optional sibling `craft.md` body — an author's-room companion
+	 * document for the entity. Held alongside in-world prose without
+	 * being part of it: characters' inner architecture, voice
+	 * samples, manipulation registers — material that informs how an
+	 * entity is written but is not what an in-world observer would
+	 * record. Surfaces as a separate sub-page on the entity.
+	 *
+	 * Wikilinks and kind-links inside the craft body are *not*
+	 * merged into the entity's `wikilinks` / `kindLinks`: craft
+	 * notes are deliberately excluded from the canonical
+	 * cross-reference graph so backlinks reflect what's true
+	 * in-world, not what the author has been thinking about.
+	 *
+	 * `null` when no `craft.md` exists.
+	 */
+	craft: string | null;
 }
 
 /**

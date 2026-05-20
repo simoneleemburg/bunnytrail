@@ -3,6 +3,7 @@
 	import CollectionPage from './_CollectionPage.svelte';
 	import EntityPage from './_EntityPage.svelte';
 	import ChapterPage from './_ChapterPage.svelte';
+	import CraftPage from './_CraftPage.svelte';
 
 	let { data }: { data: PageData } = $props();
 </script>
@@ -11,6 +12,8 @@
 	<CollectionPage {data} />
 {:else if data.kind === 'chapter'}
 	<ChapterPage {data} />
+{:else if data.kind === 'craft'}
+	<CraftPage {data} />
 {:else}
 	<EntityPage {data} />
 {/if}

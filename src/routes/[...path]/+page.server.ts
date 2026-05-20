@@ -3,16 +3,19 @@ import { graph } from '$lib/server/graph';
 import { loadEntityPage } from './_entityPage.load';
 import { loadAggregateShelfPage, loadCollectionPage } from './_collectionPage.load';
 import { loadChapterPage } from './_chapterPage.load';
+import { loadCraftPage } from './_craftPage.load';
 
 /**
  * Unified route for everything that lives inside the worldbuilding
  * graph. The `[...path]` rest-segment captures a full entity id, a
- * folder path, or a book-mode chapter path. We resolve it against
- * the graph and dispatch:
+ * folder path, or an entity sub-page. We resolve it against the
+ * graph and dispatch:
  *
  *   - path matches a known *entity* id     → entity page
  *   - path is `<entity-id>/chapters/<slug>`
  *     for a book-shaped entity              → chapter page
+ *   - path is `<entity-id>/craft`
+ *     for an entity with a craft sheet      → craft page
  *   - path is a *browseable folder* (has
  *     a `_collection.yaml` or descendant
  *     entities)                             → collection page
@@ -41,14 +44,25 @@ export async function load({ params }) {
 
 	// Chapter dispatch: split off a trailing `/chapters/<slug>` and
 	// see whether the prefix names a book-shaped entity.
-	const m = path.match(/^(.+)\/chapters\/([a-z0-9][a-z0-9-]*)$/);
-	if (m) {
-		const work = graph.get(m[1]);
+	const chapterMatch = path.match(/^(.+)\/chapters\/([a-z0-9][a-z0-9-]*)$/);
+	if (chapterMatch) {
+		const work = graph.get(chapterMatch[1]);
 		if (work && work.chapters.length > 0) {
-			const chapter = work.chapters.find((c) => c.slug === m[2]);
+			const chapter = work.chapters.find((c) => c.slug === chapterMatch[2]);
 			if (chapter) {
 				return { kind: 'chapter' as const, ...loadChapterPage(work, chapter) };
 			}
+		}
+	}
+
+	// Craft sub-page dispatch: `<entity-id>/craft` for any entity
+	// that has a sibling `craft.md`. Surfaces author's-room
+	// companion material.
+	const craftMatch = path.match(/^(.+)\/craft$/);
+	if (craftMatch) {
+		const subject = graph.get(craftMatch[1]);
+		if (subject && subject.craft !== null) {
+			return { kind: 'craft' as const, ...loadCraftPage(subject) };
 		}
 	}
 

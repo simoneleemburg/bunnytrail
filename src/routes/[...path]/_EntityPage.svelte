@@ -229,6 +229,19 @@
 		</div>
 
 		<aside class="sidebar">
+			{#if data.craftHref}
+				<!-- Sub-page link to the author's-room companion
+				     document. Lives in the sidebar (alongside the
+				     property list, kind refs, and relations) rather
+				     than the prose flow, so it reads as one of the
+				     entity's structural facets — a separate document
+				     about this subject — instead of being mistaken
+				     for an in-world section heading. -->
+				<section class="craft-link" aria-label="Author's notes">
+					<a href={data.craftHref}>Craft sheet →</a>
+				</section>
+			{/if}
+
 			{#if data.extra.length > 0}
 				<section>
 					<PropertyList items={data.extra} />
@@ -640,5 +653,19 @@
 		font-family: var(--font-display);
 		font-size: var(--text-base);
 		color: var(--ink);
+	}
+
+	/* Sidebar link to the entity's craft sub-page. Quiet by
+	   design: a single line in the same register as the other
+	   sidebar metadata (small, soft ink) so it doesn't compete
+	   with the in-world content for attention. */
+	.craft-link a {
+		font-size: var(--text-sm);
+		color: var(--ink-soft);
+		text-decoration: none;
+	}
+
+	.craft-link a:hover {
+		color: var(--accent);
 	}
 </style>
