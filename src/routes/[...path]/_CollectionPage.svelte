@@ -224,54 +224,19 @@
 	// and displayed tags all follow the active kind + tag filters: a
 	// subcollection with zero matching entities is hidden entirely.
 	//
-	// `kindCounts` and `tagsByKind` on each subcollection are keyed by
-	// *direct* kind values only. When the active filter is a supertype
-	// (e.g. `place`, `celestial-body`), we roll up by summing across
-	// every descendant kind in the kind tree, so picking the supertype
-	// `celestial-body` correctly aggregates `planet`, `moon`, `star`,
-	// `black-hole`. Without this roll-up, supertype filters would
-	// always read as zero matches and hide every tile.
+	// `sub.kindCounts` and `sub.tagsByKind` arrive pre-rolled by the loader:
+	// every supertype in the kind tree carries the total of itself plus
+	// every descendant. So picking the supertype `celestial-body` reads
+	// the correct aggregate count directly, no client-side walking needed.
 	const visibleSubcollections = $derived.by(() => {
 		if (viewMode !== 'nested') return [];
-
-		// The set of direct kinds that the active filter selects:
-		// the kind itself plus every descendant. For a free-form kind
-		// not in the registry, this is just the singleton.
-		const matchingKinds =
-			activeKind === null
-				? null
-				: kindTree.has(activeKind)
-					? kindTree.descendantsInclusive(activeKind)
-					: new Set([activeKind]);
-
 		return data.subcollections
 			.map((sub) => {
-				const visibleCount =
-					matchingKinds === null
-						? sub.count
-						: [...matchingKinds].reduce(
-								(acc, k) => acc + (sub.kindCounts[k] ?? 0),
-								0
-							);
-
-				// Aggregate the displayable tag list across every
-				// matching direct kind. Sum tag counts so the most
-				// common tag under the active filter sorts first.
-				let baseTags: { label: string; count: number }[];
-				if (matchingKinds === null) {
-					baseTags = sub.tags;
-				} else {
-					const merged = new Map<string, number>();
-					for (const k of matchingKinds) {
-						for (const t of sub.tagsByKind[k] ?? []) {
-							merged.set(t.label, (merged.get(t.label) ?? 0) + t.count);
-						}
-					}
-					baseTags = [...merged.entries()]
-						.map(([label, count]) => ({ label, count }))
-						.sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
-				}
-
+				// Re-derive count + tag list under the current filters.
+				// Kind narrows first; tag narrows the count further by
+				// requiring every active tag to appear under that kind.
+				const baseTags = activeKind === null ? sub.tags : (sub.tagsByKind[activeKind] ?? []);
+				const visibleCount = activeKind === null ? sub.count : (sub.kindCounts[activeKind] ?? 0);
 				let filteredCount = visibleCount;
 				let displayTags = baseTags;
 				if (activeTags.size > 0) {

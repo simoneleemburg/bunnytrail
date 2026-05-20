@@ -1,6 +1,76 @@
 import { graph } from '$lib/server/graph';
 import { makeCollectionResolver, renderBody, renderSummary } from '$lib/server/markdown';
-import type { Entity, EntityId } from '$lib/types';
+import { buildKindTree, type Entity, type EntityId, type KindTree } from '$lib/types';
+
+/**
+ * Per-subcollection kind/tag counts, rolled up so that every supertype
+ * in the kind tree reports the total of itself plus every descendant.
+ *
+ * The page-level chip row already walks ancestors when computing visible
+ * chips, but subcollection tiles used to key off raw `kindCounts[k]` and
+ * `tagsByKind[k]`, which only contained *direct* kind values. Filtering
+ * by a supertype (e.g. `place`, `celestial-body`) therefore read as zero
+ * matches and hid every tile. Doing the roll-up here keeps the client
+ * dumb: every chip the user might pick — leaf or supertype — has a
+ * pre-computed entry.
+ *
+ * `kindCounts` after roll-up: `kind -> total entities whose declared
+ *   kind is `kind` or any descendant of it`.
+ * `tagsByKind` after roll-up: `kind -> ranked tags across the same set`.
+ */
+function buildSubcollectionEntry(path: string, tree: KindTree) {
+	const subEntities = graph.byFolderRecursive(path);
+	const labels = graph.folderLabels(path);
+	const description = graph.collection(path)?.meta.description ?? null;
+
+	const kindCounts: Record<string, number> = {};
+	const tagCounts = new Map<string, number>();
+	const tagsByKind: Record<string, Map<string, number>> = {};
+
+	for (const e of subEntities) {
+		const direct = typeof e.meta.kind === 'string' ? e.meta.kind : '—';
+		// Keys this entity contributes to: the direct kind plus every
+		// ancestor in the kind tree. Free-form kinds (not registered)
+		// contribute to themselves only.
+		const kindKeys = tree.has(direct) ? [direct, ...tree.ancestors(direct)] : [direct];
+		for (const k of kindKeys) {
+			kindCounts[k] = (kindCounts[k] ?? 0) + 1;
+			const kindTagMap = (tagsByKind[k] ??= new Map<string, number>());
+			for (const t of e.meta.tags ?? []) {
+				kindTagMap.set(t, (kindTagMap.get(t) ?? 0) + 1);
+			}
+		}
+		// Page-level tag list is independent of kind, so count once.
+		for (const t of e.meta.tags ?? []) {
+			tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
+		}
+	}
+
+	return {
+		type: path,
+		plural: labels.plural,
+		description,
+		count: subEntities.length,
+		kindCounts,
+		tags: rankTags(tagCounts),
+		tagsByKind: Object.fromEntries(
+			Object.entries(tagsByKind).map(([k, m]) => [k, rankTags(m)])
+		)
+	};
+}
+
+/**
+ * Build a `KindTree` from the server-side kind registry. The registry
+ * is the single source of truth for kind parentage; this just adapts
+ * it to the shape `buildKindTree` expects.
+ */
+function buildLoaderKindTree(): KindTree {
+	const declarations = new Map<string, string | null>();
+	for (const k of graph.kindRegistry().values()) {
+		declarations.set(k.id, k.parent);
+	}
+	return buildKindTree(declarations);
+}
 
 type Card = ReturnType<typeof toCard>;
 export type ContainerNode = { container: Card; children: ContainerNode[] };
@@ -78,34 +148,10 @@ export function loadCollectionPage(path: string) {
 
 	// Child folders → "subcollection" tiles. The same wire shape the page
 	// has always used, so the existing view renders unchanged.
+	const kindTree = buildLoaderKindTree();
 	const childPaths = graph.childFolders(path);
 	const subcollections = childPaths
-		.map((sub) => {
-			const subEntities = graph.byFolderRecursive(sub);
-			const subLabels = graph.folderLabels(sub);
-			const subDescription = graph.collection(sub)?.meta.description ?? null;
-			const kindCounts: Record<string, number> = {};
-			const tagCounts = new Map<string, number>();
-			const tagsByKind: Record<string, Map<string, number>> = {};
-			for (const e of subEntities) {
-				const k = typeof e.meta.kind === 'string' ? e.meta.kind : '—';
-				kindCounts[k] = (kindCounts[k] ?? 0) + 1;
-				const kindMap = (tagsByKind[k] ??= new Map<string, number>());
-				for (const t of e.meta.tags ?? []) {
-					tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
-					kindMap.set(t, (kindMap.get(t) ?? 0) + 1);
-				}
-			}
-			return {
-				type: sub,
-				plural: subLabels.plural,
-				description: subDescription,
-				count: subEntities.length,
-				kindCounts,
-				tags: rankTags(tagCounts),
-				tagsByKind: Object.fromEntries(Object.entries(tagsByKind).map(([k, m]) => [k, rankTags(m)]))
-			};
-		})
+		.map((sub) => buildSubcollectionEntry(sub, kindTree))
 		.sort((a, b) => a.plural.localeCompare(b.plural));
 
 	// Cards for direct entities, retaining their bucket for folder
@@ -313,35 +359,11 @@ export function loadEverythingIndex() {
 	const cardSummaryHtml = (s: string | null | undefined) =>
 		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;
 
+	const kindTree = buildLoaderKindTree();
 	const topPaths = graph.topLevelFolders();
 	const subcollections = topPaths
 		.filter((p) => graph.byFolderRecursive(p).length > 0)
-		.map((p) => {
-			const subEntities = graph.byFolderRecursive(p);
-			const labels = graph.folderLabels(p);
-			const desc = graph.collection(p)?.meta.description ?? null;
-			const kindCounts: Record<string, number> = {};
-			const tagCounts = new Map<string, number>();
-			const tagsByKind: Record<string, Map<string, number>> = {};
-			for (const e of subEntities) {
-				const k = typeof e.meta.kind === 'string' ? e.meta.kind : '—';
-				kindCounts[k] = (kindCounts[k] ?? 0) + 1;
-				const kindMap = (tagsByKind[k] ??= new Map<string, number>());
-				for (const tag of e.meta.tags ?? []) {
-					tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
-					kindMap.set(tag, (kindMap.get(tag) ?? 0) + 1);
-				}
-			}
-			return {
-				type: p,
-				plural: labels.plural,
-				description: desc,
-				count: subEntities.length,
-				kindCounts,
-				tags: rankTags(tagCounts),
-				tagsByKind: Object.fromEntries(Object.entries(tagsByKind).map(([k, m]) => [k, rankTags(m)]))
-			};
-		})
+		.map((p) => buildSubcollectionEntry(p, kindTree))
 		.sort((a, b) => a.plural.localeCompare(b.plural));
 
 	const allCards = graph
