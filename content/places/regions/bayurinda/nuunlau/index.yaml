@@ -4,6 +4,7 @@ language: bay
 summary: The deep-water region of [[bayurinda|Bayurinda]] — the long, lightless reaches beyond the archipelago's working shallows. Home of the [[culture/languages/deep-speech|Nuunlaumud]], the seafloor people who steward the inscriptions of the lost surface civilisation. Bayurindan distinguishes _Nuunlau_ from the shallows as a different kind of place, not merely deeper water.
 aliases: [the Deep]
 tags: [ocean, deep-water, inscriptions, custodians]
+nativeBeings: [kinds/urouthi]
 relations:
   - kind: region-of
     target: places/celestial-bodies/planets/bayurinda
