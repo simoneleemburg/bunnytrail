@@ -227,6 +227,36 @@ class Graph {
 		return out;
 	}
 
+	/**
+	 * Entities that reference `kindId` from a structured YAML
+	 * kind-link field (e.g. `nativeBeings: [kinds/human]`), grouped
+	 * by which field carries the reference. Returned shape mirrors
+	 * `kindBacklinks` but with the field provenance attached so the
+	 * UI can label each section ("Native to", etc.).
+	 *
+	 * One entity may appear under multiple fields — e.g. a place
+	 * declaring both `nativeBeings: [kinds/human]` and
+	 * `nativePhenomena: [kinds/binding]` would show up under both
+	 * `nativeBeings` (on /kinds/human) and `nativePhenomena` (on
+	 * /kinds/binding). On a single /kinds/<id> page, however, the
+	 * groups partition the references.
+	 */
+	entitiesReferencingKind(kindId: string): Map<string, Entity[]> {
+		const byField = new Map<string, Entity[]>();
+		for (const e of this.#entities.values()) {
+			for (const [field, ids] of Object.entries(e.kindRefs)) {
+				if (!ids.includes(kindId)) continue;
+				const arr = byField.get(field) ?? [];
+				arr.push(e);
+				byField.set(field, arr);
+			}
+		}
+		for (const arr of byField.values()) {
+			arr.sort((a, b) => a.meta.name.localeCompare(b.meta.name));
+		}
+		return byField;
+	}
+
 	/** Direct children of a registered kind in the registry tree. */
 	childKinds(parent: string): Kind[] {
 		const out: Kind[] = [];

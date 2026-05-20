@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { buildKindTree } from '$lib/types';
-import { buildEdges, extractKindLinks, extractWikilinks, loadAll } from './loader';
+import { buildEdges, extractKindLinks, extractKindRefs, extractWikilinks, loadAll } from './loader';
 
 /**
  * Most loader tests use a tiny in-memory kind registry so kind
@@ -114,10 +114,7 @@ async function seedNestedContent(): Promise<string> {
 	);
 
 	await mkdir(join(dir, 'places', 'bayurinda', 'sharazan'), { recursive: true });
-	await writeFile(
-		join(dir, 'places', 'bayurinda', 'index.yaml'),
-		'name: Bayurinda\nkind: planet'
-	);
+	await writeFile(join(dir, 'places', 'bayurinda', 'index.yaml'), 'name: Bayurinda\nkind: planet');
 	await writeFile(join(dir, 'places', 'bayurinda', 'index.md'), 'The water-world.');
 	await writeFile(
 		join(dir, 'places', 'bayurinda', 'sharazan', 'index.yaml'),
@@ -171,6 +168,57 @@ describe('extractKindLinks', () => {
 	it('ignores a bare [[kinds]] with no id', () => {
 		// `[[kinds]]` doesn't match the `kinds/<id>` prefix.
 		expect(extractKindLinks('Just [[kinds]] here.')).toEqual([]);
+	});
+});
+
+describe('extractKindRefs', () => {
+	it('picks fields whose values are all `kinds/<id>` strings', () => {
+		const refs = extractKindRefs({
+			name: 'Bayurinda',
+			nativeBeings: ['kinds/human', 'kinds/serpent-humanoid'],
+			tags: ['asthera', 'ocean']
+		});
+		expect(refs).toEqual({ nativeBeings: ['human', 'serpent-humanoid'] });
+	});
+
+	it('handles multiple kind-link fields on one entity', () => {
+		const refs = extractKindRefs({
+			nativeBeings: ['kinds/human'],
+			nativePhenomena: ['kinds/binding', 'kinds/nearing']
+		});
+		expect(refs).toEqual({
+			nativeBeings: ['human'],
+			nativePhenomena: ['binding', 'nearing']
+		});
+	});
+
+	it('rejects mixed lists strictly (one non-kinds entry disqualifies the field)', () => {
+		// Strict separation: a list must be entirely `kinds/<id>` to
+		// qualify. `tags: [kinds/human, asthera]` stays plain.
+		const refs = extractKindRefs({
+			tags: ['kinds/human', 'asthera']
+		});
+		expect(refs).toEqual({});
+	});
+
+	it('ignores non-list values, empty lists, and non-string entries', () => {
+		expect(
+			extractKindRefs({
+				language: 'kinds/human', // scalar string, not a list
+				nothing: [],
+				bad: [{ kind: 'kinds/human' }]
+			})
+		).toEqual({});
+	});
+
+	it('rejects empty `kinds/` ids', () => {
+		expect(extractKindRefs({ nativeBeings: ['kinds/'] })).toEqual({});
+	});
+
+	it('returns {} for non-object inputs', () => {
+		expect(extractKindRefs(null)).toEqual({});
+		expect(extractKindRefs('hello')).toEqual({});
+		expect(extractKindRefs(undefined)).toEqual({});
 	});
 });
 

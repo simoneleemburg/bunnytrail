@@ -328,6 +328,17 @@ export interface Entity {
 	 * section on `/kinds/<id>` pages.
 	 */
 	kindLinks: string[];
+	/**
+	 * Structured kind references declared in YAML. The key is the
+	 * field name on `meta` (e.g. `nativeBeings`); the value is the
+	 * list of resolved kind ids that field pointed at via
+	 * `kinds/<id>` strings. Only registered kinds appear here;
+	 * unresolved ones surface as `broken-link` health issues.
+	 *
+	 * The raw `meta[field]` is left untouched so diagnostics still
+	 * see what the author wrote.
+	 */
+	kindRefs: Record<string, string[]>;
 	/** Absolute path to the YAML file on disk (for diagnostics). */
 	yamlPath: string;
 	/** Absolute path to the MD file on disk (for diagnostics). */

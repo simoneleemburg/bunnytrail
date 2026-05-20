@@ -32,7 +32,8 @@ export const CONTENT_DIR = process.env.ALTERIA_CONTENT_DIR ?? resolve(process.cw
 // into wikilink resolution. Bare lang-code matches (e.g. `[[ot]]`)
 // are also caught by this regex — the consumer filters those out
 // by checking against the language-code set before resolving.
-const WIKILINK_RE = /\[\[([a-z][a-z0-9-]*(?:\/[a-z0-9-]+)*)(?:#[a-z0-9][a-z0-9-]*)?(?:\|[^\]]+)?\]\]/g;
+const WIKILINK_RE =
+	/\[\[([a-z][a-z0-9-]*(?:\/[a-z0-9-]+)*)(?:#[a-z0-9][a-z0-9-]*)?(?:\|[^\]]+)?\]\]/g;
 
 export interface LoadResult {
 	entities: Map<EntityId, Entity>;
@@ -192,6 +193,31 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 		entity.kindLinks = resolved;
 	}
 
+	// Validate structured kind-references declared in YAML (e.g.
+	// `nativeBeings: [kinds/human]`). Same lenient treatment as
+	// prose kind-wikilinks: unregistered ids emit a broken-link
+	// issue and are dropped from `entity.kindRefs`, so the graph
+	// only indexes resolved references.
+	for (const entity of entities.values()) {
+		const resolvedRefs: Record<string, string[]> = {};
+		for (const [field, ids] of Object.entries(entity.kindRefs)) {
+			const keep: string[] = [];
+			for (const id of ids) {
+				if (registryResult.kinds.has(id)) {
+					keep.push(id);
+				} else {
+					issues.push({
+						kind: 'broken-link',
+						entity: entity.id,
+						detail: `${field} → kinds/${id} (not found)`
+					});
+				}
+			}
+			if (keep.length > 0) resolvedRefs[field] = keep;
+		}
+		entity.kindRefs = resolvedRefs;
+	}
+
 	// Validate entity kinds against the registry. Lenient: every
 	// entity must declare a non-empty `kind`, and unregistered
 	// kinds emit a health-page warning but still load. Entities
@@ -328,6 +354,7 @@ async function walk(args: WalkArgs): Promise<void> {
 				body,
 				wikilinks: extractWikilinks(body),
 				kindLinks: extractKindLinks(body),
+				kindRefs: extractKindRefs(meta),
 				yamlPath: indexYamlPath,
 				mdPath: indexMdPath,
 				parent: args.parentEntity,
@@ -394,6 +421,44 @@ export function extractKindLinks(body: string): string[] {
 		if (id) out.add(id);
 	}
 	return [...out];
+}
+
+/**
+ * Inspect a parsed YAML `meta` object and pick out fields whose
+ * value is a non-empty list of strings, every entry beginning with
+ * `kinds/`. Each such field is treated as a *kind-link list*: the
+ * trailing ids are extracted and returned, grouped by field name.
+ *
+ * The shape rule is deliberately strict — a mixed list like
+ * `[kinds/human, asthera]` does *not* qualify, so authors get a
+ * clean separation between kind-references and other tokens. New
+ * field names cost zero code: any `<fieldName>: [kinds/<id>, …]`
+ * automatically participates.
+ *
+ * Returns `{}` if no field qualifies. Does not touch `meta`.
+ */
+export function extractKindRefs(meta: unknown): Record<string, string[]> {
+	const out: Record<string, string[]> = {};
+	if (!meta || typeof meta !== 'object') return out;
+	for (const [field, value] of Object.entries(meta as Record<string, unknown>)) {
+		if (!Array.isArray(value) || value.length === 0) continue;
+		const ids: string[] = [];
+		let qualifies = true;
+		for (const v of value) {
+			if (typeof v !== 'string' || !v.startsWith('kinds/')) {
+				qualifies = false;
+				break;
+			}
+			const id = v.slice('kinds/'.length);
+			if (!id) {
+				qualifies = false;
+				break;
+			}
+			ids.push(id);
+		}
+		if (qualifies) out[field] = ids;
+	}
+	return out;
 }
 
 /**
