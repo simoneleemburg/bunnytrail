@@ -1,8 +1,0 @@
-name: Nguwari
-kind: nguwari
-language: bay
-summary: An amphibious, serpentine-bodied people native to Bayurinda — civilisation-scale threshold dwellers at the half-tide line, the seam between the upper world and Nuunlau. They share habitat with humans across the archipelago, leaning toward the tidal cave systems where the line between sea and stone is widest. The name is Bayurindan and glosses as "border swimmers."
-tags: [asthera, bayurinda, threshold, half-tide, amphibious, gap-noted]
-relations:
-  - kind: native-to
-    target: places/celestial-bodies/planets/bayurinda
