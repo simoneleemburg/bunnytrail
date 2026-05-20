@@ -3,11 +3,6 @@ Ngonawan Ilyardi [[bay]] is the serving Oracle of Interpretation within the
 [[culture/knights-of-bellona|Knights of Bellona]], also known as the
 Sacred Serpent of Resonance.
 
-He belongs to the [[kinds/nguwari|Nguwari]] — the rare amphibious,
-serpentine-bodied people of [[bayurinda|Bayurinda]], threshold
-dwellers at the half-tide line between the upper world and
-[[nuunlau|Nuunlau]].
-
 ## In the Triad
 
 Ngonawan hears the resonance. He perceives Naretic signal in fine
