@@ -14,7 +14,7 @@ not much inclined to soften herself for the comfort of others.
 
 Mila does not pilot a [[culture/eidolon-knight|chosen Eidolon]]
 in the order's preferred sense. The
-[[eidolons|Eidolon]] she currently pilots is the one
+[[kinds/eidolon|Eidolon]] she currently pilots is the one
 in which the [[kinds/naya|Naya]]
 [[characters/sudawaen-khiynuung|Sudawaen Khiynuung]] [[ot]] is
 [[binding|bound]].

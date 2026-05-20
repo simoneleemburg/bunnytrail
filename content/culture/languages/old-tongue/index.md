@@ -120,7 +120,7 @@ the reconstructed Old Tongue from the deep, slowly, by patient
 contact across the threshold between water and air; they shaped
 what the deep taught them into a form that surface mouths in
 surface conditions could hold; and when the
-[[eidolons/world-pillars|Pillars]] made travel between worlds
+[[kinds/world-pillar|Pillars]] made travel between worlds
 possible, they carried that form outward to the other Sister
 Worlds. Every speaker of the Old Tongue on Nebelheim or
 Sharazan owes the practice, ultimately, to a chain that runs

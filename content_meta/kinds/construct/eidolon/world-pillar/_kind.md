@@ -1,4 +1,4 @@
-World Pillars are colossal [[eidolons|Eidolon]]
+World Pillars are colossal [[kinds/eidolon|Eidolon]]
 constructs partially fused into the planets they serve.
 Stone, metal, and root-bound matter braided into vast immovable
 forms, each cored in [[materials/skyblood|Skyblood]] on a scale

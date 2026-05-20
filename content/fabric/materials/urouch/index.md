@@ -61,7 +61,7 @@ moves _vessels_ of some kind through the deep — long-range
 craft, large enough to be called _motherships_ in the few
 surface translations available. Whether the surface accounts of
 these vessels are accurate, and how they relate (if at all) to
-the [[eidolons/world-pillars|World Pillars]] as the canonical
+the [[kinds/world-pillar|World Pillars]] as the canonical
 means of crossing between worlds, the surface does not yet have
 clear word on.
 

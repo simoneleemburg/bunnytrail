@@ -2,7 +2,7 @@ Travel between worlds in Alteria is two
 [[nearing|Nearings]] stacked.
 
 Any [[culture/eidolon-knight|Knight]] piloting an
-[[eidolons|Eidolon]] is already Nearing — sustaining
+[[kinds/eidolon|Eidolon]] is already Nearing — sustaining
 working contact with the [[kinds/naya|Naya]]
 [[binding|bound]] in the vessel. That is what
 piloting is. To cross between worlds, the Knight must Near
@@ -12,7 +12,7 @@ first Nearing is what makes the Eidolon move. The second is
 what makes the journey possible.
 
 The pilot has been thrown from their home world by a
-[[eidolons/world-pillars|World Pillar]]. What they do between
+[[kinds/world-pillar|World Pillar]]. What they do between
 launch and arrival is the practice this entry describes.
 
 ## Nearing the distance

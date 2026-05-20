@@ -14,7 +14,7 @@ have shaped both what it is and how it is known.
 ## The pillars and the routes outward
 
 Of all the regions of Nebelheim, Tholingia carries the most
-[[eidolons/world-pillars|World Pillars]] — how many is not a
+[[kinds/world-pillar|World Pillars]] — how many is not a
 fixed number, and what counts as "a Pillar" admits of some
 institutional argument, but the concentration is real and
 known, and it is the structural reason for Tholingia's place

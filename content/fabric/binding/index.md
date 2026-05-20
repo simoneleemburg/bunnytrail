@@ -1,5 +1,5 @@
 Binding is the pact by which a [[kinds/naya|Naya]] is seated
-into an [[eidolons|Eidolon]] — bound, in the strict
+into an [[kinds/eidolon|Eidolon]] — bound, in the strict
 sense, to the physical world by way of a vessel that can hold
 it. A Naya, in itself, is a being of
 [[realms/nareth|Nareth]]. It has no native foothold in

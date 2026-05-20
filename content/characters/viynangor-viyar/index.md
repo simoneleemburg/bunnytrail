@@ -32,7 +32,7 @@ back.
 Whatever else Viynangor Viyar is, it is the kind of
 [[kinds/naya|Naya]] whose presence shows the
 [[culture/eidolon-knight|Knight]] piloting its
-[[eidolons|Eidolon]] what they actually are. Not what
+[[kinds/eidolon|Eidolon]] what they actually are. Not what
 they wish to be. Not what they fear. What they are.
 
 This makes the pairing distinctive in a way the worlds describe

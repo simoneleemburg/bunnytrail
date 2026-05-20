@@ -1,5 +1,5 @@
 An Eidolon Knight is a human who pilots an
-[[eidolons|Eidolon]] — a vessel into which a
+[[kinds/eidolon|Eidolon]] — a vessel into which a
 [[kinds/naya|Naya]] has been [[binding|bound]]. The
 Knight is not party to the binding. The binding is between the
 Naya and the vessel; the Knight is the pilot the vessel works
@@ -202,7 +202,7 @@ change.
 Knighthood is the work of the Knights of Bellona, and has been
 for as long as the order has had Knights to send. The "old
 knight roads" of [[sharazan|Sharazan]] — ancient routes
-that intersect with [[eidolons/world-pillars|World Pillar]]
+that intersect with [[kinds/world-pillar|World Pillar]]
 paths and atmospheric travel currents — are part of the long
 material record of the order's interplanetary reach. Whether
 the role existed in some other form before the order took its

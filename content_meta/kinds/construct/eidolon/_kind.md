@@ -52,7 +52,7 @@ In use — that is, when piloted — an Eidolon can:
 - travel between worlds, through the practice of
   [[eidolon-starfaring|eidolon starfaring]] and
   the launch infrastructure of the
-  [[eidolons/world-pillars|World Pillars]]
+  [[kinds/world-pillar|World Pillars]]
 
 Use carries cost. Even successful piloting leaves the
 [[culture/eidolon-knight|Knight]] under physical and

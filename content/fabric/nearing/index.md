@@ -42,7 +42,7 @@ The major recognised purposes:
 - To **answer**: to respond when a [[kinds/naya|Naya]] reaches
   across from the other side and the situation requires a reply.
 - To **pilot**: to sustain working contact with a Naya bound
-  into an [[eidolons|Eidolon]], allowing the Knight to
+  into an [[kinds/eidolon|Eidolon]], allowing the Knight to
   move with the vessel rather than against it. The
   [[culture/eidolon-knight|Eidolon Knight]]'s entire practice
   rests on this.
@@ -54,7 +54,7 @@ The major recognised purposes:
   Nareth by past events of sufficient intensity.
 
 Nearing is especially associated with oracles, experienced
-[[eidolons|Eidolon]] pilots, Bayurindan mystics,
+[[kinds/eidolon|Eidolon]] pilots, Bayurindan mystics,
 [[kinds/urouthi|Urouthi]] practitioners, and long-distance
 starfarers — though the practice itself is older and more
 diffuse than any of these traditions.
@@ -130,7 +130,7 @@ the same way twice.
 
 The technique requires enough initial velocity that the pilot
 does not stall — which is what the
-[[eidolons/world-pillars|World Pillars]] exist for,
+[[kinds/world-pillar|World Pillars]] exist for,
 slingshotting Eidolons up and outward fast enough that the
 drift can begin safely. Navigation is hazardous. A pilot who
 drifts too deeply may lose direction, emerge far from their
@@ -195,7 +195,7 @@ Most people cannot remain Near without eventually losing
 coherence. Emotions bleed into one another. Memories become
 difficult to separate from visions. Identity erodes beneath the
 pressure of resonance. The recognised failure modes mirror the
-failure modes of piloting an [[eidolons|Eidolon]]:
+failure modes of piloting an [[kinds/eidolon|Eidolon]]:
 dissolving into the resonance, distortion of the inner form,
 and the collapse of coherent selfhood.
 

@@ -26,7 +26,7 @@ Skyblood does three related things:
   [[kinds/naya|Naya]] — the pact at the core of the cosmology's
   meaningful encounters.
 - It **anchors identity** during the merging at the heart of an
-  [[eidolons|Eidolon]], holding the human self coherent
+  [[kinds/eidolon|Eidolon]], holding the human self coherent
   while it shares form with a Naya.
 - It **powers and regulates** Eidolons themselves: every Eidolon
   has a Skyblood core, without which it is inert material.

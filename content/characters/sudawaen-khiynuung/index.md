@@ -41,6 +41,6 @@ unready pilot, and the worlds do not speak of it lightly.
 ## Status
 
 Sudawaen Khiynuung is [[binding|bound]] in an
-[[eidolons|Eidolon]] currently piloted by the
+[[kinds/eidolon|Eidolon]] currently piloted by the
 [[culture/eidolon-knight|Knight]]
 [[characters/mila|Mila]].

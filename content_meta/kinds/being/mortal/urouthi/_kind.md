@@ -130,7 +130,7 @@ makes available, and routinely walked.
 This is Urouthi Nearing. It looks nothing like the
 [[culture/knights-of-bellona|Knights of Bellona]]'s practice —
 there is no [[materials/skyblood|Skyblood]] stabilisation, no
-order's structures, no chosen [[eidolons|Eidolon]], no
+order's structures, no chosen [[kinds/eidolon|Eidolon]], no
 ritual cohort in the order's sense. There is the radiance, the
 body, the long inherited practice of going to the older things
 and coming back. The safety architecture is the Urouthi form

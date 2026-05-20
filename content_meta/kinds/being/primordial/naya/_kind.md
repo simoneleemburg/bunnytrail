@@ -30,7 +30,7 @@ of self.
 ## Binding
 
 The Naya enter the physical world by being
-[[binding|bound]] into an [[eidolons|Eidolon]]
+[[binding|bound]] into an [[kinds/eidolon|Eidolon]]
 — a constructed vessel built for them. Binding is the pact
 between the Naya and the vessel: one Naya, one Eidolon,
 durable. Without such a binding, a Naya cannot persist in

@@ -15,7 +15,7 @@ The order nearly did not take her.
 
 Knighthood is sustained [[nearing|Nearing]] toward a
 [[kinds/naya|Naya]] [[binding|bound]] in an
-[[eidolons|Eidolon]], and the order screens
+[[kinds/eidolon|Eidolon]], and the order screens
 candidates for the adaptive identity that practice demands.
 Freya was, by every internal account, on the margin. The doubt
 the order's examiners recorded was not whether she was Nearborn

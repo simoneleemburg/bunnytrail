@@ -46,7 +46,7 @@ Uraya is one of the recognised exceptions in the cosmology.
 Almost every [[kinds/naya|Naya]] present in
 [[realms/asthera|Asthera]] is so through
 [[binding|binding]] — seated into an
-[[eidolons|Eidolon]] built for them. Uraya is not.
+[[kinds/eidolon|Eidolon]] built for them. Uraya is not.
 What sustains her in Asthera is the Triad: the continuous joint
 [[nearing|Nearing]] of the other two Oracles, held
 intact across centuries, giving her enough to be present

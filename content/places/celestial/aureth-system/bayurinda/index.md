@@ -173,7 +173,7 @@ like a tradition of contemplation than a discipline of mastery.
 
 In material terms, the order's interface with Bayurinda is the
 [[bayurinda-archipelago|archipelago]]: that is where the
-[[eidolons/world-pillars|World Pillars]] stand, where off-world
+[[kinds/world-pillar|World Pillars]] stand, where off-world
 Knights arrive, and where the diplomatic memory of contact with
 Cognita is kept. The contemplative tradition itself reaches the
 archipelago from below, by long instruction from the deep, and

@@ -60,7 +60,7 @@ absent, and the work breaks at that point and no further.
 [[characters/uraya-ur|Uraya]] is one of the recognised
 exceptions in the cosmology: a [[kinds/naya|Naya]] present in
 [[realms/asthera|Asthera]] without being
-[[binding|bound]] into an [[eidolons|Eidolon]].
+[[binding|bound]] into an [[kinds/eidolon|Eidolon]].
 
 Sustained presence in Asthera without binding is not how the
 cosmology ordinarily works. A Naya without a vessel cannot
