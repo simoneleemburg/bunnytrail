@@ -43,6 +43,7 @@
 				'occurred-on': 'Events',
 				'occurred-in': 'Events',
 				records: 'Recorded in',
+				'recorded-on': 'Account',
 				orbits: 'Moons'
 			};
 			if (inverse[kind]) return inverse[kind];
@@ -126,9 +127,25 @@
 			)
 		];
 
+		// Suppress wikilink edges that duplicate a typed relation
+		// between the same two entities. If there is *any* typed
+		// relation connecting this entity to Y (in either
+		// direction), the typed relation alone tells the story —
+		// the wikilink "Mentions" / "Mentioned by" groups would
+		// just repeat Y. The typed channel is the structured
+		// signal; wikilinks are the residual prose layer that
+		// hasn't (yet) been promoted to relations.
+		const typedPartners = new Set<string>();
+		for (const e of all) {
+			if (e.kind !== 'wikilink' && e.entity) typedPartners.add(e.entity.id);
+		}
+		const deduped = all.filter(
+			(e) => e.kind !== 'wikilink' || !e.entity || !typedPartners.has(e.entity.id)
+		);
+
 		type Group = { label: string; kind: string; items: EdgeWithEntity[] };
 		const groups = new Map<string, Group>();
-		for (const edge of all) {
+		for (const edge of deduped) {
 			const label = labelForKind(edge.kind, edge.direction);
 			const key = `${edge.direction}:${edge.kind}`;
 			if (!groups.has(key)) groups.set(key, { label, kind: edge.kind, items: [] });

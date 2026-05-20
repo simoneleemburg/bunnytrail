@@ -1,0 +1,6 @@
+name: The Bonedust Scrolls
+kind: record
+summary: Five fragments of vellum, recovered from a sealed candle-crypt beneath the ruins of the Temple of the Dawnborn in Solinthra. They bear Rathiel's account.
+book:
+  format: scrolls
+tags: [mythic-register]

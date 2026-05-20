@@ -1,0 +1,7 @@
+name: Rathiel's Account
+kind: account
+summary: Five questions, set down by Rathiel the hermit-priest — on truth, on power, on good and ill, on the nature of the gods, on the fall of Zhaor.
+relations:
+  - kind: recorded-on
+    target: artefacts/bonedust-scrolls
+tags: [mythic-register]
