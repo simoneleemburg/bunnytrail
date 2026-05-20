@@ -1,7 +1,6 @@
 name: The Bonedust Scrolls
 kind: account
-summary: A mythic telling of the world's history kept by the hermit-priest Rathiel.
-relations:
-  - kind: records
-    target: history/the-drowning
+summary: Five fragments by Rathiel the hermit-priest, asking after the gods, the world before, and how Zhaor fell.
+book:
+  format: scrolls
 tags: [mythic-register]

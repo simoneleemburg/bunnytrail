@@ -1,7 +1,8 @@
-The Bonedust Scrolls are a mythic telling of the world's history
-kept by the hermit-priest Rathiel.
+Found in a sealed candle-crypt beneath the ruins of the Temple of
+the Dawnborn in Solinthra. The hand is Rathiel's — once a
+hermit-priest of the Dawn, later a wanderer, by his own account
+walked far enough to lose the path he was raised in.
 
-What they hold, they hold in the [[history/mythic|Mythic]]
-register — the older kind of remembering, where the line
-between what was so and what is told is not the line a scholar
-would draw.
+What survives is five fragments. They are not sermons. They are
+the questions of a priest who could not stop asking, written for
+whoever might come after and ask them too.
