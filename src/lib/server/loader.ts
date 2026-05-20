@@ -172,6 +172,26 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 	const registryResult = await loadKindRegistry();
 	for (const issue of registryResult.issues) issues.push(issue);
 
+	// Validate `[[kinds/<id>]]` wikilinks against the registry.
+	// Unregistered kind targets get the same broken-link treatment
+	// as broken entity wikilinks. Resolved ids stay on
+	// `entity.kindLinks` so the graph can index backlinks.
+	for (const entity of entities.values()) {
+		const resolved: string[] = [];
+		for (const raw of entity.kindLinks) {
+			if (registryResult.kinds.has(raw)) {
+				resolved.push(raw);
+			} else {
+				issues.push({
+					kind: 'broken-link',
+					entity: entity.id,
+					detail: `wikilink → kinds/${raw} (not found)`
+				});
+			}
+		}
+		entity.kindLinks = resolved;
+	}
+
 	// Validate entity kinds against the registry. Lenient: every
 	// entity must declare a non-empty `kind`, and unregistered
 	// kinds emit a health-page warning but still load. Entities
@@ -307,6 +327,7 @@ async function walk(args: WalkArgs): Promise<void> {
 				meta,
 				body,
 				wikilinks: extractWikilinks(body),
+				kindLinks: extractKindLinks(body),
 				yamlPath: indexYamlPath,
 				mdPath: indexMdPath,
 				parent: args.parentEntity,
@@ -340,11 +361,37 @@ async function walk(args: WalkArgs): Promise<void> {
  * of any depth (e.g. `[[culture/languages/tholingian]]`). Returns
  * the *raw* paths as written; resolution to canonical ids is
  * performed separately (see `resolveWikilink`).
+ *
+ * `[[kinds/<id>]]` paths are deliberately excluded: those don't
+ * resolve to entities and have their own extractor
+ * (`extractKindLinks`) and index. Without this filter they would
+ * fall through to wikilink resolution and raise spurious
+ * broken-link warnings.
  */
 export function extractWikilinks(body: string): EntityId[] {
 	const out = new Set<EntityId>();
 	for (const m of body.matchAll(WIKILINK_RE)) {
-		out.add(m[1]);
+		const path = m[1];
+		if (path.startsWith('kinds/')) continue;
+		out.add(path);
+	}
+	return [...out];
+}
+
+/**
+ * Extract kind ids referenced from a markdown body via
+ * `[[kinds/<id>]]` wikilinks. Returns the raw kind ids (the part
+ * after `kinds/`); validation against the registry is performed
+ * separately so the body itself doesn't need to know which kinds
+ * are registered.
+ */
+export function extractKindLinks(body: string): string[] {
+	const out = new Set<string>();
+	for (const m of body.matchAll(WIKILINK_RE)) {
+		const path = m[1];
+		if (!path.startsWith('kinds/')) continue;
+		const id = path.slice('kinds/'.length);
+		if (id) out.add(id);
 	}
 	return [...out];
 }

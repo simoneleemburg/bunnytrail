@@ -14,8 +14,9 @@ export async function load({ params }) {
 
 	const resolveLink = (path: string) => graph.resolveLink(path);
 	const languageCodes = graph.languageCodes();
+	const kindIds = graph.kindIds();
 	const cardSummaryHtml = (s: string | null | undefined) =>
-		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true }) : null;
+		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;
 
 	// Group matches by type so the page reads like a /[type] listing
 	// repeated per type. Within each group, sort by name.

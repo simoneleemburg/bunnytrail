@@ -39,8 +39,9 @@ export async function load({ params }: { params: { kind: string } }) {
 
 	const resolveLink = (path: string) => graph.resolveLink(path);
 	const languageCodes = graph.languageCodes();
+	const kindIds = graph.kindIds();
 	const cardSummaryHtml = (s: string | null | undefined) =>
-		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true }) : null;
+		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;
 
 	const toCard = (e: Entity): KindCard => ({
 		id: e.id,
@@ -58,7 +59,7 @@ export async function load({ params }: { params: { kind: string } }) {
 	const plural = kind.meta.plural ?? `${singular}s`;
 
 	// Optional prose body (content_meta/kinds/<…>/<kindId>/_kind.md).
-	const bodyHtml = kind.body ? renderBody(kind.body, resolveLink, languageCodes) : null;
+	const bodyHtml = kind.body ? renderBody(kind.body, resolveLink, languageCodes, kindIds) : null;
 
 	// Direct entities: those whose meta.kind === this kind. Shown
 	// first, under a section labelled with the singular form.
@@ -109,6 +110,13 @@ export async function load({ params }: { params: { kind: string } }) {
 			}
 		: null;
 
+	// Entities that mention this kind in prose via a
+	// `[[kinds/<id>]]` wikilink. Distinct from "entities of this
+	// kind" (the direct/subkind sections above) — backlinks are
+	// the prose-level counterpart to entity backlinks elsewhere
+	// in the site.
+	const backlinks = graph.kindBacklinks(kindId).map(toCard);
+
 	return {
 		kindId,
 		singular,
@@ -118,7 +126,8 @@ export async function load({ params }: { params: { kind: string } }) {
 		parent,
 		directHeading: direct.length > 0 ? plural : null,
 		direct,
-		subkindSections
+		subkindSections,
+		backlinks
 	};
 }
 

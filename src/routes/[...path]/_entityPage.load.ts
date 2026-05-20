@@ -12,12 +12,13 @@ export function loadEntityPage(entity: Entity) {
 
 	const resolveLink = (path: string) => graph.resolveLink(path);
 	const languageCodes = graph.languageCodes();
-	const html = renderEntityBody(entity, resolveLink, languageCodes);
+	const kindIds = graph.kindIds();
+	const html = renderEntityBody(entity, resolveLink, languageCodes, kindIds);
 
 	const summaryHtml = (s: string | null | undefined) =>
-		s ? renderSummary(s, resolveLink, languageCodes) : null;
+		s ? renderSummary(s, resolveLink, languageCodes, { kindIds }) : null;
 	const cardSummaryHtml = (s: string | null | undefined) =>
-		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true }) : null;
+		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;
 
 	const langCode = typeof entity.meta.language === 'string' ? entity.meta.language : null;
 	const langTargetId = langCode ? languageCodes.get(langCode) : undefined;

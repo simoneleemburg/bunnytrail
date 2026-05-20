@@ -321,6 +321,13 @@ export interface Entity {
 	body: string;
 	/** Wikilink ids extracted from the body. */
 	wikilinks: EntityId[];
+	/**
+	 * Kind ids referenced from the body via `[[kinds/<id>]]` wikilinks.
+	 * Captured separately from `wikilinks` because they target the
+	 * registry, not the entity map. Used to build the backlinks
+	 * section on `/kinds/<id>` pages.
+	 */
+	kindLinks: string[];
 	/** Absolute path to the YAML file on disk (for diagnostics). */
 	yamlPath: string;
 	/** Absolute path to the MD file on disk (for diagnostics). */

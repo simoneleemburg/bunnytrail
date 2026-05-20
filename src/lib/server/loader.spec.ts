@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { buildKindTree } from '$lib/types';
-import { buildEdges, extractWikilinks, loadAll } from './loader';
+import { buildEdges, extractKindLinks, extractWikilinks, loadAll } from './loader';
 
 /**
  * Most loader tests use a tiny in-memory kind registry so kind
@@ -148,6 +148,29 @@ describe('extractWikilinks', () => {
 
 	it('ignores non-wikilink double brackets', () => {
 		expect(extractWikilinks('[[NotAnId]] and [text](link)')).toEqual([]);
+	});
+
+	it('excludes [[kinds/<id>]] paths (those flow through extractKindLinks)', () => {
+		const ids = extractWikilinks('See [[characters/kael]] and [[kinds/human]].');
+		expect(ids.sort()).toEqual(['characters/kael']);
+	});
+});
+
+describe('extractKindLinks', () => {
+	it('extracts kind ids from [[kinds/<id>]] wikilinks, deduped', () => {
+		const ids = extractKindLinks(
+			'A [[kinds/human]] and another [[kinds/human|human]] and a [[kinds/naya]].'
+		);
+		expect(ids.sort()).toEqual(['human', 'naya']);
+	});
+
+	it('ignores entity wikilinks', () => {
+		expect(extractKindLinks('See [[characters/kael]] only.')).toEqual([]);
+	});
+
+	it('ignores a bare [[kinds]] with no id', () => {
+		// `[[kinds]]` doesn't match the `kinds/<id>` prefix.
+		expect(extractKindLinks('Just [[kinds]] here.')).toEqual([]);
 	});
 });
 

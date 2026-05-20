@@ -45,8 +45,9 @@ export function loadCollectionPage(path: string) {
 
 	const resolveLink = (p: string) => graph.resolveLink(p);
 	const languageCodes = graph.languageCodes();
+	const kindIds = graph.kindIds();
 	const cardSummaryHtml = (s: string | null | undefined) =>
-		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true }) : null;
+		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;
 
 	// The bucket is the path segment(s) between this folder and an
 	// entity's slug: `places/regions/bayurinda/nuunlau` under folder
@@ -290,8 +291,9 @@ export type CollectionPageData = ReturnType<typeof loadCollectionPage>;
 export function loadEverythingIndex() {
 	const resolveLink = (p: string) => graph.resolveLink(p);
 	const languageCodes = graph.languageCodes();
+	const kindIds = graph.kindIds();
 	const cardSummaryHtml = (s: string | null | undefined) =>
-		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true }) : null;
+		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;
 
 	const topPaths = graph.topLevelFolders();
 	const subtypes = topPaths

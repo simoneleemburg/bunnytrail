@@ -150,6 +150,35 @@ describe('renderBody', () => {
 		expect(html).toContain('<a href="#section-two">the section</a>');
 		expect(html).not.toContain('data-broken');
 	});
+
+	it('renders a [[kinds/<id>]] wikilink as a link to the kind page', () => {
+		const kinds = new Set(['human']);
+		const html = renderBody('They are [[kinds/human|human]] still.', resolve, langs, kinds);
+		expect(html).toContain('<a href="/kinds/human">human</a>');
+		expect(html).not.toContain('data-broken');
+	});
+
+	it('uses the kind id as default label for a kind wikilink', () => {
+		const kinds = new Set(['human']);
+		const html = renderBody('A [[kinds/human]] walks in.', resolve, langs, kinds);
+		expect(html).toContain('<a href="/kinds/human">human</a>');
+	});
+
+	it('marks an unregistered [[kinds/<id>]] wikilink as broken', () => {
+		const kinds = new Set(['human']);
+		const html = renderBody('A [[kinds/nope]] appears.', resolve, langs, kinds);
+		expect(html).toContain('data-broken="true"');
+		expect(html).toContain('href="/kinds/nope"');
+	});
+
+	it('does not try to resolve a kind wikilink as an entity', () => {
+		// Even with an empty kind registry, `kinds/human` must not be
+		// resolved against the entity map — it should render broken,
+		// pointing at /kinds/human, not /kinds/human-as-entity.
+		const html = renderBody('A [[kinds/human]] walks in.', resolve, langs);
+		expect(html).toContain('data-broken="true"');
+		expect(html).toContain('href="/kinds/human"');
+	});
 });
 
 describe('renderSummary', () => {

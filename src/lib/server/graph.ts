@@ -79,6 +79,15 @@ class Graph {
 	}
 
 	/**
+	 * The set of registered kind ids. A small convenience for the
+	 * markdown renderer, which uses it to decide whether
+	 * `[[kinds/<id>]]` resolves or renders broken.
+	 */
+	kindIds(): ReadonlySet<string> {
+		return new Set(this.#kindRegistry.keys());
+	}
+
+	/**
 	 * All collections recorded under `content/`, keyed by folder path.
 	 * Only folders carrying a `_collection.yaml` or `_collection.md`
 	 * marker are present; absence does not mean "non-existent folder",
@@ -200,6 +209,22 @@ class Graph {
 	/** Direct entities of a registered kind id. */
 	byKind(kind: string): Entity[] {
 		return this.all().filter((e) => e.meta.kind === kind);
+	}
+
+	/**
+	 * Entities that mention `kindId` from prose via a
+	 * `[[kinds/<kindId>]]` wikilink. Only resolved (registered)
+	 * kind links are counted — broken kind wikilinks surface as
+	 * `broken-link` health issues and are dropped from
+	 * `entity.kindLinks` during loading.
+	 */
+	kindBacklinks(kindId: string): Entity[] {
+		const out: Entity[] = [];
+		for (const e of this.#entities.values()) {
+			if (e.kindLinks.includes(kindId)) out.push(e);
+		}
+		out.sort((a, b) => a.meta.name.localeCompare(b.meta.name));
+		return out;
 	}
 
 	/** Direct children of a registered kind in the registry tree. */

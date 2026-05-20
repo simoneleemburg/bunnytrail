@@ -1,5 +1,6 @@
 <script lang="ts">
 	import EntityCard from '$lib/components/EntityCard.svelte';
+	import EntityLink from '$lib/components/EntityLink.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import type { KindCard, KindSection } from './+page.server';
 
@@ -16,6 +17,7 @@
 			directHeading: string | null;
 			direct: KindCard[];
 			subkindSections: KindSection[];
+			backlinks: KindCard[];
 		};
 	} = $props();
 
@@ -105,6 +107,23 @@
 	{/each}
 {/if}
 
+{#if data.backlinks.length > 0}
+	<section class="kind-section backlinks">
+		<h2 class="section-heading">
+			Mentioned in
+			<span class="section-count">{data.backlinks.length}</span>
+		</h2>
+		<ul class="backlinks-list">
+			{#each data.backlinks as card (card.id)}
+				<li>
+					<EntityLink id={card.id} name={card.name} summary={null} />
+					{#if card.typeLabel}<span class="backlink-type">· {card.typeLabel}</span>{/if}
+				</li>
+			{/each}
+		</ul>
+	</section>
+{/if}
+
 <style>
 	.up {
 		margin: 0 0 var(--space-3) 0;
@@ -192,5 +211,20 @@
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
 		gap: var(--space-5) var(--space-6);
+	}
+
+	.backlinks-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+	}
+
+	.backlink-type {
+		color: var(--ink-faint);
+		font-size: var(--text-sm);
+		margin-left: var(--space-2);
 	}
 </style>

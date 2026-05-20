@@ -34,17 +34,22 @@ function slugifyHeading(text: string): string {
  * same-page anchor link. The path part (before any `#`) is then
  * classified in this order:
  *
- *   1. If the path contains a `/`, it is a wikilink path. Resolve via
- *      `resolveLink` (exact + suffix match) and emit either a
- *      `[label](/id#anchor)` markdown link or a broken-link sentinel.
- *   2. Otherwise, if the inner is shaped like a language code
+ *   1. If the path begins with `kinds/`, it is a kind wikilink.
+ *      Emit `[label](/kinds/<id>)` (or a broken-link sentinel
+ *      when the kind isn't registered). Anchors are passed
+ *      through, just like entity wikilinks.
+ *   2. If the path contains a `/`, it is an entity wikilink path.
+ *      Resolve via `resolveLink` (exact + suffix match) and emit
+ *      either a `[label](/id#anchor)` markdown link or a
+ *      broken-link sentinel.
+ *   3. Otherwise, if the inner is shaped like a language code
  *      (2–8 lowercase letters, no anchor) and a registered language
  *      exists, emit a `<sup class="lang-tag">` superscript anchor.
- *   3. Otherwise, if the path is a sluglike token (lowercase + digits
+ *   4. Otherwise, if the path is a sluglike token (lowercase + digits
  *      + hyphens), treat it as a bare-slug wikilink and resolve it
- *      the same way as (1). This is what makes `[[nuunlau]]` work
+ *      the same way as (2). This is what makes `[[nuunlau]]` work
  *      after wikilink-shortening.
- *   4. Otherwise, fall back to a broken language-tag sentinel so
+ *   5. Otherwise, fall back to a broken language-tag sentinel so
  *      unknown short codes (e.g. `[[nbl]]`) still surface visibly.
  *
  * Wikilinks are rewritten to `[label](/id)` so marked handles them
@@ -60,6 +65,7 @@ function rewriteBrackets(
 	text: string,
 	resolveLink: LinkResolver,
 	languageCodes: Map<string, EntityId>,
+	kindIds: ReadonlySet<string>,
 	stripLinks = false
 ): string {
 	return text.replace(
@@ -89,6 +95,17 @@ function rewriteBrackets(
 				return `[${textOut}](/${forPath}${anchorSuffix} "broken-link")`;
 			};
 
+			// Kind links are routed at /kinds/<id>; we mark them broken
+			// when the id isn't in the registry, the same way entity
+			// wikilinks mark themselves broken when unresolved.
+			const renderKindLink = (kindId: string): string => {
+				const textOut = label ?? fallbackLabel(kindId);
+				if (stripLinks) return textOut;
+				const href = `/kinds/${kindId}${anchorSuffix}`;
+				if (kindIds.has(kindId)) return `[${textOut}](${href})`;
+				return `[${textOut}](${href} "broken-link")`;
+			};
+
 			const renderSameAnchor = (): string => {
 				const textOut = label ?? anchor.replace(/-/g, ' ');
 				if (stripLinks) return textOut;
@@ -110,23 +127,30 @@ function rewriteBrackets(
 			if (path === '' && anchor) {
 				return renderSameAnchor();
 			}
-			// (1) Path has a slash → unambiguous wikilink path.
+			// (1) `kinds/<id>` → kind wikilink.
+			if (path.startsWith('kinds/')) {
+				const kindId = path.slice('kinds/'.length);
+				if (kindId && slugOnly.test(kindId.split('/').pop() ?? '')) {
+					return renderKindLink(kindId);
+				}
+			}
+			// (2) Path has a slash → unambiguous entity wikilink path.
 			if (wikiPath.test(path)) {
 				return renderWikilink(path);
 			}
-			// (2) Lang-code shape with no anchor and registered → lang tag.
+			// (3) Lang-code shape with no anchor and registered → lang tag.
 			if (!anchor && langShape.test(inner) && languageCodes.has(inner)) {
 				return renderLangTag(inner, languageCodes.get(inner)!);
 			}
-			// (3) Sluglike path → try as a bare wikilink (suffix-match).
+			// (4) Sluglike path → try as a bare wikilink (suffix-match).
 			if (slugOnly.test(path) && resolveLink(path)) {
 				return renderWikilink(path);
 			}
-			// (4) Lang-code shape but unknown (no anchor) → broken lang tag.
+			// (5) Lang-code shape but unknown (no anchor) → broken lang tag.
 			if (!anchor && langShape.test(inner)) {
 				return renderBrokenLangTag(inner);
 			}
-			// (5) Sluglike but unresolved → broken wikilink (loud).
+			// (6) Sluglike but unresolved → broken wikilink (loud).
 			if (slugOnly.test(path)) {
 				return renderWikilink(path);
 			}
@@ -165,9 +189,10 @@ function rewriteBrackets(
 export function renderBody(
 	body: string,
 	resolveLink: LinkResolver,
-	languageCodes: Map<string, EntityId> = new Map()
+	languageCodes: Map<string, EntityId> = new Map(),
+	kindIds: ReadonlySet<string> = new Set()
 ): string {
-	const rewritten = rewriteBrackets(body, resolveLink, languageCodes);
+	const rewritten = rewriteBrackets(body, resolveLink, languageCodes, kindIds);
 
 	// Per-render heading-id state. Tracked here (not at module scope)
 	// so concurrent renders of different entities can't collide.
@@ -199,9 +224,10 @@ export function renderBody(
 export function renderEntityBody(
 	entity: Entity,
 	resolveLink: LinkResolver,
-	languageCodes: Map<string, EntityId> = new Map()
+	languageCodes: Map<string, EntityId> = new Map(),
+	kindIds: ReadonlySet<string> = new Set()
 ): string {
-	return renderBody(entity.body, resolveLink, languageCodes);
+	return renderBody(entity.body, resolveLink, languageCodes, kindIds);
 }
 
 /**
@@ -224,11 +250,11 @@ export function renderSummary(
 	summary: string,
 	resolveLink: LinkResolver,
 	languageCodes: Map<string, EntityId> = new Map(),
-	options: { stripLinks?: boolean } = {}
+	options: { stripLinks?: boolean; kindIds?: ReadonlySet<string> } = {}
 ): string {
-	const { stripLinks = false } = options;
+	const { stripLinks = false, kindIds = new Set<string>() } = options;
 
-	const rewritten = rewriteBrackets(summary, resolveLink, languageCodes, stripLinks);
+	const rewritten = rewriteBrackets(summary, resolveLink, languageCodes, kindIds, stripLinks);
 
 	let html = marked.parseInline(rewritten, { async: false }) as string;
 	html = html.replace(/title="broken-link"/g, 'data-broken="true"');
