@@ -69,6 +69,33 @@ this file is not loaded by the site.
 
 ## Structural work
 
+- **Redesign the orbits view as a system/body diagram.** The
+  current orbits view-mode on collection pages is a filter chip
+  alongside _Nested_ and _Flat_ — useful for inspecting the
+  `member-of` / `orbits` tree but visually indistinguishable from
+  the other modes. Replace it with a proper diagram:
+  - On a **star system** page (`places/celestial/aureth-system/`,
+    `places/celestial/hollow-binary/`), render a small map of the
+    system itself — star(s) in the centre, planets on their
+    orbital arcs, moons around their planets. Clickable.
+  - On a **celestial body** page (planet, moon, star), render a
+    contextual diagram showing what the body is part of: its
+    parent system, its siblings, and its own children (moons of
+    a planet, planets of a star). The current body is highlighted;
+    everything else is a click away.
+  - The data source is the existing `member-of` / `orbits` relations
+    on entities, so this is a generalisation of the hand-coded
+    Cognita map rather than a parallel system. Once it exists,
+    the Cognita map at `/cognita` is either replaced by it
+    (pointed at the Aureth system as the "home" view) or kept
+    as an editorial flourish — decide once the generalised
+    diagram is working.
+  - Visual register should match the rest of the site: quiet,
+    field-notebook ink-on-paper, not video-game UI. Hand-drawn
+    feel where possible.
+  - The filter-chip _Orbits_ view-mode on collection pages can
+    then be removed; the diagram lives on the relevant entity /
+    system page directly, not as a list-view variant.
 - **Meta/content rule tension on kindred kinds.** WORLDBUILDING.md
   says meta must not reference specific instances, but the
   `naya`, `nguwari`, and especially `urouthi` `_kind.md` files
