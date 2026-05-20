@@ -61,17 +61,19 @@ p {
 
 a {
 	color: var(--accent);
+	text-decoration: none;
 	text-decoration-thickness: 1px;
 	text-underline-offset: 2px;
 }
 
 a:hover {
 	color: var(--accent-soft);
+	text-decoration: underline;
 }
 
 a[data-broken='true'] {
 	color: var(--ink-faint);
-	text-decoration-style: dotted;
+	text-decoration: underline dotted;
 	cursor: help;
 }
 

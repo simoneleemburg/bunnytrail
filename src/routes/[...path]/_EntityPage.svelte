@@ -320,8 +320,10 @@
 
 	.prose :global(.collection-include-title) {
 		font-style: italic;
-		text-decoration: underline dotted;
-		text-decoration-color: var(--ink-faint, var(--ink-soft));
+	}
+
+	.prose :global(details.collection-include > summary:hover .collection-include-title) {
+		text-decoration: underline;
 		text-underline-offset: 3px;
 	}
 
