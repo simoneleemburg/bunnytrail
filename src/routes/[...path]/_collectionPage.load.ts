@@ -340,7 +340,12 @@ export function loadEverythingIndex() {
 		subtypes,
 		containers: [] as ContainerNode[],
 		orbits: [] as OrbitNode[],
-		folders: [] as Array<{ path: string; name: string; count: number; crossLinkId: EntityId | null }>,
+		folders: [] as Array<{
+			path: string;
+			name: string;
+			count: number;
+			crossLinkId: EntityId | null;
+		}>,
 		standalone: [] as typeof allCards,
 		flat: allCards,
 		kindParents: serialiseKinds()

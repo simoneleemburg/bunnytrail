@@ -128,11 +128,7 @@ describe('renderBody', () => {
 	});
 
 	it('appends an anchor fragment to a wikilink href', () => {
-		const html = renderBody(
-			'See [[characters/kael#early-life|Kael, early]].',
-			resolve,
-			langs
-		);
+		const html = renderBody('See [[characters/kael#early-life|Kael, early]].', resolve, langs);
 		expect(html).toContain('<a href="/characters/kael#early-life">Kael, early</a>');
 	});
 

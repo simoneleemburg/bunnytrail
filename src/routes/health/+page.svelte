@@ -12,9 +12,8 @@
 <PageHeader title="Health" />
 
 <p class="lede">
-	Everything the loader flagged on its last pass. Each group below is
-	one category of issue; entities are linked to their page when one
-	exists. <em>Empty is good.</em>
+	Everything the loader flagged on its last pass. Each group below is one category of issue;
+	entities are linked to their page when one exists. <em>Empty is good.</em>
 </p>
 
 {#if data.total === 0}

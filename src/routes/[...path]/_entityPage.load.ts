@@ -101,9 +101,7 @@ export function loadEntityPage(entity: Entity) {
 		for (const g of byChildType.values()) {
 			g.entities.sort((a, b) => a.name.localeCompare(b.name));
 		}
-		return [...byChildType.values()].sort((a, b) =>
-			a.label.plural.localeCompare(b.label.plural)
-		);
+		return [...byChildType.values()].sort((a, b) => a.label.plural.localeCompare(b.label.plural));
 	})();
 
 	const HIDDEN = new Set([
@@ -174,10 +172,7 @@ function pickCard(
 	};
 }
 
-function toChildCard(
-	e: Entity,
-	cardSummaryHtml: (s: string | null | undefined) => string | null
-) {
+function toChildCard(e: Entity, cardSummaryHtml: (s: string | null | undefined) => string | null) {
 	return {
 		id: e.id,
 		slug: e.slug,

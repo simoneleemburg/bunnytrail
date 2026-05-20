@@ -205,7 +205,10 @@
 							{@const dx = -8 + mi * 4}
 							{@const dy = -2.5}
 							{#if m.slug}
-								<a href={`/places/celestial-bodies/moons/${m.slug}`} aria-label={`Moon of ${p.label}`}>
+								<a
+									href={`/places/celestial-bodies/moons/${m.slug}`}
+									aria-label={`Moon of ${p.label}`}
+								>
 									<circle class="moon-body" cx={dx} cy={dy} r="2" />
 								</a>
 							{:else}
@@ -295,7 +298,8 @@
 
 	<figcaption>
 		Two planes, one cosmos — and not the whole of it. Alteria Cognita's eight planets persist as
-		form on <a href="/places/realms/asthera">Asthera</a> and resonate as identity, memory and meaning on
+		form on <a href="/places/realms/asthera">Asthera</a> and resonate as identity, memory and
+		meaning on
 		<a href="/places/realms/nareth">Nareth</a>. Across the long gulf, the neighbouring Hollow Binary
 		turns around something the eye cannot resolve:
 		<a href="/places/celestial-bodies/black-holes/the-dark-companion">the Dark Companion</a>.

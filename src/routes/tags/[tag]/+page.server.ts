@@ -32,9 +32,7 @@ export async function load({ params }) {
 	for (const entity of matches) {
 		const type = entity.type;
 		if (!byType.has(type)) {
-			const labels = type
-				? graph.folderLabels(type)
-				: { singular: 'Entry', plural: 'Entries' };
+			const labels = type ? graph.folderLabels(type) : { singular: 'Entry', plural: 'Entries' };
 			byType.set(type, { type, label: labels, entities: [] });
 		}
 		byType.get(type)!.entities.push(toCard(entity, cardSummaryHtml));

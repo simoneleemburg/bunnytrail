@@ -51,7 +51,9 @@ export interface KindLoadResult {
  * registry with no issues — callers should treat absence as "no
  * kinds registered yet" rather than an error.
  */
-export async function loadKindRegistry(kindsDir: string = defaultKindsDir()): Promise<KindLoadResult> {
+export async function loadKindRegistry(
+	kindsDir: string = defaultKindsDir()
+): Promise<KindLoadResult> {
 	const kinds = new Map<string, Kind>();
 	const issues: HealthIssue[] = [];
 
@@ -188,6 +190,7 @@ async function dirExists(path: string): Promise<boolean> {
 
 function relTo(absPath: string, rootDir: string): string {
 	if (absPath === rootDir) return 'content_meta/kinds';
-	if (absPath.startsWith(rootDir + '/')) return `content_meta/kinds/${absPath.slice(rootDir.length + 1)}`;
+	if (absPath.startsWith(rootDir + '/'))
+		return `content_meta/kinds/${absPath.slice(rootDir.length + 1)}`;
 	return absPath;
 }

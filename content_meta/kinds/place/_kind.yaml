@@ -3,5 +3,6 @@ plural: Places
 description: >-
   The settings of Alteria — cities, ruins, wilds and pocket realms. Where
   things happen and where memory lingers.
+
 # `place` is the root of the places kind hierarchy. Every other place-y
 # kind (celestial-body, region, settlement, realm, system) parents to it.

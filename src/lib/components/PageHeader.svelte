@@ -53,16 +53,8 @@
 		kindChip?: KindChip | null;
 	}
 
-	let {
-		title,
-		eyebrow,
-		subtitle,
-		subtitleHtml,
-		language,
-		sigil,
-		breadcrumbs,
-		kindChip
-	}: Props = $props();
+	let { title, eyebrow, subtitle, subtitleHtml, language, sigil, breadcrumbs, kindChip }: Props =
+		$props();
 
 	// Fallback one-level-up navigation link, used when no explicit
 	// breadcrumbs were supplied. Strips the last URL segment from the
@@ -78,9 +70,7 @@
 		}
 		const parentSegs = segments.slice(0, -1);
 		const parentSlug = parentSegs[parentSegs.length - 1];
-		const label = parentSlug
-			.replace(/-/g, ' ')
-			.replace(/\b\w/g, (c) => c.toUpperCase());
+		const label = parentSlug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 		return { href: '/' + parentSegs.join('/'), label };
 	});
 

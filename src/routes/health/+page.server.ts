@@ -81,9 +81,7 @@ export async function load() {
 		'missing-md',
 		'orphan'
 	];
-	const groups = order
-		.map((k) => byKind.get(k))
-		.filter((g): g is Group => g !== undefined);
+	const groups = order.map((k) => byKind.get(k)).filter((g): g is Group => g !== undefined);
 
 	return {
 		total: issues.length,

@@ -24,9 +24,7 @@
 	// Hide the "Direct" heading when the page has no subkind sections —
 	// in that case the page is just a single grid and a section heading
 	// above it would be redundant noise.
-	const showDirectHeading = $derived(
-		data.direct.length > 0 && data.subkindSections.length > 0
-	);
+	const showDirectHeading = $derived(data.direct.length > 0 && data.subkindSections.length > 0);
 	const totalCount = $derived(
 		data.direct.length + data.subkindSections.reduce((n, s) => n + s.cards.length, 0)
 	);

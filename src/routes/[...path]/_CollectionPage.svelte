@@ -476,9 +476,7 @@
 						<a href={`/${node.container.id}`}>{node.container.name}</a>
 					</h2>
 					{#if node.container.crossLinkId}
-						<a class="cross-link" href={`/${node.container.crossLinkId}`}>
-							see entity →
-						</a>
+						<a class="cross-link" href={`/${node.container.crossLinkId}`}> see entity → </a>
 					{/if}
 				</div>
 			{:else if node.containerMatches}
@@ -516,8 +514,7 @@
 	{/if}
 
 	{#snippet orbitTree(node: OrbitNode)}
-		{@const dimmed =
-			(activeKind !== null || activeTags.size > 0) && !matchesFilters(node.entity)}
+		{@const dimmed = (activeKind !== null || activeTags.size > 0) && !matchesFilters(node.entity)}
 		<div class="orbit-group" class:dimmed>
 			<EntityCard
 				id={node.entity.id}

@@ -103,12 +103,13 @@ export async function load({ params }: { params: { kind: string } }) {
 	// shown when the parent is itself a registered kind in the
 	// registry, so the link goes somewhere with a page.
 	const parentId = kind.parent;
-	const parent = parentId && registry.has(parentId)
-		? {
-				id: parentId,
-				label: registry.get(parentId)?.meta.singular ?? titleCase(parentId)
-			}
-		: null;
+	const parent =
+		parentId && registry.has(parentId)
+			? {
+					id: parentId,
+					label: registry.get(parentId)?.meta.singular ?? titleCase(parentId)
+				}
+			: null;
 
 	// Entities that mention this kind in prose via a
 	// `[[kinds/<id>]]` wikilink. Distinct from "entities of this

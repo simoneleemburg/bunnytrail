@@ -176,11 +176,7 @@
 								{/each}
 							</ul>
 							{#if group.items.length > COLLAPSE_AT}
-								<button
-									type="button"
-									class="show-toggle"
-									onclick={() => toggle(group.label)}
-								>
+								<button type="button" class="show-toggle" onclick={() => toggle(group.label)}>
 									{isExpanded ? 'Show fewer' : `Show all (${group.items.length})`}
 								</button>
 							{/if}

@@ -30,8 +30,9 @@ export async function load() {
 	function build(kind: string): KindNode {
 		const k = registry.get(kind);
 		const family = kindFamily(kind);
-		const count = graph.all().filter((e) => typeof e.meta.kind === 'string' && family.has(e.meta.kind))
-			.length;
+		const count = graph
+			.all()
+			.filter((e) => typeof e.meta.kind === 'string' && family.has(e.meta.kind)).length;
 		return {
 			kind,
 			href: `/kinds/${kind}`,

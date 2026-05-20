@@ -16,9 +16,9 @@
 <PageHeader title="Kinds" />
 
 <p class="lede">
-	The full hierarchy of kinds across Alteria. Linked nodes have their
-	own page under <code>/kinds/</code>; unlinked entries are registered in
-	the kind tree but not yet authored as a kind page.
+	The full hierarchy of kinds across Alteria. Linked nodes have their own page under <code
+		>/kinds/</code
+	>; unlinked entries are registered in the kind tree but not yet authored as a kind page.
 </p>
 
 {#snippet branch(node: KindNode)}
@@ -58,9 +58,8 @@
 	<section class="unregistered">
 		<h2 class="section-heading">Unregistered</h2>
 		<p class="section-note">
-			Free-form <code>kind:</code> values carried by entities but not declared in
-			the registry under <code>content_meta/kinds/</code>. Promote them into the
-			hierarchy when their meaning settles.
+			Free-form <code>kind:</code> values carried by entities but not declared in the registry under
+			<code>content_meta/kinds/</code>. Promote them into the hierarchy when their meaning settles.
 		</p>
 		<ul class="unregistered-list">
 			{#each data.unregistered as item (item.kind)}

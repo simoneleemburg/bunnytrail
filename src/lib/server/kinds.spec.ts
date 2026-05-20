@@ -103,7 +103,7 @@ describe('loadKindRegistry', () => {
 
 	it('skips underscore-prefixed and hidden folders', async () => {
 		const dir = await seedKindsDir({
-			'_draft': null,
+			_draft: null,
 			'.hidden': null,
 			place: null
 		});
@@ -118,9 +118,9 @@ describe('loadKindRegistry', () => {
 		});
 		const result = await loadKindRegistry(dir);
 		expect(result.kinds.get('realm')?.parent).toBe('place');
-		expect(result.issues.some((i) => i.detail.includes("'kindParent' is no longer supported"))).toBe(
-			true
-		);
+		expect(
+			result.issues.some((i) => i.detail.includes("'kindParent' is no longer supported"))
+		).toBe(true);
 	});
 
 	it('rejects fields with the wrong shape', async () => {
