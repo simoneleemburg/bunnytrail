@@ -13,13 +13,16 @@
 	const SUBTYPE_TAG_CAP = 6;
 	const FILTER_TOP_N = 8;
 
-	// Three orthogonal UI states:
-	//   • view-mode: nested (containers shown with children) vs flat
+	// Four orthogonal UI states:
+	//   • view-mode: nested (containers shown with children), flat,
+	//     or orbits (gravitational tree)
 	//   • kind-filter: shows only entities of a given `kind` field
+	//   • folder-filter: scopes the visible set to a single child
+	//     folder of the current page
 	//   • tag-filter: multi-select, AND semantics — an entity must
 	//     have *every* selected tag to remain visible
 	//
-	// All three apply at the same time and reset on navigation
+	// All four apply at the same time and reset on navigation
 	// (per-page local state only).
 	type ViewMode = 'nested' | 'flat' | 'orbits';
 	let viewMode = $state<ViewMode>('nested');
@@ -92,11 +95,13 @@
 				supertypeTotals.set(ancestor, (supertypeTotals.get(ancestor) ?? 0) + count);
 			}
 		}
-		// A supertype whose self-page entity is in the visible set
-		// already shows up in `direct`. Merge: total visible
-		// descendants = direct count (the self-page) + supertype
-		// totals (everything below). Mark as supertype iff it has
-		// any non-self descendants under it.
+		// A kind that is both a *direct* kind on the page (some entity
+		// declares it explicitly) and an *ancestor* of other direct
+		// kinds: merge so the chip shows the total visible
+		// descendants, and mark it as a supertype iff it has any
+		// non-direct descendants beneath it. The chip thus answers
+		// "how many entities on this page are <kind> or a more
+		// specific subkind?".
 		const merged = new Map<string, { count: number; supertype: boolean }>();
 		for (const [k, c] of direct) {
 			merged.set(k, { count: c, supertype: false });
@@ -281,11 +286,6 @@
 		return data.containers.map(filterNode).filter((n): n is RenderNode => n !== null);
 	});
 
-	// Orbits view renders the full structural tree as-is. We don't
-	// apply the kind/tag filters here — the tree's value is the
-	// gravitational relationships between bodies; pruning by tag or
-	// kind would leave dangling branches that misrepresent the
-	// hierarchy. Filters quietly apply only to flat/nested views.
 	// Orbits view renders the structural tree, but with a twist:
 	// when a filter is active, whole root trees with no matching
 	// entity anywhere inside them are pruned out entirely. Within

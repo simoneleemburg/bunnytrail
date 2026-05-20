@@ -32,11 +32,11 @@ export function loadEntityPage(entity: Entity) {
 
 	// Breadcrumb chain: every browseable folder on the path from the
 	// content root down to (and including) this entity's containing
-	// folder. We render plural folder labels because, per the new
-	// kind/collection split, parent folders are narrative
-	// collections, not taxonomic kinds — `Places › Celestial Bodies
-	// › Planets` reads as "where in the field-notebook you are",
-	// not "this is a planet which is a celestial body".
+	// folder. We render plural folder labels because parent folders
+	// are narrative collections (topology), not taxonomic kinds —
+	// `Places › Celestial › Aureth System` reads as "where in the
+	// field-notebook you are", not "this is a planet which is a
+	// celestial body".
 	const breadcrumbs: { label: string; href: string }[] = [];
 	if (type) {
 		const segs = type.split('/');
@@ -74,13 +74,11 @@ export function loadEntityPage(entity: Entity) {
 	}));
 
 	// Filesystem-derived containment: entities living *inside* this
-	// entity's folder. Purely structural (no `located-in` implied).
-	// Grouped by the child's *kind* (taxonomy), not by folder path
-	// (topology): a heading like "Planets" or "Moons" reads
-	// naturally regardless of where the parent sits. Grouping by
-	// folder path would produce headings like "Nebelheim within
-	// Nebelheim" whenever a parent's folder name equals its display
-	// name, which is the common case for containment hierarchies.
+	// entity's folder. Grouped by the child's *kind* (taxonomy)
+	// rather than by folder path (topology), so a heading like
+	// "Planets" or "Moons" describes what the children *are*, not
+	// where they sit. The topology — that they're inside this
+	// entity — is already implicit from the page you're on.
 	const childGroups = (() => {
 		const byKind = new Map<
 			string,
@@ -155,28 +153,14 @@ export function loadEntityPage(entity: Entity) {
 		}))
 		.sort((a, b) => a.field.localeCompare(b.field));
 
-	if (!graph.isFolder(type)) {
-		// An entity sitting at the content root (no containing folder)
-		// is allowed but unusual. Fall back to a generic label.
-	}
-
 	return {
-		kind: 'entity' as const,
-		id,
-		type,
-		typeLabel: type ? graph.folderLabels(type) : { singular: 'Entry', plural: 'Entries' },
 		breadcrumbs,
 		kindChip,
 		entity: {
-			id,
-			type,
-			slug: entity.slug,
 			name: entity.meta.name,
-			summary: entity.meta.summary ?? null,
 			summaryHtml: summaryHtml(entity.meta.summary),
 			aliases: entity.meta.aliases ?? [],
 			tags: entity.meta.tags ?? [],
-			kind: kindId,
 			sigil: typeof entity.meta.sigil === 'string' ? entity.meta.sigil : null
 		},
 		extra,
@@ -209,12 +193,8 @@ function pickCard(
 function toChildCard(e: Entity, cardSummaryHtml: (s: string | null | undefined) => string | null) {
 	return {
 		id: e.id,
-		slug: e.slug,
 		name: e.meta.name,
-		summary: e.meta.summary ?? null,
 		summaryHtml: cardSummaryHtml(e.meta.summary),
-		tags: e.meta.tags ?? [],
-		era: e.meta.era ?? null,
 		kind: typeof e.meta.kind === 'string' ? e.meta.kind : null
 	};
 }

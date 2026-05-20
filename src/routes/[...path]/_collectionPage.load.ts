@@ -83,7 +83,6 @@ export function loadCollectionPage(path: string) {
 			}
 			return {
 				type: sub,
-				singular: subLabels.singular,
 				plural: subLabels.plural,
 				description: subDescription,
 				count: subEntities.length,
@@ -229,6 +228,10 @@ export function loadCollectionPage(path: string) {
 		.sort(([a], [b]) => a.localeCompare(b))
 		.map(([p, count]) => {
 			const slug = p;
+			// If the folder slug resolves to an entity (e.g. `bayurinda`
+			// → `places/regions/bayurinda`), prefer that entity's
+			// display name over a title-cased slug. Otherwise fall
+			// back to title-casing.
 			const resolved = graph.resolveLink(slug);
 			const linked = resolved && resolved !== `${path}/${p}` ? graph.get(resolved) : null;
 			const name =
@@ -236,8 +239,7 @@ export function loadCollectionPage(path: string) {
 			return {
 				path: p,
 				name,
-				count,
-				crossLinkId: linked?.id ?? null
+				count
 			};
 		});
 
@@ -256,7 +258,7 @@ export function loadCollectionPage(path: string) {
 		flat: flatAll,
 		// Kind hierarchy from the central registry: a plain
 		// `kind -> parentKind | null` map. The client rebuilds it
-		// with `buildKindTreeFromRegistry`.
+		// with `buildKindTree`.
 		kindParents: serialiseKinds()
 	};
 }
@@ -316,7 +318,6 @@ export function loadEverythingIndex() {
 			}
 			return {
 				type: p,
-				singular: labels.singular,
 				plural: labels.plural,
 				description: desc,
 				count: subEntities.length,
@@ -405,11 +406,26 @@ function compareOrbitNodes(a: OrbitNode, b: OrbitNode): number {
 }
 
 /**
- * Walk `member-of` and `orbits` edges to produce the gravitational
- * tree visible from a collection page. See the comments in the
- * pre-cutover version for the strategy; the only structural change
- * is that "page entity universe" is now defined as
- * `byFolderRecursive(pagePath)` instead of `byTypeRecursive`.
+ * Build the gravitational tree visible from a collection page,
+ * walking `member-of` and `orbits` edges.
+ *
+ * Strategy:
+ * 1. **Universe.** Collect every entity that participates in any
+ *    orbit edge (in or out). These are the only nodes the orbits
+ *    view ever cares about.
+ * 2. **Roots.** A root is an entity in the universe whose own
+ *    orbit-targets are all *outside* the universe (e.g. a system
+ *    that doesn't `member-of` anything tracked).
+ * 3. **Tree.** Recursively build each root by following inbound
+ *    orbit edges. Cycles are guarded by a `seen` set.
+ * 4. **Prune empty roots.** If a root's tree touches no entity on
+ *    the current page (`byFolderRecursive(pagePath)`), drop it.
+ * 5. **Borrowed view vs home view.** If every kept root is itself
+ *    on the page, the page *is* the orbit home (e.g. /places/celestial)
+ *    and the full tree is returned. Otherwise the page is a
+ *    *borrower* of the structure (e.g. /kinds/planet showing only
+ *    planets within the wider system) and internals not on the
+ *    page are pruned out, lifting their on-page descendants up.
  */
 function buildOrbitsTree(
 	pagePath: string,
