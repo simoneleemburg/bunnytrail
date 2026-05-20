@@ -8,15 +8,18 @@ Alteria is a personal worldbuilding compendium. Canonical data lives in
 `content/` as one folder per entity:
 `content/<...collection-path>/<slug>/index.yaml` holds structured
 metadata and `index.md` holds the prose; sibling files (images, etc.)
-live alongside. Folders are **collections** — narrative groupings, the
-shelves of the field-notebook — and may carry an optional
-`_collection.yaml` describing their display label and prose. The
-**kinds** every entity declares (its taxonomic classification) live
-separately in `content_meta/kinds/` as a nested folder tree, each node
-optionally carrying a `_kind.yaml` and `_kind.md`. A SvelteKit site
-loads it all on boot into an in-memory graph and renders it as a
-browsable, cross-linked field-notebook. Cross-references use
-`[[type/slug]]` wikilinks; backlinks are built automatically.
+live alongside. Folders are **collections** — narrative shelves of
+the field-notebook — and may carry an optional `_collection.yaml`
+describing their display label and prose. The **kinds** every entity
+declares (its taxonomic classification) live separately in
+`content_meta/kinds/` as a nested folder tree, each node optionally
+carrying a `_kind.yaml` and `_kind.md`. On top of `kind:`, instances
+may declare additional **lenses** — spatial, temporal,
+account-relative, kind-affinity — as structured `relations:` or
+named pointer fields. A SvelteKit site loads it all on boot into an
+in-memory graph and renders it as a browsable, cross-linked
+field-notebook. Cross-references in prose use `[[type/slug]]`
+wikilinks; backlinks and inverse relations are built automatically.
 
 ## Commands
 
@@ -96,31 +99,51 @@ register, the practical pre-save checklist — is in
 
 ## Where things live
 
-Two orthogonal axes, each with its own home:
+The compendium is built on one foundational separation and a
+number of optional lenses on top. See
+[`WORLDBUILDING.md`](./WORLDBUILDING.md) for the editorial
+treatment; this section covers the operational placement.
 
-- **Taxonomy** — what _kind_ of thing something is. Lives in
-  `content_meta/kinds/`. Hierarchical by abstraction
-  (`being/mortal/urouthi`). Answers "what is this?" via the
-  `kind:` field on entities.
-- **Topology** — where something sits in the world's structure.
-  Lives in `content/`. Hierarchical by containment
-  (`places/celestial/aureth-system/nebelheim/leyla`). Answers
-  "what contains this?" via folder placement and relations
-  (`parent`, `member-of`, `orbits`, `nativeBeings`).
+**Foundational:**
 
-The two axes are independent. A moon is a `moon` regardless of
-which planet hosts it; a planet sits under its system regardless
-of what kind it is. Don't encode taxonomy in folder paths
-(`places/celestial/planets/` was wrong — that was kind-grouping
-masquerading as topology), and don't encode topology in kind
-pages (a kind doc describing which specific planet its members
-live on is the same mistake inverted; see the meta/content rule
-in WORLDBUILDING.md).
+- **Kinds** live in `content_meta/kinds/` as a nested folder
+  tree. Each kind is abstract — what something _is_, in general.
+  The parent kind is whichever folder it sits in; no
+  `kindParent:` field needed.
+- **Instances** live in `content/` as `<slug>/index.{yaml,md}`
+  folders. Each instance declares one `kind:` (its taxonomy
+  pointer) and lives at one folder path (its narrative shelf, for
+  browsing — not a semantic claim).
+
+**Lenses** are optional, additive views on instances. Each lens
+is declared as a YAML field; the loader and renderer pick them
+up automatically. The lenses in current use:
+
+- **Spatial.** `relations: - kind: <verb>, target: <entity-id>`
+  with verbs like `member-of`, `located-in`, `orbits`,
+  `occurred-on`. Targets must be full entity ids; bare slugs are
+  not resolved.
+- **Temporal.** `relations: - kind: occurred-in, target:
+history/<age>` against the four registered ages (`mythic`,
+  `pre-recorded`, `recorded`, `current`).
+- **Account-relative.** Declared on the account entity:
+  `relations: - kind: records, target: history/<event-id>`. The
+  inverse appears on the event as "Recorded in: …".
+- **Kind-affinity.** Named YAML fields with `kinds/<id>` values
+  (`nativeBeings: [kinds/human]`, `traits: [kinds/nearborn]`).
+  Curated inverse labels live in
+  `src/lib/server/kindLinkLabels.ts`.
 
 Cross-axis truth travels through declared fields, not folder
 placement. If a place is home to a kind of being, say so with
-`nativeBeings: [kinds/urouthi]` — not by nesting the being under
-the place or vice versa.
+`nativeBeings: [kinds/urouthi]` — not by nesting one under the
+other. The same rule the other way: don't encode taxonomy in
+folder paths (`places/celestial/planets/` was wrong — that was
+kind-grouping masquerading as topology), and don't encode
+specific instances in kind pages (see the meta/content rule in
+WORLDBUILDING.md).
+
+### Where to put new things
 
 - **New worldbuilding entity** → `content/<...collection-path>/<slug>/index.{yaml,md}`
   (plus any companion files — images, attachments — in the same folder).
@@ -136,6 +159,23 @@ the place or vice versa.
   `content_meta/kinds/`, optionally with `_kind.yaml` (singular/plural
   overrides, description) and `_kind.md` (long-form prose). The parent
   kind is whichever folder it sits in; no `kindParent:` field needed.
+- **New event** → `content/history/<slug>/index.{yaml,md}` with
+  `kind: event`. Add temporal placement via `relations: - kind:
+occurred-in, target: history/<age>` and spatial placement via
+  `relations: - kind: occurred-on, target: <place-entity-id>`.
+- **New age** → `content/history/<slug>/index.{yaml,md}` with
+  `kind: age`. The four current ages were chosen deliberately;
+  adding a fifth is a worldbuilding decision, not routine.
+- **New account** → `content/history/accounts/<slug>/index.{yaml,md}`
+  with `kind: account`. Add the events it records via `relations:
+  - kind: records, target: history/<event-id>`.
+- **New relation verb** → just use it in YAML; the loader doesn't
+  whitelist verbs. If the inverse direction wants a custom label,
+  add it to `_EntityPage.svelte`'s `inverse` table. The fallback
+  humanises the verb itself.
+- **New kind-affinity field** → just use it in YAML with
+  `kinds/<id>` values. For a custom inverse label on the kind's
+  page, add an entry to `src/lib/server/kindLinkLabels.ts`.
 - **New UI primitive** → `src/lib/components/`. Existing primitives:
   `EntityCard`, `EntityLink`, `PageHeader`, `PropertyList`, `Tag`.
 - **Graph / loader logic** → `src/lib/server/`

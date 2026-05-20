@@ -75,18 +75,61 @@ and connections that the structured fields don't already capture
 (e.g. `ocean`, `ruins`, `pilgrimage`, `border`). Keeping tags clean
 keeps them useful.
 
-### Kinds and collections are different axes
+### Kinds, instances, and lenses
 
-Where an entity _lives_ in `content/` is a **collection** — a
-narrative shelf in the field-notebook. What an entity _is_ is its
-**kind** — a node in the taxonomy under `content_meta/kinds/`. The
-two are deliberately independent: the same kind can appear in
-several collections, and a single collection can hold many kinds.
-Pick the collection that makes the entry easy to find while
-browsing; pick the kind that's true regardless of where the entry
-ends up shelved. Moving an entity between collections changes its
-URL but not its kind; reclassifying its kind doesn't move the
-folder.
+The compendium is built on one foundational separation and a
+number of optional ones layered on top.
+
+The foundational separation is between **kinds** and
+**instances**:
+
+- **Kinds** live in `content_meta/kinds/` and describe categories
+  in the abstract — what a human is, what a phenomenon is, what
+  makes something a celestial body. Kinds are general; they exist
+  apart from any specific thing.
+- **Instances** live in `content/` and describe specific things —
+  this person, this planet, this language, this event, this
+  account. Every instance declares exactly one `kind:` (its
+  membership in the taxonomy) and lives at one folder location
+  (its narrative shelf, for browsing).
+
+`kind:` is single, mandatory, and foundational. Folder location
+is editorial — pick the shelf that makes the entry easy to find
+while browsing, with no semantic claim attached.
+
+On top of that, instances may carry **lenses** — additional
+structured views, each declared as an optional field. Lenses are
+multiple, optional, and dimensional. The lenses currently in use:
+
+- **Spatial.** Where the instance sits in the world's geography
+  and structure. Declared via `relations: - kind: <verb>, target:
+<entity-id>` (e.g. `member-of`, `located-in`, `orbits`,
+  `occurred-on`). Folder placement is not a substitute — a moon
+  isn't "in" the planet just because the folder nests; the
+  spatial claim is the relation.
+- **Temporal.** When in the world's editorial timeline. Declared
+  via `relations: - kind: occurred-in, target: history/<age>`,
+  pointing at one of the registered ages
+  (`history/mythic`, `history/pre-recorded`,
+  `history/recorded`, `history/current`).
+- **Account-relative.** Which in-world records hold an event,
+  in what order. Declared on the _account's_ page via
+  `relations: - kind: records, target: history/<event-id>`. The
+  same event may appear in multiple accounts with different
+  emphasis, ordering, and prose; the compendium gathers them
+  without choosing.
+- **Kind-affinity.** Cross-cutting structured pointers from an
+  instance to one or more kinds. Declared as named YAML fields
+  with `kinds/<id>` values (e.g. `nativeBeings: [kinds/human]`,
+  `traits: [kinds/nearborn]`). Each named field has a curated
+  inverse label (see `src/lib/server/kindLinkLabels.ts`) that
+  controls how the back-reference reads on the kind's page.
+
+A new lens earns its place when there is a _kind_ of relation
+the world repeatedly carries that the existing lenses don't.
+Adding a new lens is small (a relation verb, perhaps an inverse
+label); it should still be a deliberate choice, not a habit of
+shape-shifting.
 
 ### Content references meta; meta does not reference content
 
