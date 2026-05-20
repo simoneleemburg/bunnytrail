@@ -1,0 +1,7 @@
+name: The Bonedust Scrolls
+kind: account
+summary: A mythic telling of the world's history kept by the hermit-priest Rathiel.
+relations:
+  - kind: records
+    target: history/the-drowning
+tags: [mythic-register]

@@ -42,6 +42,7 @@
 				'member-of': 'Bodies',
 				'occurred-on': 'Events',
 				'occurred-in': 'Events',
+				records: 'Recorded in',
 				orbits: 'Moons'
 			};
 			if (inverse[kind]) return inverse[kind];
