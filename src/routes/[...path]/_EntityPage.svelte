@@ -136,9 +136,9 @@
 
 			{#if data.childGroups.length > 0}
 				<section class="children" aria-label="Contents">
-					{#each data.childGroups as group (group.type)}
+					{#each data.childGroups as group (group.kindId)}
 						<h2 class="children-heading">
-							{group.label.plural} within {data.entity.name}
+							{group.label.plural}
 						</h2>
 						<ul class="child-list">
 							{#each group.entities as child (child.id)}

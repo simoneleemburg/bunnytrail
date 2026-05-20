@@ -75,33 +75,40 @@ export function loadEntityPage(entity: Entity) {
 
 	// Filesystem-derived containment: entities living *inside* this
 	// entity's folder. Purely structural (no `located-in` implied).
-	// Grouped by leaf type so a parent that contains a mix of
-	// entity-types reads cleanly (e.g. "Places within Bayurinda /
-	// Characters within Bayurinda").
+	// Grouped by the child's *kind* (taxonomy), not by folder path
+	// (topology): a heading like "Planets" or "Moons" reads
+	// naturally regardless of where the parent sits. Grouping by
+	// folder path would produce headings like "Nebelheim within
+	// Nebelheim" whenever a parent's folder name equals its display
+	// name, which is the common case for containment hierarchies.
 	const childGroups = (() => {
-		const byChildType = new Map<
+		const byKind = new Map<
 			string,
 			{
-				type: string;
+				kindId: string;
 				label: { singular: string; plural: string };
 				entities: ReturnType<typeof toChildCard>[];
 			}
 		>();
 		for (const child of graph.children(id)) {
-			const t = child.type;
-			if (!byChildType.has(t)) {
-				byChildType.set(t, {
-					type: t,
-					label: t ? graph.folderLabels(t) : { singular: 'Entry', plural: 'Entries' },
-					entities: []
-				});
+			const childKindId = typeof child.meta.kind === 'string' ? child.meta.kind : '';
+			const groupKey = childKindId || '__unkinded__';
+			if (!byKind.has(groupKey)) {
+				const k = childKindId ? graph.kind(childKindId) : undefined;
+				const label = childKindId
+					? {
+							singular: k?.meta.singular ?? titleCaseSlug(childKindId),
+							plural: k?.meta.plural ?? titleCaseSlug(childKindId)
+						}
+					: { singular: 'Entry', plural: 'Entries' };
+				byKind.set(groupKey, { kindId: groupKey, label, entities: [] });
 			}
-			byChildType.get(t)!.entities.push(toChildCard(child, cardSummaryHtml));
+			byKind.get(groupKey)!.entities.push(toChildCard(child, cardSummaryHtml));
 		}
-		for (const g of byChildType.values()) {
+		for (const g of byKind.values()) {
 			g.entities.sort((a, b) => a.name.localeCompare(b.name));
 		}
-		return [...byChildType.values()].sort((a, b) => a.label.plural.localeCompare(b.label.plural));
+		return [...byKind.values()].sort((a, b) => a.label.plural.localeCompare(b.label.plural));
 	})();
 
 	const HIDDEN = new Set([
