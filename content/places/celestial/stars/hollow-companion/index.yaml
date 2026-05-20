@@ -4,4 +4,4 @@ summary: The visible star of the Hollow Binary — the one that can be seen, orb
 tags: [binary, threshold]
 relations:
   - kind: member-of
-    target: places/systems/hollow-binary
+    target: places/celestial/systems/hollow-binary

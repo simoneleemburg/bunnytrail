@@ -134,10 +134,10 @@ describe('renderBody', () => {
 
 	it('appends an anchor fragment to a bare-slug wikilink href', () => {
 		const resolveBare = (path: string) =>
-			path === 'bayurinda' ? 'places/celestial-bodies/planets/bayurinda' : null;
+			path === 'bayurinda' ? 'places/celestial/planets/bayurinda' : null;
 		const html = renderBody('See [[bayurinda#peoples-of-bayurinda|deep]].', resolveBare, langs);
 		expect(html).toContain(
-			'<a href="/places/celestial-bodies/planets/bayurinda#peoples-of-bayurinda">deep</a>'
+			'<a href="/places/celestial/planets/bayurinda#peoples-of-bayurinda">deep</a>'
 		);
 	});
 

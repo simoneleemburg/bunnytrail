@@ -120,10 +120,10 @@ sense that Tholingia is Nebelheim's: not its heart, but the part
 the order meets, and the part through which the rest of
 [Cognita](/cognita) knows the world.
 
-Whether [the lost surface civilisation](/places/celestial-bodies/planets/bayurinda#the-drowning)
+Whether [the lost surface civilisation](/places/celestial/planets/bayurinda#the-drowning)
 of Bayurinda also had Pillars, and whether any of those are
 still standing — broken, drowned, or quietly maintained by the
-[deep](/places/celestial-bodies/planets/bayurinda#peoples-of-bayurinda) — is not a
+[deep](/places/celestial/planets/bayurinda#peoples-of-bayurinda) — is not a
 question the compendium yet answers. The possibility is open;
 the matter is the archipelago's and the deep's to know.
 

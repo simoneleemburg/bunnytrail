@@ -11,7 +11,7 @@ and adopted as the standard term across [Cognita](/cognita) along
 with the rest of the Bayurindan scholarly inheritance. Whether
 the lost surface civilisation called them by this word, by an
 ancestor of this word, or by something else again is not
-recorded here. What the [deep](/places/celestial-bodies/planets/bayurinda#peoples-of-bayurinda)
+recorded here. What the [deep](/places/celestial/planets/bayurinda#peoples-of-bayurinda)
 call them is, as so often, not a thing this compendium yet
 knows.
 

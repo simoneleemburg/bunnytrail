@@ -187,7 +187,7 @@
 			<g class="star" transform={`translate(${STAR_X} ${AXIS_Y})`}>
 				<circle class="star-glow" r="20" />
 				<circle class="star-body" r="9" />
-				<a href="/places/celestial-bodies/stars/aureth">
+				<a href="/places/celestial/stars/aureth">
 					<text class="star-label" y="40" text-anchor="middle">Aureth</text>
 				</a>
 			</g>
@@ -205,10 +205,7 @@
 							{@const dx = -8 + mi * 4}
 							{@const dy = -2.5}
 							{#if m.slug}
-								<a
-									href={`/places/celestial-bodies/moons/${m.slug}`}
-									aria-label={`Moon of ${p.label}`}
-								>
+								<a href={`/places/celestial/moons/${m.slug}`} aria-label={`Moon of ${p.label}`}>
 									<circle class="moon-body" cx={dx} cy={dy} r="2" />
 								</a>
 							{:else}
@@ -218,7 +215,7 @@
 					{/if}
 					<circle class="planet-body" r="5" />
 					{#if p.slug}
-						<a href={`/places/celestial-bodies/planets/${p.slug}`}>
+						<a href={`/places/celestial/planets/${p.slug}`}>
 							<text class="planet-label" y="22" text-anchor="middle">{p.label}</text>
 						</a>
 					{:else}
@@ -271,7 +268,7 @@
 
 				<!-- The Dark Companion: drawn as a dashed empty circle,
 				     a hollow where a body should be. Linked to its entry. -->
-				<a href="/places/celestial-bodies/black-holes/the-dark-companion">
+				<a href="/places/celestial/black-holes/the-dark-companion">
 					<g class="dark-companion" transform={`translate(${DARK_COMPANION_X} ${AXIS_Y})`}>
 						<circle class="dark-halo" r="22" />
 						<circle class="dark-ring" r="11" />
@@ -302,7 +299,7 @@
 		meaning on
 		<a href="/places/realms/nareth">Nareth</a>. Across the long gulf, the neighbouring Hollow Binary
 		turns around something the eye cannot resolve:
-		<a href="/places/celestial-bodies/black-holes/the-dark-companion">the Dark Companion</a>.
+		<a href="/places/celestial/black-holes/the-dark-companion">the Dark Companion</a>.
 	</figcaption>
 </figure>
 

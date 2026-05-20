@@ -6,5 +6,5 @@ tags: [volcanic, tectonic, ash, duty]
 nativeBeings: [kinds/human]
 relations:
   - kind: member-of
-    target: places/systems/aureth-system
+    target: places/celestial/systems/aureth-system
     order: 3

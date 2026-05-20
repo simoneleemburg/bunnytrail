@@ -14,8 +14,8 @@
 	<p class="tagline">My sacred universe of imagination.</p>
 	<p class="counter">
 		<em>
-			{data.totalEntities} entries ({data.entitiesWithProse} with prose) · {data.kindCount} kinds
-			({data.kindsWithProse} documented) · {data.counts.length} collections{#if data.issues > 0}
+			{data.totalEntities} entries ({data.entitiesWithProse} with prose) · {data.kindCount} kinds ({data.kindsWithProse}
+			documented) · {data.counts.length} collections{#if data.issues > 0}
 				· <a class="issues-link" href="/health"
 					>{data.issues} {data.issues === 1 ? 'issue' : 'issues'}</a
 				>{/if}

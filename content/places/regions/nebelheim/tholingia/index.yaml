@@ -5,5 +5,5 @@ summary: A region of Nebelheim and the place of origin of the Tholingian languag
 tags: [nebelheim, tholingian]
 relations:
   - kind: region-of
-    target: places/celestial-bodies/planets/nebelheim
+    target: places/celestial/planets/nebelheim
     note: A region on the planet of Nebelheim.

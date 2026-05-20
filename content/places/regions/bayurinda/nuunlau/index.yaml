@@ -7,5 +7,5 @@ tags: [ocean, deep-water, inscriptions, custodians]
 nativeBeings: [kinds/urouthi]
 relations:
   - kind: region-of
-    target: places/celestial-bodies/planets/bayurinda
+    target: places/celestial/planets/bayurinda
     note: The deep-water counterpart to the archipelago — the other half of Bayurinda.

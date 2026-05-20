@@ -5,5 +5,5 @@ summary: Nebelheim's moon — itself molten and volcanic, a second furnace in th
 tags: [volcanic, molten, sky]
 relations:
   - kind: orbits
-    target: places/celestial-bodies/planets/nebelheim
+    target: places/celestial/planets/nebelheim
     note: Nebelheim's moon.

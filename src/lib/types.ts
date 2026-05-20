@@ -81,7 +81,7 @@ export interface Kind {
  * when labels are absent.
  *
  * Collections are pure browsing structure: they say nothing about
- * the *kind* of the entities they contain. A `places/celestial-bodies`
+ * the *kind* of the entities they contain. A `places/celestial`
  * collection might be retitled "The Sky" or split into "Inner System"
  * and "Outer System" without disturbing the kind tree.
  */
@@ -94,7 +94,7 @@ export interface CollectionMeta {
 
 /**
  * A loaded collection. `path` is the folder path relative to
- * `content/` (e.g. `places/celestial-bodies`). `body` is the raw
+ * `content/` (e.g. `places/celestial`). `body` is the raw
  * markdown source of an optional sibling `_collection.md`, rendered
  * on demand.
  */
