@@ -72,9 +72,104 @@ function buildLoaderKindTree(): KindTree {
 	return buildKindTree(declarations);
 }
 
+/**
+ * Build a per-subcollection container tree for Tree view: every entity
+ * under `subPath`, recursively, arranged by filesystem-nesting.
+ *
+ * Roots are entities under `subPath` whose filesystem parent lives
+ * *outside* the subcollection (or is null). Children of each node are
+ * the entity's `children`, restricted to those still under `subPath`.
+ *
+ * `pagePath` is the page folder we're rendering — it determines the
+ * `folderPath` bucket on each emitted card (path between page folder
+ * and entity slug, matching the rest of the loader's card output).
+ */
+function buildSubcollectionTree(
+	subPath: string,
+	pagePath: string,
+	cardSummaryHtml: (s: string | null | undefined) => string | null
+): SubcollectionTree {
+	const labels = graph.folderLabels(subPath);
+	const collection = graph.collection(subPath);
+	const description = collection?.meta.description ?? null;
+
+	// Subcollection's headline entity, if any: an entity sitting at
+	// `subPath` itself (e.g. `places/celestial/aureth-system` exists
+	// both as folder and as entity). The page links the section
+	// heading to that entity when present, otherwise to the
+	// subcollection's own collection page.
+	const linkedEntityId: EntityId | null = graph.get(subPath as EntityId) ? (subPath as EntityId) : null;
+
+	const inSubcollection = (id: string) => id === subPath || id.startsWith(`${subPath}/`);
+
+	// `pathBucket` here is the multi-segment path between pagePath
+	// and the entity's slug — same shape the rest of the loader
+	// uses, so cards round-trip through the same render code.
+	const pathBucket = (id: EntityId): string => {
+		if (!id.startsWith(`${pagePath}/`)) return '';
+		const rest = id.slice(pagePath.length + 1);
+		const lastSlash = rest.lastIndexOf('/');
+		return lastSlash < 0 ? '' : rest.slice(0, lastSlash);
+	};
+
+	const seen = new Set<EntityId>();
+	const buildNode = (e: Entity): ContainerNode => {
+		seen.add(e.id);
+		const children = e.children
+			.map((cid) => graph.get(cid))
+			.filter((c): c is Entity => !!c && inSubcollection(c.id) && !seen.has(c.id))
+			.sort((a, b) => a.meta.name.localeCompare(b.meta.name))
+			.map(buildNode);
+		return {
+			container: toCard(e, cardSummaryHtml, undefined, pathBucket(e.id)),
+			children
+		};
+	};
+
+	const subEntities = graph.byFolderRecursive(subPath);
+	// Roots: entities under subPath whose parent is null or sits
+	// outside the subcollection. The subcollection's headline
+	// entity (if any) is always a root.
+	const roots = subEntities
+		.filter((e) => !e.parent || !inSubcollection(e.parent))
+		.sort((a, b) => a.meta.name.localeCompare(b.meta.name))
+		.map(buildNode);
+
+	return {
+		path: subPath,
+		plural: labels.plural,
+		description,
+		linkedEntityId,
+		roots
+	};
+}
+
 type Card = ReturnType<typeof toCard>;
 export type ContainerNode = { container: Card; children: ContainerNode[] };
 export type OrbitNode = { entity: Card; children: OrbitNode[]; order?: number };
+
+/**
+ * Wire shape for Tree view: every subcollection on the page expanded
+ * into a forest of container nodes, each tree following the
+ * filesystem-nesting of entities under that subcollection.
+ *
+ * Unlike `containers` (the page-folder container builder, which only
+ * descends into entities whose `type === path`), this walks the full
+ * hierarchy under the subcollection root. A node may have children
+ * that live several folders deep, as long as their filesystem parent
+ * chain stays inside the subcollection.
+ *
+ * Header metadata (`path`, `plural`, `description`, `linkedEntityId`)
+ * matches the subcollection tile, so the page can render a single
+ * heading row that links to the subcollection's own page.
+ */
+export type SubcollectionTree = {
+	path: string;
+	plural: string;
+	description: string | null;
+	linkedEntityId: EntityId | null;
+	roots: ContainerNode[];
+};
 
 /**
  * Structural ("gravitational") relation kinds that build the orbits
@@ -305,6 +400,9 @@ export function loadCollectionPage(path: string) {
 		});
 
 	const orbits = buildOrbitsTree(path, cardSummaryHtml);
+	const subcollectionTrees = childPaths.map((sub) =>
+		buildSubcollectionTree(sub, path, cardSummaryHtml)
+	);
 
 	return {
 		kind: 'collection' as const,
@@ -313,6 +411,7 @@ export function loadCollectionPage(path: string) {
 		description,
 		bodyHtml,
 		subcollections,
+		subcollectionTrees,
 		containers,
 		standalone,
 		orbits,
@@ -361,10 +460,11 @@ export function loadEverythingIndex() {
 
 	const kindTree = buildLoaderKindTree();
 	const topPaths = graph.topLevelFolders();
-	const subcollections = topPaths
-		.filter((p) => graph.byFolderRecursive(p).length > 0)
+	const populated = topPaths.filter((p) => graph.byFolderRecursive(p).length > 0);
+	const subcollections = populated
 		.map((p) => buildSubcollectionEntry(p, kindTree))
 		.sort((a, b) => a.plural.localeCompare(b.plural));
+	const subcollectionTrees = populated.map((p) => buildSubcollectionTree(p, '', cardSummaryHtml));
 
 	const allCards = graph
 		.all()
@@ -378,6 +478,7 @@ export function loadEverythingIndex() {
 		description: 'Every entry in Alteria, in one place. Filter or flatten to taste.',
 		bodyHtml: null,
 		subcollections,
+		subcollectionTrees,
 		containers: [] as ContainerNode[],
 		orbits: [] as OrbitNode[],
 		folders: [] as Array<{

@@ -24,8 +24,8 @@
 	//
 	// All four apply at the same time and reset on navigation
 	// (per-page local state only).
-	type ViewMode = 'nested' | 'flat' | 'orbits';
-	let viewMode = $state<ViewMode>('nested');
+	type ViewMode = 'index' | 'tree' | 'flat' | 'orbits';
+	let viewMode = $state<ViewMode>('index');
 	let activeKind = $state<string | null>(null);
 	let activeFolder = $state<string | null>(null);
 	let activeTags = $state<Set<string>>(new Set());
@@ -248,7 +248,7 @@
 	// every descendant. So picking the supertype `celestial-body` reads
 	// the correct aggregate count directly, no client-side walking needed.
 	const visibleSubcollections = $derived.by(() => {
-		if (viewMode !== 'nested') return [];
+		if (viewMode !== 'index') return [];
 		return data.subcollections
 			.map((sub) => {
 				// Re-derive count + tag list under the current filters.
@@ -300,14 +300,29 @@
 	}
 
 	const visibleGrid = $derived.by(() => {
-		if (viewMode === 'orbits') return [];
+		if (viewMode === 'orbits' || viewMode === 'tree') return [];
 		const source = viewMode === 'flat' ? data.flat : data.standalone;
 		return source.filter(matchesFilters);
 	});
 
 	const visibleContainers = $derived.by(() => {
-		if (viewMode !== 'nested') return [];
+		if (viewMode !== 'index') return [];
 		return data.containers.map(filterNode).filter((n): n is RenderNode => n !== null);
+	});
+
+	// Tree mode: each subcollection becomes a section with its own
+	// container tree. Trees follow the *filesystem* hierarchy
+	// (built server-side), not the page-folder containers used by
+	// Index mode, so they descend all the way down. Subcollections
+	// whose tree fully prunes under the active filters drop out.
+	const visibleSubcollectionTrees = $derived.by(() => {
+		if (viewMode !== 'tree') return [];
+		return data.subcollectionTrees
+			.map((sub) => ({
+				...sub,
+				roots: sub.roots.map(filterNode).filter((n): n is RenderNode => n !== null)
+			}))
+			.filter((sub) => sub.roots.length > 0);
 	});
 
 	// Orbits view renders the structural tree, but with a twist:
@@ -400,11 +415,21 @@
 					<button
 						type="button"
 						class="filter"
-						class:active={viewMode === 'nested'}
-						onclick={() => (viewMode = 'nested')}
+						class:active={viewMode === 'index'}
+						onclick={() => (viewMode = 'index')}
 					>
-						Nested
+						Index
 					</button>
+					{#if hasSubcollections}
+						<button
+							type="button"
+							class="filter"
+							class:active={viewMode === 'tree'}
+							onclick={() => (viewMode = 'tree')}
+						>
+							Tree
+						</button>
+					{/if}
 					<button
 						type="button"
 						class="filter"
@@ -537,6 +562,26 @@
 		<section class="containers" aria-label="Container entities">
 			{#each visibleContainers as group (group.container.id)}
 				{@render containerTree(group)}
+			{/each}
+		</section>
+	{/if}
+
+	{#if visibleSubcollectionTrees.length > 0}
+		<section class="subcollection-trees" aria-label="Subcollection trees">
+			{#each visibleSubcollectionTrees as sub (sub.path)}
+				<section class="subcollection-tree" aria-label={sub.plural}>
+					<header class="subcollection-tree-heading">
+						<h2>
+							<a href={`/${sub.linkedEntityId ?? sub.path}`}>{sub.plural}</a>
+						</h2>
+						{#if sub.description}
+							<p class="subcollection-tree-description">{sub.description}</p>
+						{/if}
+					</header>
+					{#each sub.roots as root (root.container.id)}
+						{@render containerTree(root)}
+					{/each}
+				</section>
 			{/each}
 		</section>
 	{/if}
@@ -958,6 +1003,58 @@
 		flex-direction: column;
 		gap: var(--space-5);
 		margin: 0 0 var(--space-5) 0;
+	}
+
+	/* Tree view: each subcollection becomes its own section, with
+	   a heading that links to the subcollection's page (or its
+	   headline entity if the subcollection has one). Sections are
+	   separated by a faint top rule so the eye groups each tree
+	   independently. */
+	.subcollection-trees {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-7);
+		margin: 0 0 var(--space-5) 0;
+	}
+
+	.subcollection-tree {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+	}
+
+	.subcollection-tree + .subcollection-tree {
+		border-top: 1px solid var(--rule);
+		padding-top: var(--space-6);
+	}
+
+	.subcollection-tree-heading {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+	}
+
+	.subcollection-tree-heading h2 {
+		margin: 0;
+		font-family: var(--font-serif);
+		font-size: var(--text-xl);
+		font-weight: 500;
+		letter-spacing: 0.01em;
+	}
+
+	.subcollection-tree-heading h2 a {
+		color: var(--ink);
+		text-decoration: none;
+	}
+
+	.subcollection-tree-heading h2 a:hover {
+		color: var(--accent);
+	}
+
+	.subcollection-tree-description {
+		margin: 0;
+		color: var(--ink-soft);
+		font-style: italic;
 	}
 
 	.container-group {
