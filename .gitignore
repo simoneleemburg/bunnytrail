@@ -21,3 +21,6 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# opencode (project-local Chrome profile for chrome-devtools MCP)
+/.opencode/chrome-profile
