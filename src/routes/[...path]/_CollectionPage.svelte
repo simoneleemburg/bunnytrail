@@ -322,9 +322,7 @@
 		if (viewMode !== 'tree') return [];
 		return data.subcollectionTrees
 			.map((sub) => {
-				const roots = sub.roots
-					.map(filterNode)
-					.filter((n): n is RenderNode => n !== null);
+				const roots = sub.roots.map(filterNode).filter((n): n is RenderNode => n !== null);
 				const headlineMatches = sub.headlineEntity ? matchesFilters(sub.headlineEntity) : false;
 				return { ...sub, roots, headlineMatches };
 			})

@@ -12,4 +12,3 @@ Urouthi infants pass the ten-to-twelve year second stage of
 their birth. See
 [[kinds/urouthi#how-a-urouthi-is-born|How an Urouthi is born]]
 for the practice.
-

@@ -102,11 +102,12 @@ structured views, each declared as an optional field. Lenses are
 multiple, optional, and dimensional. The lenses currently in use:
 
 - **Spatial.** Where the instance sits in the world's geography
-  and structure. Declared via `relations: - kind: <verb>, target:
-<entity-id>` (e.g. `member-of`, `located-in`, `orbits`,
-  `occurred-on`). Folder placement is not a substitute — a moon
-  isn't "in" the planet just because the folder nests; the
-  spatial claim is the relation.
+  and structure. Declared via
+  `relations: - kind: <verb>, target: <entity-id>` (e.g.
+  `member-of`, `located-in`, `orbits`, `occurred-on`). Folder
+  placement is not a substitute — a moon isn't "in" the planet
+  just because the folder nests; the spatial claim is the
+  relation.
 - **Temporal.** When in the world's editorial timeline. Declared
   via `relations: - kind: occurred-in, target: history/<age>`,
   pointing at one of the registered ages

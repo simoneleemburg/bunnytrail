@@ -160,8 +160,9 @@ WORLDBUILDING.md).
   overrides, description) and `_kind.md` (long-form prose). The parent
   kind is whichever folder it sits in; no `kindParent:` field needed.
 - **New event** → `content/history/<slug>/index.{yaml,md}` with
-  `kind: event`. Add temporal placement via `relations: - kind:
-occurred-in, target: history/<age>` and spatial placement via
+  `kind: event`. Add temporal placement via
+  `relations: - kind: occurred-in, target: history/<age>` and
+  spatial placement via
   `relations: - kind: occurred-on, target: <place-entity-id>`.
 - **New age** → `content/history/<slug>/index.{yaml,md}` with
   `kind: age`. The four current ages were chosen deliberately;

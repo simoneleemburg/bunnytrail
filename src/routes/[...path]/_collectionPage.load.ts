@@ -53,9 +53,7 @@ function buildSubcollectionEntry(path: string, tree: KindTree) {
 		count: subEntities.length,
 		kindCounts,
 		tags: rankTags(tagCounts),
-		tagsByKind: Object.fromEntries(
-			Object.entries(tagsByKind).map(([k, m]) => [k, rankTags(m)])
-		)
+		tagsByKind: Object.fromEntries(Object.entries(tagsByKind).map(([k, m]) => [k, rankTags(m)]))
 	};
 }
 
@@ -143,15 +141,15 @@ function buildSubcollectionTree(
 			.filter((e) => !e.parent || !inSubcollection(e.parent));
 	}
 
-	const roots = rootEntities
-		.sort((a, b) => a.meta.name.localeCompare(b.meta.name))
-		.map(buildNode);
+	const roots = rootEntities.sort((a, b) => a.meta.name.localeCompare(b.meta.name)).map(buildNode);
 
 	return {
 		path: subPath,
 		plural: labels.plural,
 		description,
-		headlineEntity: headlineSource ? toCard(headlineSource, cardSummaryHtml, undefined, pathBucket(headlineSource.id)) : null,
+		headlineEntity: headlineSource
+			? toCard(headlineSource, cardSummaryHtml, undefined, pathBucket(headlineSource.id))
+			: null,
 		roots
 	};
 }

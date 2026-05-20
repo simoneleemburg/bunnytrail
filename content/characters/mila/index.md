@@ -67,4 +67,3 @@ journey she is being carried through.
 ## With Freya
 
 Mila is the lover of [[characters/freya|Freya]].
-

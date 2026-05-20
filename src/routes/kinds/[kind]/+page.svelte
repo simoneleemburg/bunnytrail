@@ -209,7 +209,9 @@
 		color: var(--ink-faint);
 		cursor: pointer;
 		border-bottom: 1px solid transparent;
-		transition: color 120ms ease, border-color 120ms ease;
+		transition:
+			color 120ms ease,
+			border-color 120ms ease;
 	}
 
 	.tab:hover {

@@ -90,4 +90,3 @@ hierarchy.
 The role of the Eidolon Knight is recognised on all three
 worlds, but how that role is received varies sharply between
 them.
-

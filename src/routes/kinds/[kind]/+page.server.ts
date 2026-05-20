@@ -174,9 +174,8 @@ function buildKindSlice(currentId: string): KindSliceNode | null {
 
 	const countFor = (kindId: string): number => {
 		const family = kindFamily(kindId);
-		return graph
-			.all()
-			.filter((e) => typeof e.meta.kind === 'string' && family.has(e.meta.kind)).length;
+		return graph.all().filter((e) => typeof e.meta.kind === 'string' && family.has(e.meta.kind))
+			.length;
 	};
 
 	const nodeFor = (

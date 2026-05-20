@@ -38,7 +38,7 @@ this file is not loaded by the site.
   relationship between fallen Naya and the broken-god material
   before writing — they may be the same thing or two distinct
   registers of the same shattering.
-- **Moons.** Lock in the moons of Bayurinda — We know she has two of them, 
+- **Moons.** Lock in the moons of Bayurinda — We know she has two of them,
   but they're currently absent.
 - **Pantheon.** Move in the entire pantheon. Amon and Danu are
   the obvious ones the existing entries already gesture at

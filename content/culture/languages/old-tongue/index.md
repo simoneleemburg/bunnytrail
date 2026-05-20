@@ -255,4 +255,3 @@ locked partnership can carry it through to a name.
 This is why Old Tongue names enter the historical record only
 slowly, and why so many Naya are still known to the worlds only
 by description, by emotional impression, or by silence.
-

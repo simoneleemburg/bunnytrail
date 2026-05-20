@@ -49,4 +49,3 @@ elaborate, symbolic, and public; duels and displays shape
 social hierarchy. Where Bayurindan Knighthood is contemplative
 and Nebelheimic Knighthood is duty, Sharazani Knighthood is
 theatre — and the theatre is taken entirely seriously.
-
