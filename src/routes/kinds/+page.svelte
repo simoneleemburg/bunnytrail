@@ -15,12 +15,6 @@
 
 <PageHeader title="Kinds" />
 
-<p class="lede">
-	The full hierarchy of kinds across Alteria. Linked nodes have their own page under <code
-		>/kinds/</code
-	>; unlinked entries are registered in the kind tree but not yet authored as a kind page.
-</p>
-
 {#snippet branch(node: KindNode)}
 	<li class="kind" class:linked={node.href !== null}>
 		{#if node.href}
@@ -57,10 +51,6 @@
 {#if data.unregistered.length > 0}
 	<section class="unregistered">
 		<h2 class="section-heading">Unregistered</h2>
-		<p class="section-note">
-			Free-form <code>kind:</code> values carried by entities but not declared in the registry under
-			<code>content_meta/kinds/</code>. Promote them into the hierarchy when their meaning settles.
-		</p>
 		<ul class="unregistered-list">
 			{#each data.unregistered as item (item.kind)}
 				<li>
@@ -73,18 +63,6 @@
 {/if}
 
 <style>
-	.lede {
-		max-width: var(--prose-max);
-		color: var(--ink-soft);
-		margin: 0 0 var(--space-6);
-	}
-
-	.lede code {
-		font-family: var(--font-mono, ui-monospace, monospace);
-		font-size: 0.92em;
-		color: var(--ink);
-	}
-
 	.empty {
 		color: var(--ink-faint);
 	}
@@ -164,18 +142,6 @@
 		font-size: var(--text-xl);
 		font-weight: 500;
 		margin: 0 0 var(--space-2);
-		color: var(--ink);
-	}
-
-	.section-note {
-		max-width: var(--prose-max);
-		color: var(--ink-soft);
-		margin: 0 0 var(--space-5);
-	}
-
-	.section-note code {
-		font-family: var(--font-mono, ui-monospace, monospace);
-		font-size: 0.92em;
 		color: var(--ink);
 	}
 
