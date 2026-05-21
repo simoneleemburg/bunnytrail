@@ -24,13 +24,19 @@ Mundus leans toward by however much its nature permits, always.
 ## The failure of both
 
 Chaos is the horizon at which both temporal and spatial
-coherence cease. Where [[existence/source|the Source]] dissolves
-duration and [[existence/self|the Self]] dissolves separation,
-Chaos dissolves both at once. A thing leaning toward Chaos
-loses its hold on persistence and on position together. It does
-not become _somewhere else_, or _some other time_. It comes
-apart in both directions at the same rate, and the rate
-accelerates the further it leans.
+coherence cease. The axis whose far limit is Chaos is named
+**[[existence/mundus#the-three-axes|Dissolution]]**: a thing's
+Dissolution is the degree to which the work of holding itself
+together is failing, and the higher a thing's Dissolution, the
+closer it leans to the horizon.
+
+Where [[existence/source|the Source]] dissolves duration and
+[[existence/self|the Self]] dissolves separation, Chaos
+dissolves both at once. A thing leaning toward Chaos — a thing
+whose Dissolution is rising — loses its hold on persistence and
+on position together. It does not become _somewhere else_, or
+_some other time_. It comes apart in both directions at the
+same rate, and the rate accelerates the further it leans.
 
 At Chaos itself, there is neither space nor time. Nothing
 about it admits the categories that organise Mundus.

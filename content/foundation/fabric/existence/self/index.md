@@ -20,14 +20,20 @@ limits.
 ## The failure of space
 
 The Self is the horizon at which spatial coherence ceases.
+The axis whose far limit is the Self is named
+**[[existence/mundus#the-three-axes|Recollection]]**: a thing's
+Recollection is the degree to which what it is, is what it
+remembers having been, and the higher a thing's Recollection,
+the closer it leans to the horizon.
+
 Inside Mundus, space is the dimension across which a thing is
 separated from other things: here is not there; what is over a
 horizon is not where you are; getting from one place to another
-takes a journey. As something leans toward the Self, that
-coherence loosens. Distance becomes a function of meaning
-rather than extension; eras stand adjacent like landscapes;
-inner architecture surfaces as terrain. Memory and place trade
-roles.
+takes a journey. As something leans toward the Self — as its
+Recollection rises — that coherence loosens. Distance becomes a
+function of meaning rather than extension; eras stand adjacent
+like landscapes; inner architecture surfaces as terrain. Memory
+and place trade roles.
 
 At the Self itself, there is no space. The dimensions along
 which Mundus separates one location from another do not extend

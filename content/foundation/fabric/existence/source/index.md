@@ -13,13 +13,19 @@ something in Mundus that has approached one of Mundus's limits.
 ## The failure of time
 
 The Source is the horizon at which temporal coherence ceases.
+The axis whose far limit is the Source is named
+**[[existence/mundus#the-three-axes|Resonance]]**: a thing's
+Resonance is its degree of participation in the substrate from
+which selfhood arises, and the higher a thing's Resonance, the
+closer it leans to the horizon.
+
 Inside Mundus, time is the dimension along which a thing
 persists as itself: yesterday's body is today's body; what
 remembers happening is what happened. As something leans toward
-the Source, that coherence loosens. Identity-across-time
-becomes negotiable; resonance replaces succession; the
-yesterday-and-today distinction softens into a single
-participatory now.
+the Source — as its Resonance rises — that coherence loosens.
+Identity-across-time becomes negotiable; resonance replaces
+succession; the yesterday-and-today distinction softens into a
+single participatory now.
 
 At the Source itself, there is no time. The dimension along
 which Mundus orders its events does not extend to the horizon.

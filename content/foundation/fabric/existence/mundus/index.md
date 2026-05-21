@@ -52,16 +52,58 @@ This is why nothing with mass reaches a horizon. There is no
 _there_ to reach. The asymptote to mass and the failure of
 spacetime are the same fact, viewed from two sides.
 
+## The three axes
+
+Each horizon defines an axis along which a thing in Mundus has
+a position. The position is a real quantity — a measure of how
+hard the thing leans toward that horizon — and the three
+together describe a thing's standing in the geometry of Mundus
+in much the same way the four coordinates of spacetime describe
+its standing in the manifold.
+
+The three axes have names:
+
+- **Resonance** is the axis whose far limit is
+  [[existence/source|the Source]]. A thing's Resonance is the
+  degree to which it participates in the substrate from which
+  selfhood arises — the degree to which it is not yet, or no
+  longer fully, an individuated self.
+- **Recollection** is the axis whose far limit is
+  [[existence/self|the Self]]. A thing's Recollection is the
+  degree to which it is constituted by the continuous narrative
+  it carries — the degree to which what it is, is what it
+  remembers having been.
+- **Dissolution** is the axis whose far limit is
+  [[existence/chaos|Chaos]]. A thing's Dissolution is the
+  degree to which it is coming apart — the degree to which
+  the work of holding itself together is failing.
+
+These are not opposing pairs. A thing high in Resonance is not
+thereby low in Recollection; a thing low in Dissolution is not
+thereby high in either of the others. Each axis answers to its
+own horizon, and a thing's position along one says little
+directly about its position along the others. The shape of a
+particular thing's nature is in part the shape of which
+positions along each axis are available to it: a rock's
+Recollection-range is narrow, where a long-lived self's is
+wide.
+
+Every cluster has its own account of these quantities. Where a
+cluster's physics or natural history speaks of memory, of
+identity, of decay or of resonance or of entropy, it is most
+often speaking of some specific manifestation of these three
+axes within its own frame.
+
 ## Continuous interior
 
 Mundus has no internal boundaries. How strongly a region leans
 toward one horizon or another varies smoothly across the whole
 of it. There is no surface to cross between
 leaning-near-the-Source and leaning-near-the-centre, no
-threshold at which Source-influence ends and stable-embodiment
+threshold at which Resonance ends and stable-embodiment
 begins; the leaning shades from one to the other across
 whatever distance separates them. The same is true for the
-Self-axis and the Chaos-axis.
+Recollection and Dissolution axes.
 
 Where particular cultures name regions of Mundus, they are
 naming patterns of leaning, not bounded territories. The names
