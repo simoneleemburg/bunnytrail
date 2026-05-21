@@ -206,9 +206,7 @@ describe('excerpt', () => {
 		expect(excerpt('A *little* emphasis and **strong** stuff.')).toBe(
 			'A little emphasis and strong stuff.'
 		);
-		expect(excerpt('Some `code` and a [link](https://example.com).')).toBe(
-			'Some code and a link.'
-		);
+		expect(excerpt('Some `code` and a [link](https://example.com).')).toBe('Some code and a link.');
 		expect(excerpt('Mixed _underscored_ and __doubled__ words.')).toBe(
 			'Mixed underscored and doubled words.'
 		);

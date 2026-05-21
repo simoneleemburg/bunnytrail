@@ -185,9 +185,8 @@ function buildKindSlice(
 		const family = kindFamily(kindId);
 		return graph
 			.all()
-			.filter(
-				(e) => typeof e.meta.kind === 'string' && family.has(e.meta.kind) && inScope(e.id)
-			).length;
+			.filter((e) => typeof e.meta.kind === 'string' && family.has(e.meta.kind) && inScope(e.id))
+			.length;
 	};
 
 	const nodeFor = (

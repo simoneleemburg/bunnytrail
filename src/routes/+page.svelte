@@ -66,8 +66,7 @@
 		<p class="notebook-eyebrow">Working notes</p>
 		<p class="notebook-title">Notebook</p>
 		<p class="notebook-sub">
-			Author&rsquo;s-room reflections on building Alteria. Out-of-world; not part of the
-			compendium.
+			Author&rsquo;s-room reflections on building Alteria. Out-of-world; not part of the compendium.
 		</p>
 	</div>
 	<div class="notebook-arrow" aria-hidden="true">→</div>

@@ -122,9 +122,7 @@ describe('translateUrl', () => {
 		});
 
 		it('translates /kinds/<id> to /<cluster>/kinds/<id>', () => {
-			expect(translateUrl(url('/kinds/human'), 'aurethia', ctx)).toBe(
-				'/aurethia/kinds/human'
-			);
+			expect(translateUrl(url('/kinds/human'), 'aurethia', ctx)).toBe('/aurethia/kinds/human');
 		});
 
 		it('translates /<cluster>/kinds to /<other-cluster>/kinds', () => {

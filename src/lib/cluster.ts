@@ -100,8 +100,7 @@ export function translateUrl(
 	// cluster-aware synthesized paths (`/kinds`) behave the same way
 	// when scope changes: prefix the cluster or strip it.
 	const swapPaths = [...ctx.unionShelves, ...ctx.clusterAwarePaths];
-	const firstIsSwapPath =
-		segments.length > 0 && !firstIsCluster && swapPaths.includes(segments[0]);
+	const firstIsSwapPath = segments.length > 0 && !firstIsCluster && swapPaths.includes(segments[0]);
 
 	let newPath = url.pathname;
 	if (newScope === null) {
