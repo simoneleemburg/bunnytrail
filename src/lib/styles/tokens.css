@@ -32,6 +32,15 @@
 	--font-display: 'Iowan Old Style', 'Cormorant Garamond', Palatino, Georgia, serif;
 	--font-mono: 'Iosevka', 'JetBrains Mono', 'SFMono-Regular', ui-monospace, monospace;
 
+	/* Cooler, contemporary register: used by out-of-world surfaces
+	   (the notebook / blog, the craft sheet) where the parchment
+	   serif would feel falsely in-character. System sans stack —
+	   no web font load — chosen to read as plain working type
+	   against the warm body serif. */
+	--font-sans:
+		-apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', Helvetica, Arial, system-ui,
+		sans-serif;
+
 	/* Archaic / manuscript register: used by book-mode entities
 	   declared as `format: scrolls`. IM Fell English is a 17th-c
 	   English Roman with deliberate ink-bleed irregularity — reads
