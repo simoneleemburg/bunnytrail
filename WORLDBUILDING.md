@@ -69,30 +69,17 @@ A few consequences of this split that matter for editorial work:
   another cluster. A claim about Aurethia is a claim about Aurethia;
   a claim about the universe-as-such is a claim about the
   universe.
-- **Time across clusters is not a shared clock.** Clusters of
-  Alteria are separated by physical distances at which simultaneity
-  stops being a single objective fact — there is no universe-wide
-  "now" relating an event in one cluster to an event in another.
-  Layered on top of that, the one practice known to bridge
-  cross-cluster distances is Nearing, which loosens linear time
-  alongside spatial distance and bodily form (see
-  `content/aurethia/fabric/nearing/`); Whispers heard in Nareth do
-  not behave as if the past has finished being there, and some are
-  reported to come from ahead rather than behind. Nearing is, in
-  effect, a third axis through which the cosmos tilts, oblique to
-  the spatial and temporal ones. The editorial consequences:
+- **Time across clusters is not a shared clock.** For the
+  cosmology behind this — relativistic distance, Nearing as an
+  oblique axis, the consequences for cross-cluster claims — see
+  `[[foundation/fabric/distance-and-time]]`. The editorial
+  consequences for authoring:
   - The four Aurethian ages (`mythic`, `pre-recorded`, `recorded`,
-    `current`) are an Aurethia-frame label for Aurethian memory.
-    They are not a calendar laid over the universe. If Earth or
-    any future cluster acquires named ages, those ages are its
-    own, and aligning them with Aurethia's is a worldbuilding
-    decision, not a derivable fact.
-  - Cross-cluster temporal claims — "this Aurethian event happened
-    during Earth's Ice Age," "this Earth artefact reached Aurethia
-    before the Recorded Age" — must travel through accounts, with
-    the framing the account-relative lens already provides. They
-    are claims about what an in-world voice records, not about an
-    objective shared "when."
+    `current`) are an Aurethia-frame label, not a universal
+    calendar. If Earth or any future cluster acquires named ages,
+    those ages are its own.
+  - Cross-cluster temporal claims travel through accounts (the
+    account-relative lens), not through an objective shared "when."
   - "Cross-cluster contact" (above) does not imply a shared
     timeline either. Two clusters may have a recorded contact event
     without any universal answer to which of them was "earlier."
