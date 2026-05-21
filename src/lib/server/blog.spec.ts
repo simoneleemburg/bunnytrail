@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { formatPostDate, loadBlog } from './blog';
+import { formatPostDate, excerpt, loadBlog } from './blog';
 
 /**
  * Seed a blog tree on disk. `tree` is a record keyed by slug; each
@@ -178,5 +178,52 @@ describe('formatPostDate', () => {
 	it('returns the input unchanged for malformed values', () => {
 		expect(formatPostDate('not-a-date')).toBe('not-a-date');
 		expect(formatPostDate('2026-13-01')).toBe('2026-13-01');
+	});
+});
+
+describe('excerpt', () => {
+	it('returns the empty string for an empty body', () => {
+		expect(excerpt('')).toBe('');
+		expect(excerpt('   \n\n   ')).toBe('');
+	});
+
+	it('takes only the first paragraph', () => {
+		const body = 'First paragraph here.\n\nSecond paragraph should not appear.';
+		expect(excerpt(body)).toBe('First paragraph here.');
+	});
+
+	it('collapses single newlines within the first paragraph into spaces', () => {
+		const body = 'Line one.\nLine two.\nLine three.';
+		expect(excerpt(body)).toBe('Line one. Line two. Line three.');
+	});
+
+	it('skips heading-only paragraphs and falls through to the first prose paragraph', () => {
+		const body = '# Title\n\nThe real opening line.';
+		expect(excerpt(body)).toBe('The real opening line.');
+	});
+
+	it('strips common inline markdown markers', () => {
+		expect(excerpt('A *little* emphasis and **strong** stuff.')).toBe(
+			'A little emphasis and strong stuff.'
+		);
+		expect(excerpt('Some `code` and a [link](https://example.com).')).toBe(
+			'Some code and a link.'
+		);
+		expect(excerpt('Mixed _underscored_ and __doubled__ words.')).toBe(
+			'Mixed underscored and doubled words.'
+		);
+	});
+
+	it('truncates at a word boundary with an ellipsis when over the limit', () => {
+		const body = 'one two three four five six seven eight nine ten eleven twelve thirteen';
+		const out = excerpt(body, 30);
+		expect(out.endsWith('\u2026')).toBe(true);
+		expect(out.length).toBeLessThanOrEqual(31);
+		expect(out).not.toMatch(/\s\u2026$/); // no trailing space before the ellipsis
+		expect(out).toMatch(/^[a-z ]+\u2026$/); // only word chars before
+	});
+
+	it('leaves a short paragraph alone (no ellipsis)', () => {
+		expect(excerpt('Short and sweet.')).toBe('Short and sweet.');
 	});
 });

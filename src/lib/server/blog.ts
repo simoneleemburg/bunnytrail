@@ -63,6 +63,49 @@ export function formatPostDate(iso: string): string {
 	return `${Number(d)} ${month} ${y}`;
 }
 
+/**
+ * Pull a short plain-text excerpt from a post body, for use in the
+ * notebook index. Takes the first non-empty paragraph (markdown
+ * paragraphs are separated by blank lines), collapses single
+ * newlines into spaces, strips the small set of inline markdown
+ * markers a notebook post is likely to contain (`*em*`, `_em_`,
+ * `**strong**`, backtick code, link syntax), and truncates at a
+ * word boundary near `maxChars` with an ellipsis.
+ *
+ * Returns an empty string for an empty body. Headings and other
+ * block constructs are skipped — the first paragraph is what a
+ * reader scanning the index actually wants.
+ */
+export function excerpt(body: string, maxChars = 180): string {
+	const paragraphs = body.split(/\n\s*\n/);
+	let first = '';
+	for (const para of paragraphs) {
+		const trimmed = para.trim();
+		if (!trimmed) continue;
+		// Skip pure-heading paragraphs; they aren't prose.
+		if (/^#{1,6}\s/.test(trimmed)) continue;
+		first = trimmed;
+		break;
+	}
+	if (!first) return '';
+
+	const collapsed = first.replace(/\s*\n\s*/g, ' ');
+	const stripped = collapsed
+		.replace(/`([^`]+)`/g, '$1')
+		.replace(/\*\*([^*]+)\*\*/g, '$1')
+		.replace(/__([^_]+)__/g, '$1')
+		.replace(/\*([^*]+)\*/g, '$1')
+		.replace(/(?<![A-Za-z0-9])_([^_]+)_(?![A-Za-z0-9])/g, '$1')
+		.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+		.trim();
+
+	if (stripped.length <= maxChars) return stripped;
+	const slice = stripped.slice(0, maxChars);
+	const lastSpace = slice.lastIndexOf(' ');
+	const cut = lastSpace > maxChars * 0.6 ? slice.slice(0, lastSpace) : slice;
+	return cut.replace(/[.,;:!?\u2013\u2014\s]+$/, '') + '\u2026';
+}
+
 const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 

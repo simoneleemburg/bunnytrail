@@ -34,6 +34,9 @@
 					<a class="post-link" href={`/blog/${post.slug}`}>
 						<p class="post-date">{post.dateLabel}</p>
 						<h2 class="post-title">{post.title}</h2>
+						{#if post.excerpt}
+							<p class="post-excerpt">{post.excerpt}</p>
+						{/if}
 					</a>
 					{#if post.tags.length > 0}
 						<div class="post-tags">
@@ -143,6 +146,13 @@
 
 	.post-link:hover .post-title {
 		color: var(--accent);
+	}
+
+	.post-excerpt {
+		margin: var(--space-2) 0 0;
+		font-size: var(--text-sm);
+		color: var(--ink-soft);
+		line-height: var(--leading-normal);
 	}
 
 	.post-tags {
