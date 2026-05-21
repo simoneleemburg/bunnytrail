@@ -31,18 +31,22 @@ export async function load({ url }) {
 	// In All scope, shelf links go to cross-cluster aggregates; we
 	// don't paint ?scope=all on these because aggregate URLs already
 	// *are* All-scope URLs by construction.
-	// In a cluster scope, shelf links go to that cluster's shelves.
-	const nav = unionShelves.map((shelf) => {
-		const labelSourcePath =
-			graph.clusterShelfPaths(shelf).find((p) => graph.collection(p)) ??
-			graph.clusterShelfPaths(shelf)[0];
-		const label = graph.folderLabels(labelSourcePath ?? shelf).plural;
-		const href = selectedCluster ? `/${selectedCluster}/${shelf}` : `/${shelf}`;
-		const count = selectedCluster
-			? graph.byFolderRecursive(`${selectedCluster}/${shelf}`).length
-			: graph.entitiesByShelfAcrossClusters(shelf).length;
-		return { href, label, count };
-	});
+	// In a cluster scope, shelf links go to that cluster's shelves —
+	// and we filter the nav to only those shelves the cluster
+	// actually has on disk, so we never link to a 404.
+	const nav = unionShelves
+		.filter((shelf) => !selectedCluster || graph.isFolder(`${selectedCluster}/${shelf}`))
+		.map((shelf) => {
+			const labelSourcePath =
+				graph.clusterShelfPaths(shelf).find((p) => graph.collection(p)) ??
+				graph.clusterShelfPaths(shelf)[0];
+			const label = graph.folderLabels(labelSourcePath ?? shelf).plural;
+			const href = selectedCluster ? `/${selectedCluster}/${shelf}` : `/${shelf}`;
+			const count = selectedCluster
+				? graph.byFolderRecursive(`${selectedCluster}/${shelf}`).length
+				: graph.entitiesByShelfAcrossClusters(shelf).length;
+			return { href, label, count };
+		});
 
 	const clusterOptions = [
 		{ value: '', label: 'All Alteria', selected: selectedCluster === null },
