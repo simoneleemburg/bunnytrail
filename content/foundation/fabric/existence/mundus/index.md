@@ -19,13 +19,24 @@ nature permits, without ever leaving Mundus by arriving at one.
 This is the geometry: Mundus is the interior, the horizons are
 its limits, and nothing with mass is anywhere else.
 
-## What is and isn't claimed at the foundation layer
+## Continuous interior
 
-Mundus has no centre and no edge. Different regions of it lean
-toward different horizons; some regions lean toward none in
-particular. None of these regions are different _realms_ — they
-are all Mundus, differing only in which horizon they lean
-toward and how hard.
+Mundus has no internal boundaries. How strongly a region leans
+toward one horizon or another varies smoothly across the whole
+of it. There is no surface to cross between
+leaning-near-the-Source and leaning-near-the-centre, no
+threshold at which Source-influence ends and stable-embodiment
+begins; the leaning shades from one to the other across
+whatever distance separates them. The same is true for the
+Self-axis and the Chaos-axis.
+
+Where particular cultures name regions of Mundus, they are
+naming patterns of leaning, not bounded territories. The names
+are real — they correspond to real features of the continuum,
+real differences in how existence feels and behaves there — but
+the boundaries between them are not.
+
+## What is and isn't claimed at the foundation layer
 
 Whether anything exists _at_ the horizons — anything without
 mass, native to a limit — is left open. Such an entity, if any,
