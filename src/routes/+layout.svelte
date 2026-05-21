@@ -30,26 +30,25 @@
 				{/each}
 				<span class="nav-sep" aria-hidden="true">·</span>
 				<a href="/kinds">Kinds</a>
-				{#if data.clusterOptions.length > 1}
-					<span class="nav-sep" aria-hidden="true">·</span>
-					<form class="cluster-form" method="POST" action="/api/cluster">
-						<!-- Send the user back to where they were so the
-						     selector feels in-place rather than navigational. -->
-						<input type="hidden" name="redirect" value={$page.url.pathname + $page.url.search} />
-						<label class="cluster-label">
-							<span class="cluster-label-text">Cluster</span>
-							<select
-								name="cluster"
-								onchange={(e) => (e.currentTarget.form as HTMLFormElement).requestSubmit()}
-							>
-								{#each data.clusterOptions as opt (opt.value)}
-									<option value={opt.value} selected={opt.selected}>{opt.label}</option>
-								{/each}
-							</select>
-						</label>
-					</form>
-				{/if}
 			</nav>
+			{#if data.clusterOptions.length > 1}
+				<form class="cluster-form" method="POST" action="/api/cluster">
+					<!-- Send the user back to where they were so the
+					     selector feels in-place rather than navigational. -->
+					<input type="hidden" name="redirect" value={$page.url.pathname + $page.url.search} />
+					<label class="cluster-label">
+						<span class="cluster-label-text">Cluster</span>
+						<select
+							name="cluster"
+							onchange={(e) => (e.currentTarget.form as HTMLFormElement).requestSubmit()}
+						>
+							{#each data.clusterOptions as opt (opt.value)}
+								<option value={opt.value} selected={opt.selected}>{opt.label}</option>
+							{/each}
+						</select>
+					</label>
+				</form>
+			{/if}
 		</div>
 	</header>
 
@@ -81,7 +80,6 @@
 		margin: 0 auto;
 		display: flex;
 		align-items: baseline;
-		justify-content: space-between;
 		gap: var(--space-6);
 	}
 
@@ -124,7 +122,7 @@
 	}
 
 	.cluster-form {
-		margin: 0;
+		margin: 0 0 0 auto;
 		padding: 0;
 	}
 
