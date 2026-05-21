@@ -15,8 +15,8 @@ something in Mundus that has approached one of Mundus's limits.
 The Source is the horizon at which temporal coherence ceases.
 The axis whose far limit is the Source is named
 **[[existence/mundus#the-three-axes|Resonance]]**: a thing's
-Resonance is its degree of participation in the substrate from
-which selfhood arises, and the higher a thing's Resonance, the
+Resonance is its closeness to its origin, the wellspring from
+which selves emerge, and the higher a thing's Resonance, the
 closer it leans to the horizon.
 
 Inside Mundus, time is the dimension along which a thing

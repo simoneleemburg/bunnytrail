@@ -3,8 +3,9 @@ kind: axis
 summary: >-
   The axis of Mundus defined by the Self. A thing's Recollection
   is the measure of its closeness to the Self — the degree to
-  which what it is, is what it remembers having been.
-tags: [cosmology, self, memory, narrative]
+  which what it is, is what it has made of itself out of what
+  it has been.
+tags: [cosmology, self, narrative, becoming]
 relations:
   - kind: defined-by
     target: foundation/fabric/existence/self

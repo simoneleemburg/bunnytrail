@@ -67,12 +67,13 @@ horizon. The three quantities have names:
 
 - **[[existence/resonance|Resonance]]** is the measure of
   closeness to [[existence/source|the Source]] — the degree to
-  which a thing participates in the substrate from which
-  selfhood arises, the degree to which it is not yet, or no
-  longer fully, an individuated self.
+  which a thing is still close to its origin, still in contact
+  with the wellspring from which it, and every other self, first
+  emerged.
 - **[[existence/recollection|Recollection]]** is the measure of
   closeness to [[existence/self|the Self]] — the degree to
-  which what a thing is, is what it remembers having been.
+  which what a thing is, is what it has made of itself out of
+  what it has been.
 - **[[existence/dissolution|Dissolution]]** is the measure of
   closeness to [[existence/chaos|Chaos]] — the degree to which
   the work of holding itself together is failing.

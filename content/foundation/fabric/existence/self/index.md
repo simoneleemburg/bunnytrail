@@ -22,9 +22,9 @@ limits.
 The Self is the horizon at which spatial coherence ceases.
 The axis whose far limit is the Self is named
 **[[existence/mundus#the-three-axes|Recollection]]**: a thing's
-Recollection is the degree to which what it is, is what it
-remembers having been, and the higher a thing's Recollection,
-the closer it leans to the horizon.
+Recollection is the degree to which what it is, is what it has
+made of itself out of what it has been, and the higher a
+thing's Recollection, the closer it leans to the horizon.
 
 Inside Mundus, space is the dimension across which a thing is
 separated from other things: here is not there; what is over a
