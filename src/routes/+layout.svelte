@@ -9,6 +9,7 @@
 	interface Props {
 		data: {
 			nav: { href: string; label: string; count: number }[];
+			kindsHref: string;
 			clusterOptions: { value: string; label: string; selected: boolean }[];
 			selectedCluster: string | null;
 			scopeContext: ScopeContext;
@@ -82,7 +83,7 @@
 					<a href={item.href}>{item.label}</a>
 				{/each}
 				<span class="nav-sep" aria-hidden="true">·</span>
-				<a href="/kinds">Kinds</a>
+				<a href={data.kindsHref}>Kinds</a>
 			</nav>
 			{#if data.clusterOptions.length > 1}
 				<div class="cluster-form">

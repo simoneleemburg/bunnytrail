@@ -27,6 +27,15 @@ export type ClusterScope = string | null;
 export interface ScopeContext {
 	clusters: string[];
 	unionShelves: string[];
+	/**
+	 * Top-level paths that have a per-cluster variant under the
+	 * cluster prefix (e.g. `/kinds` ↔ `/<cluster>/kinds`). Treated
+	 * like union shelves by `translateUrl`: when switching to a
+	 * cluster the prefix is added; when switching to All the
+	 * prefix is dropped. These aren't physical folders under
+	 * `content/`, so the unionShelves list won't include them.
+	 */
+	clusterAwarePaths: string[];
 }
 
 /**
@@ -87,8 +96,12 @@ export function translateUrl(
 ): string {
 	const segments = url.pathname.split('/').filter(Boolean);
 	const firstIsCluster = segments.length > 0 && ctx.clusters.includes(segments[0]);
-	const firstIsUnionShelf =
-		segments.length > 0 && !firstIsCluster && ctx.unionShelves.includes(segments[0]);
+	// Both union shelves (real top-level content folders) and
+	// cluster-aware synthesized paths (`/kinds`) behave the same way
+	// when scope changes: prefix the cluster or strip it.
+	const swapPaths = [...ctx.unionShelves, ...ctx.clusterAwarePaths];
+	const firstIsSwapPath =
+		segments.length > 0 && !firstIsCluster && swapPaths.includes(segments[0]);
 
 	let newPath = url.pathname;
 	if (newScope === null) {
@@ -97,13 +110,20 @@ export function translateUrl(
 			const tail = segments.slice(1);
 			if (tail.length === 0) {
 				newPath = '/';
-			} else if (tail.length === 1 && ctx.unionShelves.includes(tail[0])) {
+			} else if (tail.length === 1 && swapPaths.includes(tail[0])) {
 				newPath = '/' + tail[0];
+			} else if (ctx.clusterAwarePaths.includes(tail[0])) {
+				// Cluster-aware synthesized path like /kinds: the
+				// sub-identifier (e.g. `human`) is shared across
+				// clusters, so we can strip the prefix cleanly.
+				// `/aurethia/kinds/human` → `/kinds/human`.
+				newPath = '/' + tail.join('/');
 			} else if (ctx.unionShelves.includes(tail[0])) {
-				// Deeper cluster URL: stripping would lose information
-				// (`/aurethia/places/bayurinda` doesn't have a clean
-				// cross-cluster twin). Keep the path; mark scope via
-				// query.
+				// Deep union-shelf URL: the entity lives at
+				// `<cluster>/<shelf>/<slug>`. Stripping would lose
+				// information (`/aurethia/places/bayurinda` has no
+				// clean cross-cluster twin). Keep the path; mark scope
+				// via query.
 				newPath = url.pathname;
 			} else {
 				newPath = url.pathname;
@@ -114,7 +134,7 @@ export function translateUrl(
 		if (firstIsCluster) {
 			const tail = segments.slice(1);
 			newPath = '/' + [newScope, ...tail].join('/');
-		} else if (firstIsUnionShelf) {
+		} else if (firstIsSwapPath) {
 			newPath = '/' + [newScope, ...segments].join('/');
 		}
 		// else: generic page, leave path alone.

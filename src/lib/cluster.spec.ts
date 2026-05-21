@@ -3,7 +3,8 @@ import { readScope, translateUrl, paintAllScope, type ScopeContext } from './clu
 
 const ctx: ScopeContext = {
 	clusters: ['aurethia', 'earth'],
-	unionShelves: ['characters', 'places', 'history']
+	unionShelves: ['characters', 'places', 'history'],
+	clusterAwarePaths: ['kinds']
 };
 
 const params = (s = '') => new URLSearchParams(s);
@@ -107,9 +108,35 @@ describe('translateUrl', () => {
 		});
 
 		it('keeps ?scope= when path cannot carry the cluster', () => {
-			// /kinds is a generic page; selecting Aurethia from there
-			// has no path representation, so we add ?scope=aurethia.
-			expect(translateUrl(url('/kinds'), 'aurethia', ctx)).toBe('/kinds?scope=aurethia');
+			// `/health` is a generic page (not a union shelf, not a
+			// cluster-aware path); selecting Aurethia has no path
+			// representation, so we add ?scope=aurethia.
+			expect(translateUrl(url('/health'), 'aurethia', ctx)).toBe('/health?scope=aurethia');
+		});
+
+		it('translates /kinds to /<cluster>/kinds', () => {
+			// /kinds is a cluster-aware synthesized path: there's a
+			// per-cluster variant at /<cluster>/kinds that filters to
+			// instances within that cluster.
+			expect(translateUrl(url('/kinds'), 'aurethia', ctx)).toBe('/aurethia/kinds');
+		});
+
+		it('translates /kinds/<id> to /<cluster>/kinds/<id>', () => {
+			expect(translateUrl(url('/kinds/human'), 'aurethia', ctx)).toBe(
+				'/aurethia/kinds/human'
+			);
+		});
+
+		it('translates /<cluster>/kinds to /<other-cluster>/kinds', () => {
+			expect(translateUrl(url('/aurethia/kinds'), 'earth', ctx)).toBe('/earth/kinds');
+		});
+
+		it('strips cluster prefix from /<cluster>/kinds when switching to All', () => {
+			expect(translateUrl(url('/aurethia/kinds'), null, ctx)).toBe('/kinds');
+		});
+
+		it('strips cluster prefix from /<cluster>/kinds/<id> when switching to All', () => {
+			expect(translateUrl(url('/aurethia/kinds/human'), null, ctx)).toBe('/kinds/human');
 		});
 
 		it('preserves other query state', () => {

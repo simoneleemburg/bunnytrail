@@ -4,6 +4,8 @@ import { loadEntityPage } from './_entityPage.load';
 import { loadAggregateShelfPage, loadCollectionPage } from './_collectionPage.load';
 import { loadChapterPage } from './_chapterPage.load';
 import { loadCraftPage } from './_craftPage.load';
+import { loadKindsIndexPage } from '../kinds/_kindsIndexPage.load';
+import { loadKindPage } from '../kinds/[kind]/_kindPage.load';
 
 /**
  * Unified route for everything that lives inside the worldbuilding
@@ -36,6 +38,21 @@ export async function load({ params }) {
 
 	const path = params.path;
 	if (!path) error(404, 'Missing path');
+
+	// Cluster-scoped /kinds: `<cluster>/kinds` and
+	// `<cluster>/kinds/<kind-id>`. Filters the global kinds tree /
+	// kind page to instances within that cluster. Must run before
+	// the entity / folder branches because `<cluster>/kinds` would
+	// otherwise be matched as a (non-existent) folder.
+	const kindsMatch = path.match(/^([a-z0-9][a-z0-9-]*)\/kinds(?:\/(.+))?$/);
+	if (kindsMatch && graph.clusters().includes(kindsMatch[1])) {
+		const cluster = kindsMatch[1];
+		const kindId = kindsMatch[2];
+		if (kindId) {
+			return { kind: 'kindPage' as const, ...loadKindPage(kindId, cluster) };
+		}
+		return { kind: 'kindsIndex' as const, ...loadKindsIndexPage(cluster) };
+	}
 
 	const entity = graph.get(path);
 	if (entity) {

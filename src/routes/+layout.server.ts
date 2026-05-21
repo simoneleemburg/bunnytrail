@@ -21,7 +21,11 @@ export async function load({ url }) {
 
 	const clusters = graph.clusters();
 	const unionShelves = graph.unionShelves();
-	const ctx: ScopeContext = { clusters, unionShelves };
+	// Top-level paths that have a cluster-scoped variant under
+	// /<cluster>/. /kinds is synthesized (not a content folder), so
+	// the union-shelf list doesn't include it.
+	const clusterAwarePaths = ['kinds'];
+	const ctx: ScopeContext = { clusters, unionShelves, clusterAwarePaths };
 	const selectedCluster = readScope(url.pathname, url.searchParams, ctx);
 
 	// In All scope, shelf links go to cross-cluster aggregates; we
@@ -51,10 +55,14 @@ export async function load({ url }) {
 
 	return {
 		nav,
+		// Kinds is its own destination (taxonomy), separate from the
+		// content shelves above. In a cluster scope it points at the
+		// per-cluster filtered view.
+		kindsHref: selectedCluster ? `/${selectedCluster}/kinds` : '/kinds',
 		clusterOptions,
 		selectedCluster,
 		// Surface the scope context to the client so the navigation
 		// hook can rewrite outgoing links without re-deriving it.
-		scopeContext: { clusters, unionShelves } satisfies ScopeContext
+		scopeContext: { clusters, unionShelves, clusterAwarePaths } satisfies ScopeContext
 	};
 }
