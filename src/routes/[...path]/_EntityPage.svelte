@@ -50,7 +50,7 @@
 			};
 			if (inverse[kind]) return inverse[kind];
 		}
-		return kind.replace(/[-_]/g, ' ');
+		return kind.replace(/[-_]/g, ' ').replace(/^./, (c) => c.toUpperCase());
 	}
 
 	/**
