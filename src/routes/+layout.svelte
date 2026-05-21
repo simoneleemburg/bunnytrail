@@ -2,6 +2,8 @@
 	import '$lib/styles/global.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/stores';
+	import { beforeNavigate, goto } from '$app/navigation';
+	import { paintAllScope, translateUrl, type ScopeContext } from '$lib/cluster';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
@@ -9,11 +11,62 @@
 			nav: { href: string; label: string; count: number }[];
 			clusterOptions: { value: string; label: string; selected: boolean }[];
 			selectedCluster: string | null;
+			scopeContext: ScopeContext;
 		};
 		children: Snippet;
 	}
 
 	let { data, children }: Props = $props();
+
+	// Set to true while the user-initiated cluster switch is
+	// navigating. The beforeNavigate hook checks this and bows out
+	// — otherwise it would re-paint ?scope=all onto a cluster URL
+	// just chosen from the selector, effectively reverting the
+	// switch.
+	let bypassScopePaint = false;
+
+	// In-app navigation hook: when the user is browsing in All
+	// scope, paint `?scope=all` onto outgoing internal links that
+	// would otherwise look scoped (i.e. start with a cluster prefix).
+	// This is what keeps "click Freya from /characters" honest:
+	// without it, the destination `/aurethia/characters/freya` would
+	// re-scope the selector to Aurethia. With it, the destination
+	// becomes `/aurethia/characters/freya?scope=all` and All sticks.
+	//
+	// Right-clicks (new tab) and pasted/shared URLs bypass this hook
+	// — that's intentional. In those cases the URL alone determines
+	// scope, which is the honest behaviour for a brand-new context.
+	beforeNavigate((nav) => {
+		if (bypassScopePaint) {
+			bypassScopePaint = false;
+			return;
+		}
+		if (data.selectedCluster !== null) return;
+		if (!nav.to) return;
+		if (nav.to.url.origin !== nav.from?.url.origin) return;
+		// Don't paint API routes — they're never user destinations.
+		if (nav.to.url.pathname.startsWith('/api/')) return;
+
+		const painted = paintAllScope(nav.to.url, data.scopeContext);
+		if (painted.href === nav.to.url.href) return;
+		nav.cancel();
+		goto(painted.href, { replaceState: false, keepFocus: true });
+	});
+
+	function switchCluster(value: string) {
+		const newScope = value === '' ? null : value;
+		const target = translateUrl(
+			{
+				pathname: $page.url.pathname,
+				search: $page.url.search,
+				hash: $page.url.hash
+			},
+			newScope,
+			data.scopeContext
+		);
+		bypassScopePaint = true;
+		goto(target);
+	}
 </script>
 
 <svelte:head>
@@ -32,22 +85,16 @@
 				<a href="/kinds">Kinds</a>
 			</nav>
 			{#if data.clusterOptions.length > 1}
-				<form class="cluster-form" method="POST" action="/api/cluster">
-					<!-- Send the user back to where they were so the
-					     selector feels in-place rather than navigational. -->
-					<input type="hidden" name="redirect" value={$page.url.pathname + $page.url.search} />
+				<div class="cluster-form">
 					<label class="cluster-label">
 						<span class="cluster-label-text">Cluster</span>
-						<select
-							name="cluster"
-							onchange={(e) => (e.currentTarget.form as HTMLFormElement).requestSubmit()}
-						>
+						<select name="cluster" onchange={(e) => switchCluster(e.currentTarget.value)}>
 							{#each data.clusterOptions as opt (opt.value)}
 								<option value={opt.value} selected={opt.selected}>{opt.label}</option>
 							{/each}
 						</select>
 					</label>
-				</form>
+				</div>
 			{/if}
 		</div>
 	</header>
