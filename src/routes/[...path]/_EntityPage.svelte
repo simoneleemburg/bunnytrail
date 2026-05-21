@@ -143,12 +143,12 @@
 			(e) => e.kind !== 'wikilink' || !e.entity || !typedPartners.has(e.entity.id)
 		);
 
-		type Group = { label: string; kind: string; items: EdgeWithEntity[] };
+		type Group = { key: string; label: string; kind: string; items: EdgeWithEntity[] };
 		const groups = new Map<string, Group>();
 		for (const edge of deduped) {
 			const label = labelForKind(edge.kind, edge.direction);
 			const key = `${edge.direction}:${edge.kind}`;
-			if (!groups.has(key)) groups.set(key, { label, kind: edge.kind, items: [] });
+			if (!groups.has(key)) groups.set(key, { key, label, kind: edge.kind, items: [] });
 			groups.get(key)!.items.push(edge);
 		}
 
@@ -266,8 +266,8 @@
 
 			{#if relationGroups.length > 0}
 				<section class="relations">
-					{#each relationGroups as group (group.label)}
-						{@const isExpanded = expanded.has(group.label)}
+					{#each relationGroups as group (group.key)}
+						{@const isExpanded = expanded.has(group.key)}
 						{@const visible =
 							group.items.length > COLLAPSE_AT && !isExpanded
 								? group.items.slice(0, COLLAPSE_AT)
@@ -290,7 +290,7 @@
 								{/each}
 							</ul>
 							{#if group.items.length > COLLAPSE_AT}
-								<button type="button" class="show-toggle" onclick={() => toggle(group.label)}>
+								<button type="button" class="show-toggle" onclick={() => toggle(group.key)}>
 									{isExpanded ? 'Show fewer' : `Show all (${group.items.length})`}
 								</button>
 							{/if}
