@@ -44,7 +44,9 @@
 				'occurred-in': 'Events',
 				records: 'Recorded in',
 				'recorded-on': 'Account',
-				orbits: 'Moons'
+				orbits: 'Moons',
+				'governed-by': 'Governs',
+				'local-account-of': 'Local accounts'
 			};
 			if (inverse[kind]) return inverse[kind];
 		}
