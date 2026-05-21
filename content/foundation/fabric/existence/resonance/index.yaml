@@ -1,0 +1,12 @@
+name: Resonance
+kind: axis
+summary: >-
+  The axis of Mundus defined by the Source. A thing's Resonance
+  is the measure of its closeness to the Source — the degree to
+  which it participates in the substrate from which selfhood
+  arises, and the degree to which it is not yet, or no longer
+  fully, an individuated self.
+tags: [cosmology, source, emergence, substrate]
+relations:
+  - kind: defined-by
+    target: foundation/fabric/existence/source

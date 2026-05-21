@@ -54,56 +54,89 @@ spacetime are the same fact, viewed from two sides.
 
 ## The three axes
 
-Each horizon defines an axis along which a thing in Mundus has
-a position. The position is a real quantity — a measure of how
-hard the thing leans toward that horizon — and the three
-together describe a thing's standing in the geometry of Mundus
-in much the same way the four coordinates of spacetime describe
-its standing in the manifold.
+The three horizons of Mundus do not give a thing three
+independent measurements. They give it one position, read three
+ways.
 
-The three axes have names:
+The geometry is closer to a triangle than to a coordinate
+system. The three horizons sit at the corners. Mundus is the
+interior. A thing in Mundus has a location in that interior,
+and the natural way to describe that location is by its closeness
+to each of the three corners — three quantities, one for each
+horizon. The three quantities have names:
 
-- **Resonance** is the axis whose far limit is
-  [[existence/source|the Source]]. A thing's Resonance is the
-  degree to which it participates in the substrate from which
-  selfhood arises — the degree to which it is not yet, or no
+- **[[existence/resonance|Resonance]]** is the measure of
+  closeness to [[existence/source|the Source]] — the degree to
+  which a thing participates in the substrate from which
+  selfhood arises, the degree to which it is not yet, or no
   longer fully, an individuated self.
-- **Recollection** is the axis whose far limit is
-  [[existence/self|the Self]]. A thing's Recollection is the
-  degree to which it is constituted by the continuous narrative
-  it carries — the degree to which what it is, is what it
-  remembers having been.
-- **Dissolution** is the axis whose far limit is
-  [[existence/chaos|Chaos]]. A thing's Dissolution is the
-  degree to which it is coming apart — the degree to which
+- **[[existence/recollection|Recollection]]** is the measure of
+  closeness to [[existence/self|the Self]] — the degree to
+  which what a thing is, is what it remembers having been.
+- **[[existence/dissolution|Dissolution]]** is the measure of
+  closeness to [[existence/chaos|Chaos]] — the degree to which
   the work of holding itself together is failing.
 
-These are not opposing pairs. A thing high in Resonance is not
-thereby low in Recollection; a thing low in Dissolution is not
-thereby high in either of the others. Each axis answers to its
-own horizon, and a thing's position along one says little
-directly about its position along the others. The shape of a
-particular thing's nature is in part the shape of which
-positions along each axis are available to it: a rock's
-Recollection-range is narrow, where a long-lived self's is
-wide.
+These three quantities are not independent. A thing in Mundus
+has _one_ position; the three axis-readings are three ways of
+describing that one position. They sum to a constant. Moving
+toward one corner means moving away from at least one of the
+others. Nothing in Mundus can lean hard along all three axes at
+once, because the geometry will not permit it: at most a thing
+can be close to one corner, or somewhere along an edge between
+two, or at the balance point in the middle.
+
+### The balance point
+
+The interior has a natural balance — the point equidistant from
+all three corners. A thing whose nature places it in the
+ordinary embodied middle of Mundus sits near this point. It is
+not exactly _at_ the balance point; ordinary existence wobbles
+within some neighbourhood of it, drifting a little toward one
+horizon and a little toward another as conditions and choices
+push it around. But the balance point is the centre of that
+wobble, and most of what most things are, most of the time, is
+"somewhere around the middle, leaning a bit."
+
+The balance point is not a fourth quantity. It is what the
+three axes describe when their values are about equal.
+
+### The edges
+
+Between any two corners is an edge — positions of low closeness
+to the third horizon, in which the other two trade against each
+other. The Source–Self edge is low-Dissolution territory: ways
+of being in which coming-apart is minimised and the trade is
+between participating in the substrate and remembering having
+been. The Source–Chaos and Self–Chaos edges describe their own
+trade-offs.
+
+The edges are real features of the geometry; what they look
+like in practice — what existence is like for a thing leaning
+along an edge rather than toward a corner — is not something
+the foundation layer has worked out. Cluster-specific
+phenomena may describe portions of one edge or another without
+naming it as such.
+
+### Other vocabularies
 
 Every cluster has its own account of these quantities. Where a
 cluster's physics or natural history speaks of memory, of
 identity, of decay or of resonance or of entropy, it is most
-often speaking of some specific manifestation of these three
-axes within its own frame.
+often speaking of some specific manifestation of one of the
+three axes within its own frame. The foundation-level names
+are reserved for the structural quantities; cluster
+vocabularies use whatever words their thought has reached for.
 
 ## Continuous interior
 
-Mundus has no internal boundaries. How strongly a region leans
-toward one horizon or another varies smoothly across the whole
-of it. There is no surface to cross between
-leaning-near-the-Source and leaning-near-the-centre, no
-threshold at which Resonance ends and stable-embodiment
-begins; the leaning shades from one to the other across
-whatever distance separates them. The same is true for the
-Recollection and Dissolution axes.
+Mundus has no internal boundaries. Resonance, Recollection, and
+Dissolution all vary smoothly across the whole of the interior.
+There is no surface to cross between leaning-near-the-Source
+and leaning-near-the-centre, no threshold at which Resonance
+becomes high or low; the values shade continuously from one
+region to another across whatever distance separates them. The
+same is true for Recollection and Dissolution.
 
 Where particular cultures name regions of Mundus, they are
 naming patterns of leaning, not bounded territories. The names

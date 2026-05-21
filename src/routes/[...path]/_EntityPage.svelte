@@ -47,7 +47,8 @@
 				orbits: 'Moons',
 				'governed-by': 'Governs',
 				'local-account-of': 'Local accounts',
-				approaches: 'Approached by'
+				approaches: 'Approached by',
+				'defined-by': 'Defines'
 			};
 			if (inverse[kind]) return inverse[kind];
 		}

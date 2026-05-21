@@ -148,6 +148,63 @@ and connections that the structured fields don't already capture
 (e.g. `ocean`, `ruins`, `pilgrimage`, `border`). Keeping tags clean
 keeps them useful.
 
+### Reserved structural terms
+
+A small set of capitalised words are **structural** in this
+compendium — they name foundation-level features of existence,
+not ordinary English concepts. When written with their initial
+capital, they refer to those structures specifically; when
+written in lower case, they retain whatever ordinary meaning
+they have.
+
+The reserved structural terms, with their pages:
+
+- **Alteria** — the universe as a whole. The lower-case
+  "alteria" is not used.
+- **Mundus** — the interior of existence: the region in which
+  things have mass, hold form, persist in time, occupy space.
+  See [`content/foundation/fabric/existence/mundus/`](content/foundation/fabric/existence/mundus/).
+- **The Source**, **the Self**, **Chaos** — the three horizons
+  that bound Mundus. See `content/foundation/fabric/existence/`.
+- **Resonance**, **Recollection**, **Dissolution** — the three
+  axes by which a thing's position in Mundus is measured. Each
+  is defined by one of the horizons (Resonance by the Source,
+  Recollection by the Self, Dissolution by Chaos). They are
+  not independent measures: a thing in Mundus has one position
+  in the interior, and the three axes are three readings of
+  that one position. See `content/foundation/fabric/existence/`.
+- **Nearing**, **Valdor traversal**, **Drifting** — the three
+  Aurethian phenomena of approach toward the horizons (the
+  Source, the Self, and Chaos respectively). See
+  `content/aurethia/fabric/`.
+
+A few editorial consequences:
+
+- **Don't use these words lightly.** If a piece of prose says
+  "the conversation had a strange resonance," that's ordinary
+  English (lower case), not a claim about the Source-axis. If
+  it says "her Resonance was unusually high for someone of her
+  training," that's a structural claim. Watch for the slip
+  between the two: in particular, _resonance_, _recollection_,
+  _dissolution_, and _self_ are common English words, and
+  using them in their ordinary sense in worldbuilding prose is
+  fine — but reach for synonyms when the structural reading
+  might intrude.
+- **Capitalise the structural meaning.** When you do mean the
+  axis, capitalise. When you mean the ordinary sense, don't.
+- **Cluster vocabularies stay cluster-local.** Aurethian
+  resonance-talk, Earth-physics entropy, philosophy's
+  "personal identity" — all are local accounts of (specific
+  manifestations of) one or another structural quantity. The
+  foundation-level capitalised names are reserved for the
+  structural quantities; cluster prose uses the cluster's own
+  words.
+- **Cluster prose may reference the structural terms** —
+  linking to `[[existence/resonance|Resonance]]` from a
+  Nearing entry is fine and load-bearing — but should not
+  silently overwrite the cluster's own vocabulary with the
+  foundation-level term.
+
 ### Kinds, instances, and lenses
 
 The compendium is built on one foundational separation and a
