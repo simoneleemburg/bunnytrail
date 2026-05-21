@@ -46,7 +46,8 @@
 				'recorded-on': 'Account',
 				orbits: 'Moons',
 				'governed-by': 'Governs',
-				'local-account-of': 'Local accounts'
+				'local-account-of': 'Local accounts',
+				approaches: 'Approached by'
 			};
 			if (inverse[kind]) return inverse[kind];
 		}

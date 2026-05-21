@@ -7,5 +7,7 @@ tags: [cosmology, transformation]
 sigil: 🜁
 nativeBeings: [kinds/naya]
 relations:
-  - kind: local-account-of
-    target: foundation/fabric/realms-of-existence/source
+  - kind: region-of
+    target: foundation/fabric/existence/mundus
+  - kind: approaches
+    target: foundation/fabric/existence/source

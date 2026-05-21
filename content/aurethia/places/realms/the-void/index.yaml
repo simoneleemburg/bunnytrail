@@ -2,3 +2,8 @@ name: The Void Between Worlds
 kind: realm
 summary: The space between the worlds is not empty. What lies in it — broken Naya, fragments of an old breaking, the failed Eidolons of pilots who could not hold themselves together — is the cosmos's cosmic graveyard of failed identity cohesion.
 tags: [void, travel, dissolution, danger]
+relations:
+  - kind: region-of
+    target: foundation/fabric/existence/mundus
+  - kind: approaches
+    target: foundation/fabric/existence/chaos
