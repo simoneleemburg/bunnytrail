@@ -1,0 +1,10 @@
+name: Subjectivity
+kind: axis
+summary: >-
+  The axis of Mundus defined by the Self. A thing's Subjectivity
+  is the degree to which reality is shaped by its experience of
+  it — the give of the world under the perceiver.
+tags: [cosmology, self, experience, perception]
+relations:
+  - kind: defined-by
+    target: foundation/fabric/existence/self

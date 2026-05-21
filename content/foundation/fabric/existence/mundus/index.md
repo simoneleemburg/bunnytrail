@@ -74,10 +74,10 @@ horizon. The three quantities have names:
   which a thing is still close to its origin, still in contact
   with the wellspring from which it, and every other self, first
   emerged.
-- **[[existence/recollection|Recollection]]** is the measure of
+- **[[existence/subjectivity|Subjectivity]]** is the measure of
   closeness to [[existence/self|the Self]] — the degree to
-  which what a thing is, is what it has made of itself out of
-  what it has been.
+  which the reality a thing inhabits is shaped by its
+  experience of that reality.
 - **[[existence/dissolution|Dissolution]]** is the measure of
   closeness to [[existence/chaos|Chaos]] — the degree to which
   the work of holding itself together is failing.
@@ -135,13 +135,13 @@ vocabularies use whatever words their thought has reached for.
 
 ## Continuous interior
 
-Mundus has no internal boundaries. Resonance, Recollection, and
+Mundus has no internal boundaries. Resonance, Subjectivity, and
 Dissolution all vary smoothly across the whole of the interior.
 There is no surface to cross between leaning-near-the-Source
 and leaning-near-the-centre, no threshold at which Resonance
 becomes high or low; the values shade continuously from one
 region to another across whatever distance separates them. The
-same is true for Recollection and Dissolution.
+same is true for Subjectivity and Dissolution.
 
 Where particular cultures name regions of Mundus, they are
 naming patterns of leaning, not bounded territories. The names

@@ -23,12 +23,12 @@ the source is still present in it.
 ## Not an independent dimension
 
 Resonance is not a quantity a thing has independently of its
-Recollection or Dissolution. A thing in Mundus has one position
-in the interior; Resonance, [[existence/recollection|
-Recollection]], and [[existence/dissolution|Dissolution]] are
+Subjectivity or Dissolution. A thing in Mundus has one position
+in the interior; Resonance, [[existence/subjectivity|
+Subjectivity]], and [[existence/dissolution|Dissolution]] are
 three readings of that one position. The three sum to a
 constant. A thing whose Resonance is rising is, by the same
-fact, having its Recollection or Dissolution (or both) lowered.
+fact, having its Subjectivity or Dissolution (or both) lowered.
 The geometry will not permit otherwise.
 
 ## How clusters speak of it

@@ -166,17 +166,19 @@ The reserved structural terms, with their pages:
   See [`content/foundation/fabric/existence/mundus/`](content/foundation/fabric/existence/mundus/).
 - **The Source**, **the Self**, **Chaos** — the three horizons
   that bound Mundus. See `content/foundation/fabric/existence/`.
-- **Resonance**, **Recollection**, **Dissolution** — the three
+- **Resonance**, **Subjectivity**, **Dissolution** — the three
   axes by which a thing's position in Mundus is measured. Each
   is defined by one of the horizons (Resonance by the Source,
-  Recollection by the Self, Dissolution by Chaos). They are
+  Subjectivity by the Self, Dissolution by Chaos). They are
   not independent measures: a thing in Mundus has one position
   in the interior, and the three axes are three readings of
   that one position. See `content/foundation/fabric/existence/`.
-- **Nearing**, **Valdor traversal**, **Drifting** — the three
-  Aurethian phenomena of approach toward the horizons (the
-  Source, the Self, and Chaos respectively). See
-  `content/aurethia/fabric/`.
+- **Nearing**, **Remembrance**, **Valdor traversal**, **Drifting**
+  — the four Aurethian phenomena of approach toward the horizons.
+  Nearing approaches the Source; Remembrance is the bending of
+  reality around the experiencing subject as one leans toward the
+  Self, and Valdor traversal is its deliberate practice; Drifting
+  approaches Chaos. See `content/aurethia/fabric/`.
 
 A few editorial consequences:
 
@@ -185,11 +187,11 @@ A few editorial consequences:
   English (lower case), not a claim about the Source-axis. If
   it says "her Resonance was unusually high for someone of her
   training," that's a structural claim. Watch for the slip
-  between the two: in particular, _resonance_, _recollection_,
-  _dissolution_, and _self_ are common English words, and
-  using them in their ordinary sense in worldbuilding prose is
-  fine — but reach for synonyms when the structural reading
-  might intrude.
+  between the two: in particular, _resonance_, _subjectivity_,
+  _dissolution_, _self_, and _remembrance_ are common English
+  words, and using them in their ordinary sense in worldbuilding
+  prose is fine — but reach for synonyms when the structural
+  reading might intrude.
 - **Capitalise the structural meaning.** When you do mean the
   axis, capitalise. When you mean the ordinary sense, don't.
 - **Cluster vocabularies stay cluster-local.** Aurethian

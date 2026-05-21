@@ -13,7 +13,7 @@ axis.
 The three axes are:
 
 - **[[existence/resonance|Resonance]]**, defined by the Source.
-- **[[existence/recollection|Recollection]]**, defined by the Self.
+- **[[existence/subjectivity|Subjectivity]]**, defined by the Self.
 - **[[existence/dissolution|Dissolution]]**, defined by Chaos.
 
 They are not independent. A thing has one position, not three;

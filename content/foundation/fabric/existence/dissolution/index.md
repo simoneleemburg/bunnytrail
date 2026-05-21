@@ -15,15 +15,15 @@ breaking, by the failure of whatever ordinarily binds them.
 ## Not an independent dimension
 
 Dissolution is not a quantity a thing has independently of its
-Resonance or Recollection. A thing in Mundus has one position
+Resonance or Subjectivity. A thing in Mundus has one position
 in the interior; [[existence/resonance|Resonance]],
-[[existence/recollection|Recollection]], and Dissolution are
+[[existence/subjectivity|Subjectivity]], and Dissolution are
 three readings of that one position. They sum to a constant.
 A thing whose Dissolution is rising is, by the same fact,
-having its Resonance or Recollection (or both) lowered.
+having its Resonance or Subjectivity (or both) lowered.
 
 This has consequences. A thing cannot simultaneously be deep in
-the substrate of selfhood and deep in coming-apart, in the
+subjective bending of reality and deep in coming-apart, in the
 strict sense in which both axes measure closeness to a horizon.
 Whether and how a thing _moves_ across the interior over time —
 a being beginning high in one axis and ending high in another,
