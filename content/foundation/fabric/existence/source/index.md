@@ -10,6 +10,29 @@ A thing in Mundus that leans hard toward the Source loosens at
 the edges of itself. It does not become the Source. It is
 something in Mundus that has approached one of Mundus's limits.
 
+## The failure of time
+
+The Source is the horizon at which temporal coherence ceases.
+Inside Mundus, time is the dimension along which a thing
+persists as itself: yesterday's body is today's body; what
+remembers happening is what happened. As something leans toward
+the Source, that coherence loosens. Identity-across-time
+becomes negotiable; resonance replaces succession; the
+yesterday-and-today distinction softens into a single
+participatory now.
+
+At the Source itself, there is no time. The dimension along
+which Mundus orders its events does not extend to the horizon.
+Anything that did exist there — if anything does — would not
+have a duration, would not have a before or an after, would not
+be the same thing at one moment as at another in any sense
+those words have inside Mundus.
+
+This is the temporal face of the asymptote-to-mass: mass cannot
+reach the Source because the Source is, among other things, the
+place where time stops being defined, and mass is what persists
+in time.
+
 ## Relation to the other horizons
 
 The Source bounds Mundus on one side; [[existence/self|the

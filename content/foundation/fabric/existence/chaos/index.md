@@ -21,6 +21,26 @@ To call Chaos destructive is to mistake it for an event. It is
 not an event. It is a direction, and one that everything in
 Mundus leans toward by however much its nature permits, always.
 
+## The failure of both
+
+Chaos is the horizon at which both temporal and spatial
+coherence cease. Where [[existence/source|the Source]] dissolves
+duration and [[existence/self|the Self]] dissolves separation,
+Chaos dissolves both at once. A thing leaning toward Chaos
+loses its hold on persistence and on position together. It does
+not become _somewhere else_, or _some other time_. It comes
+apart in both directions at the same rate, and the rate
+accelerates the further it leans.
+
+At Chaos itself, there is neither space nor time. Nothing
+about it admits the categories that organise Mundus.
+Description applies less and less as the horizon is
+approached; at the horizon it does not apply at all.
+
+This is the unifying face of the asymptote-to-mass: mass cannot
+reach Chaos because mass is what holds together across space
+and time, and Chaos is where neither space nor time is defined.
+
 ## Local accounts
 
 Aurethia knows the mode of approach to Chaos —
@@ -36,14 +56,16 @@ the condition tends to assert itself, in the long interplanetary
 passages between Pillar-launches. The condition itself is not
 a location.
 
-The Aurethian practices that approach the other two horizons —
-[[fabric/nearing|Nearing]] toward [[existence/source|the
-Source]], [[fabric/valdor-traversal|Valdor traversal]] toward
-[[existence/self|the Self]] — are undertaken deliberately. The
-mode-of-approach toward Chaos, as Aurethia records it, has no
-matching deliberate practice: the Void is what coherence falls
-into when it fails, not a destination practitioners head
-toward.
+This mode of approach — [[fabric/drifting|Drifting]] — is the
+Chaos-axis counterpart to the practices that approach the other
+horizons: [[fabric/nearing|Nearing]] toward
+[[existence/source|the Source]], [[fabric/valdor-traversal|Valdor
+traversal]] toward [[existence/self|the Self]]. The asymmetry
+is real: Nearing and Valdor traversal are undertaken
+deliberately. Drifting, as Aurethia records it, is not. It is
+what happens to coherence when the work of holding it together
+fails — what a pilot falls into rather than what a pilot
+heads toward.
 
 Whether anything is _at_ Chaos — what a thing native to the
 horizon, without mass, would be — is not something the

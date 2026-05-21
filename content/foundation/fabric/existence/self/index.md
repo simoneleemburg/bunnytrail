@@ -17,6 +17,30 @@ narrative, more deeply mnemonic. It does not become the Self.
 It is a thing in Mundus that has approached one of Mundus's
 limits.
 
+## The failure of space
+
+The Self is the horizon at which spatial coherence ceases.
+Inside Mundus, space is the dimension across which a thing is
+separated from other things: here is not there; what is over a
+horizon is not where you are; getting from one place to another
+takes a journey. As something leans toward the Self, that
+coherence loosens. Distance becomes a function of meaning
+rather than extension; eras stand adjacent like landscapes;
+inner architecture surfaces as terrain. Memory and place trade
+roles.
+
+At the Self itself, there is no space. The dimensions along
+which Mundus separates one location from another do not extend
+to the horizon. Anything that did exist there — if anything
+does — would not have a position, would not have a here-and-
+there, would not be separated from anything else by distance
+in any sense that word has inside Mundus.
+
+This is the spatial face of the asymptote-to-mass: mass cannot
+reach the Self because the Self is, among other things, the
+place where space stops being defined, and mass is what
+occupies space.
+
 ## Relation to the other horizons
 
 The Self is not the same as identity at [[existence/source|the
