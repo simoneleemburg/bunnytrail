@@ -579,9 +579,14 @@ export function loadAggregateShelfPage(shelf: string) {
 	// cluster that defines the shelf, on the grounds that the same
 	// shelf name across clusters should mean the same kind of thing.
 	const labelSourcePath = clusterPaths.find((p) => graph.collection(p)) ?? clusterPaths[0];
-	const firstCollection = labelSourcePath ? graph.collection(labelSourcePath) : undefined;
 	const label = graph.folderLabels(labelSourcePath ?? shelf);
-	const description = firstCollection?.meta.description ?? null;
+	// For the cross-cluster aggregate we deliberately *don't* reuse
+	// any one cluster's `_collection.yaml` description — that text
+	// is written for its own cluster's page and tends to drift
+	// cluster-specific. Generate a neutral subtitle from the
+	// shelf's display label instead, so the framing reads as a true
+	// universe-wide view.
+	const description = `${label.plural} across Alteria`;
 
 	return {
 		kind: 'collection' as const,
