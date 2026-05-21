@@ -20,7 +20,7 @@
 		kind: string;
 		direction: 'out' | 'in';
 		note?: string;
-		entity: { id: string; name: string; summary: string | null } | null;
+		entity: { id: string; name: string; summary: string | null; sigil: string | null } | null;
 	};
 
 	function labelForKind(kind: string, direction: 'out' | 'in'): string {
@@ -286,6 +286,7 @@
 												id={item.entity.id}
 												name={item.entity.name}
 												summary={item.entity.summary}
+												sigil={item.entity.sigil}
 												compact
 											/>
 											{#if item.note}<span class="note"> — {item.note}</span>{/if}

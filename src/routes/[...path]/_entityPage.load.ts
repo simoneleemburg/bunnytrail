@@ -209,7 +209,8 @@ function pickCard(
 		slug: e.slug,
 		name: e.meta.name,
 		summary: e.meta.summary ?? null,
-		summaryHtml: cardSummaryHtml(e.meta.summary)
+		summaryHtml: cardSummaryHtml(e.meta.summary),
+		sigil: typeof e.meta.sigil === 'string' ? e.meta.sigil : null
 	};
 }
 
