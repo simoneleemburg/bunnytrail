@@ -10,34 +10,25 @@ A thing in Mundus that leans hard toward the Source loosens at
 the edges of itself. It does not become the Source. It is
 something in Mundus that has approached one of Mundus's limits.
 
-## The failure of time
+## The Resonance axis
 
-The Source is the horizon at which temporal coherence ceases.
 The axis whose far limit is the Source is named
 **[[existence/mundus#the-three-axes|Resonance]]**: a thing's
 Resonance is its closeness to its origin, the wellspring from
 which selves emerge, and the higher a thing's Resonance, the
 closer it leans to the horizon.
 
-Inside Mundus, time is the dimension along which a thing
-persists as itself: yesterday's body is today's body; what
-remembers happening is what happened. As something leans toward
-the Source — as its Resonance rises — that coherence loosens.
-Identity-across-time becomes negotiable; resonance replaces
-succession; the yesterday-and-today distinction softens into a
-single participatory now.
+A thing leaning hard along its Resonance loosens at the edges of
+itself. Identity becomes negotiable; the distinction between
+this self and the medium that selves arise out of softens. What
+was a separate, persisting one becomes shaded with the
+participatory underneath. The categories that let a thing be
+_this thing and not another_ apply less and less as the horizon
+approaches; at the horizon they do not apply at all.
 
-At the Source itself, there is no time. The dimension along
-which Mundus orders its events does not extend to the horizon.
-Anything that did exist there — if anything does — would not
-have a duration, would not have a before or an after, would not
-be the same thing at one moment as at another in any sense
-those words have inside Mundus.
-
-This is the temporal face of the asymptote-to-mass: mass cannot
-reach the Source because the Source is, among other things, the
-place where time stops being defined, and mass is what persists
-in time.
+At the Source itself, there is no individual. Nothing native to
+the horizon would be _one self_ in any sense those words have
+inside Mundus.
 
 ## Relation to the other horizons
 

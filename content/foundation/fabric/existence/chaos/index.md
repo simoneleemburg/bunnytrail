@@ -21,31 +21,27 @@ To call Chaos destructive is to mistake it for an event. It is
 not an event. It is a direction, and one that everything in
 Mundus leans toward by however much its nature permits, always.
 
-## The failure of both
+## The Dissolution axis
 
-Chaos is the horizon at which both temporal and spatial
-coherence cease. The axis whose far limit is Chaos is named
+The axis whose far limit is Chaos is named
 **[[existence/mundus#the-three-axes|Dissolution]]**: a thing's
 Dissolution is the degree to which the work of holding itself
 together is failing, and the higher a thing's Dissolution, the
 closer it leans to the horizon.
 
-Where [[existence/source|the Source]] dissolves duration and
-[[existence/self|the Self]] dissolves separation, Chaos
-dissolves both at once. A thing leaning toward Chaos — a thing
-whose Dissolution is rising — loses its hold on persistence and
-on position together. It does not become _somewhere else_, or
-_some other time_. It comes apart in both directions at the
-same rate, and the rate accelerates the further it leans.
+A thing leaning hard along its Dissolution loses its hold on
+being one thing. Where leaning toward [[existence/source|the
+Source]] softens identity into the medium it arose from, and
+leaning toward [[existence/self|the Self]] thickens identity
+into pure narrative holding, leaning toward Chaos is neither:
+it is the failure of the holding itself, with nothing replacing
+it. The categories that let a thing be a coherent _something_
+apply less and less as the horizon approaches; at the horizon
+they do not apply at all.
 
-At Chaos itself, there is neither space nor time. Nothing
-about it admits the categories that organise Mundus.
-Description applies less and less as the horizon is
-approached; at the horizon it does not apply at all.
-
-This is the unifying face of the asymptote-to-mass: mass cannot
-reach Chaos because mass is what holds together across space
-and time, and Chaos is where neither space nor time is defined.
+At Chaos itself, there is no thing left to describe. Nothing
+native to the horizon would have any coherent anything about
+it, in any sense those words have inside Mundus.
 
 ## Local accounts
 

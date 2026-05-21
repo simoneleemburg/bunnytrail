@@ -19,38 +19,42 @@ nature permits, without ever leaving Mundus by arriving at one.
 This is the geometry: Mundus is the interior, the horizons are
 its limits, and nothing with mass is anywhere else.
 
-## Spacetime, and where it ends
+## Coherence, and where it fails
 
-Inside Mundus, space and time are well-defined. Things have
-positions; durations elapse; the three spatial dimensions and
-the temporal dimension together make a four-manifold in which
-the physics of any one cluster can be done. Earth-physics
-calls this manifold spacetime, and most of what every cluster
-articulates as its physics is the study of this manifold from
-the inside.
+Inside Mundus, things hold together. Bodies stay bodies; selves
+stay selves; arrangements of matter and meaning persist long
+enough to be referred to. The categories that let a thing be
+_this thing and not another_ — identity, position, duration,
+separation, continuity — all apply, and apply together.
 
-The horizons are not additional dimensions of the manifold.
-They are not "fifth," "sixth," and "seventh" axes a thing has
-coordinates along. They are limits at which the manifold's
-geometry itself fails — directions along which, as something
-leans harder, the spacetime structure local to it deforms and
-ultimately ceases to be defined.
+The horizons are not additional categories of that kind. They
+are not regions farther out, in some direction that ordinary
+existence does not point. They are the limits at which the
+holding-together itself begins to give way — directions along
+which, as a thing leans harder, the conditions that let it be a
+coherent _something_ deform and ultimately cease to be defined.
 
-A thing leaning hard toward the [[existence/source|the Source]]
-finds its temporal coherence loosening: identity-across-time
-becomes fluid, the same-thing-tomorrow becomes negotiable.
-A thing leaning hard toward [[existence/self|the Self]] finds
-its spatial coherence loosening: eras stand adjacent like
-landscapes, geography becomes narrative. A thing leaning hard
-toward [[existence/chaos|Chaos]] finds both loosening at once.
-At the horizons themselves, there is no "where" or "when" to
-speak of. The categories that let things have positions and
-durations apply inside Mundus; they apply less and less as the
-horizons approach; at the horizons they do not apply at all.
+Each horizon is its own failure of coherence, not a failure of
+some specific physical dimension. A thing leaning hard toward
+[[existence/source|the Source]] loosens at the edges of its
+selfhood: identity shades back into the medium selves arise
+out of. A thing leaning hard toward [[existence/self|the Self]]
+becomes increasingly the account it holds of itself, with less
+and less substrate to rest that account on. A thing leaning
+hard toward [[existence/chaos|Chaos]] simply comes apart, with
+nothing taking the holding's place. At the horizons themselves,
+the categories that let things be things do not apply at all.
 
 This is why nothing with mass reaches a horizon. There is no
 _there_ to reach. The asymptote to mass and the failure of
-spacetime are the same fact, viewed from two sides.
+coherence are the same fact, viewed from two sides.
+
+A cluster's physics describes how things hold together inside
+Mundus, in whatever vocabulary that cluster has reached. The
+foundation layer does not adjudicate between those vocabularies
+or map them onto each other. What the horizons are, structurally,
+is the same in every cluster; how each cluster's physics fails
+as those horizons are approached is a cluster-level question.
 
 ## The three axes
 

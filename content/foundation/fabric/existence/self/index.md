@@ -17,35 +17,27 @@ narrative, more deeply mnemonic. It does not become the Self.
 It is a thing in Mundus that has approached one of Mundus's
 limits.
 
-## The failure of space
+## The Recollection axis
 
-The Self is the horizon at which spatial coherence ceases.
 The axis whose far limit is the Self is named
 **[[existence/mundus#the-three-axes|Recollection]]**: a thing's
 Recollection is the degree to which what it is, is what it has
 made of itself out of what it has been, and the higher a
 thing's Recollection, the closer it leans to the horizon.
 
-Inside Mundus, space is the dimension across which a thing is
-separated from other things: here is not there; what is over a
-horizon is not where you are; getting from one place to another
-takes a journey. As something leans toward the Self — as its
-Recollection rises — that coherence loosens. Distance becomes a
-function of meaning rather than extension; eras stand adjacent
-like landscapes; inner architecture surfaces as terrain. Memory
-and place trade roles.
+A thing leaning hard along its Recollection becomes more deeply
+narrative — more thoroughly the account it holds of itself.
+What was held together by substrate, by participation in
+something underneath, comes increasingly to be held together by
+remembered shape. The shape grows heavier as the substrate
+thins. The categories that let a thing rest in something other
+than its own remembering apply less and less as the horizon
+approaches; at the horizon they do not apply at all.
 
-At the Self itself, there is no space. The dimensions along
-which Mundus separates one location from another do not extend
-to the horizon. Anything that did exist there — if anything
-does — would not have a position, would not have a here-and-
-there, would not be separated from anything else by distance
-in any sense that word has inside Mundus.
-
-This is the spatial face of the asymptote-to-mass: mass cannot
-reach the Self because the Self is, among other things, the
-place where space stops being defined, and mass is what
-occupies space.
+At the Self itself, there is nothing but the holding. Nothing
+native to the horizon would have any ground to stand on but the
+account it tells of itself, in any sense those words have
+inside Mundus.
 
 ## Relation to the other horizons
 

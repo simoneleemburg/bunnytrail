@@ -1,8 +1,7 @@
 Resonance is one of the three structural axes of
 [[existence/mundus|Mundus]]. It is the measure of a thing's
-closeness to [[existence/source|the Source]] — the corner of
-Mundus at which selves arise and at which temporal coherence
-ceases.
+closeness to [[existence/source|the Source]] — the horizon of
+Mundus at which selves arise.
 
 A thing's Resonance is the degree to which it is still close to
 its origin: the degree to which it remains in contact with the
@@ -58,8 +57,7 @@ for "less embodied" in any general sense. A thing with low
 Resonance is not thereby "shallow" or "ordinary"; a thing with
 high Resonance is not thereby "transcendent." The axis measures
 one specific kind of closeness — to the Source-corner of
-Mundus, with its specific failure-mode (temporal coherence
-loosening) — and not anything else.
+Mundus, the horizon of emergence — and not anything else.
 
 It is also not a measure of _recency_. A thing born yesterday
 is not automatically higher in Resonance than a thing born a

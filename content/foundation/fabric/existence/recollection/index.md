@@ -1,8 +1,8 @@
 Recollection is one of the three structural axes of
 [[existence/mundus|Mundus]]. It is the measure of a thing's
-closeness to [[existence/self|the Self]] — the corner of Mundus
-at which narrative continuity is total and at which spatial
-coherence ceases.
+closeness to [[existence/self|the Self]] — the horizon at which
+narrative continuity is total, the holding of one's own account
+becoming the whole of what one is.
 
 A thing's Recollection is the degree to which what it is, is
 what it has made of itself out of what it has been. Where

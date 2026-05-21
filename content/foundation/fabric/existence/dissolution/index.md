@@ -1,7 +1,8 @@
 Dissolution is one of the three structural axes of
 [[existence/mundus|Mundus]]. It is the measure of a thing's
-closeness to [[existence/chaos|Chaos]] — the corner of Mundus
-at which both spatial and temporal coherence cease.
+closeness to [[existence/chaos|Chaos]] — the horizon at which
+the work of holding together gives way entirely, with nothing
+taking its place.
 
 A thing's Dissolution is the degree to which the work of
 holding itself together is failing. Low Dissolution is the
