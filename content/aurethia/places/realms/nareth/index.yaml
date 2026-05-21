@@ -8,4 +8,4 @@ sigil: 🜁
 nativeBeings: [kinds/naya]
 relations:
   - kind: local-account-of
-    target: foundation/realms-of-existence/source
+    target: foundation/fabric/realms-of-existence/source

@@ -7,4 +7,4 @@ tags: [cosmology, form]
 sigil: 🜃
 relations:
   - kind: local-account-of
-    target: foundation/realms-of-existence/mundus
+    target: foundation/fabric/realms-of-existence/mundus
