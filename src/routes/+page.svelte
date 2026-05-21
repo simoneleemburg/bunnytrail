@@ -53,6 +53,26 @@
 	<div class="cognita-arrow" aria-hidden="true">→</div>
 </a>
 
+<!--
+	Notebook callout: a sibling doorway to the author's-room blog,
+	in a cooler register than the world's chrome. Same shape as the
+	Cognita callout so the two read as a paired set, but the rule
+	is faint and the surface is the notebook tint to signal that
+	this is *about* Alteria rather than *of* it.
+-->
+<a class="notebook-callout" href="/blog">
+	<div class="notebook-rule"></div>
+	<div class="notebook-body">
+		<p class="notebook-eyebrow">Working notes</p>
+		<p class="notebook-title">Notebook</p>
+		<p class="notebook-sub">
+			Author&rsquo;s-room reflections on building Alteria. Out-of-world; not part of the
+			compendium.
+		</p>
+	</div>
+	<div class="notebook-arrow" aria-hidden="true">→</div>
+</a>
+
 <section class="types">
 	<h2 class="section-heading">Collections</h2>
 	<div class="grid">
@@ -211,6 +231,75 @@
 	}
 
 	.cognita-callout:hover .cognita-arrow {
+		color: var(--accent);
+	}
+
+	/* ── Notebook callout — quieter sibling to the Cognita doorway.
+	   Notebook tint (cool, dashed) so the visual register tracks the
+	   blog/craft-sheet idiom, marking this as out-of-world. */
+	.notebook-callout {
+		display: flex;
+		align-items: center;
+		gap: var(--space-5);
+		padding: var(--space-5) var(--space-6);
+		margin: 0 0 var(--space-8);
+		text-decoration: none;
+		color: inherit;
+		background: color-mix(in oklab, var(--ink) 4%, var(--page) 96%);
+		border: 1px dashed var(--rule);
+		border-radius: var(--radius-sm);
+		transition: background-color 0.2s ease;
+	}
+
+	.notebook-callout:hover {
+		background: color-mix(in oklab, var(--ink) 7%, var(--page) 93%);
+	}
+
+	.notebook-rule {
+		width: 3px;
+		align-self: stretch;
+		background: var(--rule);
+		flex-shrink: 0;
+	}
+
+	.notebook-body {
+		flex: 1;
+	}
+
+	.notebook-eyebrow {
+		font-size: var(--text-xs);
+		font-variant: small-caps;
+		letter-spacing: 0.14em;
+		color: var(--ink-faint);
+		margin: 0 0 var(--space-1);
+	}
+
+	.notebook-title {
+		font-family: var(--font-sans, var(--font-serif));
+		font-weight: 600;
+		font-size: var(--text-xl);
+		color: var(--ink);
+		margin: 0 0 var(--space-2);
+	}
+
+	.notebook-callout:hover .notebook-title {
+		color: var(--accent);
+	}
+
+	.notebook-sub {
+		font-size: var(--text-sm);
+		color: var(--ink-soft);
+		margin: 0;
+		line-height: var(--leading-normal);
+	}
+
+	.notebook-arrow {
+		font-size: var(--text-xl);
+		color: var(--ink-faint);
+		flex-shrink: 0;
+	}
+
+	.notebook-callout:hover .notebook-arrow {
 		color: var(--accent);
 	}
 

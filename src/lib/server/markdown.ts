@@ -295,6 +295,36 @@ export function renderEntityBody(
 }
 
 /**
+ * Render a markdown body with no wikilink or collection-include
+ * processing — plain markdown only.
+ *
+ * Used for out-of-world prose that lives outside the worldbuilding
+ * graph (currently the author's blog under `content_meta/blog/`).
+ * `[[anything]]` stays as literal text in the output rather than
+ * being rewritten into broken-link sentinels.
+ *
+ * Heading-id slugification still runs, so cross-post anchor links
+ * keep working. `marked` does the rest.
+ */
+export function renderPlainBody(body: string): string {
+	const headingSlugCounts = new Map<string, number>();
+	const renderer = new marked.Renderer();
+	renderer.heading = ({ depth, text }) => {
+		const inlineHtml = marked.parseInline(text, { async: false }) as string;
+		const base = slugifyHeading(text);
+		let id = base;
+		if (base) {
+			const prev = headingSlugCounts.get(base) ?? 0;
+			if (prev > 0) id = `${base}-${prev + 1}`;
+			headingSlugCounts.set(base, prev + 1);
+		}
+		const idAttr = id ? ` id="${id}"` : '';
+		return `<h${depth}${idAttr}>${inlineHtml}</h${depth}>\n`;
+	};
+	return marked.parse(body, { async: false, renderer }) as string;
+}
+
+/**
  * Build a `CollectionResolver` from the graph primitives every
  * page-load needs anyway. The resolver titles each disclosure as
  * `<parent plural> of <leaf>` (e.g. "Regions of Nebelheim") so the

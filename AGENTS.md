@@ -182,10 +182,21 @@ WORLDBUILDING.md).
 - **New kind-affinity field** → just use it in YAML with
   `kinds/<id>` values. For a custom inverse label on the kind's
   page, add an entry to `src/lib/server/kindLinkLabels.ts`.
+- **New notebook post** (the author's-room blog at `/blog`) →
+  `content_meta/blog/<slug>/index.{yaml,md}`. The blog is
+  out-of-world authoring material — it lives outside the
+  worldbuilding graph and has its own loader singleton
+  (`src/lib/server/blog.ts`). Wikilinks do NOT resolve in blog
+  prose; `[[anything]]` stays literal. Frontmatter requires
+  `title` (string) and `date` (ISO `YYYY-MM-DD`); `tags` is an
+  optional `string[]`. Posts don't appear in entity counts, tag
+  indexes, or any cross-cluster aggregate, and the masthead nav
+  doesn't link to `/blog` — only the home-page Notebook callout
+  does.
 - **New UI primitive** → `src/lib/components/`. Existing primitives:
   `EntityCard`, `EntityLink`, `PageHeader`, `PropertyList`, `Tag`.
 - **Graph / loader logic** → `src/lib/server/`
-  (`loader.ts`, `graph.ts`, `kinds.ts`, `markdown.ts`, `watcher.ts`).
+  (`loader.ts`, `graph.ts`, `kinds.ts`, `blog.ts`, `markdown.ts`, `watcher.ts`).
 - **Design tokens / base styles** → `src/lib/styles/`.
 
 ## Agent etiquette

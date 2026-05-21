@@ -2,6 +2,7 @@ import { dev } from '$app/environment';
 import chokidar from 'chokidar';
 import { CONTENT_DIR } from './loader';
 import { KINDS_DIR } from './kinds';
+import { BLOG_DIR, blog } from './blog';
 import { graph } from './graph';
 
 /**
@@ -9,10 +10,14 @@ import { graph } from './graph';
  * whenever anything changes. Production builds skip this entirely —
  * the graph is built once at startup.
  *
- * We watch both `content/` (entities + collections) and
- * `content_meta/kinds/` (the kind registry) so that an edit to a
- * `_kind.yaml` or `_kind.md` shows up in the running dev server
- * without a manual restart.
+ * We watch `content/` (entities + collections),
+ * `content_meta/kinds/` (the kind registry), and
+ * `content_meta/blog/` (the author's notebook) so edits to any of
+ * them show up in the running dev server without a manual restart.
+ * The blog is loaded into its own singleton — `graph.load()` and
+ * `blog.load()` are independent — but they share one watcher and
+ * one debounce window, since saving across trees is rare and a
+ * tiny over-reload is cheaper than a second timer.
  *
  * Reloads are debounced so saving a YAML + MD pair together doesn't
  * trigger two rebuilds back-to-back.
@@ -30,14 +35,17 @@ export function startWatcher(): void {
 			void graph.load().catch((err) => {
 				console.error('[alteria] graph reload failed:', err);
 			});
+			void blog.load().catch((err) => {
+				console.error('[alteria] blog reload failed:', err);
+			});
 		}, 75);
 	};
 
-	const watcher = chokidar.watch([CONTENT_DIR, KINDS_DIR], {
+	const watcher = chokidar.watch([CONTENT_DIR, KINDS_DIR, BLOG_DIR], {
 		ignoreInitial: true,
 		ignored: (path) => path.endsWith('.DS_Store')
 	});
 
 	watcher.on('add', trigger).on('change', trigger).on('unlink', trigger);
-	console.log(`[alteria] watching ${CONTENT_DIR} and ${KINDS_DIR}`);
+	console.log(`[alteria] watching ${CONTENT_DIR}, ${KINDS_DIR}, and ${BLOG_DIR}`);
 }
