@@ -23,12 +23,27 @@ Mundus leans toward by however much its nature permits, always.
 
 ## Local accounts
 
-Aurethia knows the region of Mundus that leans hardest toward
-Chaos as [[realms/the-void|the Void Between Worlds]] — the
-medium between worlds, full of broken [[kinds/naya|Naya]],
-fragments of an older breaking, and Eidolons that did not hold.
-These are not at Chaos. They are massive things deep along the
-Chaos-axis, broken-but-not-gone, leaning hard.
+Aurethia knows the mode of approach to Chaos —
+[[realms/the-void|the Void Between Worlds]] — as a condition,
+not a place. A pilot does not enter the Void by reaching
+certain coordinates; a pilot enters the Void by losing
+coherence, by leaning so hard toward Chaos that the
+surroundings take on the character of broken
+[[kinds/naya|Naya]], fragments of an older breaking, and
+Eidolons that did not hold. The Aurethian vocabulary leans
+spatial — "the space between worlds" — because that is _where_
+the condition tends to assert itself, in the long interplanetary
+passages between Pillar-launches. The condition itself is not
+a location.
+
+The Aurethian practices that approach the other two horizons —
+[[fabric/nearing|Nearing]] toward [[existence/source|the
+Source]], [[fabric/valdor-traversal|Valdor traversal]] toward
+[[existence/self|the Self]] — are undertaken deliberately. The
+mode-of-approach toward Chaos, as Aurethia records it, has no
+matching deliberate practice: the Void is what coherence falls
+into when it fails, not a destination practitioners head
+toward.
 
 Whether anything is _at_ Chaos — what a thing native to the
 horizon, without mass, would be — is not something the
