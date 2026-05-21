@@ -5,3 +5,6 @@ summary: The material, embodied layer of existence — stable form, continuity, 
 aliases: [The Material, the persistent layer]
 tags: [cosmology, form]
 sigil: 🜃
+relations:
+  - kind: local-account-of
+    target: foundation/realms-of-existence/mundus

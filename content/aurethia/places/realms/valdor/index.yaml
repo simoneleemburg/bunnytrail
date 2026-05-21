@@ -11,3 +11,6 @@ summary: >-
 aliases: [the Memory Realm, the subjective layer]
 tags: [cosmology, memory, transformation]
 sigil: 🜄
+relations:
+  - kind: local-account-of
+    target: foundation/realms-of-existence/self

@@ -6,3 +6,6 @@ aliases: [The Resonant, the underlayer]
 tags: [cosmology, transformation]
 sigil: 🜁
 nativeBeings: [kinds/naya]
+relations:
+  - kind: local-account-of
+    target: foundation/realms-of-existence/source
