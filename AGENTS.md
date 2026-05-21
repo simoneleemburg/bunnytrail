@@ -5,10 +5,10 @@ Operational instructions for AI coding agents working in this repository.
 ## Project in one paragraph
 
 Alteria is a personal worldbuilding compendium. Alteria is the
-universe; **regions** of that universe live as top-level folders under
-`content/` (currently just `content/aurethia/` — the Aureth system and
-its immediate neighbourhood, the part charted so far). Canonical data
-lives in `content/` as one folder per entity:
+universe; **clusters** of that universe live as top-level folders under
+`content/` (currently `content/aurethia/` — the Aureth system and its
+immediate neighbourhood — and `content/earth/`). Canonical data lives in
+`content/` as one folder per entity:
 `content/<...collection-path>/<slug>/index.yaml` holds structured
 metadata and `index.md` holds the prose; sibling files (images, etc.)
 live alongside. Folders are **collections** — narrative shelves of
@@ -17,7 +17,7 @@ describing their display label and prose. The **kinds** every entity
 declares (its taxonomic classification) live separately in
 `content_meta/kinds/` as a nested folder tree, each node optionally
 carrying a `_kind.yaml` and `_kind.md`. Kinds are universal — they
-describe categories in the abstract and apply across regions. On top
+describe categories in the abstract and apply across clusters. On top
 of `kind:`, instances may declare additional **lenses** — spatial,
 temporal, account-relative, kind-affinity — as structured `relations:`
 or named pointer fields. A SvelteKit site loads it all on boot into

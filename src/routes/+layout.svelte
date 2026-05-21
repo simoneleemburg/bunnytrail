@@ -7,8 +7,8 @@
 	interface Props {
 		data: {
 			nav: { href: string; label: string; count: number }[];
-			regionOptions: { value: string; label: string; selected: boolean }[];
-			selectedRegion: string | null;
+			clusterOptions: { value: string; label: string; selected: boolean }[];
+			selectedCluster: string | null;
 		};
 		children: Snippet;
 	}
@@ -30,23 +30,19 @@
 				{/each}
 				<span class="nav-sep" aria-hidden="true">·</span>
 				<a href="/kinds">Kinds</a>
-				{#if data.regionOptions.length > 1}
+				{#if data.clusterOptions.length > 1}
 					<span class="nav-sep" aria-hidden="true">·</span>
-					<form
-						class="region-form"
-						method="POST"
-						action="/api/region"
-					>
+					<form class="cluster-form" method="POST" action="/api/cluster">
 						<!-- Send the user back to where they were so the
 						     selector feels in-place rather than navigational. -->
 						<input type="hidden" name="redirect" value={$page.url.pathname + $page.url.search} />
-						<label class="region-label">
-							<span class="region-label-text">Region</span>
+						<label class="cluster-label">
+							<span class="cluster-label-text">Cluster</span>
 							<select
-								name="region"
+								name="cluster"
 								onchange={(e) => (e.currentTarget.form as HTMLFormElement).requestSubmit()}
 							>
-								{#each data.regionOptions as opt (opt.value)}
+								{#each data.clusterOptions as opt (opt.value)}
 									<option value={opt.value} selected={opt.selected}>{opt.label}</option>
 								{/each}
 							</select>
@@ -127,12 +123,12 @@
 		font-size: var(--text-sm);
 	}
 
-	.region-form {
+	.cluster-form {
 		margin: 0;
 		padding: 0;
 	}
 
-	.region-label {
+	.cluster-label {
 		display: inline-flex;
 		align-items: baseline;
 		gap: var(--space-2);
@@ -142,11 +138,11 @@
 		color: var(--ink-soft);
 	}
 
-	.region-label-text {
+	.cluster-label-text {
 		color: var(--ink-faint);
 	}
 
-	.region-label select {
+	.cluster-label select {
 		font: inherit;
 		font-variant: inherit;
 		letter-spacing: inherit;
@@ -158,12 +154,12 @@
 		cursor: pointer;
 	}
 
-	.region-label select:hover {
+	.cluster-label select:hover {
 		border-bottom-color: var(--accent);
 		color: var(--accent);
 	}
 
-	.region-label select:focus-visible {
+	.cluster-label select:focus-visible {
 		outline: none;
 		border-bottom-color: var(--accent);
 	}

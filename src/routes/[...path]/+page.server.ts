@@ -21,7 +21,7 @@ import { loadCraftPage } from './_craftPage.load';
  *     entities)                             → collection page
  *   - path is a single segment naming a
  *     *union shelf* (a shelf-name found
- *     under one or more regions)            → cross-region aggregate
+ *     under one or more clusters)           → cross-cluster aggregate
  *                                             shelf page
  *   - anything else                         → 404
  *
@@ -70,8 +70,8 @@ export async function load({ params }) {
 		return loadCollectionPage(path);
 	}
 
-	// Cross-region aggregate: a single segment that names a shelf
-	// living under one or more regions, but isn't itself a real
+	// Cross-cluster aggregate: a single segment that names a shelf
+	// living under one or more clusters, but isn't itself a real
 	// top-level folder.
 	if (!path.includes('/') && graph.unionShelves().includes(path)) {
 		return loadAggregateShelfPage(path);

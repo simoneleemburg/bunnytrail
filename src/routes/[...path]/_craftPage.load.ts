@@ -28,7 +28,13 @@ export function loadCraftPage(entity: Entity) {
 		kindIds
 	});
 
-	const html = renderBody(entity.craft ?? '', resolveLink, languageCodes, kindIds, resolveCollection);
+	const html = renderBody(
+		entity.craft ?? '',
+		resolveLink,
+		languageCodes,
+		kindIds,
+		resolveCollection
+	);
 
 	const summaryHtml = (s: string | null | undefined) =>
 		s ? renderSummary(s, resolveLink, languageCodes, { kindIds }) : null;

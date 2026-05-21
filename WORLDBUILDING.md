@@ -11,46 +11,49 @@ If you are an agent and you have only enough context for one rule:
 **don't invent canon.** Everything else in this file is downstream of
 that.
 
-## The universe and its regions
+## The universe and its clusters
 
 **Alteria is the universe** — the whole cosmology, including every
-region in it, charted or not. Within Alteria, **regions** are the
-distinct cosmological neighbourhoods that have been given a place
-in the compendium so far. Regions live as top-level folders under
-`content/`.
+region in it, charted or not. Within Alteria, **clusters** are the
+distinct charted neighbourhoods that have been given a place in the
+compendium so far. A cluster is a loose grouping — it can be a star
+system and its surroundings, a single world, or whatever scale of
+locality makes sense for the material at hand. Clusters live as
+top-level folders under `content/`.
 
-There is currently one region:
+There are currently two clusters:
 
 - **Aurethia** (`content/aurethia/`) — the Aureth system and its
   immediate neighbourhood. Mythic, resonance-aware, the part of
   Alteria the field-notebook has charted in depth.
+- **Earth** (`content/earth/`) — a single world, charted lightly.
 
 The phrase **Alteria Cognita** — already in use on the site — names
 "the part of Alteria that has been charted." It is a frame, not a
-folder: today it covers Aurethia; if another region is added later,
-Alteria Cognita grows to cover it too.
+folder: it covers every cluster currently in the compendium, and
+grows as new clusters are added.
 
 A few consequences of this split that matter for editorial work:
 
 - **The substrate is universal.** The phenomena described by
   Aurethia's records — resonance, Nearing, the Naya, urouch — are
   expressions of the actual physics of the universe, not local
-  specialities of one corner of it. Other regions of Alteria may
+  specialities of one corner of it. Other clusters of Alteria may
   perceive the substrate poorly, or describe it under different
   vocabularies, or fail to recognise it as a shared layer at all;
   none of that makes the substrate localised.
 - **Kinds are universal.** `content_meta/kinds/` describes
   categories in the abstract — what a human is, what a phenomenon
-  is. Kinds apply across regions; they are not scoped to one
-  region's records. A kind that has so far only been observed in
+  is. Kinds apply across clusters; they are not scoped to one
+  cluster's records. A kind that has so far only been observed in
   Aurethia (e.g. `kinds/nearborn`) is still defined as a universal
   category; its current pattern of attestation is an empirical
   fact about the world's records, not a definitional restriction.
-- **Cross-region contact is permitted in principle.** The
+- **Cross-cluster contact is permitted in principle.** The
   cosmology does not forbid it. No specific contact event is
   canonical unless the user has stated one. Weird-history
   interpretations, anomalous-archaeology readings, and
-  cross-region accounts are valid content categories — recorded as
+  cross-cluster accounts are valid content categories — recorded as
   `kind: account` entries with appropriate framing — but they are
   not licence to invent canon, only licence to record disputed
   framings the user has set up.
@@ -58,12 +61,12 @@ A few consequences of this split that matter for editorial work:
   entries that say "Alteria" where they now technically mean
   "Aurethia" stay as they are. Naming reconciliation is editorial
   work the user does entry by entry; an agent's job is to use the
-  right names in *new* prose and structural fields, not to sweep
+  right names in _new_ prose and structural fields, not to sweep
   through the archive.
 - **Keep the meta/content rule intact, scaled up.** Just as a kind
-  doc must not name a specific instance, a region's records must
+  doc must not name a specific instance, a cluster's records must
   not silently extend their reach into the substrate or into
-  another region. A claim about Aurethia is a claim about Aurethia;
+  another cluster. A claim about Aurethia is a claim about Aurethia;
   a claim about the universe-as-such is a claim about the
   universe.
 

@@ -517,24 +517,24 @@ function labelForFolder(path: string): string {
 }
 
 /**
- * View-model for a *cross-region aggregate shelf* — e.g. `/characters`,
- * which gathers entities from every region's `<region>/characters/`
+ * View-model for a *cross-cluster aggregate shelf* — e.g. `/characters`,
+ * which gathers entities from every cluster's `<cluster>/characters/`
  * folder and presents them as one collection.
  *
  * Aggregate pages mirror the shape of the per-folder collection page so
  * the existing `_CollectionPage.svelte` renders both. Differences:
  *
- *   • Subcollection tiles are the *per-region* shelves (e.g.
+ *   • Subcollection tiles are the *per-cluster* shelves (e.g.
  *     `aurethia/characters`) rather than child folders, so a reader
- *     can drill from "all characters" into one region's set.
+ *     can drill from "all characters" into one cluster's set.
  *   • `containers`, `orbits`, and `folders` are empty — those views
  *     describe local structure inside a single folder, not the
- *     cross-region union.
- *   • Cards carry their `typeLabel` showing which region they live
+ *     cross-cluster union.
+ *   • Cards carry their `typeLabel` showing which cluster they live
  *     in, mirroring how the `/everything` index labels by folder.
  *
  * `shelf` is a single-segment shelf name like `characters` or `places`.
- * Caller has already verified it exists under at least one region (via
+ * Caller has already verified it exists under at least one cluster (via
  * `graph.unionShelves()`).
  */
 export function loadAggregateShelfPage(shelf: string) {
@@ -545,40 +545,40 @@ export function loadAggregateShelfPage(shelf: string) {
 		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;
 
 	const kindTree = buildLoaderKindTree();
-	const regionPaths = graph.regionShelfPaths(shelf);
+	const clusterPaths = graph.clusterShelfPaths(shelf);
 
 	// Subcollection tiles only earn their keep when they *narrow*
-	// the view. With a single region the tile would link to that
-	// region's shelf — i.e. exactly the content already on the page,
+	// the view. With a single cluster the tile would link to that
+	// cluster's shelf — i.e. exactly the content already on the page,
 	// just at a different URL. Hide the section in that case; show
-	// it only when the aggregate genuinely combines multiple regions.
-	const showSubcollections = regionPaths.length > 1;
+	// it only when the aggregate genuinely combines multiple clusters.
+	const showSubcollections = clusterPaths.length > 1;
 	const subcollections = showSubcollections
-		? regionPaths
+		? clusterPaths
 				.map((p) => buildSubcollectionEntry(p, kindTree))
 				.sort((a, b) => a.plural.localeCompare(b.plural))
 		: [];
 	const subcollectionTrees = showSubcollections
-		? regionPaths.map((p) => buildSubcollectionTree(p, '', cardSummaryHtml))
+		? clusterPaths.map((p) => buildSubcollectionTree(p, '', cardSummaryHtml))
 		: [];
 
-	const entities = graph.entitiesByShelfAcrossRegions(shelf);
+	const entities = graph.entitiesByShelfAcrossClusters(shelf);
 
-	// Region label as the type-label on each card. With one region
+	// Cluster label as the type-label on each card. With one cluster
 	// this just reads "Aurethia" everywhere; with several it lets a
-	// reader see at a glance which region each entry belongs to.
-	const regionLabel = (id: EntityId): string => {
-		const region = id.includes('/') ? id.slice(0, id.indexOf('/')) : id;
-		return graph.folderLabels(region).singular;
+	// reader see at a glance which cluster each entry belongs to.
+	const clusterLabel = (id: EntityId): string => {
+		const cluster = id.includes('/') ? id.slice(0, id.indexOf('/')) : id;
+		return graph.folderLabels(cluster).singular;
 	};
 
-	const flat = entities.map((e) => toCard(e, cardSummaryHtml, regionLabel(e.id)));
+	const flat = entities.map((e) => toCard(e, cardSummaryHtml, clusterLabel(e.id)));
 
 	// Use the shelf's display label as if it lived at the content
 	// root. We borrow `_collection.yaml` titles from the *first*
-	// region that defines the shelf, on the grounds that the same
-	// shelf name across regions should mean the same kind of thing.
-	const labelSourcePath = regionPaths.find((p) => graph.collection(p)) ?? regionPaths[0];
+	// cluster that defines the shelf, on the grounds that the same
+	// shelf name across clusters should mean the same kind of thing.
+	const labelSourcePath = clusterPaths.find((p) => graph.collection(p)) ?? clusterPaths[0];
 	const firstCollection = labelSourcePath ? graph.collection(labelSourcePath) : undefined;
 	const label = graph.folderLabels(labelSourcePath ?? shelf);
 	const description = firstCollection?.meta.description ?? null;
