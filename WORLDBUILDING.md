@@ -72,7 +72,7 @@ A few consequences of this split that matter for editorial work:
 - **Time across clusters is not a shared clock.** For the
   cosmology behind this — relativistic distance, Nearing as an
   oblique axis, the consequences for cross-cluster claims — see
-  `[[foundation/fabric/distance-and-time]]`. The editorial
+  `[[foundation/fabric/space-time-and-identity-shift]]`. The editorial
   consequences for authoring:
   - The four Aurethian ages (`mythic`, `pre-recorded`, `recorded`,
     `current`) are an Aurethia-frame label, not a universal
