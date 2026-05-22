@@ -1,7 +1,7 @@
 Remembrance is the Self-axis Aurethian phenomenon: the bending
 of reality around the experiencing subject as a being leans
-toward [[existence/self|the Self]]. It is the local
-manifestation of [[existence/subjectivity|Subjectivity]] — what
+toward [[self|the Self]]. It is the local
+manifestation of [[subjectivity|Subjectivity]] — what
 motion along that axis _is_ from inside the Aurethian world.
 
 The name covers a wide range. At the shallow end, Remembrance
@@ -38,10 +38,10 @@ weight of the air, is leaning into Remembrance.
 
 It is also not a power. The bending is not something the
 subject _does_ to the world; it is something that happens to
-the position the subject occupies in [[existence/mundus|Mundus]].
+the position the subject occupies in [[mundus|Mundus]].
 A practitioner may learn to walk further into it, or to hold
 ground against it, but the bending itself is a condition, not
-an exercise of will. (See [[existence/subjectivity|Subjectivity]],
+an exercise of will. (See [[subjectivity|Subjectivity]],
 "A condition, not a power".)
 
 ## Relation to other phenomena
@@ -49,16 +49,16 @@ an exercise of will. (See [[existence/subjectivity|Subjectivity]],
 Remembrance, [[fabric/nearing|Nearing]], and
 [[fabric/drifting|Drifting]] are the three Aurethian
 phenomena of approach toward the Cardinals of
-[[existence/mundus|Mundus]]. Each names the local
+[[mundus|Mundus]]. Each names the local
 manifestation of motion along one of the three axes:
 
 - **[[fabric/nearing|Nearing]]** — approach to
-  [[existence/source|the Source]], the loosening of fixed
+  [[source|the Source]], the loosening of fixed
   identity back into the substrate from which it arose.
 - **Remembrance** — approach to the Self, the bending of
   reality around the experiencing subject.
 - **[[fabric/drifting|Drifting]]** — approach to
-  [[existence/chaos|Chaos]], the failure of the holding that
+  [[chaos|Chaos]], the failure of the holding that
   keeps a thing one thing.
 
 The deliberate practice of moving deeper into Remembrance, and

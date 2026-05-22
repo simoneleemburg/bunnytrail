@@ -85,6 +85,29 @@
 	const SUB_LABEL = axisLabelPos(SELF);
 	const DIS_LABEL = axisLabelPos(CHAOS);
 
+	// Horizon labels: positioned outside the triangle, near the
+	// midpoint of each edge, along the outward normal. Each Horizon
+	// is the edge opposite one corner; the outward direction is the
+	// vector from that opposite corner to the edge's midpoint.
+	function horizonLabelPos(
+		a: { x: number; y: number },
+		b: { x: number; y: number },
+		opposite: { x: number; y: number },
+		offset: number
+	) {
+		const mx = (a.x + b.x) / 2;
+		const my = (a.y + b.y) / 2;
+		const dx = mx - opposite.x;
+		const dy = my - opposite.y;
+		const len = Math.hypot(dx, dy);
+		return { x: mx + (dx / len) * offset, y: my + (dy / len) * offset };
+	}
+
+	const HORIZON_OFFSET = 40;
+	const TRANQUILITY_LABEL = horizonLabelPos(SOURCE, SELF, CHAOS, HORIZON_OFFSET);
+	const OBLIVION_LABEL = horizonLabelPos(SOURCE, CHAOS, SELF, HORIZON_OFFSET);
+	const NULLITY_LABEL = horizonLabelPos(SELF, CHAOS, SOURCE, HORIZON_OFFSET);
+
 	const triPath = `M ${SOURCE.x} ${SOURCE.y} L ${SELF.x} ${SELF.y} L ${CHAOS.x} ${CHAOS.y} Z`;
 
 	// ─────────── Contour generation ────────────────────────────────
@@ -293,10 +316,11 @@
 		<desc id="mundus-desc">
 			A triangular diagram of existence. The three corners are the Cardinals — the Source at the
 			apex, the Self at the bottom-left, Chaos at the bottom-right — each an asymptotic limit. The
-			three edges between them are the Horizons, also asymptotic. Three axes run through the
-			interior toward each corner: Essence toward the Source, Subjectivity toward the Self,
-			Dissolution toward Chaos. The interior is Mundus, the inhabited middle. Faint topographical
-			rings show how the bounds crowd in toward the boundary, never reached.
+			three edges between them are the Horizons — Tranquility along the Source–Self edge, Oblivion
+			along the Source–Chaos edge, Nullity along the Self–Chaos edge — also asymptotic. Three axes
+			run through the interior toward each corner: Essence toward the Source, Subjectivity toward
+			the Self, Dissolution toward Chaos. The interior is Mundus, the inhabited middle. Faint
+			topographical rings show how the bounds crowd in toward the boundary, never reached.
 		</desc>
 
 		<defs>
@@ -351,6 +375,35 @@
 			</text>
 		</a>
 
+		<!-- ───────── Horizons: labels outside each edge ────────────── -->
+		<a href="/foundation/fabric/tranquility" class="horizon-link">
+			<text
+				class="horizon-name"
+				x={TRANQUILITY_LABEL.x}
+				y={TRANQUILITY_LABEL.y}
+				text-anchor="middle"
+				transform={`rotate(-60 ${TRANQUILITY_LABEL.x} ${TRANQUILITY_LABEL.y})`}
+			>
+				Tranquility
+			</text>
+		</a>
+		<a href="/foundation/fabric/oblivion" class="horizon-link">
+			<text
+				class="horizon-name"
+				x={OBLIVION_LABEL.x}
+				y={OBLIVION_LABEL.y}
+				text-anchor="middle"
+				transform={`rotate(60 ${OBLIVION_LABEL.x} ${OBLIVION_LABEL.y})`}
+			>
+				Oblivion
+			</text>
+		</a>
+		<a href="/foundation/fabric/nullity" class="horizon-link">
+			<text class="horizon-name" x={NULLITY_LABEL.x} y={NULLITY_LABEL.y} text-anchor="middle">
+				Nullity
+			</text>
+		</a>
+
 		<!-- ───────── Mundus label, centered in the interior ────────── -->
 		<a href="/foundation/fabric/mundus" class="mundus-label-link">
 			<g class="mundus-label" transform={`translate(${MID.x} ${MID.y})`}>
@@ -386,14 +439,17 @@
 	<figcaption>
 		Three Cardinals at the corners — <a href="/foundation/fabric/source">the Source</a>,
 		<a href="/foundation/fabric/self">the Self</a>, and
-		<a href="/foundation/fabric/chaos">Chaos</a> — each an asymptotic limit. Three axes
-		measure where in the interior a thing stands, each pointing toward the Cardinal it tracks:
+		<a href="/foundation/fabric/chaos">Chaos</a> — each an asymptotic limit. Three axes measure
+		where in the interior a thing stands, each pointing toward the Cardinal it tracks:
 		<a href="/foundation/fabric/essence">Essence</a> toward the Source,
 		<a href="/foundation/fabric/subjectivity">Subjectivity</a> toward the Self,
-		<a href="/foundation/fabric/dissolution">Dissolution</a> toward Chaos. The edges
-		between the corners are the three Horizons, also asymptotic. The interior is
-		<a href="/foundation/fabric/mundus">Mundus</a>, the inhabited middle, where every
-		thing that exists has a place.
+		<a href="/foundation/fabric/dissolution">Dissolution</a> toward Chaos. The edges between the
+		corners are the three Horizons —
+		<a href="/foundation/fabric/tranquility">Tranquility</a>,
+		<a href="/foundation/fabric/oblivion">Oblivion</a>, and
+		<a href="/foundation/fabric/nullity">Nullity</a> — also asymptotic. The interior is
+		<a href="/foundation/fabric/mundus">Mundus</a>, the inhabited middle, where every thing that
+		exists has a place.
 	</figcaption>
 </figure>
 
@@ -486,6 +542,24 @@
 	}
 
 	.axis-link:hover .axis-name {
+		fill: var(--accent);
+	}
+
+	/* ── Horizons: edge labels, sitting outside the triangle ──── */
+	.horizon-link {
+		cursor: pointer;
+	}
+
+	.horizon-name {
+		font-family: var(--font-display);
+		font-size: 13px;
+		font-variant: small-caps;
+		letter-spacing: 0.14em;
+		fill: var(--ink-soft);
+		transition: fill 0.2s;
+	}
+
+	.horizon-link:hover .horizon-name {
 		fill: var(--accent);
 	}
 

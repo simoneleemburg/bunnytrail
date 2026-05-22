@@ -12,15 +12,16 @@ Mundus has a geometry, and the geometry has bounds. Six
 [[kinds/bound|bounds]] enclose the interior, in two shapes:
 
 - Three **[[kinds/cardinal|Cardinals]]** sit at the corners —
-  [[existence/source|the Source]], [[existence/self|the
-Self]], and [[existence/chaos|Chaos]]. Each is the asymptotic
+  [[source|the Source]], [[self|the
+Self]], and [[chaos|Chaos]]. Each is the asymptotic
   limit of one of Mundus's three axes going to its maximum.
 - Three **[[kinds/horizon|Horizons]]** run along the edges
-  between the Cardinals. Each is the asymptotic limit of one
-  axis going to its minimum — the locus on which the other two
-  axes do all the leaning. The Horizons are unnamed at this
-  layer for now; they are real features of the geometry, but
-  no cluster has yet given them names of their own.
+  between the Cardinals: [[oblivion|Oblivion]] between the
+  Source and Chaos, [[nullity|Nullity]] between the Self and
+  Chaos, [[tranquility|Tranquility]] between the Source and the
+  Self. Each is the asymptotic limit of one axis going to its
+  minimum — the locus on which the other two axes do all the
+  leaning.
 
 A thing in Mundus is always at some distance from every bound,
 leaning toward one or another by however much its nature
@@ -43,25 +44,25 @@ coherent _something_ deform and ultimately cease to be defined.
 
 Each Cardinal is its own characteristic failure of coherence, not
 a failure of some specific physical dimension. A thing leaning
-hard toward [[existence/source|the Source]] thins in its
+hard toward [[source|the Source]] thins in its
 particulars: what remains is the pattern it instantiates, with
 less and less of the specific arrangement that made it _this_
 instance of that pattern. A thing leaning hard toward
-[[existence/self|the Self]] becomes increasingly the account it
+[[self|the Self]] becomes increasingly the account it
 holds of itself, with less and less substrate to rest that
-account on. A thing leaning hard toward [[existence/chaos|Chaos]]
+account on. A thing leaning hard toward [[chaos|Chaos]]
 simply comes apart, with nothing taking the holding's place. At
 the Cardinals themselves, the categories that let things be
 things do not apply at all.
 
 The Horizons are characteristic failures too, of a different
-shape. A thing whose [[existence/essence|Essence]] approaches
+shape. A thing whose [[essence|Essence]] approaches
 its minimum has nothing in it that participates in any general
 pattern — no kind it is an example of. A thing whose
-[[existence/subjectivity|Subjectivity]] approaches its minimum
+[[subjectivity|Subjectivity]] approaches its minimum
 is encountered by no one and bends to no perspective; reality
 holds its shape regardless of any being's experience of it. A
-thing whose [[existence/dissolution|Dissolution]] approaches
+thing whose [[dissolution|Dissolution]] approaches
 its minimum never gives way at all — the work of holding it
 together never fails, never wavers, never lets go. None of
 these conditions is reachable; mass forbids them in the same
@@ -92,16 +93,16 @@ and the natural way to describe that location is by its
 closeness to each of the three Cardinals — three quantities,
 one for each Cardinal. The three quantities have names:
 
-- **[[existence/essence|Essence]]** is the measure of
-  closeness to [[existence/source|the Source]] — the degree to
+- **[[essence|Essence]]** is the measure of
+  closeness to [[source|the Source]] — the degree to
   which a thing's character is its participation in a general
   pattern rather than the particulars it happens to have.
-- **[[existence/subjectivity|Subjectivity]]** is the measure of
-  closeness to [[existence/self|the Self]] — the degree to
+- **[[subjectivity|Subjectivity]]** is the measure of
+  closeness to [[self|the Self]] — the degree to
   which the reality a thing inhabits is shaped by its
   experience of that reality.
-- **[[existence/dissolution|Dissolution]]** is the measure of
-  closeness to [[existence/chaos|Chaos]] — the degree to which
+- **[[dissolution|Dissolution]]** is the measure of
+  closeness to [[chaos|Chaos]] — the degree to which
   the work of holding itself together is failing.
 
 These three quantities are not independent. A thing in Mundus
@@ -114,9 +115,10 @@ can be close to one Cardinal, or somewhere along an edge between
 two, or at the balance point in the middle.
 
 The low end of any single axis is not a destination in itself.
-A thing low in Essence is somewhere on the Self–Chaos Horizon;
-a thing low in Subjectivity is somewhere on the Source–Chaos
-Horizon; a thing low in Dissolution is somewhere on the
+A thing low in Essence is somewhere on [[nullity|Nullity]], the
+Self–Chaos Horizon; a thing low in Subjectivity is somewhere on
+[[oblivion|Oblivion]], the Source–Chaos Horizon; a thing low in
+Dissolution is somewhere on [[tranquility|Tranquility]], the
 Source–Self Horizon. Which point on the Horizon depends on the
 other two axes, not on the low one. The Horizons are the loci
 of these low-end limits — bounds in the same sense the
@@ -141,19 +143,22 @@ three axes describe when their values are about equal.
 
 Each edge of the triangle is a [[kinds/horizon|Horizon]] — a
 bound in the same sense the Cardinals are. The Source–Self
-edge is the Horizon of low Dissolution: positions in which
-coming-apart is minimised and the trade is between thinning
-into pure pattern and bending the world around the experiencing
-subject. The Source–Chaos edge is the Horizon of low
-Subjectivity. The Self–Chaos edge is the Horizon of low
-Essence.
+edge is [[tranquility|Tranquility]], the Horizon of low
+Dissolution: positions in which coming-apart is minimised and
+the trade is between thinning into pure pattern and bending the
+world around the experiencing subject. The Source–Chaos edge is
+[[oblivion|Oblivion]], the Horizon of low Subjectivity:
+positions where pattern and unbinding are both at work but
+nothing is in to whom any of it is happening. The Self–Chaos
+edge is [[nullity|Nullity]], the Horizon of low Essence:
+positions where subjective reality and unbinding trade against
+one another with no pattern underneath either.
 
-The edge-Horizons are real features of the geometry; what they
-look like in practice — what existence is like for a thing
-leaning along an edge rather than toward a corner — is not
-something the foundation layer has worked out. Cluster-specific
-phenomena may describe portions of one edge or another without
-naming it as such.
+The Horizons are real features of the geometry; what existence
+is like for a thing leaning along an edge rather than toward a
+corner is something the foundation layer holds open.
+Cluster-specific phenomena may describe portions of one edge or
+another without naming it as such.
 
 ### Other vocabularies
 

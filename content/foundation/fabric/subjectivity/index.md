@@ -1,15 +1,15 @@
 Subjectivity is one of the three structural axes of
-[[existence/mundus|Mundus]]. It runs from
-[[existence/self|the Self]] — the Cardinal at which reality is
+[[mundus|Mundus]]. It runs from
+[[self|the Self]] — the Cardinal at which reality is
 wholly the experiencing subject and nothing holds apart from
-them — to the Source–Chaos [[kinds/horizon|Horizon]], the edge
-along which reality holds its shape regardless of any
-perceiver.
+them — to [[oblivion|Oblivion]], the Horizon along the
+Source–Chaos edge, along which reality holds its shape
+regardless of any perceiver.
 
 A thing's Subjectivity is the degree to which the world it
 inhabits is shaped by its experience of that world. Where
-[[existence/essence|Essence]] measures the ratio of pattern
-to particulars and [[existence/dissolution|Dissolution]]
+[[essence|Essence]] measures the ratio of pattern
+to particulars and [[dissolution|Dissolution]]
 measures closeness to coming-apart, Subjectivity measures the
 _give_ of reality under the perceiver: how far the world bends
 around the one looking at it, rather than holding its shape
@@ -45,15 +45,16 @@ At the Self itself — never reached — there is no shared
 world left at all; there is only the single continuous interior
 of one experiencing self.
 
-## Walked toward the Source–Chaos Horizon
+## Walked toward Oblivion
 
 The other direction along the axis does not lead anywhere on
 its own. Subjectivity going down means the world is bending
 less around the perceiver — but _what_ it is doing instead is
 set by the other two axes, not by the loss of Subjectivity
 itself. The position a thing arrives at, as its Subjectivity
-falls, is some point on the Source–Chaos Horizon: the edge
-where Essence and Dissolution do all the leaning between them.
+falls, is some point on [[oblivion|Oblivion]], the Source–Chaos
+Horizon: the edge where Essence and Dissolution do all the
+leaning between them.
 
 At the Essence-leaning end of that edge — high Essence, low
 Dissolution, low Subjectivity — a thing is a clear instance of
@@ -72,9 +73,9 @@ Some of the impressions ordinary thought associates with low
 Subjectivity belong on this Horizon: the sense that reality
 "goes on regardless," the impersonal weight of physical law,
 the way a stone is the same stone whether or not anyone is
-there to see it. These are real features of positions on the
-Source–Chaos edge; they are not products of low Subjectivity
-on its own, but of being _somewhere on_ that edge.
+there to see it. These are real features of positions on
+Oblivion; they are not products of low Subjectivity on its own,
+but of being _somewhere on_ that edge.
 
 The out-of-body experience, the seeing of oneself in the
 third person, the apprehension of long stretches of time as
@@ -95,8 +96,8 @@ neither identical to it.
 
 Subjectivity is not a quantity a thing has independently of its
 Essence or Dissolution. A thing in Mundus has one position in
-the interior; [[existence/essence|Essence]], Subjectivity,
-and [[existence/dissolution|Dissolution]] are three readings of
+the interior; [[essence|Essence]], Subjectivity,
+and [[dissolution|Dissolution]] are three readings of
 that one position. They sum to a constant. A thing whose
 Subjectivity is rising is, by the same fact, having its
 Essence or Dissolution (or both) lowered.

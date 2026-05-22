@@ -1,9 +1,9 @@
 Dissolution is one of the three structural axes of
-[[existence/mundus|Mundus]]. It runs from
-[[existence/chaos|Chaos]] — the Cardinal at which the work of
+[[mundus|Mundus]]. It runs from
+[[chaos|Chaos]] — the Cardinal at which the work of
 holding together gives way entirely, with nothing taking its
-place — to the Source–Self [[kinds/horizon|Horizon]], the edge
-along which a thing's coherence never fails.
+place — to [[tranquility|Tranquility]], the Horizon along the
+Source–Self edge, along which a thing's coherence never fails.
 
 A thing's Dissolution is the degree to which the work of
 holding itself together is failing. Low Dissolution is the
@@ -18,21 +18,21 @@ Dissolution going down means the holding-together is more
 secure — but _what_ that securely-held thing is leaning toward
 is set by the other two axes, not by the loss of Dissolution
 itself. The position a thing arrives at, as its Dissolution
-falls, is some point on the Source–Self Horizon: the edge
-where Essence and Subjectivity do all the leaning between them.
-The thing might be holding together as a clear participant in a
-pattern (high Essence), or holding together as a self whose
-world answers to it (high Subjectivity), or some mixture along
-the edge. In every case, what is constant along that Horizon is
-that coming-apart is minimised; what varies is the form of the
-holding.
+falls, is some point on [[tranquility|Tranquility]], the
+Source–Self Horizon: the edge where Essence and Subjectivity do
+all the leaning between them. The thing might be holding
+together as a clear participant in a pattern (high Essence), or
+holding together as a self whose world answers to it (high
+Subjectivity), or some mixture along the edge. In every case,
+what is constant along Tranquility is that coming-apart is
+minimised; what varies is the form of the holding.
 
 ## Not an independent dimension
 
 Dissolution is not a quantity a thing has independently of its
 Essence or Subjectivity. A thing in Mundus has one position
-in the interior; [[existence/essence|Essence]],
-[[existence/subjectivity|Subjectivity]], and Dissolution are
+in the interior; [[essence|Essence]],
+[[subjectivity|Subjectivity]], and Dissolution are
 three readings of that one position. They sum to a constant.
 A thing whose Dissolution is rising is, by the same fact,
 having its Essence or Subjectivity (or both) lowered.

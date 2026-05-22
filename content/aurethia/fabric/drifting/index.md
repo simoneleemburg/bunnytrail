@@ -1,6 +1,6 @@
 Drifting is the Chaos-axis counterpart to [[fabric/nearing|Nearing]]
 and [[fabric/valdor-traversal|Valdor traversal]]: a process by
-which a being leans far enough toward [[existence/chaos|Chaos]]
+which a being leans far enough toward [[chaos|Chaos]]
 that the structures holding them coherent — identity, position,
 the persistence of being one thing across moments — loosen and
 come apart.

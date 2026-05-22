@@ -1,20 +1,20 @@
-A Horizon is an edge-bound of [[existence/mundus|Mundus]] —
+A Horizon is an edge-bound of [[mundus|Mundus]] —
 the asymptotic limit of one of the three axes going to its
 minimum. Three Horizons run along the edges of the interior of
 existence, between pairs of [[kinds/cardinal|Cardinals]]:
 
-- The edge between [[existence/source|the Source]] and
-  [[existence/self|the Self]] is the Horizon along which
-  [[existence/dissolution|Dissolution]] goes to its minimum —
+- [[tranquility|Tranquility]] runs along the edge between
+  [[source|the Source]] and [[self|the Self]] — the Horizon
+  along which [[dissolution|Dissolution]] goes to its minimum,
   the limit of unfailing coherence.
-- The edge between [[existence/source|the Source]] and
-  [[existence/chaos|Chaos]] is the Horizon along which
-  [[existence/subjectivity|Subjectivity]] goes to its minimum —
-  the limit of reality untouched by the perceiver.
-- The edge between [[existence/self|the Self]] and
-  [[existence/chaos|Chaos]] is the Horizon along which
-  [[existence/essence|Essence]] goes to its minimum — the limit
-  of pure particularity, of the thing that participates in no
+- [[oblivion|Oblivion]] runs along the edge between
+  [[source|the Source]] and [[chaos|Chaos]] — the Horizon
+  along which [[subjectivity|Subjectivity]] goes to its
+  minimum, the limit of reality untouched by the perceiver.
+- [[nullity|Nullity]] runs along the edge between
+  [[self|the Self]] and [[chaos|Chaos]] — the Horizon along
+  which [[essence|Essence]] goes to its minimum, the limit of
+  pure particularity, of the thing that participates in no
   kind.
 
 Each Horizon is asymptotic to mass in the same way the
@@ -25,10 +25,9 @@ amount of each is part of what it is to be a coherent
 thing-in-Mundus. The Horizons are limits one leans toward, not
 states one occupies.
 
-The three Horizons are unnamed at the foundation layer. They
-are real features of the geometry, and particular cluster
-phenomena may describe positions on or near them, but no
-cluster has yet given them names of their own.
+The three Horizons — Tranquility, Oblivion, Nullity — are real
+features of the geometry. Cluster phenomena may describe
+positions on or near them in cluster-specific vocabulary.
 
 ## Why both shapes are bounds
 

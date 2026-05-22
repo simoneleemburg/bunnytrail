@@ -1,16 +1,16 @@
 Essence is one of the three structural axes of
-[[existence/mundus|Mundus]]. It runs from
-[[existence/source|the Source]] — the Cardinal at which pure
-pattern is unmixed with any particular instance — to the
-Self–Chaos [[kinds/horizon|Horizon]], the edge along which a
-thing participates in no pattern at all.
+[[mundus|Mundus]]. It runs from
+[[source|the Source]] — the Cardinal at which pure
+pattern is unmixed with any particular instance — to
+[[nullity|Nullity]], the Horizon along the Self–Chaos edge,
+along which a thing participates in no pattern at all.
 
 A thing's Essence is the degree to which its character is its
 participation in a general pattern, rather than the particulars
 it happens to have. Where
-[[existence/subjectivity|Subjectivity]] measures the give of
+[[subjectivity|Subjectivity]] measures the give of
 reality under the perceiver and
-[[existence/dissolution|Dissolution]] measures the failure of
+[[dissolution|Dissolution]] measures the failure of
 the work that holds a thing together, Essence measures the
 ratio of pattern to accident: how much of what a thing _is_ is
 the kind it instantiates, and how much is the specific
@@ -47,16 +47,16 @@ At the Source itself — never reached — there is no instance
 at all. There is only pattern, with nothing for the pattern to
 be the pattern _of_.
 
-## Walked toward the Self–Chaos Horizon
+## Walked toward Nullity
 
 The other direction along the axis does not lead anywhere on
 its own. Essence going down means a thing's participation in
 pattern is becoming a smaller part of what it is — but _what_
 is taking the pattern's place is set by the other two axes, not
 by the loss of Essence itself. The position a thing arrives at,
-as its Essence falls, is some point on the Self–Chaos Horizon:
-the edge where Subjectivity and Dissolution do all the leaning
-between them.
+as its Essence falls, is some point on [[nullity|Nullity]], the
+Self–Chaos Horizon: the edge where Subjectivity and Dissolution
+do all the leaning between them.
 
 At the Subjectivity-leaning end of that edge — high
 Subjectivity, low Dissolution, low Essence — a thing is densely
@@ -75,26 +75,24 @@ This is what to make of the impressions ordinary thought
 associates with low Essence — the artisan's signature mark, the
 face that no description fits, the story that resembles no
 other in outline. They are not products of low Essence alone.
-They are products of being _somewhere on_ the Self–Chaos
-Horizon, with low Essence as a precondition rather than a
-destination. The signature mark of a beloved artisan, vividly
-held in the regard of those who treasure it, leans more toward
-the Self than toward Chaos; the signature mark of an
-abandoned, weathering tool leans more toward Chaos than toward
-the Self. Both are low in Essence; their differences come from
-the other two axes.
+They are products of being _somewhere on_ Nullity, with low
+Essence as a precondition rather than a destination. The
+signature mark of a beloved artisan, vividly held in the regard
+of those who treasure it, leans more toward the Self than
+toward Chaos; the signature mark of an abandoned, weathering
+tool leans more toward Chaos than toward the Self. Both are low
+in Essence; their differences come from the other two axes.
 
-A thing's Essence on its own does not say which end of the
-Self–Chaos Horizon it is closer to, only how far from the
-Source-corner it sits.
+A thing's Essence on its own does not say which end of Nullity
+it is closer to, only how far from the Source it sits.
 
 ## Not an independent dimension
 
 Essence is not a quantity a thing has independently of its
 Subjectivity or Dissolution. A thing in Mundus has one position
 in the interior; Essence,
-[[existence/subjectivity|Subjectivity]], and
-[[existence/dissolution|Dissolution]] are three readings of
+[[subjectivity|Subjectivity]], and
+[[dissolution|Dissolution]] are three readings of
 that one position. They sum to a constant. A thing whose
 Essence is rising is, by the same fact, having its Subjectivity
 or Dissolution (or both) lowered.
@@ -116,8 +114,8 @@ ideal — it is often speaking of Essence or of some specific
 manifestation of it. Where a cluster speaks of idiosyncrasy,
 of signature, of the artisan's mark, of what is irreducibly
 particular about a person or a place or a moment — it is often
-speaking of positions on the Self–Chaos Horizon, of which low
-Essence is one component.
+speaking of positions on Nullity, of which low Essence is one
+component.
 
 In Aurethia, the controlled leaning toward the Source is named
 [[fabric/nearing|Nearing]]: practitioners thin their specific

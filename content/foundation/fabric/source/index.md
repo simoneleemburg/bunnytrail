@@ -1,7 +1,7 @@
 The Source is the Cardinal of pure pattern.
 
 It is not a place; it is a limit. Massive existence in
-[[existence/mundus|Mundus]] can lean toward the Source — can
+[[mundus|Mundus]] can lean toward the Source — can
 shade toward the kind it instantiates, toward the form
 beneath the accidents, toward the participatory medium that
 selves and things alike are drawn from — but cannot reach it.
@@ -15,7 +15,7 @@ something in Mundus that has approached one of Mundus's
 ## The Essence axis
 
 The axis whose far limit is the Source is named
-**[[existence/mundus#the-three-axes|Essence]]**: a thing's
+**[[mundus#the-three-axes|Essence]]**: a thing's
 Essence is the degree to which its character is its
 participation in a general pattern rather than the particulars
 it happens to have, and the higher a thing's Essence, the
@@ -35,18 +35,18 @@ have inside Mundus.
 ## Relation to the other bounds
 
 The Source is one of three [[kinds/cardinal|Cardinals]] that
-sit at the corners of Mundus; [[existence/self|the Self]] and
-[[existence/chaos|Chaos]] are the other two. Three
+sit at the corners of Mundus; [[self|the Self]] and
+[[chaos|Chaos]] are the other two. Three
 [[kinds/horizon|Horizons]] run along the edges between them.
 None of the six bounds is opposed to one another, and none is
 opposed to Mundus. They are the geometry within which Mundus
 takes its shape.
 
 The opposite of the Source, in the sense the axis defines, is
-not another Cardinal. It is the Self–Chaos Horizon — the edge
-along which Essence goes to its minimum. A thing leaning hard
-along its Essence is leaning _away_ from that Horizon and
-toward the Source.
+not another Cardinal. It is [[nullity|Nullity]], the Self–Chaos
+Horizon — the edge along which Essence goes to its minimum. A
+thing leaning hard along its Essence is leaning _away_ from
+Nullity and toward the Source.
 
 The distinction between the Source and the Self is
 load-bearing and easily collapsed. The Source is the Cardinal

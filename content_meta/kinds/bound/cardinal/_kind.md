@@ -1,11 +1,11 @@
-A Cardinal is a corner-bound of [[existence/mundus|Mundus]] —
+A Cardinal is a corner-bound of [[mundus|Mundus]] —
 the asymptotic limit of one of the three axes going to its
 maximum. Three Cardinals sit at the corners of the interior of
-existence: [[existence/source|the Source]] (the limit of
-[[existence/essence|Essence]]), [[existence/self|the Self]]
-(the limit of [[existence/subjectivity|Subjectivity]]), and
-[[existence/chaos|Chaos]] (the limit of
-[[existence/dissolution|Dissolution]]).
+existence: [[source|the Source]] (the limit of
+[[essence|Essence]]), [[self|the Self]]
+(the limit of [[subjectivity|Subjectivity]]), and
+[[chaos|Chaos]] (the limit of
+[[dissolution|Dissolution]]).
 
 Each Cardinal is asymptotic to mass: a thing with mass can
 lean toward a Cardinal — can shade toward pure pattern, toward

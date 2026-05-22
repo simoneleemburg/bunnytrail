@@ -25,14 +25,14 @@
 	<section class="map-section">
 		<h2>The cosmological frame</h2>
 		<p class="map-intro">
-			Existence is bounded by six <a href="/foundation/fabric">bounds</a> — three
-			Cardinals at the corners (the Source, the Self, Chaos) and three Horizons along the edges
-			between them — each approached but never reached. Between them lies
-			<a href="/foundation/fabric/mundus">Mundus</a>, the inhabited middle, where every
-			thing that exists has a place. Three axes — Essence, Subjectivity, Dissolution — run through
-			the interior, each pointing toward the Cardinal it measures distance from. The faint
-			topographical rings show that approach: bunched tight near the edges and corners, because the
-			bounds are limits one nears but never reaches.
+			Existence is bounded by six <a href="/foundation/fabric">bounds</a> — three Cardinals at the
+			corners (the Source, the Self, Chaos) and three Horizons along the edges between them — each
+			approached but never reached. Between them lies
+			<a href="/foundation/fabric/mundus">Mundus</a>, the inhabited middle, where every thing that
+			exists has a place. Three axes — Essence, Subjectivity, Dissolution — run through the
+			interior, each pointing toward the Cardinal it measures distance from. The faint topographical
+			rings show that approach: bunched tight near the edges and corners, because the bounds are
+			limits one nears but never reaches.
 		</p>
 		<MundusMap />
 	</section>
