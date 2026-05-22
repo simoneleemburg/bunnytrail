@@ -25,16 +25,49 @@
 	<section class="map-section">
 		<h2>The cosmological frame</h2>
 		<p class="map-intro">
-			Existence is bounded by six <a href="/foundation/fabric">bounds</a> — three Cardinals at the
-			corners (the Source, the Self, Chaos) and three Horizons along the edges between them — each
-			approached but never reached. Between them lies
-			<a href="/foundation/fabric/mundus">Mundus</a>, the inhabited middle, where every thing that
-			exists has a place. Three axes — Essence, Subjectivity, Dissolution — run through the
-			interior, each pointing toward the Cardinal it measures distance from. The faint topographical
-			rings show that approach: bunched tight near the edges and corners, because the bounds are
-			limits one nears but never reaches.
+			To understand Alteria, it helps to begin where any of us would already be standing. The
+			ordinary world — the one where ordinary physics holds, where stone is stone and time runs
+			forward — sits at the centre of the cosmology. The map below calls that centre
+			<a href="/foundation/fabric/equilibrium">Equilibrium</a>. Most things, most of the time, are
+			there.
 		</p>
 		<MundusMap />
+		<p class="map-intro">
+			The cosmology adds three further dimensions on top of ordinary space and time. They do not
+			move you across a landscape; they change what space and time are like in the place you stand.
+			Each one runs from the familiar middle out toward a limit at which something fundamental about
+			reality has been turned all the way up.
+		</p>
+
+		<dl class="axes-intro">
+			<dt><a href="/foundation/fabric/essence">Essence</a></dt>
+			<dd>
+				The liveliness of being. Walk this way and the world grows ethereal — alive in itself, not
+				merely inhabited by living things. The line between what is animate and what is solid
+				softens; far enough along, a living thing can walk through a wall.
+			</dd>
+
+			<dt><a href="/foundation/fabric/subjectivity">Subjectivity</a></dt>
+			<dd>
+				The intensity of individual perspective. Walk this way and the fabric of a place begins to
+				answer to whoever is in it. Layout, weather, geography bend toward attention, mood, memory —
+				space-time becomes responsive to the perceiver.
+			</dd>
+
+			<dt><a href="/foundation/fabric/dissolution">Dissolution</a></dt>
+			<dd>
+				The looseness of form. Walk this way and the work that ordinarily holds space-time together
+				falls off. A gesture of the hand can raise a tornado; further along, the same gesture may
+				open a black hole or fold a passage of time onto itself.
+			</dd>
+		</dl>
+
+		<p class="map-intro">
+			Each direction has an end — not one you can reach, but one the fabric of a place declares more
+			loudly the closer you get. The corners (<a href="/kinds/cardinal">Cardinals</a>) and edges (<a
+				href="/kinds/horizon">Horizons</a
+			>) of the map are those bounds.
+		</p>
 	</section>
 
 	<section class="map-section">
@@ -163,6 +196,39 @@
 
 	.map-intro a:hover {
 		color: var(--accent);
+	}
+
+	.axes-intro {
+		max-width: var(--prose-max);
+		margin: 0 auto var(--space-6);
+	}
+
+	.axes-intro dt {
+		font-family: var(--font-display);
+		font-size: var(--text-lg);
+		font-style: italic;
+		color: var(--ink);
+		margin: var(--space-5) 0 var(--space-2);
+	}
+
+	.axes-intro dt:first-of-type {
+		margin-top: 0;
+	}
+
+	.axes-intro dt a {
+		color: inherit;
+		text-decoration: none;
+		border-bottom: 1px solid var(--rule);
+	}
+
+	.axes-intro dt a:hover {
+		color: var(--accent);
+	}
+
+	.axes-intro dd {
+		margin: 0;
+		color: var(--ink-soft);
+		line-height: var(--leading-relaxed);
 	}
 
 	.legend {

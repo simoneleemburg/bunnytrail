@@ -452,21 +452,9 @@
 	</svg>
 
 	<figcaption>
-		Three Cardinals at the corners — <a href="/foundation/fabric/source">the Source</a>,
-		<a href="/foundation/fabric/self">the Self</a>, and
-		<a href="/foundation/fabric/chaos">Chaos</a> — each an asymptotic limit. Three axes measure
-		where in the interior a thing stands, each pointing toward the Cardinal it tracks:
-		<a href="/foundation/fabric/essence">Essence</a> toward the Source,
-		<a href="/foundation/fabric/subjectivity">Subjectivity</a> toward the Self,
-		<a href="/foundation/fabric/dissolution">Dissolution</a> toward Chaos. The edges between the
-		corners are the three Horizons —
-		<a href="/foundation/fabric/tranquility">Tranquility</a>,
-		<a href="/foundation/fabric/oblivion">Oblivion</a>, and
-		<a href="/foundation/fabric/nullity">Nullity</a> — also asymptotic. The interior is
-		<a href="/foundation/fabric/mundus">Mundus</a>, the inhabited middle, where every thing that
-		exists has a place. At its centre is
-		<a href="/foundation/fabric/equilibrium">Equilibrium</a>, the soft basin into which ordinary
-		existence settles.
+		The cosmology as a contained triangular space, held between three related Cardinals. The faint
+		topographical rings show how the bounds are approached: bunched tighter and tighter toward the
+		edges and corners, because no thing in Mundus can fully reach any of them.
 	</figcaption>
 </figure>
 
@@ -492,16 +480,6 @@
 		color: var(--ink-soft);
 		font-size: var(--text-sm);
 		line-height: var(--leading-normal);
-	}
-
-	figcaption a {
-		color: var(--ink);
-		text-decoration: none;
-		border-bottom: 1px solid var(--rule);
-	}
-
-	figcaption a:hover {
-		color: var(--accent);
 	}
 
 	/* ── Mundus interior: a soft inhabited fill ───────────────── */
