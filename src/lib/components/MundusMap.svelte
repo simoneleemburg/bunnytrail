@@ -411,7 +411,6 @@
 			<g class="mundus-label" transform={`translate(${MID.x} ${MID.y})`}>
 				<text class="cardinal-sigil" text-anchor="middle" y="-14">🜃</text>
 				<text class="cardinal-name" text-anchor="middle" y="14">Mundus</text>
-				<text class="cardinal-caption" text-anchor="middle" y="32">the inhabited middle</text>
 			</g>
 		</a>
 
@@ -587,13 +586,6 @@
 		letter-spacing: 0.12em;
 		fill: var(--ink);
 		transition: fill 0.2s;
-	}
-
-	.cardinal-caption {
-		font-family: var(--font-serif);
-		font-size: 11px;
-		font-style: italic;
-		fill: var(--ink-faint);
 	}
 
 	.cardinal-link {
