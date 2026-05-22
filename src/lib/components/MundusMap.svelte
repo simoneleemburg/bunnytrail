@@ -454,7 +454,7 @@
 	<figcaption>
 		The cosmology as a contained triangular space, held between three related Cardinals. The faint
 		topographical rings show how the bounds are approached: bunched tighter and tighter toward the
-		edges and corners, because no thing in Mundus can fully reach any of them.
+		edges and corners, because no ordinary thing in Mundus can fully reach any of them.
 	</figcaption>
 </figure>
 
