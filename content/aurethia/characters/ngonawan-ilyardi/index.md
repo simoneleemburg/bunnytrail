@@ -5,21 +5,23 @@ Sacred Serpent of Resonance.
 
 ## In the Triad
 
-Ngonawan hears the resonance. He perceives Naretic signal in fine
-grain — the shifting tonal substrate that carries
-[[kinds/naya|Naya]] meaning before it has become anything a
-human can call a symbol. Where another practitioner of
-[[aurethia/fabric/nearing-source|Nearing]] might come back from contact with
-[[realms/nareth|Nareth]] holding sensation, image, dread, or
-unspeakable certainty, Ngonawan finds the signal under the
-noise.
+Ngonawan holds the deep link of the
+[[culture/oracle-triad|Triad's]] chain along ε↥. He balances
+at a depth on the [[foundation/fabric/essence|Essence]] axis
+far past where his [[kinds/nearborn|Nearborn]] nature-frame
+would leave him at rest, sustained by willed
+[[foundation/fabric/nearing|Nearing]] exactly equal to his
+own [[foundation/fabric/drifting|drift]]. At that depth
+Naretic signal is directly audible — the shifting tonal
+substrate that carries [[kinds/naya|Naya]] meaning before it
+has become anything a human can call a symbol.
 
-He cannot, alone, anchor what he hears. The signal arrives and
-slips unless something embodied — [[characters/sabina-vaarn|Sabina]] —
-holds it long enough for [[characters/uraya-ur|Uraya]] to read
-the recurrence patterns inside it. His perception is the entry
-point of the Triad's work and on its own is only a kind of
-beautiful, unusable hearing.
+He cannot, alone, anchor what he hears. He is too deep for
+the holding; the depth is what makes the hearing possible.
+The signal slips unless [[characters/sabina-vaarn|Sabina]],
+balanced shallower in the chain, receives it from him, and
+unless [[characters/uraya-ur|Uraya]] reads its recurrence
+patterns from above.
 
 ## Identity
 

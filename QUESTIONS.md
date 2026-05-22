@@ -56,6 +56,7 @@ The rules:
 - Which Knight pilots the Eidolon paired with Viynangor Viyar?
 - Whose "shattered god" is which, across the traditions that reference one?
 - Does any Aurethian tradition deliberately practise nearing-Chaos, or is the cluster's silence on the question itself an artefact of curation — by the Knights, by the Triad, by something older? Is the absence honest or curated?
+- How detectable is the Triad's local place-frame rotation to other practitioners of Nearing in the vicinity — and what does the order do about, or with, that detectability?
 
 ### Materials
 

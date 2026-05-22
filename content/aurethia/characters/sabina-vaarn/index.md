@@ -8,17 +8,25 @@ She is a human, from [[tholingia|Tholingia]] on
 
 ## In the Triad
 
-Sabina stabilises embodied meaning. Her work is to hold what
-[[characters/ngonawan-ilyardi|Ngonawan]] hears inside a body that
-can keep it — to give resonance enough continuity in flesh and
-time that it does not dissipate before it can be read. She is
-the part of the Triad in which signal becomes durable.
+Sabina holds the middle link of the
+[[culture/oracle-triad|Triad's]] chain along ε↥. She balances
+at a mid-depth on the [[foundation/fabric/essence|Essence]]
+axis — deeper than her [[kinds/nearborn|Nearborn]]
+nature-frame would have her drift to, sustained by willed
+[[foundation/fabric/nearing|Nearing]] exactly equal to her
+own [[foundation/fabric/drifting|drift]]. Deep enough that
+what [[characters/ngonawan-ilyardi|Ngonawan]] brings up from
+further down can pass into her without being lost across the
+gap; shallow enough that embodied stabilisation still
+operates in her. She is the part of the chain where signal
+becomes durable.
 
-She cannot, alone, decode the high symbols. What she stabilises
-remains opaque to her until [[characters/uraya-ur|Uraya]] reads
-the recursive patterns inside it and the locked Triad binds the
-reading into language. Her work is the holding, not the
-meaning. The holding is what makes the meaning possible.
+She cannot, alone, decode the high symbols. The recognition
+step requires the depth at which Naya symbol systems show
+their recursive structure, and she has chosen, by sustained
+will, not to go there. What she stabilises remains opaque to
+her until [[characters/uraya-ur|Uraya]] reads it through her
+from above.
 
 ## Identity
 
