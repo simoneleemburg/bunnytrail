@@ -44,7 +44,7 @@ congenial to, and the substance through which Urouthi Nearing
 is mediated. At low doses it sustains; at higher doses it opens
 the doorway. See
 [[kinds/urouthi#the-radiance-and-what-is-in-it|the radiance,
-and what is in it]] and [[aurethia/fabric/nearing-source|Nearing]] for the
+and what is in it]] and [[aurethia/fabric/nearing|Nearing]] for the
 practice.
 
 **It is life-support.** Long-term settlement on the seafloor of

@@ -72,7 +72,7 @@ passages between Pillar-launches. The condition itself is not
 a location.
 
 This mode of approach is what Aurethia names
-[[aurethia/fabric/nearing-chaos|nearing-Chaos]] — leaning,
+[[aurethia/fabric/nearing|nearing toward Chaos]] — leaning,
 or being leaned, toward the loosening that Chaos is the
 asymptote of. The cluster knows it almost entirely in its
 failure form: pilots whose [[binding|binding]] slips in the

@@ -83,7 +83,7 @@ the rider.
 This is, very approximately, the relationship. Piloting
 itself is a sustained practice of contact between Knight and
 the Naya inside the vessel — a form of
-[[aurethia/fabric/nearing-source|Nearing]] toward the Naya through the
+[[aurethia/fabric/nearing|Nearing]] toward the Naya through the
 Eidolon. It is its own discipline, treated in the
 [[culture/eidolon-knight|Eidolon Knight]] entry. What matters
 here is that the binding sits underneath all of that. The

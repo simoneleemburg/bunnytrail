@@ -169,7 +169,7 @@ older silence beneath both.
 Bayurinda is the world where the old work of decoding the Naya
 was done. Its earliest practitioners — known in the tradition as
 the **First Listeners** — entered prolonged
-[[aurethia/fabric/nearing-source|Nearing]] states and attempted to record the
+[[aurethia/fabric/nearing|Nearing]] states and attempted to record the
 symbols revealed to them. They could not speak what they
 perceived; but they discovered that certain sounds, under the
 right conditions, produced sympathetic resonance with it. Refined

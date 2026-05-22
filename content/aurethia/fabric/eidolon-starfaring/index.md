@@ -1,5 +1,5 @@
 Travel between worlds in Alteria is two
-[[aurethia/fabric/nearing-source|Nearings]] stacked.
+[[aurethia/fabric/nearing|Nearings]] stacked.
 
 Any [[culture/eidolon-knight|Knight]] piloting an
 [[kinds/eidolon|Eidolon]] is already Nearing — sustaining

@@ -85,8 +85,8 @@ its own technical content; whether and how that maps onto
 Dissolution is a question for any account that wants to bridge
 the two frames.
 
-The Aurethian phenomenon of
-[[aurethia/fabric/nearing-chaos|nearing-Chaos]] is a rising
+The Aurethian phrase
+[[aurethia/fabric/nearing|nearing toward Chaos]] names a rising
 of Dissolution. The cluster knows it almost entirely in its
 failure form — what happens when a pilot's binding slips and
 the Void's frame takes over — rather than as a deliberate

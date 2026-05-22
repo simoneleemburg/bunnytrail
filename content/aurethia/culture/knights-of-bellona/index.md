@@ -4,7 +4,7 @@ Nebelheim]], [[bayurinda|Bayurinda]], and
 [[sharazan|Sharazan]] — and their authority is one of the
 few institutions that does. The order maintains the
 [[culture/oracle-triad|Oracle Triad]], regulates the practice of
-[[aurethia/fabric/nearing-source|Nearing]], and trains and certifies every
+[[aurethia/fabric/nearing|Nearing]], and trains and certifies every
 known [[culture/eidolon-knight|Eidolon Knight]] in the cosmology.
 
 The order takes its name from Bellona.

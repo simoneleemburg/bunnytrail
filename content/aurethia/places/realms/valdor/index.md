@@ -58,7 +58,7 @@ philosophical question rather than a settled one.
 ## Transformation
 
 Within Valdor there exists a process analogous to
-[[aurethia/fabric/nearing-source|Nearing]]. In Nareth-oriented practice, Nearing
+[[aurethia/fabric/nearing|Nearing]]. In Nareth-oriented practice, Nearing
 loosens attachment to identity, bodily form, and linear
 existence. In Valdor, the equivalent process manifests as
 identity shift through ego and memory traversal: by moving

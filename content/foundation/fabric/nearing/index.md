@@ -81,7 +81,7 @@ just **↥** with the destination specified in prose.
 ## Cluster accounts
 
 Where clusters describe particular practices of nearing —
-Aurethian [[aurethia/fabric/nearing-source|Nearing toward the
+Aurethian [[aurethia/fabric/nearing|Nearing toward the
 Source]], or [[aurethia/fabric/remembrance|Remembrance]]
 toward the Self, or other traditions — they are describing
 structured ways their practitioners lean. The foundation

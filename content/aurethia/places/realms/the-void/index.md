@@ -15,7 +15,7 @@ fixed geometry to map. There is also no boundary one crosses to
 arrive there. A pilot in the long passages between
 [[kinds/world-pillar|Pillar]] launches does not enter the Void
 at coordinates. A pilot enters the Void through
-[[aurethia/fabric/nearing-chaos|nearing-Chaos]] — by losing
+[[aurethia/fabric/nearing|nearing toward Chaos]] — by losing
 enough hold on themselves and their
 [[kinds/naya|Naya]] that the interplanetary medium ceases to be
 _medium_ and becomes _the Void_.
@@ -29,7 +29,7 @@ has not committed itself in public to saying.
 
 ## What asserts itself
 
-When a pilot is in nearing-Chaos, certain things become present that
+When a pilot is leaning toward Chaos in this way, certain things become present that
 were not present before. They are not summoned from elsewhere;
 they are what the medium _is_, for a coherence that is failing.
 The boundaries between them are not clean.
@@ -37,14 +37,14 @@ The boundaries between them are not clean.
 **Broken [[kinds/naya|Naya]].** Naya who could not hold
 identity in some encounter — through failed
 [[binding|binding]], through unsupported
-[[aurethia/fabric/nearing-source|Nearing]], through whatever it is that
+[[aurethia/fabric/nearing|Nearing]], through whatever it is that
 breaks Naya — sometimes do not return to
 [[realms/nareth|Nareth]]. Their resonance lingers without
-ever quite resolving into anything coherent. A pilot in nearing-Chaos
+ever quite resolving into anything coherent. A pilot in this state
 feels them: drifts of intent without a self behind it, edges
 of feeling that arrive without a source.
 
-**Fragments of the old breaking.** A pilot in nearing-Chaos encounters
+**Fragments of the old breaking.** A pilot in this state encounters
 fragments of the same shattering that
 [[materials/skyblood|Skyblood]] derives from — the breaking
 that by long tradition is called a shattered god, though that
@@ -53,7 +53,7 @@ held. Whatever it was that broke, the breaking is older than
 the order, older than the worlds' current arrangement of
 themselves, older than most of what is written down. These
 fragments are not Skyblood. Skyblood is what has been refined
-out of the breaking. What presses against a pilot in nearing-Chaos is
+out of the breaking. What presses against such a pilot is
 the unrefined matter, and it does not stabilise identity the
 way Skyblood does. It scatters it.
 
