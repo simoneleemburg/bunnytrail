@@ -64,9 +64,10 @@ the texture ordinary thought more often associates with low
 Subjectivity: physical law's impersonal weight, the stone
 that is the same stone whether or not anyone watches.
 
-Between the two ends, the trade-off runs continuously. There
-is no point along Oblivion at which both textures hold
-simultaneously in equal measure; what the foundation layer
-does not commit to is what positions in the deep interior of
-the edge — pattern and unbinding both substantial, no subject
-to encounter either — are like for whatever may exist there.
+Between the two ends, the textures mix continuously. A
+position closer to the Source-end is mostly integrative with
+some residue of indifference; a position closer to the
+Chaos-end is mostly indifferent with some residue of shared
+pattern; positions near the middle are a real ambivalence
+between the two, neither dominant. The trade-off is a
+gradient, not three regimes.

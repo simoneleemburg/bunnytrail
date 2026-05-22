@@ -122,11 +122,8 @@ low Essence, low Subjectivity — a thing is a fragment in a
 world that has gone on without any subject left to encounter
 it: coming apart unwitnessed, in a reality that does not
 answer to any inside. Between these, along the Horizon, are
-positions in which something exists that has no "how it is
-for it" — no inside the world could bend around — and yet
-the pattern it instantiates and the failure of its holding
-trade against one another in ways the foundation layer does
-not pretend to chart.
+positions where the two textures mix in the proportion the
+position sets, with neither dominant.
 
 The two ends of Oblivion are easily confused under a single
 slogan — "the world does not answer to any perceiver" — but
