@@ -18,7 +18,7 @@
 		</p>
 		<p class="lede">
 			Two maps follow. The first is cosmological — the frame within which everything else sits. The
-			second is local — Aureth, its eight planets, and the long gulf to the neighbouring system.
+			second is closer in — Aureth, its eight planets, and the long gulf to the neighbouring system.
 		</p>
 	</header>
 
@@ -71,7 +71,7 @@
 	</section>
 
 	<section class="map-section">
-		<h2>The local sky</h2>
+		<h2>The Aurethian cluster</h2>
 		<p class="map-intro">
 			<a href="/aurethia/places/celestial/aureth-system/aureth">Aureth</a> and its eight planets.
 			Three of them — the habitable-zone worlds — are settled territory; the others are sketches,
@@ -116,7 +116,7 @@
 					<a href="/aurethia/places/realms/nareth">Nareth</a>, and the other Aurethian realms are
 					regions of <a href="/foundation/fabric/mundus">Mundus</a> defined by their
 					<a href="/foundation/fabric/mundus-frame">Mundus Frame</a>, not parallel planes the bodies
-					sit on. The cosmological frame is the map above; this one is just the local sky.
+					sit on. The cosmological frame is the map above; this one is just the Aurethian sky.
 				</dd>
 			</dl>
 		</div>
@@ -163,11 +163,7 @@
 	}
 
 	.map-section {
-		margin: 0 auto var(--space-10);
-	}
-
-	.map-section + .map-section {
-		margin-top: var(--space-10);
+		margin: var(--space-10) auto;
 		padding-top: var(--space-8);
 		border-top: 1px solid var(--rule);
 	}
