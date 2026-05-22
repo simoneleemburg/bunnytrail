@@ -39,6 +39,41 @@ At the Source itself, there is no instance. Nothing native to
 the Cardinal would be _a particular_ in any sense those words
 have inside Mundus.
 
+## Awareness as pattern
+
+Among the patterns the Source is the limit of is the pattern
+of awareness itself. Two minds that are minds at all share in
+this pattern — they have inwardness, they hold something for
+themselves, they are some way for someone. What distinguishes
+one mind from another is its particulars: this history, this
+body, this regard, this name. The pattern of being-aware they
+share; the accidents of being-this-aware-one they do not.
+
+A thing leaning along its Essence thins those accidents. As
+the particulars recede, what is shared with other instances
+of the same pattern becomes more present. For minds, this
+means the distinctness from other minds begins to soften:
+what once stood as _this awareness, not that one_ shades
+toward _awareness, of which this and that are instances_. At
+the further reaches of the lean, what were many minds become
+coextensive in the pattern they share. At the Source-limit,
+the pattern of awareness and the contents of the universe
+coincide, because there is no longer any particular instance
+left over to distinguish one awareness from another or one
+content from another. The hive-mind, the shared consciousness
+of those bound deep enough into a common pattern, and the
+single awareness whose contents are the world entire are all
+points along this lean, at greater and greater depth.
+
+This is the integrative face of low [[subjectivity|Subjectivity]].
+Where ordinary thought treats low Subjectivity as the world's
+indifference to any perceiver — the stone that is the same
+whether or not anyone is there to see it — that is one
+texture among others, the one found at the Chaos-leaning end
+of [[oblivion|Oblivion]]. The Source-leaning end of Oblivion
+is the other: not the world without subjects, but the world
+as one subject.
+
 ## Relation to the other bounds
 
 The Source is one of three [[kinds/cardinal|Cardinals]] that
@@ -62,6 +97,17 @@ any particulars it might have. The Self is the Cardinal of
 subjective reality — of a world that is wholly the experience
 of the one undergoing it. A thing can lean toward both, but
 the two leans are different leans.
+
+The risk of collapse is sharpest where awareness is concerned.
+The Source-leaning lean of a mind goes toward the _pattern_ of
+awareness — what is shared with other awarenesses, prior to
+the accidents that make this one this one. The Self-leaning
+lean of the same mind goes the other way: toward _this_
+particular inwardness, more intensely held, with the world
+answering more closely to it. One thins the boundaries between
+subjects; the other deepens them. They are opposite directions
+across the interior, however much both might be called
+"spiritual" by the same outside vocabulary.
 
 ## Local accounts
 

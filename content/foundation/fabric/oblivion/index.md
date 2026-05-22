@@ -38,3 +38,35 @@ A thing positioned on Oblivion is not at zero. It is leaning
 along the edge — its Essence and its Dissolution traded against
 one another while its Subjectivity recedes toward the limit it
 cannot reach.
+
+## Two textures along the edge
+
+Oblivion has two ends, and they read very differently.
+
+At the [[source|Source]]-leaning end — high Essence, low
+Dissolution — the absence of separate inwardnesses takes the
+integrative form. The pattern of awareness is dense; the
+particulars that distinguished one awareness from another have
+thinned. What stood as many minds become coextensive; the
+deeper the lean, the fewer the distinct points of view, until
+at the asymptotic limit only one awareness remains, whose
+contents are the universe itself. This is the texture some
+cluster traditions name as cosmic awareness, the world-mind,
+the one knower. They are reading a real feature of this end of
+Oblivion.
+
+At the [[chaos|Chaos]]-leaning end — high Dissolution, low
+Essence — the absence of separate inwardnesses takes the
+opposite form. There are no minds to coincide. What remains
+is fragments of holding-together, each coming apart on its own
+terms, with no inside to whom any of it is anything. This is
+the texture ordinary thought more often associates with low
+Subjectivity: physical law's impersonal weight, the stone
+that is the same stone whether or not anyone watches.
+
+Between the two ends, the trade-off runs continuously. There
+is no point along Oblivion at which both textures hold
+simultaneously in equal measure; what the foundation layer
+does not commit to is what positions in the deep interior of
+the edge — pattern and unbinding both substantial, no subject
+to encounter either — are like for whatever may exist there.

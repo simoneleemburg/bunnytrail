@@ -80,6 +80,21 @@ mood, no attention, no inner state finds purchase. The world
 is what it is, and stays what it is, regardless of who is in
 it.
 
+Further along, a second texture begins to assert itself: the
+distinctness between perceivers loosens. What stood as
+separate inwardnesses — your mood and mine, your attention
+and mine — begins to share its contents across what had been
+boundaries. Two travellers in such a region may find that
+their experiences are no longer cleanly theirs alone. At the
+asymptotic limit, in the deepest low-Subjectivity space-time,
+there is no plurality of perceivers left at all: the region
+is witnessed by one awareness, and that awareness is
+coextensive with the region itself. Which of the two textures
+predominates at any depth depends on whether the place-frame
+leans toward [[source|the Source]] (the integrative reading)
+or toward [[chaos|Chaos]] (the indifferent one); see
+[[oblivion|Oblivion]].
+
 ## Walked toward Oblivion
 
 The other direction along the axis does not lead anywhere on
@@ -92,25 +107,43 @@ Horizon: the edge where Essence and Dissolution do all the
 leaning between them.
 
 At the Essence-leaning end of that edge — high Essence, low
-Dissolution, low Subjectivity — a thing is a clear instance of
-its kind in a world that is the same regardless of who is
-looking. The form is present; the particulars have thinned
-toward pattern; nothing of any perceiver's experience colours
-how the world is. At the Dissolution-leaning end — high
-Dissolution, low Essence, low Subjectivity — a thing is a
-fragment in a world that has gone on without any subject left
-to encounter it: coming apart unwitnessed, in a reality that
-does not answer to any inside. Between these, along the
-Horizon, are positions in which something exists that has no
-"how it is for it" — no inside the world could bend around.
+Dissolution, low Subjectivity — the distinctness between
+awarenesses thins along with the distinctness between any
+other particulars. What stood as _this mind, not that one_
+softens into shared participation in the pattern of being
+aware at all. Minds that lean far along this end become
+coextensive: hive-minds, then shared consciousnesses, then,
+at the asymptotic limit, a single awareness whose contents
+are the universe entire. This is the integrative face of low
+Subjectivity, and it leans toward [[source|the Source]] — the
+Cardinal whose pattern includes the pattern of awareness
+itself. At the Dissolution-leaning end — high Dissolution,
+low Essence, low Subjectivity — a thing is a fragment in a
+world that has gone on without any subject left to encounter
+it: coming apart unwitnessed, in a reality that does not
+answer to any inside. Between these, along the Horizon, are
+positions in which something exists that has no "how it is
+for it" — no inside the world could bend around — and yet
+the pattern it instantiates and the failure of its holding
+trade against one another in ways the foundation layer does
+not pretend to chart.
+
+The two ends of Oblivion are easily confused under a single
+slogan — "the world does not answer to any perceiver" — but
+they are different elsewheres. At the Source-leaning end the
+many perceivers have been absorbed into one; at the
+Dissolution-leaning end no perceiver remains at all. Both can
+be reached by losing one's particular inwardness, but the
+direction one loses it in is decided by the other two axes.
 
 Some of the impressions ordinary thought associates with low
 Subjectivity belong on this Horizon: the sense that reality
 "goes on regardless," the impersonal weight of physical law,
 the way a stone is the same stone whether or not anyone is
 there to see it. These are real features of positions on
-Oblivion; they are not products of low Subjectivity on its own,
-but of being _somewhere on_ that edge.
+Oblivion, and they sit closer to the Dissolution-leaning end
+than to the Source-leaning end — they are the texture of a
+world without subjects, not of a world that is one subject.
 
 The out-of-body experience, the seeing of oneself in the
 third person, the apprehension of long stretches of time as
