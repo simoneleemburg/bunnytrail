@@ -7,6 +7,13 @@ coming-apart, the Self is the Cardinal of subjective reality —
 the limit at which what _is_ is what the subject experiences,
 with nothing left holding apart from that experience.
 
+The Self is the corner where two Horizons converge:
+[[tranquility|Tranquility]], where nothing is coming apart, and
+[[nullity|Nullity]], where nothing participates in any pattern.
+What is left when both unbinding and form fall away — and only
+that — is the experiencing subject. The Self is the limit of
+that thickening.
+
 Massive existence in [[mundus|Mundus]] can lean
 toward the Self — can shade toward a reality that bends to the
 one looking at it, toward time and space and sensory texture

@@ -1,5 +1,12 @@
 Chaos is the Cardinal along which coherent things come apart.
 
+It is the corner where two Horizons converge:
+[[oblivion|Oblivion]], where nothing is in to whom anything is
+happening, and [[nullity|Nullity]], where nothing participates
+in any pattern. What is left when both witnessing and form fall
+away — and only that — is the bare work of unbinding. Chaos is
+the limit of that work.
+
 Massive existence in [[mundus|Mundus]] can lean
 toward Chaos — can shade toward entropy, toward decay, toward
 unbinding — but cannot reach it. Chaos is asymptotic to mass.

@@ -22,6 +22,22 @@ asymptotic to mass — but a Cardinal is the limit of _one_ axis
 going to its maximum, while a Horizon is the limit of one
 axis going to its minimum.
 
+## Read from the edges
+
+A Cardinal is also the meeting point of the two Horizons that
+share it. The Source is the corner where
+[[tranquility|Tranquility]] (no unbinding) and
+[[oblivion|Oblivion]] (no witnessing) converge: what is left
+when both fall away is pure pattern. The Self is where
+Tranquility and [[nullity|Nullity]] (no pattern) converge: what
+is left when both fall away is the experiencing subject. Chaos
+is where Oblivion and Nullity converge: what is left when both
+fall away is the bare work of unbinding.
+
+The two readings describe the same geometry. The first names
+each Cardinal by the axis it sits at the maximum of; the second
+names it by the two absences that meet there.
+
 ## Local accounts
 
 Particular clusters name the regions of Mundus that lean

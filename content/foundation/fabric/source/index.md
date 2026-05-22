@@ -1,5 +1,12 @@
 The Source is the Cardinal of pure pattern.
 
+It is the corner where two Horizons converge:
+[[tranquility|Tranquility]], where nothing is coming apart, and
+[[oblivion|Oblivion]], where nothing is in to whom anything is
+happening. What is left when both unbinding and witnessing fall
+away — and only that — is the form a thing instantiates. The
+Source is the limit of that thinning.
+
 It is not a place; it is a limit. Massive existence in
 [[mundus|Mundus]] can lean toward the Source — can
 shade toward the kind it instantiates, toward the form
