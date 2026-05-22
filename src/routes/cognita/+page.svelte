@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ClustersMap from '$lib/components/ClustersMap.svelte';
 	import CognitaMap from '$lib/components/CognitaMap.svelte';
 	import MundusMap from '$lib/components/MundusMap.svelte';
 </script>
@@ -17,8 +18,9 @@
 			known portion. The pieces that have a name, a shape, a place to stand.
 		</p>
 		<p class="lede">
-			Two maps follow. The first is cosmological — the frame within which everything else sits. The
-			second is closer in — Aureth, its eight planets, and the long gulf to the neighbouring system.
+			Three maps follow. The first is cosmological — the frame within which everything else sits.
+			The second steps back to galactic scale, locating the two clusters charted so far. The third
+			zooms into Aureth, its eight planets, and the long gulf to the neighbouring system.
 		</p>
 	</header>
 
@@ -36,7 +38,7 @@
 			The cosmology adds three further dimensions on top of ordinary space and time. They do not
 			move you across a landscape; they change what space and time are like in the place you stand.
 			Each one runs from the familiar middle out toward a limit at which something fundamental about
-			reality has been turned all the way up.
+			reality has been turned all the way up or down.
 		</p>
 
 		<dl class="axes-intro">
@@ -68,6 +70,18 @@
 				href="/kinds/horizon">Horizons</a
 			>) of the map are those bounds.
 		</p>
+	</section>
+
+	<section class="map-section">
+		<h2>The clusters</h2>
+		<p class="map-intro">
+			Step back from the cosmology and look at the universe at galactic scale. Two clusters have
+			been charted so far —
+			<a href="/aurethia">Aurethia</a> and <a href="/earth">Earth</a> — small bright fragments
+			separated by a vast unmeasured dark. Everything around and between them is
+			<em>Alteria Incognita</em>: the part of the universe that has not yet been named.
+		</p>
+		<ClustersMap />
 	</section>
 
 	<section class="map-section">
