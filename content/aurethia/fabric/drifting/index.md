@@ -1,4 +1,4 @@
-Drifting is the Chaos-axis counterpart to [[fabric/nearing|Nearing]]
+Drifting is the Chaos-axis counterpart to [[aurethia/fabric/nearing|Nearing]]
 and [[fabric/valdor-traversal|Valdor traversal]]: a process by
 which a being leans far enough toward [[chaos|Chaos]]
 that the structures holding them coherent — identity, position,

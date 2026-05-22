@@ -1,7 +1,7 @@
 Valdor traversal is the deliberate practice of moving deeply
 into [[fabric/remembrance|Remembrance]] within
 [[realms/valdor|Valdor]] and returning transformed. It is
-analogous to [[fabric/nearing|Nearing]] but operates along a
+analogous to [[aurethia/fabric/nearing|Nearing]] but operates along a
 different axis. Where Nearing loosens a practitioner's
 attachment to identity, bodily form, and linear time as their
 orientation drifts toward [[realms/nareth|Nareth]], Valdor

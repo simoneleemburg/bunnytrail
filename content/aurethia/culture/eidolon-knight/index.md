@@ -17,7 +17,7 @@ does not.
 
 Piloting an Eidolon is sustained contact between the Knight and
 the Naya inside the vessel. It is, in the cosmology's own terms,
-a form of [[nearing|Nearing]]: a controlled loosening
+a form of [[aurethia/fabric/nearing|Nearing]]: a controlled loosening
 of the Knight's attachment to ordinary embodied identity, held
 long enough that the Knight can move with the vessel rather
 than against it. A Knight who cannot Near toward the Naya

@@ -8,7 +8,7 @@ Dark Companion.
 What the Dark Companion _is_ remains unsettled across the
 Sister Worlds. What is known is the orbital fact, the cultural
 readings, and the more difficult fact that something about it
-bends the practice of [[nearing|Nearing]] when one travels
+bends the practice of [[aurethia/fabric/nearing|Nearing]] when one travels
 within reach of it.
 
 ## What is observed
@@ -63,7 +63,7 @@ it.
 Pilots who travel within reach of the Dark Companion report
 consistent effects.
 
-[[nearing|Nearing]] distorts near it. The familiar
+[[aurethia/fabric/nearing|Nearing]] distorts near it. The familiar
 loosening becomes less controlled — softer when the pilot
 intended firmness, harder to interrupt when the pilot intended
 release. The currents of

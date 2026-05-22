@@ -5,7 +5,7 @@ There is no surface to stand on, no atmosphere to breathe, no
 fixed geometry to map. There is also no boundary one crosses to
 arrive there. A pilot in the long passages between
 [[kinds/world-pillar|Pillar]] launches does not enter the Void
-at coordinates. A pilot enters the Void by [[fabric/drifting|
+at coordinates. A pilot enters the Void by [[aurethia/fabric/drifting|
 Drifting]] — by losing enough hold on themselves and their
 [[kinds/naya|Naya]] that the interplanetary medium ceases to be
 _medium_ and becomes _the Void_. The same stretch of cosmos may
@@ -29,7 +29,7 @@ The boundaries between them are not clean.
 **Broken [[kinds/naya|Naya]].** Naya who could not hold
 identity in some encounter — through failed
 [[binding|binding]], through unsupported
-[[fabric/nearing|Nearing]], through whatever it is that
+[[aurethia/fabric/nearing|Nearing]], through whatever it is that
 breaks Naya — sometimes do not return to
 [[realms/nareth|Nareth]]. Their resonance lingers without
 ever quite resolving into anything coherent. A Drifting pilot

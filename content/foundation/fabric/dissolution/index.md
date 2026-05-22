@@ -55,7 +55,7 @@ its own technical content; whether and how that maps onto
 Dissolution is a question for any account that wants to bridge
 the two frames.
 
-The Aurethian phenomenon of [[fabric/drifting|Drifting]] is a
+The Aurethian phenomenon of [[aurethia/fabric/drifting|Drifting]] is a
 rising of Dissolution. Unlike its sibling-phenomena Nearing and
 Valdor traversal, Drifting is not undertaken deliberately. It
 is what happens to coherence when the work of holding it

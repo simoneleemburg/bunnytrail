@@ -71,7 +71,7 @@ substrate, where identity, memory, and meaning are fluid and
 the particulars of any one self are softened into what the
 self shares with everything else that has risen from the same
 ground. The [[kinds/naya|Naya]] are at home there. Aurethian
-[[fabric/nearing|Nearing]] is a practice of controlled
+[[aurethia/fabric/nearing|Nearing]] is a practice of controlled
 approach: pilots lean toward the Source-Cardinal and return,
 without becoming what they have leaned toward.
 

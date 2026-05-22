@@ -46,18 +46,18 @@ an exercise of will. (See [[subjectivity|Subjectivity]],
 
 ## Relation to other phenomena
 
-Remembrance, [[fabric/nearing|Nearing]], and
-[[fabric/drifting|Drifting]] are the three Aurethian
+Remembrance, [[aurethia/fabric/nearing|Nearing]], and
+[[aurethia/fabric/drifting|Drifting]] are the three Aurethian
 phenomena of approach toward the Cardinals of
 [[mundus|Mundus]]. Each names the local
 manifestation of motion along one of the three axes:
 
-- **[[fabric/nearing|Nearing]]** — approach to
+- **[[aurethia/fabric/nearing|Nearing]]** — approach to
   [[source|the Source]], the loosening of fixed
   identity back into the substrate from which it arose.
 - **Remembrance** — approach to the Self, the bending of
   reality around the experiencing subject.
-- **[[fabric/drifting|Drifting]]** — approach to
+- **[[aurethia/fabric/drifting|Drifting]]** — approach to
   [[chaos|Chaos]], the failure of the holding that
   keeps a thing one thing.
 

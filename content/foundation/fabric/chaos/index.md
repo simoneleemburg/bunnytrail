@@ -71,9 +71,9 @@ the condition tends to assert itself, in the long interplanetary
 passages between Pillar-launches. The condition itself is not
 a location.
 
-This mode of approach — [[fabric/drifting|Drifting]] — is the
+This mode of approach — [[aurethia/fabric/drifting|Drifting]] — is the
 Chaos-axis counterpart to the practices that approach the other
-Cardinals: [[fabric/nearing|Nearing]] toward
+Cardinals: [[aurethia/fabric/nearing|Nearing]] toward
 [[source|the Source]], [[fabric/valdor-traversal|Valdor
 traversal]] toward [[self|the Self]]. The asymmetry
 is real: Nearing and Valdor traversal are undertaken
