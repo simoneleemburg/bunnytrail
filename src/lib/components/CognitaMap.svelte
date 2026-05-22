@@ -95,6 +95,36 @@
 			visible companion star orbiting an unresolved body, the Dark Companion.
 		</desc>
 
+		<defs>
+			<!-- Fog-of-war washes: dense at the corners, thinning where the
+			     two known systems sit. The Aureth system gets the larger
+			     pocket; the Hollow Binary a tighter one. -->
+			<radialGradient id="cognita-fog-aureth" cx="28%" cy="54%" r="38%">
+				<stop offset="0%" stop-color="var(--ink)" stop-opacity="0" />
+				<stop offset="100%" stop-color="var(--ink)" stop-opacity="0.65" />
+			</radialGradient>
+			<radialGradient id="cognita-fog-binary" cx="84%" cy="54%" r="20%">
+				<stop offset="0%" stop-color="var(--ink)" stop-opacity="0" />
+				<stop offset="100%" stop-color="var(--ink)" stop-opacity="0.65" />
+			</radialGradient>
+		</defs>
+
+		<!-- Scattered star-field as ambient texture. Same deterministic
+		     PRNG pattern as the clusters map, scaled to this canvas. -->
+		<g class="stars" aria-hidden="true">
+			{#each Array.from({ length: 180 }, (_, i) => i) as i (i)}
+				{@const seed = i * 9301 + 49297}
+				{@const x = (seed * 233 + 31) % W}
+				{@const y = (seed * 1117 + 7) % H}
+				{@const r = ((seed * 71) % 10) / 10 + 0.3}
+				<circle cx={x} cy={y} {r} fill="var(--parchment)" fill-opacity="0.55" />
+			{/each}
+		</g>
+
+		<!-- Fog of war: dark wash that thins around each known system. -->
+		<rect x="0" y="0" width={W} height={H} fill="url(#cognita-fog-aureth)" />
+		<rect x="0" y="0" width={W} height={H} fill="url(#cognita-fog-binary)" />
+
 		<!-- ───────── The local sky ─────────────────────────────────── -->
 		<g class="asthera">
 			<!-- The horizontal axis: continuous across the whole sky,
@@ -248,6 +278,8 @@
 		height: auto;
 		max-width: 64rem;
 		margin: 0 auto;
+		background: var(--ink);
+		border-radius: 2px;
 	}
 
 	figcaption {
@@ -270,86 +302,92 @@
 		color: var(--accent);
 	}
 
-	/* ── Asthera: solid ink-on-parchment ──────────────────────── */
+	/* ── The local sky: parchment-on-ink, cartographic register ─ */
 	.axis {
-		stroke: var(--rule);
+		stroke: var(--parchment);
 		stroke-width: 0.75;
+		opacity: 0.35;
 	}
 
 	.axis-gulf {
 		stroke-dasharray: 1 6;
-		opacity: 0.5;
+		opacity: 0.2;
 	}
 
 	.orbit {
 		fill: none;
-		stroke: var(--rule);
+		stroke: var(--parchment);
 		stroke-width: 0.5;
-		opacity: 0.7;
+		opacity: 0.25;
 	}
 
 	.star-glow {
 		fill: var(--accent);
-		opacity: 0.18;
+		opacity: 0.45;
 	}
 
 	.star-body {
-		fill: var(--accent);
+		fill: var(--accent-soft);
 	}
 
 	.star-label {
 		font-family: var(--font-display);
 		font-size: 13px;
 		font-style: italic;
-		fill: var(--ink-faint);
+		fill: var(--parchment);
+		fill-opacity: 0.75;
 	}
 
 	.planet-body {
-		fill: var(--ink);
+		fill: var(--parchment);
 	}
 
 	.moon-orbit {
 		fill: none;
-		stroke: var(--rule);
+		stroke: var(--parchment);
 		stroke-width: 0.4;
-		opacity: 0.7;
+		opacity: 0.3;
 	}
 
 	.moon-body {
-		fill: var(--ink-soft);
+		fill: var(--parchment);
+		opacity: 0.7;
 	}
 
 	.planet a:hover ~ .moon-body,
 	.moon-body:hover {
-		fill: var(--accent);
+		fill: var(--accent-soft);
+		opacity: 1;
 	}
 
 	.planet.tentative .planet-body {
-		fill: var(--ink-soft);
-		opacity: 0.8;
+		fill: var(--parchment);
+		opacity: 0.5;
 	}
 
 	.planet.tentative .planet-label {
 		font-style: italic;
-		fill: var(--ink-soft);
+		fill: var(--parchment);
+		fill-opacity: 0.55;
 	}
 
 	.planet-label {
 		font-family: var(--font-display);
 		font-size: 13px;
-		fill: var(--ink);
+		fill: var(--parchment);
 		letter-spacing: 0.02em;
 	}
 
 	.planet a:hover .planet-label {
-		fill: var(--accent);
+		fill: var(--accent-soft);
 	}
 
 	.planet-note {
 		font-family: var(--font-serif);
 		font-size: 10px;
 		font-style: italic;
-		fill: var(--ink-faint);
+		fill: var(--parchment);
+		fill-opacity: 0.5;
 	}
 
 	/* ── The long gulf between systems ────────────────────────── */
@@ -357,7 +395,8 @@
 		font-family: var(--font-serif);
 		font-size: 11px;
 		font-style: italic;
-		fill: var(--ink-faint);
+		fill: var(--parchment);
+		fill-opacity: 0.55;
 		letter-spacing: 0.1em;
 	}
 
@@ -365,55 +404,60 @@
 		font-family: var(--font-serif);
 		font-size: 10px;
 		font-style: italic;
-		fill: var(--ink-faint);
-		opacity: 0.7;
+		fill: var(--parchment);
+		fill-opacity: 0.4;
 	}
 
 	/* ── The Hollow Binary ────────────────────────────────────── */
 	.binary-orbit {
 		fill: none;
-		stroke: var(--rule);
+		stroke: var(--parchment);
 		stroke-width: 0.5;
 		stroke-dasharray: 2 3;
-		opacity: 0.55;
+		opacity: 0.35;
 	}
 
 	.binary-label {
 		font-family: var(--font-serif);
 		font-size: 10px;
 		font-style: italic;
-		fill: var(--ink-faint);
+		fill: var(--parchment);
+		fill-opacity: 0.55;
 	}
 
 	.system-label {
 		font-family: var(--font-display);
 		font-size: 13px;
 		font-style: italic;
-		fill: var(--ink-soft);
+		fill: var(--parchment);
+		fill-opacity: 0.7;
 		font-variant: small-caps;
 		letter-spacing: 0.08em;
 	}
 
-	/* The Dark Companion: a hollow where a body should be. */
+	/* The Dark Companion: a hollow where a body should be —
+	   now a void blacker than the surrounding dark, ringed by a
+	   faint dashed outline so the eye registers absence. */
 	.dark-halo {
 		fill: none;
-		stroke: var(--ink-faint);
+		stroke: var(--parchment);
 		stroke-width: 0.5;
 		stroke-dasharray: 1 4;
-		opacity: 0.5;
+		opacity: 0.35;
 	}
 
 	.dark-ring {
-		fill: var(--page);
-		stroke: var(--ink-soft);
+		fill: #000;
+		stroke: var(--parchment);
 		stroke-width: 0.9;
 		stroke-dasharray: 3 2;
+		stroke-opacity: 0.6;
 	}
 
 	.dark-label {
 		font-family: var(--font-display);
 		font-size: 13px;
-		fill: var(--ink);
+		fill: var(--parchment);
 		letter-spacing: 0.03em;
 	}
 
@@ -421,15 +465,16 @@
 		font-family: var(--font-serif);
 		font-size: 10px;
 		font-style: italic;
-		fill: var(--ink-faint);
+		fill: var(--parchment);
+		fill-opacity: 0.55;
 	}
 
 	.dark-companion:hover .dark-label,
 	.dark-companion:hover .dark-ring {
-		stroke: var(--accent);
+		stroke: var(--accent-soft);
 	}
 
 	.dark-companion:hover .dark-label {
-		fill: var(--accent);
+		fill: var(--accent-soft);
 	}
 </style>
