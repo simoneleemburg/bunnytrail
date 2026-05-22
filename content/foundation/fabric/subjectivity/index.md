@@ -45,6 +45,41 @@ At the Self itself — never reached — there is no shared
 world left at all; there is only the single continuous interior
 of one experiencing self.
 
+## What high-Subjectivity space-time is like
+
+A region of [[mundus|Mundus]] whose
+[[mundus-frame|place-frame]] is rotated toward the Self
+carries a quality the Self-Cardinal lends to space-time
+itself: responsiveness. The fabric of the region answers to
+whoever is in it. What ordinary space-time would hold to its
+own shape, here gives — bends to attention, to mood, to
+memory, to whatever the perceiver brings.
+
+In high-Subjectivity space-time, the layout of a place is set
+in part by who is walking it. Two travellers in what they call
+the same region may be in places that share little but the
+name. Distances rearrange around what matters; geography
+becomes the shape of the experience of the one inside it.
+
+The effect is continuous along the axis, not a sudden switch.
+But what counts, in bending any particular thing, is whether
+the local Subjectivity is high enough to overcome that thing's
+hold on being-apart-from-the-perceiver — and that threshold
+depends on the thing's own properties. Independence, the
+weight of a thing's own insistence on being just what it is
+regardless of who is looking, and whatever else makes a thing
+robustly its own all raise the threshold; a thing with little
+of its own to insist on yields sooner. A region high enough in
+Subjectivity to let a passing mood reshape the colour of a
+room will not yet rearrange the stones of the wall; further
+along the axis, the wall yields too.
+
+Walked the other way — into low-Subjectivity space-time — the
+fabric stops answering. The region becomes indifferent: no
+mood, no attention, no inner state finds purchase. The world
+is what it is, and stays what it is, regardless of who is in
+it.
+
 ## Walked toward Oblivion
 
 The other direction along the axis does not lead anywhere on
