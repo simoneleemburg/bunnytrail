@@ -166,9 +166,9 @@ The reserved structural terms, with their pages:
   See [`content/foundation/fabric/existence/mundus/`](content/foundation/fabric/existence/mundus/).
 - **The Source**, **the Self**, **Chaos** — the three horizons
   that bound Mundus. See `content/foundation/fabric/existence/`.
-- **Resonance**, **Subjectivity**, **Dissolution** — the three
+- **Essence**, **Subjectivity**, **Dissolution** — the three
   axes by which a thing's position in Mundus is measured. Each
-  is defined by one of the horizons (Resonance by the Source,
+  is defined by one of the horizons (Essence by the Source,
   Subjectivity by the Self, Dissolution by Chaos). They are
   not independent measures: a thing in Mundus has one position
   in the interior, and the three axes are three readings of
@@ -183,11 +183,11 @@ The reserved structural terms, with their pages:
 A few editorial consequences:
 
 - **Don't use these words lightly.** If a piece of prose says
-  "the conversation had a strange resonance," that's ordinary
+  "the conversation had a strange essence to it," that's ordinary
   English (lower case), not a claim about the Source-axis. If
-  it says "her Resonance was unusually high for someone of her
+  it says "her Essence was unusually high for someone of her
   training," that's a structural claim. Watch for the slip
-  between the two: in particular, _resonance_, _subjectivity_,
+  between the two: in particular, _essence_, _subjectivity_,
   _dissolution_, _self_, and _remembrance_ are common English
   words, and using them in their ordinary sense in worldbuilding
   prose is fine — but reach for synonyms when the structural
@@ -202,7 +202,7 @@ A few editorial consequences:
   structural quantities; cluster prose uses the cluster's own
   words.
 - **Cluster prose may reference the structural terms** —
-  linking to `[[existence/resonance|Resonance]]` from a
+  linking to `[[existence/essence|Essence]]` from a
   Nearing entry is fine and load-bearing — but should not
   silently overwrite the cluster's own vocabulary with the
   foundation-level term.

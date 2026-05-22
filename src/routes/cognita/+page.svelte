@@ -28,7 +28,7 @@
 			Existence is bounded by three <a href="/foundation/fabric/existence">horizons</a> — the
 			Source, the Self, and Chaos — each of which is approached but never reached. Between them lies
 			<a href="/foundation/fabric/existence/mundus">Mundus</a>, the inhabited middle, where every
-			thing that exists has a place. Three axes — Resonance, Subjectivity, Dissolution — run through
+			thing that exists has a place. Three axes — Essence, Subjectivity, Dissolution — run through
 			the interior, each pointing toward the horizon it measures distance from. The faint
 			topographical rings show that approach: bunched tight near the edges and corners, because the
 			horizons are limits one nears but never reaches.

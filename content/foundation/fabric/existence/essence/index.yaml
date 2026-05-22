@@ -1,0 +1,12 @@
+name: Essence
+kind: axis
+summary: >-
+  The axis of Mundus defined by the Source. A thing's Essence is
+  the measure of how much of its character is its participation
+  in a general pattern, and how much is the particulars it
+  happens to have. High Essence is pattern-dominated; low Essence
+  is accident-dominated.
+tags: [cosmology, source, pattern, particularity]
+relations:
+  - kind: defined-by
+    target: foundation/fabric/existence/source

@@ -12,7 +12,7 @@ axis.
 
 The three axes are:
 
-- **[[existence/resonance|Resonance]]**, defined by the Source.
+- **[[existence/essence|Essence]]**, defined by the Source.
 - **[[existence/subjectivity|Subjectivity]]**, defined by the Self.
 - **[[existence/dissolution|Dissolution]]**, defined by Chaos.
 

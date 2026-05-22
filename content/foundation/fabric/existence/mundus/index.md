@@ -36,9 +36,10 @@ coherent _something_ deform and ultimately cease to be defined.
 
 Each horizon is its own failure of coherence, not a failure of
 some specific physical dimension. A thing leaning hard toward
-[[existence/source|the Source]] loosens at the edges of its
-selfhood: identity shades back into the medium selves arise
-out of. A thing leaning hard toward [[existence/self|the Self]]
+[[existence/source|the Source]] thins in its particulars:
+what remains is the pattern it instantiates, with less and less
+of the specific arrangement that made it _this_ instance of
+that pattern. A thing leaning hard toward [[existence/self|the Self]]
 becomes increasingly the account it holds of itself, with less
 and less substrate to rest that account on. A thing leaning
 hard toward [[existence/chaos|Chaos]] simply comes apart, with
@@ -69,11 +70,10 @@ and the natural way to describe that location is by its closeness
 to each of the three corners — three quantities, one for each
 horizon. The three quantities have names:
 
-- **[[existence/resonance|Resonance]]** is the measure of
+- **[[existence/essence|Essence]]** is the measure of
   closeness to [[existence/source|the Source]] — the degree to
-  which a thing is still close to its origin, still in contact
-  with the wellspring from which it, and every other self, first
-  emerged.
+  which a thing's character is its participation in a general
+  pattern rather than the particulars it happens to have.
 - **[[existence/subjectivity|Subjectivity]]** is the measure of
   closeness to [[existence/self|the Self]] — the degree to
   which the reality a thing inhabits is shaped by its
@@ -112,9 +112,9 @@ Between any two corners is an edge — positions of low closeness
 to the third horizon, in which the other two trade against each
 other. The Source–Self edge is low-Dissolution territory: ways
 of being in which coming-apart is minimised and the trade is
-between participating in the substrate and remembering having
-been. The Source–Chaos and Self–Chaos edges describe their own
-trade-offs.
+between thinning into pure pattern and bending the world
+around the experiencing subject. The Source–Chaos and
+Self–Chaos edges describe their own trade-offs.
 
 The edges are real features of the geometry; what they look
 like in practice — what existence is like for a thing leaning
@@ -127,7 +127,7 @@ naming it as such.
 
 Every cluster has its own account of these quantities. Where a
 cluster's physics or natural history speaks of memory, of
-identity, of decay or of resonance or of entropy, it is most
+identity, of decay or of essence or of entropy, it is most
 often speaking of some specific manifestation of one of the
 three axes within its own frame. The foundation-level names
 are reserved for the structural quantities; cluster
@@ -135,10 +135,10 @@ vocabularies use whatever words their thought has reached for.
 
 ## Continuous interior
 
-Mundus has no internal boundaries. Resonance, Subjectivity, and
+Mundus has no internal boundaries. Essence, Subjectivity, and
 Dissolution all vary smoothly across the whole of the interior.
 There is no surface to cross between leaning-near-the-Source
-and leaning-near-the-centre, no threshold at which Resonance
+and leaning-near-the-centre, no threshold at which Essence
 becomes high or low; the values shade continuously from one
 region to another across whatever distance separates them. The
 same is true for Subjectivity and Dissolution.

@@ -6,11 +6,12 @@ apart from them.
 
 A thing's Subjectivity is the degree to which the world it
 inhabits is shaped by its experience of that world. Where
-[[existence/resonance|Resonance]] measures closeness to origin
-and [[existence/dissolution|Dissolution]] measures closeness to
-coming-apart, Subjectivity measures the _give_ of reality under
-the perceiver: how far the world bends around the one looking
-at it, rather than holding its shape regardless.
+[[existence/essence|Essence]] measures the ratio of pattern
+to particulars and [[existence/dissolution|Dissolution]]
+measures closeness to coming-apart, Subjectivity measures the
+_give_ of reality under the perceiver: how far the world bends
+around the one looking at it, rather than holding its shape
+regardless.
 
 ## What it looks like, walked along
 
@@ -59,20 +60,20 @@ world to be a world _for_.
 ## Not an independent dimension
 
 Subjectivity is not a quantity a thing has independently of its
-Resonance or Dissolution. A thing in Mundus has one position in
-the interior; [[existence/resonance|Resonance]], Subjectivity,
+Essence or Dissolution. A thing in Mundus has one position in
+the interior; [[existence/essence|Essence]], Subjectivity,
 and [[existence/dissolution|Dissolution]] are three readings of
 that one position. They sum to a constant. A thing whose
 Subjectivity is rising is, by the same fact, having its
-Resonance or Dissolution (or both) lowered.
+Essence or Dissolution (or both) lowered.
 
 The geometric consequence is that as reality starts to bend
 around a thing, the thing moves across the interior, away from
 at least one of the other two corners. A perceiver whose world
 has begun to answer to them is, by that fact, no longer at
 exactly the position they occupied before, and the position
-they have left is some combination of closeness-to-origin and
-closeness-to-coming-apart.
+they have left is some combination of pattern-participation
+and closeness-to-coming-apart.
 
 ## How clusters speak of it
 

@@ -16,7 +16,7 @@
 	 *     Each is an asymptotic limit, never reached.
 	 *   - Axes are interior lines pointing toward each horizon. Each
 	 *     axis measures distance/closeness to the horizon it points at:
-	 *     Resonance → Source, Subjectivity → Self, Dissolution → Chaos.
+	 *     Essence → Source, Subjectivity → Self, Dissolution → Chaos.
 	 *   - Interior is Mundus (🜃) — the inhabited middle.
 	 *   - Contours are level sets of ψ = -(log s + log r + log c), the
 	 *     barycentric "cost of approach". The field diverges on the
@@ -75,11 +75,11 @@
 		};
 	}
 
-	const RES_LINE = axisLine(SOURCE);
+	const ESS_LINE = axisLine(SOURCE);
 	const SUB_LINE = axisLine(SELF);
 	const DIS_LINE = axisLine(CHAOS);
 
-	const RES_LABEL = axisLabelPos(SOURCE);
+	const ESS_LABEL = axisLabelPos(SOURCE);
 	const SUB_LABEL = axisLabelPos(SELF);
 	const DIS_LABEL = axisLabelPos(CHAOS);
 
@@ -291,7 +291,7 @@
 		<desc id="mundus-desc">
 			A triangular diagram of existence. The three corners are the horizons — the Source at the
 			apex, the Self at the bottom-left, Chaos at the bottom-right — each an asymptotic limit. Three
-			axes run through the interior toward each corner: Resonance toward the Source, Subjectivity
+			axes run through the interior toward each corner: Essence toward the Source, Subjectivity
 			toward the Self, Dissolution toward Chaos. The interior is Mundus, the inhabited middle. Faint
 			topographical rings show how the horizons crowd in toward the boundary, never reached.
 		</desc>
@@ -325,19 +325,17 @@
 
 		<!-- ───────── Axes: interior lines pointing to each corner ──── -->
 		<g class="axes">
-			<line class="axis" x1={RES_LINE.x1} y1={RES_LINE.y1} x2={RES_LINE.x2} y2={RES_LINE.y2} />
+			<line class="axis" x1={ESS_LINE.x1} y1={ESS_LINE.y1} x2={ESS_LINE.x2} y2={ESS_LINE.y2} />
 			<line class="axis" x1={SUB_LINE.x1} y1={SUB_LINE.y1} x2={SUB_LINE.x2} y2={SUB_LINE.y2} />
 			<line class="axis" x1={DIS_LINE.x1} y1={DIS_LINE.y1} x2={DIS_LINE.x2} y2={DIS_LINE.y2} />
 
-			<circle class="axis-tip" cx={RES_LINE.x2} cy={RES_LINE.y2} r="3" />
+			<circle class="axis-tip" cx={ESS_LINE.x2} cy={ESS_LINE.y2} r="3" />
 			<circle class="axis-tip" cx={SUB_LINE.x2} cy={SUB_LINE.y2} r="3" />
 			<circle class="axis-tip" cx={DIS_LINE.x2} cy={DIS_LINE.y2} r="3" />
 		</g>
 
-		<a href="/foundation/fabric/existence/resonance" class="axis-link">
-			<text class="axis-name" x={RES_LABEL.x} y={RES_LABEL.y} text-anchor="middle">
-				Resonance
-			</text>
+		<a href="/foundation/fabric/existence/essence" class="axis-link">
+			<text class="axis-name" x={ESS_LABEL.x} y={ESS_LABEL.y} text-anchor="middle"> Essence </text>
 		</a>
 		<a href="/foundation/fabric/existence/subjectivity" class="axis-link">
 			<text class="axis-name" x={SUB_LABEL.x} y={SUB_LABEL.y + 4} text-anchor="middle">
@@ -387,7 +385,7 @@
 		<a href="/foundation/fabric/existence/self">the Self</a>, and
 		<a href="/foundation/fabric/existence/chaos">Chaos</a> — each an asymptotic limit. Three axes
 		measure where in the interior a thing stands, each pointing toward the horizon it tracks:
-		<a href="/foundation/fabric/existence/resonance">Resonance</a> toward the Source,
+		<a href="/foundation/fabric/existence/essence">Essence</a> toward the Source,
 		<a href="/foundation/fabric/existence/subjectivity">Subjectivity</a> toward the Self,
 		<a href="/foundation/fabric/existence/dissolution">Dissolution</a> toward Chaos. The interior is
 		<a href="/foundation/fabric/existence/mundus">Mundus</a>, the inhabited middle, where every

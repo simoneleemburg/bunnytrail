@@ -48,7 +48,6 @@ The rules:
 - What are Sharazan's named regions, cultures, and political shapes?
 - How many World Pillars are there in Tholingia, and what counts as one?
 - What are the charted regions of the Void? Which Knights have travelled it deliberately?
-- Does the Source axis want a foundational reframing parallel to Subjectivity? Resonance is currently framed as "closeness to origin", but the parallel question would be: from inside, what is moving along that axis _like_? (Subjectivity was named once we realised the Self-axis is about reality bending around the subject. Does the Source-axis have a similar phenomenological description — and does the Aurethian local name "Nearing" want a more general companion the way Subjectivity got "Remembrance"?)
 
 ### Eidolons, Naya, traditions
 
