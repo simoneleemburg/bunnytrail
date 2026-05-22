@@ -27,6 +27,25 @@ Subjectivity), or some mixture along the edge. In every case,
 what is constant along Tranquility is that coming-apart is
 minimised; what varies is the form of the holding.
 
+## What high-Dissolution space-time is like
+
+A region of [[mundus|Mundus]] whose
+[[mundus-frame|place-frame]] is rotated toward Chaos carries a
+quality the Chaos-Cardinal lends to space-time itself:
+changeability. The fabric of the region is loose. What in
+ordinary space-time would require great force to alter, in
+high-Dissolution space-time yields to very little. A movement
+of the hand may be enough to raise a tornado; further in,
+the same gesture may open a black hole or fold a passage of
+time onto itself. The work that ordinarily holds space-time
+to its shape is failing along with the work that holds
+things in it together.
+
+Walked the other way — into low-Dissolution space-time — the
+fabric stiffens. The region becomes nearly impossible to
+affect: not merely resistant but unmoving, an inertness that
+returns every attempt at change to where it began.
+
 ## Not an independent dimension
 
 Dissolution is not a quantity a thing has independently of its

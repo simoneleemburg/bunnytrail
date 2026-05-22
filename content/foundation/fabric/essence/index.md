@@ -86,6 +86,28 @@ in Essence; their differences come from the other two axes.
 A thing's Essence on its own does not say which end of Nullity
 it is closer to, only how far from the Source it sits.
 
+## What high-Essence space-time is like
+
+A region of [[mundus|Mundus]] whose
+[[mundus-frame|place-frame]] is rotated toward the Source
+carries a quality the Source-Cardinal lends to space-time
+itself: liveliness, an ethereal cast. The region feels alive
+in a way ordinary space-time does not — not _inhabited by_
+living things, but lively in itself.
+
+In high-Essence space-time, the line between what is animate
+and what is merely solid loosens. Living things can move
+through inanimate objects: through walls, through stone, through
+what would elsewhere refuse them. The pattern a living thing
+participates in is more present than the accidents that make any
+particular wall this wall, and the wall's accidents are not
+enough to hold the living thing back.
+
+Walked the other way — into low-Essence space-time — that
+quality drains out. Space-time loses its ethereal cast and
+becomes more nearly inert: no longer lively in itself, no
+longer permeable to what is alive.
+
 ## Not an independent dimension
 
 Essence is not a quantity a thing has independently of its
