@@ -43,8 +43,8 @@ things in it together.
 
 Walked the other way — into low-Dissolution space-time — the
 fabric stiffens. The region becomes nearly impossible to
-affect: not merely resistant but unmoving, an inertness that
-returns every attempt at change to where it began.
+affect: no gesture, no force, no work brought to bear on it
+finds enough give to leave a mark.
 
 ## Not an independent dimension
 
