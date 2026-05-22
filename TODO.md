@@ -65,10 +65,40 @@ this file is not loaded by the site.
 
 ## New entities to add
 
-- _(none currently)_
+- **Split the Void entry in two.** Right now
+  `places/realms/the-void` carries two distinct things: (a) the
+  Chaos-adjacent Realm of Existence — the εσδ-extreme rotated
+  toward Chaos, the dissolution-side counterpart to
+  [[realms/nareth|Nareth]] — and (b) the physical space between
+  Realms, the interplanetary medium through which Eidolons
+  Near. They share a name and some texture (both are "void"-like
+  to the cluster's senses, both are dangerous, both are where
+  pilots come undone), but they are not the same thing
+  cosmologically. The Realm is a place on the εσδ map; the
+  interplanetary medium is the ordinary space of Asthera with a
+  Chaos-rotated place-frame. Decide naming carefully — the
+  cluster may use "Void" colloquially for both, in which case the
+  two entries should disambiguate up front, and the existing
+  cross-references (notably in the Nearing entry, where
+  "Chaos-ward Nearing" describes pilots losing their anchor in
+  interplanetary transit) need to point at the right one.
 
 ## Structural work
 
+- **Aurethian cosmology map.** Build a second triangle-cosmology
+  map in the family of `MundusMap.svelte`, this one specific to
+  the Aurethian cluster. The foundation MundusMap shows the
+  abstract εσδ extremes (Source, Chaos, Centroid) and the
+  ε↥/σ↥/δ↥ axes; an Aurethian map would show the same triangle
+  populated with the cluster's specific entities — Nareth at the
+  Source vertex, the Chaos-adjacent Realm (post-Void-split, see
+  above) at the Chaos vertex, Asthera in the interior, with
+  recognisable cluster-specific features (the Knight's anchor in
+  transit, the Triad's rotated region, the Naya-anchor inside a
+  bound Eidolon) annotated against the geometry. Probably lives
+  on the Aurethia cluster landing page and/or the Nearing entry.
+  Same visual register as MundusMap; edge labels outside the
+  triangle; figcaption should not repeat the surrounding prose.
 - **Redesign the orbits view as a system/body diagram.** The
   current orbits view-mode on collection pages is a filter chip
   alongside _Nested_ and _Flat_ — useful for inspecting the
