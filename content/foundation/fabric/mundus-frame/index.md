@@ -51,6 +51,29 @@ A thing's effective frame is the composition of its
 nature-frame with the place-frame it currently occupies. How
 the two compose is left open at the foundation layer.
 
+## Frames sustained by other beings
+
+A place-frame need not be a property of geography alone. A
+sufficiently coupled group of beings, each holding a chosen
+non-Equilibrium position in εσδ-space by sustained
+[[foundation/fabric/nearing|Nearing]], can collectively rotate
+the place-frame of the region they occupy for as long as the
+coupling is held. The rotation is local — it extends as far
+as the coupling extends — and collapses when the coupling
+unravels. Inside the rotated region, anything present
+inherits the rotation, including beings whose nature-frame
+would have no foothold in the surrounding unrotated space.
+
+The foundation layer registers that such arrangements are
+geometrically possible. How rare they are in practice, what
+forms of coupling suffice to produce them, and what the
+limits of the effect are, are left to clusters to discover and
+to document. Aurethia knows one such arrangement directly:
+the [[aurethia/culture/oracle-triad|Oracle Triad]] of the
+[[aurethia/culture/knights-of-bellona|Knights of Bellona]],
+whose chain along ε↥ sustains a Source-rotated region around
+itself for the duration of every working session.
+
 ## What frames are not
 
 A frame is not a tilt of the basin. The basin of Mundus is
