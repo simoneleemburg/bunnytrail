@@ -36,12 +36,12 @@
 	 */
 
 	const W = 1000;
-	const H = 760;
+	const H = 720;
 
 	// Equilateral triangle, point-up. Side length chosen by eye.
 	const SIDE = 640;
 	const CX = W / 2;
-	const TOP_Y = 110;
+	const TOP_Y = 80;
 	const BOT_Y = TOP_Y + (SIDE * Math.sqrt(3)) / 2;
 
 	// Corners
@@ -310,7 +310,7 @@
 
 <figure class="mundus-map">
 	<svg
-		viewBox={`0 0 ${W} ${H}`}
+		viewBox={`100 0 800 ${H}`}
 		xmlns="http://www.w3.org/2000/svg"
 		role="img"
 		aria-labelledby="mundus-title mundus-desc"
@@ -480,7 +480,7 @@
 		display: block;
 		width: 100%;
 		height: auto;
-		max-width: 44rem;
+		max-width: 50rem;
 		margin: 0 auto;
 	}
 
