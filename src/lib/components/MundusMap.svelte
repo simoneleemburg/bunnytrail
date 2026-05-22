@@ -480,7 +480,7 @@
 		display: block;
 		width: 100%;
 		height: auto;
-		max-width: 56rem;
+		max-width: 44rem;
 		margin: 0 auto;
 	}
 
