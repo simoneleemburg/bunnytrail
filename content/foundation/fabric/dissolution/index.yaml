@@ -1,10 +1,13 @@
 name: Dissolution
 kind: axis
 summary: >-
-  The axis of Mundus defined by Chaos. A thing's Dissolution is
-  the measure of its closeness to Chaos — the degree to which
-  the work of holding itself together is failing.
+  The axis of Mundus bounded by Chaos and Tranquility. A thing's
+  Dissolution is the degree to which the work of holding itself
+  together is failing — closeness to Chaos at its maximum,
+  unfailing coherence at its minimum.
 tags: [cosmology, chaos, coherence, failure]
 relations:
-  - kind: defined-by
+  - kind: bounded-by
     target: foundation/fabric/chaos
+  - kind: bounded-by
+    target: foundation/fabric/tranquility

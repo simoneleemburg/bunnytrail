@@ -48,7 +48,8 @@
 				'governed-by': 'Governs',
 				'local-account-of': 'Local accounts',
 				approaches: 'Approached by',
-				'defined-by': 'Defines'
+				'defined-by': 'Defines',
+				'bounded-by': 'Bounds'
 			};
 			if (inverse[kind]) return inverse[kind];
 		}
