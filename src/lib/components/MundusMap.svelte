@@ -307,7 +307,7 @@
 
 		<!-- ───────── Mundus interior fill (also the click target) ──── -->
 		<a
-			href="/foundation/fabric/existence/mundus"
+			href="/foundation/fabric/mundus"
 			class="mundus-link"
 			aria-label="Mundus, the inhabited middle"
 		>
@@ -337,22 +337,22 @@
 			<circle class="axis-tip" cx={DIS_LINE.x2} cy={DIS_LINE.y2} r="3" />
 		</g>
 
-		<a href="/foundation/fabric/existence/essence" class="axis-link">
+		<a href="/foundation/fabric/essence" class="axis-link">
 			<text class="axis-name" x={ESS_LABEL.x} y={ESS_LABEL.y} text-anchor="middle"> Essence </text>
 		</a>
-		<a href="/foundation/fabric/existence/subjectivity" class="axis-link">
+		<a href="/foundation/fabric/subjectivity" class="axis-link">
 			<text class="axis-name" x={SUB_LABEL.x} y={SUB_LABEL.y + 4} text-anchor="middle">
 				Subjectivity
 			</text>
 		</a>
-		<a href="/foundation/fabric/existence/dissolution" class="axis-link">
+		<a href="/foundation/fabric/dissolution" class="axis-link">
 			<text class="axis-name" x={DIS_LABEL.x} y={DIS_LABEL.y + 4} text-anchor="middle">
 				Dissolution
 			</text>
 		</a>
 
 		<!-- ───────── Mundus label, centered in the interior ────────── -->
-		<a href="/foundation/fabric/existence/mundus" class="mundus-label-link">
+		<a href="/foundation/fabric/mundus" class="mundus-label-link">
 			<g class="mundus-label" transform={`translate(${MID.x} ${MID.y})`}>
 				<text class="cardinal-sigil" text-anchor="middle" y="-14">🜃</text>
 				<text class="cardinal-name" text-anchor="middle" y="14">Mundus</text>
@@ -361,21 +361,21 @@
 		</a>
 
 		<!-- ───────── Cardinals: the three corners ──────────────────── -->
-		<a href="/foundation/fabric/existence/source" class="cardinal-link">
+		<a href="/foundation/fabric/source" class="cardinal-link">
 			<g class="cardinal" transform={`translate(${SOURCE.x} ${SOURCE.y - 4})`}>
 				<text class="cardinal-sigil" text-anchor="middle" y="-30">🜁</text>
 				<text class="cardinal-name" text-anchor="middle" y="-6">the Source</text>
 			</g>
 		</a>
 
-		<a href="/foundation/fabric/existence/self" class="cardinal-link">
+		<a href="/foundation/fabric/self" class="cardinal-link">
 			<g class="cardinal" transform={`translate(${SELF.x - 6} ${SELF.y + 4})`}>
 				<text class="cardinal-sigil" text-anchor="middle" y="30">🜄</text>
 				<text class="cardinal-name" text-anchor="middle" y="54">the Self</text>
 			</g>
 		</a>
 
-		<a href="/foundation/fabric/existence/chaos" class="cardinal-link">
+		<a href="/foundation/fabric/chaos" class="cardinal-link">
 			<g class="cardinal" transform={`translate(${CHAOS.x + 6} ${CHAOS.y + 4})`}>
 				<text class="cardinal-sigil" text-anchor="middle" y="30">🜂</text>
 				<text class="cardinal-name" text-anchor="middle" y="54">Chaos</text>
@@ -384,15 +384,15 @@
 	</svg>
 
 	<figcaption>
-		Three Cardinals at the corners — <a href="/foundation/fabric/existence/source">the Source</a>,
-		<a href="/foundation/fabric/existence/self">the Self</a>, and
-		<a href="/foundation/fabric/existence/chaos">Chaos</a> — each an asymptotic limit. Three axes
+		Three Cardinals at the corners — <a href="/foundation/fabric/source">the Source</a>,
+		<a href="/foundation/fabric/self">the Self</a>, and
+		<a href="/foundation/fabric/chaos">Chaos</a> — each an asymptotic limit. Three axes
 		measure where in the interior a thing stands, each pointing toward the Cardinal it tracks:
-		<a href="/foundation/fabric/existence/essence">Essence</a> toward the Source,
-		<a href="/foundation/fabric/existence/subjectivity">Subjectivity</a> toward the Self,
-		<a href="/foundation/fabric/existence/dissolution">Dissolution</a> toward Chaos. The edges
+		<a href="/foundation/fabric/essence">Essence</a> toward the Source,
+		<a href="/foundation/fabric/subjectivity">Subjectivity</a> toward the Self,
+		<a href="/foundation/fabric/dissolution">Dissolution</a> toward Chaos. The edges
 		between the corners are the three Horizons, also asymptotic. The interior is
-		<a href="/foundation/fabric/existence/mundus">Mundus</a>, the inhabited middle, where every
+		<a href="/foundation/fabric/mundus">Mundus</a>, the inhabited middle, where every
 		thing that exists has a place.
 	</figcaption>
 </figure>

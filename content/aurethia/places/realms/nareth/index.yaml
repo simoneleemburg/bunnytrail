@@ -8,6 +8,6 @@ sigil: 🜁
 nativeBeings: [kinds/naya]
 relations:
   - kind: region-of
-    target: foundation/fabric/existence/mundus
+    target: foundation/fabric/mundus
   - kind: approaches
-    target: foundation/fabric/existence/source
+    target: foundation/fabric/source

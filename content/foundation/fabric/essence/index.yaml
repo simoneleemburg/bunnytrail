@@ -9,4 +9,4 @@ summary: >-
 tags: [cosmology, source, pattern, particularity]
 relations:
   - kind: defined-by
-    target: foundation/fabric/existence/source
+    target: foundation/fabric/source

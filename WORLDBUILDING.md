@@ -163,7 +163,7 @@ The reserved structural terms, with their pages:
   "alteria" is not used.
 - **Mundus** — the interior of existence: the region in which
   things have mass, hold form, persist in time, occupy space.
-  See [`content/foundation/fabric/existence/mundus/`](content/foundation/fabric/existence/mundus/).
+  See [`content/foundation/fabric/mundus/`](content/foundation/fabric/mundus/).
 - **The Source**, **the Self**, **Chaos** — the three horizons
   that bound Mundus. See `content/foundation/fabric/`.
 - **Essence**, **Subjectivity**, **Dissolution** — the three

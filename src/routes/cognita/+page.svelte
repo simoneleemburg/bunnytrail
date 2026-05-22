@@ -28,7 +28,7 @@
 			Existence is bounded by six <a href="/foundation/fabric">bounds</a> — three
 			Cardinals at the corners (the Source, the Self, Chaos) and three Horizons along the edges
 			between them — each approached but never reached. Between them lies
-			<a href="/foundation/fabric/existence/mundus">Mundus</a>, the inhabited middle, where every
+			<a href="/foundation/fabric/mundus">Mundus</a>, the inhabited middle, where every
 			thing that exists has a place. Three axes — Essence, Subjectivity, Dissolution — run through
 			the interior, each pointing toward the Cardinal it measures distance from. The faint
 			topographical rings show that approach: bunched tight near the edges and corners, because the

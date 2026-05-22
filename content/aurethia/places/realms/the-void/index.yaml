@@ -4,6 +4,6 @@ summary: The space between the worlds is not empty. What lies in it — broken N
 tags: [void, travel, dissolution, danger]
 relations:
   - kind: region-of
-    target: foundation/fabric/existence/mundus
+    target: foundation/fabric/mundus
   - kind: approaches
-    target: foundation/fabric/existence/chaos
+    target: foundation/fabric/chaos

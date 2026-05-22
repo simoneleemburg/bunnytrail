@@ -7,4 +7,4 @@ summary: >-
 tags: [cosmology, self, experience, perception]
 relations:
   - kind: defined-by
-    target: foundation/fabric/existence/self
+    target: foundation/fabric/self

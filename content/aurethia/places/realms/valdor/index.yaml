@@ -13,6 +13,6 @@ tags: [cosmology, memory, transformation]
 sigil: 🜄
 relations:
   - kind: region-of
-    target: foundation/fabric/existence/mundus
+    target: foundation/fabric/mundus
   - kind: approaches
-    target: foundation/fabric/existence/self
+    target: foundation/fabric/self

@@ -7,4 +7,4 @@ summary: >-
 tags: [cosmology, chaos, coherence, failure]
 relations:
   - kind: defined-by
-    target: foundation/fabric/existence/chaos
+    target: foundation/fabric/chaos
