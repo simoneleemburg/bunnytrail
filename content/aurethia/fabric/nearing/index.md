@@ -238,35 +238,42 @@ has slipped in the long passages between
 
 A pilot in interplanetary transit is holding their own
 [[mundus-frame|Mundus Frame]] in place by the work of their
-[[binding|binding]]. The frame they hold is the binding's:
-ordinarily centred, with local
+**anchor**. The frame they hold is the anchor's: ordinarily
+centred, with local
 [[equilibrium|Equilibrium]] near the εσδ-centroid. The Void of
 interplanetary space has its own frame, rotated such that
 local Equilibrium sits toward Chaos. The two frames overlap in
 the same physical region; what determines which a pilot
 inhabits is whose work is holding.
 
-When the binding slips, the pilot stops holding their frame.
+When the anchor slips, the pilot stops holding their frame.
 The Void's frame takes over. The pilot's local Equilibrium
 moves toward Chaos. Drift, in foundation terms, carries them
 toward the new Equilibrium. From inside the pilot's experience
 this is not drift at all — it is being pulled apart along a
 direction they did not choose. From foundation terms it is
 [[foundation/fabric/drifting|drifting]], in a Chaos-rotated
-frame, with the failed binding being what removed the only
+frame, with the failed anchor being what removed the only
 thing that was holding the pilot in a different frame.
 
 The Aurethian phrase _nearing toward Chaos_ in this
 construction names the lean toward Chaos itself, not the
 slipping that exposed the pilot to it. The lean is what the
 Void's frame imposes on whatever it has hold of. A pilot who
-has lost the binding is leaning toward Chaos in the only sense
+has lost their anchor is leaning toward Chaos in the only sense
 the cluster's records have so far described: not by willing
 it, but by no longer leaning away from it.
 
+The Knight's anchor is not the same as the Naya's
+[[binding|binding]] to the Eidolon. The binding is what the
+vessel does for the Naya; the anchor is what the Knight does
+for themselves. The binding holds whether the Knight is awake
+or sleeping, anchored or adrift; the anchor is the Knight's
+own work in transit and lives or fails with them.
+
 ### What the failed nearing opens onto
 
-When the binding slips and the Void's frame takes over,
+When the anchor slips and the Void's frame takes over,
 certain things become present that were not present before.
 They are not summoned from elsewhere; they are what the medium
 _is_, for a coherence that is failing.

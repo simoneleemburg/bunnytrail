@@ -88,7 +88,7 @@ the two frames.
 The Aurethian phrase
 [[aurethia/fabric/nearing|nearing toward Chaos]] names a rising
 of Dissolution. The cluster knows it almost entirely in its
-failure form — what happens when a pilot's binding slips and
+failure form — what happens when a pilot's anchor slips and
 the Void's frame takes over — rather than as a deliberate
 practice.
 

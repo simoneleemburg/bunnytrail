@@ -5,8 +5,8 @@ In foundation terms, the Void is the Aurethian name for regions
 of [[mundus|Mundus]] whose [[mundus-frame|Mundus Frame]] is
 rotated such that local [[equilibrium|Equilibrium]] sits near
 [[chaos|Chaos]]. The same stretch of cosmos may be ordinary
-transit for a pilot whose binding holds them in the binding's
-frame, and the long fall for one whose binding has slipped and
+transit for a pilot whose anchor holds them in their own
+frame, and the long fall for one whose anchor has slipped and
 left them in the Void's. The difference is in the pilot, not
 in the distance.
 
@@ -16,9 +16,11 @@ arrive there. A pilot in the long passages between
 [[kinds/world-pillar|Pillar]] launches does not enter the Void
 at coordinates. A pilot enters the Void through
 [[aurethia/fabric/nearing|nearing toward Chaos]] — by losing
-enough hold on themselves and their
-[[kinds/naya|Naya]] that the interplanetary medium ceases to be
-_medium_ and becomes _the Void_.
+enough hold on themselves that the interplanetary medium
+ceases to be _medium_ and becomes _the Void_. The Naya bound
+into the [[kinds/eidolon|Eidolon]] is held by the vessel's
+own [[binding|binding]], not by the pilot's anchor; what the
+pilot loses, in losing the anchor, is themselves.
 
 Pilots passing through call it the Void, the storm-field, the
 breaking-place, the long fall. The

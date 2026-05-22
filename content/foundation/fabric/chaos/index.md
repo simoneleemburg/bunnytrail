@@ -75,8 +75,8 @@ This mode of approach is what Aurethia names
 [[aurethia/fabric/nearing|nearing toward Chaos]] — leaning,
 or being leaned, toward the loosening that Chaos is the
 asymptote of. The cluster knows it almost entirely in its
-failure form: pilots whose [[binding|binding]] slips in the
-long interplanetary passages, who find themselves in
+failure form: pilots whose anchor slips in the long
+interplanetary passages, who find themselves in
 [[aurethia/places/realms/the-void|the Void Between Worlds]]
 without having meant to. The motion is the ordinary
 [[foundation/fabric/nearing|nearing]] of any thing toward
