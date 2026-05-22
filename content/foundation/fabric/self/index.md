@@ -101,10 +101,10 @@ memory and ego become geography, where dimensions fold around
 personal experience, where no two travellers' accounts of the
 landscape agree. The Aurethian phenomenon of motion along this
 axis — the deliberate or accidental bending of reality around
-the experiencing subject — is named
-[[fabric/remembrance|Remembrance]]. The controlled practice of
+the experiencing subject, and the controlled practice of
 passage through the inner-landscape-as-geography that this
-opens up is [[fabric/valdor-traversal|Valdor traversal]].
+opens up — is the Self-ward direction of
+[[aurethia/fabric/nearing|Nearing]].
 
 Whether anything is _at_ the Self — what something without mass
 and native to the Cardinal would be — is not something the

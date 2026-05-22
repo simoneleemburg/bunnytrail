@@ -80,10 +80,9 @@ just **↥** with the destination specified in prose.
 
 ## Cluster accounts
 
-Where clusters describe particular practices of nearing —
-Aurethian [[aurethia/fabric/nearing|Nearing toward the
-Source]], or [[aurethia/fabric/remembrance|Remembrance]]
-toward the Self, or other traditions — they are describing
-structured ways their practitioners lean. The foundation
-layer registers the structural fact: nearing is what it is to
-lean against the local drift.
+Where clusters describe particular practices of nearing — the
+Aurethian traditions of [[aurethia/fabric/nearing|Nearing]],
+or other traditions elsewhere — they are describing structured
+ways their practitioners lean. The foundation layer registers
+the structural fact: nearing is what it is to lean against the
+local drift.

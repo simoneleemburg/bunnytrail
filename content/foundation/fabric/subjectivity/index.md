@@ -187,10 +187,10 @@ bending under emotion is naming a stretch along the lower part
 of the axis; a cluster's account of memory becoming traversable
 landscape is naming the further reaches.
 
-In Aurethia the phenomenon of motion along this axis is named
-[[fabric/remembrance|Remembrance]]; the region of Mundus that
-leans hardest toward the Self is known as
-[[realms/valdor|Valdor]], where memory and ego become
+In Aurethia the phenomenon of motion along this axis is the
+Self-ward direction of [[aurethia/fabric/nearing|Nearing]];
+the region of Mundus that leans hardest toward the Self is
+known as [[realms/valdor|Valdor]], where memory and ego become
 geography.
 
 ## A condition, not a power

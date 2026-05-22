@@ -5,14 +5,15 @@ direction: a thing nears whatever it leans toward, against
 whatever its [[mundus-frame|Mundus Frame]] would have it drift
 into. In Aurethian usage, the unmarked word _Nearing_ refers
 to the Source-ward lean, because Source-ward Nearing is the
-work the cluster has built its serious traditions around.
-Chaos-ward and Self-ward leans are known too. The Self-ward
-work is small enough to be mentioned briefly; the Chaos-ward
-lean has been described mostly through its failure form.
+oldest and most institutionally developed of the cluster's
+traditions. Self-ward Nearing, undertaken inside
+[[realms/valdor|Valdor]], is a developed practice of its own.
+The Chaos-ward lean has been described mostly through its
+failure form.
 
 The shape of this entry follows the cluster's centre of
 gravity: most of it is about Source-ward Nearing, because that
-is where the cluster's records and practice are densest.
+is where the records and practitioners are densest.
 
 ## What Nearing loosens
 
@@ -303,11 +304,48 @@ absence or a curated one is an open question.
 
 ## Nearing toward the Self
 
-The Self-ward lean has its own Aurethian phenomenon, but the
-cluster does not call it Nearing. It is
-[[remembrance|Remembrance]]: the bending of reality around the
-experiencing subject as a being's Mundus Frame tilts toward
-[[self|the Self]]. The mechanics described at foundation are
-the same — a lean against the drift gradient — but the texture
-is different enough, and the practice traditions separate
-enough, that Aurethian usage keeps the two names apart.
+The Self-ward lean has its own texture and its own developed
+practice, and in Aurethia both are called Nearing — Nearing
+toward [[self|the Self]] rather than toward the Source.
+
+The shallow end is something every Aurethian encounters. Mood
+colours a place: the room of a grief that will not lift, the
+impossible brightness of a long-awaited return, the way an old
+song will move time. These are not metaphors in Aurethia. They
+are small-scale instances of the Self-ward lean, where the
+local [[mundus-frame|Mundus Frame]] tilts toward the Self
+enough that the world bends around the experiencing subject.
+At this shallow end the lean is rarely deliberate. It happens
+to people; it is not a thing they do. (See
+[[subjectivity|Subjectivity]], "A condition, not a power".)
+
+The deep end is the developed practice. In its developed form
+the lean is sustained inside
+[[realms/valdor|Valdor]] — the region of Mundus that leans
+hardest toward the Self, where memory and ego have become
+load-bearing in place of ordinary geography. A traveller in
+Valdor moves through their own narrative structures,
+recollections, and subjective architecture, and — if they
+willingly undergo that passage — may emerge fundamentally
+changed. Entering Valdor does not by itself alter identity.
+The remaking is what the inner landscape offers; accepting it
+is what makes the practice a practice. This is why Valdor is
+regarded as one of the primary realms of personal
+transformation in the cluster's cosmology.
+
+Self-ward Nearing and Source-ward Nearing are not the same
+act. Source-ward Nearing is a drift toward
+[[realms/nareth|Nareth]]: identity, emotion, and bodily form
+loosen because the practitioner is, in some sense, no longer
+fully in [[realms/asthera|Asthera]]. Self-ward Nearing is a
+passage through one's own remembered self: identity changes
+because the remembered self changes. Outwardly, the two may
+resemble each other — both produce a person who is not quite
+the person they were. Inwardly, they take different routes
+through the cosmos.
+
+Some traditions hold that the two are not as separate as they
+appear, and that a sufficiently deep Self-ward Nearing can
+pass directly into Nareth without the traveller first
+returning to the embodied world. Whether this has ever been
+achieved is not settled in the records.

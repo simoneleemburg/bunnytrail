@@ -1,20 +1,7 @@
 name: Nearing
 kind: phenomenon
-summary: The Aurethian account of [[foundation/fabric/nearing|nearing]] — willed motion against the local drift gradient. The cluster's central body of practice along this axis is Source-ward, and the unmarked word _Nearing_ in Aurethian usage refers to that direction. Chaos-ward and Self-ward leans are known too, the latter only in passing; the Chaos-ward lean is recorded almost entirely in its failure form.
-tags:
-  [
-    practice,
-    nareth,
-    resonance,
-    travel,
-    whispers,
-    oracle-triad,
-    chaos,
-    void,
-    coherence,
-    failure,
-    transit
-  ]
+summary: The Aurethian account of [[foundation/fabric/nearing|nearing]] — willed motion against the local drift gradient. The cluster has two developed traditions: Source-ward Nearing, the oldest, undertaken toward [[realms/nareth|Nareth]]; and Self-ward Nearing, undertaken inside [[realms/valdor|Valdor]] as a passage through one's own remembered self. The Chaos-ward lean is known mostly in its failure form.
+tags: [practice, nareth, valdor, resonance, travel, whispers, memory, ego, transformation, oracle-triad, chaos, void, coherence, failure, transit]
 relations:
   - kind: local-account-of
     target: foundation/fabric/nearing
