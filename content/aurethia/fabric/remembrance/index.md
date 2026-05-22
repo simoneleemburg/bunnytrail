@@ -46,35 +46,14 @@ an exercise of will. (See [[subjectivity|Subjectivity]],
 
 ## Relation to other phenomena
 
-In Aurethia's older account, Remembrance,
-[[aurethia/fabric/nearing|Nearing]], and
-[[aurethia/fabric/drifting|Drifting]] were the three Aurethian
-phenomena of approach toward the Cardinals — each the local
-manifestation of motion along one of the three axes:
-
-- **[[aurethia/fabric/nearing|Nearing]]** — approach to
-  [[source|the Source]], the loosening of fixed
-  identity back into the substrate from which it arose.
-- **Remembrance** — approach to [[self|the Self]], the
-  bending of reality around the experiencing subject.
-- **[[aurethia/fabric/drifting|Drifting]]** — approach to
-  [[chaos|Chaos]], the failure of the holding that
-  keeps a thing one thing.
-
-The new foundation account reorganises this parallel. Nearing
-is an active lean against the local drift; Drifting is the
-passive slide that happens in its absence; and the variety of
-directions a thing can drift in comes from the local
-[[mundus-frame|Mundus Frame]], not from three distinct
-phenomena. Remembrance, in this account, is the lived texture
-of being in a Self-rotated frame — what existence is like when
-the local Equilibrium has moved toward the Self.
-
-The deliberate practice of moving deeper into Remembrance, and
+Remembrance is the lived texture of being in a Self-rotated
+[[mundus-frame|Mundus Frame]] — what existence is like when
+the local [[equilibrium|Equilibrium]] has moved toward
+[[self|the Self]]. It is not itself a practice. The
+deliberate practice of moving deeper into Remembrance, and
 returning from it transformed, is
-[[fabric/valdor-traversal|Valdor traversal]]. Where Nearing
-has its own deliberate practice and Drifting is generally
-something that happens to a pilot rather than something a
-pilot chooses, Remembrance covers the whole range: the
-unbidden grief that folds time, the deliberate Valdor
-traveller, and everything between.
+[[fabric/valdor-traversal|Valdor traversal]]; that is the
+Self-ward [[foundation/fabric/nearing|nearing]] Aurethia has
+developed. Remembrance covers the whole range of what
+Self-rotated framing can feel like, from the unbidden grief
+that folds time to the deliberate Valdor traveller.

@@ -1,57 +1,97 @@
-Drifting is the Aurethian name for what
-[[foundation/fabric/drifting|foundation-drifting]] becomes
-when it carries a pilot toward [[chaos|Chaos]]. The motion
-itself is the ordinary one — passive slide toward the local
-[[equilibrium|Equilibrium]] — but in the long interplanetary
-passages between [[kinds/world-pillar|Pillar]] launches the
-local [[mundus-frame|Mundus Frame]] is rotated: local
-Equilibrium has moved toward Chaos, and a pilot whose
-[[binding|binding]] is no longer holding them in the
-binding's frame slides instead into the Void's. What was
-ordinary transit becomes the long fall.
+Nearing-Chaos is the Aurethian account of
+[[foundation/fabric/nearing|nearing]] toward
+[[chaos|Chaos]] — leaning into the loosening of the
+structures that hold a thing one thing.
 
-In the older Aurethian vocabulary this was the Chaos-axis
-counterpart to [[aurethia/fabric/nearing|Nearing]] and
-[[fabric/valdor-traversal|Valdor traversal]]: a process by
-which a being leans far enough toward Chaos that the
-structures holding them coherent — identity, position, the
-persistence of being one thing across moments — loosen and
-come apart.
+Like [[nearing-source|nearing-Source]] and any other
+direction of nearing, it is in principle something a thing
+can lean into deliberately. In practice, Aurethia knows
+nearing-Chaos almost entirely in one form: what happens to a
+pilot whose grip on themselves has failed. The records are
+full of this case and almost empty of the other. Whether
+that absence reflects what the cluster has not yet thought
+about, or what it has thought about and chosen not to write
+down, is itself unsettled.
 
-The asymmetry with the other two is the defining fact. Nearing
-is undertaken: a practitioner steps deliberately toward
-[[realms/nareth|Nareth]] and returns. Valdor traversal is
-undertaken: a traveller chooses the passage through their own
-remembered self and may emerge transformed. Drifting is neither.
-A pilot does not set out to Drift. A pilot Drifts when the work
-of holding together fails — when the [[binding|binding]] slips,
-when [[kinds/naya|Naya]] cannot keep their hold, when whatever
-ordinarily keeps a Knight a Knight gives way. The Void-frame
-takes them because they have stopped leaning against it.
+## The failure case
 
-What Drifting opens onto is [[realms/the-void|the Void Between
-Worlds]] — not as a destination but as the condition that
-asserts itself when coherence fails. The Void's storm-fields,
-its drifts of broken Naya, its half-present failed Eidolons:
-these are what a Drifting pilot is among. They are also, in
-some accounts, what a Drifting pilot becomes part of, if the
-Drift goes far enough that no one catches them.
+A pilot in the long interplanetary passages between
+[[kinds/world-pillar|Pillar]] launches is holding their own
+[[mundus-frame|Mundus Frame]] in place by the work of their
+[[binding|binding]]. The frame they hold is the binding's:
+ordinarily centred, with local
+[[equilibrium|Equilibrium]] near the εσδ-centroid. The Void
+of interplanetary space has its own frame, rotated such that
+local Equilibrium sits toward Chaos. The two frames overlap
+in the same physical region; what determines which a pilot
+inhabits is whose work is holding.
+
+When the binding slips, the pilot stops holding their frame.
+The Void's frame takes over. The pilot's local Equilibrium
+moves toward Chaos. Drift, in foundation terms, carries them
+toward the new Equilibrium. From inside the pilot's
+experience this is not drift at all — it is being pulled
+apart along a direction they did not choose. From foundation
+terms it is [[foundation/fabric/drifting|drifting]], in a
+Chaos-rotated frame, with the failed binding being what
+removed the only thing that was holding the pilot in a
+different frame.
+
+The Aurethian word _Nearing_ in this construction — _nearing
+toward Chaos_ — names the lean toward Chaos itself, not the
+slipping that exposed the pilot to it. The lean is what the
+Void's frame imposes on whatever it has hold of. A pilot who
+has lost the binding is leaning toward Chaos in the only
+sense the cluster's records have so far described: not by
+willing it, but by no longer leaning away from it.
+
+## What the failed nearing opens onto
+
+When the binding slips and the Void's frame takes over,
+certain things become present that were not present before.
+They are not summoned from elsewhere; they are what the
+medium _is_, for a coherence that is failing.
+
+**Broken [[kinds/naya|Naya]].** Naya who could not hold
+identity in some encounter — through failed
+[[binding|binding]], through unsupported
+[[nearing-source|nearing-Source]], through whatever it is
+that breaks Naya — sometimes do not return to
+[[realms/nareth|Nareth]]. Their resonance lingers without
+ever quite resolving into anything coherent. A pilot whose
+nearing has slipped into the failure case feels them: drifts
+of intent without a self behind it, edges of feeling that
+arrive without a source.
+
+**Fragments of the old breaking.** A pilot in the failure
+case encounters fragments of the same shattering that
+[[materials/skyblood|Skyblood]] derives from — the breaking
+that by long tradition is called a shattered god, though
+that attribution varies between traditions and is not
+universally held. Whatever it was that broke, the breaking
+is older than the order, older than the worlds' current
+arrangement of themselves, older than most of what is
+written down. These fragments are not Skyblood. Skyblood is
+what has been refined out of the breaking.
 
 ## On being named
 
-That Aurethia names this at all — that Drifting has a word
-where it could have remained simply "what happens when things
-go wrong" — is itself worth marking. The Aurethian record
-treated Drifting as a third recognised passage alongside
-Nearing and Valdor traversal: a passive counterpart to two
-deliberate practices. The new account preserves the insight
-under a different organisation. The thing the Aurethian word
-points to is real, frequent, and worth naming; it is not a
-separate kind of motion but a particular case of
-[[foundation/fabric/drifting|foundation-drifting]] — the
-ordinary passive slide of Mundus, made vivid by the
-Chaos-rotated frame of the Void.
+That Aurethia names this at all — that nearing-Chaos has a
+word where it could have remained simply "what happens when
+things go wrong" — is itself worth marking. The cluster
+treats this direction of nearing as a passage that can be
+described, not only a failure that can be averted. The
+foundation-level account is the same motion as any other
+nearing or any other drift; what is Aurethian about this
+page is the cluster's particular vocabulary for one
+direction of it.
 
-Whether Drifting can be _undertaken_ deliberately — whether a
-pilot could choose to Drift, the way one chooses to Near or to
-traverse Valdor — is not something the records resolve.
+Whether nearing-Chaos can be _undertaken_ deliberately —
+whether a pilot could choose to lean toward Chaos, the way
+one chooses to lean toward the Source — is not something the
+records resolve. The order's discipline is built around
+preventing it; the Bayurindan and Urouthi traditions of
+nearing-Source do not appear to have a Chaos-ward
+counterpart in any record the order has preserved. Whether
+this is an honest absence or a curated one is an open
+question.

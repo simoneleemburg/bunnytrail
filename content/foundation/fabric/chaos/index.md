@@ -71,29 +71,17 @@ the condition tends to assert itself, in the long interplanetary
 passages between Pillar-launches. The condition itself is not
 a location.
 
-This mode of approach — [[aurethia/fabric/drifting|Drifting]]
-— is what Aurethia names when a pilot's
-[[binding|binding]] slips in the long interplanetary passages
-and their local [[mundus-frame|Mundus Frame]] rotates toward
-Chaos. The motion is not specific to Chaos at the foundation
-level; it is the ordinary passive slide of
-[[foundation/fabric/drifting|drifting]], which happens in
-every frame. What distinguishes Aurethian Drifting is the
-direction the local Equilibrium has moved.
-
-Aurethia's older vocabulary placed Drifting alongside
-[[aurethia/fabric/nearing|Nearing]] toward
-[[source|the Source]] and
-[[fabric/valdor-traversal|Valdor traversal]] toward
-[[self|the Self]] as a parallel third phenomenon — a passive
-counterpart to two deliberate practices. The new account does
-not preserve that parallelism: Nearing and Valdor traversal
-are active leans against the local gradient, Drifting is what
-that lean's absence produces in a Chaos-rotated frame. The
-asymmetry the Aurethian framing noticed is real; it is the
-asymmetry between [[foundation/fabric/nearing|nearing]] and
-[[foundation/fabric/drifting|drifting]] anywhere, not a property of the
-Chaos axis specifically.
+This mode of approach is what Aurethia names
+[[aurethia/fabric/nearing-chaos|nearing-Chaos]] — leaning,
+or being leaned, toward the loosening that Chaos is the
+asymptote of. The cluster knows it almost entirely in its
+failure form: pilots whose [[binding|binding]] slips in the
+long interplanetary passages, who find themselves in
+[[aurethia/places/realms/the-void|the Void Between Worlds]]
+without having meant to. The motion is the ordinary
+[[foundation/fabric/nearing|nearing]] of any thing toward
+any Cardinal; what is Aurethian about the page is the
+cluster's particular vocabulary for one direction of it.
 
 Whether anything is _at_ Chaos — what a thing native to the
 Cardinal, without mass, would be — is not something the

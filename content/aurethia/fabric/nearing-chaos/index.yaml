@@ -1,7 +1,17 @@
-name: Drifting
+name: Nearing-Chaos
 kind: phenomenon
-summary: The Aurethian name for [[foundation/fabric/drifting|foundation-drifting]] when it carries a being toward [[chaos|Chaos]] — what happens to a pilot whose [[binding|binding]] slips and whose effective [[mundus-frame|Mundus Frame]] has rotated, in the regions Aurethia knows as [[realms/the-void|the Void Between Worlds]], such that local Equilibrium has moved Chaos-ward. Unlike Nearing or Valdor traversal, Drifting is not undertaken deliberately; it is what a pilot falls into when the work of holding together fails.
-tags: [chaos, void, coherence, failure, transit]
+summary: >-
+  The Aurethian account of [[foundation/fabric/nearing|nearing]]
+  toward [[chaos|Chaos]] — leaning into the loosening of the
+  structures that hold a thing one thing. Aurethia knows this
+  almost entirely in its passive form: what happens to a pilot
+  whose [[binding|binding]] slips in the long passages between
+  [[kinds/world-pillar|Pillars]], whose grip on themselves and
+  their [[kinds/naya|Naya]] fails, and who finds themselves in
+  [[realms/the-void|the Void Between Worlds]] without having
+  meant to be. A deliberate practice of nearing-Chaos, if any
+  exists in the cluster, is not recorded.
+tags: [chaos, void, coherence, nearing, failure, transit]
 relations:
   - kind: local-account-of
-    target: foundation/fabric/drifting
+    target: foundation/fabric/nearing
