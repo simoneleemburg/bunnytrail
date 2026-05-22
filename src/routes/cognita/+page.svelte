@@ -34,42 +34,45 @@
 			there.
 		</p>
 		<MundusMap />
-		<p class="map-intro">
-			The cosmology adds three further dimensions on top of ordinary space and time. They do not
-			move you across a landscape; they change what space and time are like in the place you stand.
-			Each one runs from the familiar middle out toward a limit at which something fundamental about
-			reality has been turned all the way up or down.
-		</p>
 
-		<dl class="axes-intro">
-			<dt><a href="/foundation/fabric/essence">Essence</a></dt>
-			<dd>
-				The liveliness of being. Walk this way and the world grows ethereal — alive in itself, not
-				merely inhabited by living things. The line between what is animate and what is solid
-				softens; far enough along, a living thing can walk through a wall.
-			</dd>
+		<div class="legend">
+			<h3>How to read it</h3>
+			<p class="legend-intro">
+				The cosmology adds three further dimensions on top of ordinary space and time. They do not
+				move you across a landscape; they change what space and time are like in the place you
+				stand. Each one runs from the familiar middle out toward a limit at which something
+				fundamental about reality has been turned all the way up or down.
+			</p>
 
-			<dt><a href="/foundation/fabric/subjectivity">Subjectivity</a></dt>
-			<dd>
-				The intensity of individual perspective. Walk this way and the fabric of a place begins to
-				answer to whoever is in it. Layout, weather, geography bend toward attention, mood, memory —
-				space-time becomes responsive to the perceiver.
-			</dd>
+			<dl>
+				<dt><a href="/foundation/fabric/essence">Essence</a></dt>
+				<dd>
+					The liveliness of being. Walk this way and the world grows ethereal — alive in itself, not
+					merely inhabited by living things. The line between what is animate and what is solid
+					softens; far enough along, a living thing can walk through a wall.
+				</dd>
 
-			<dt><a href="/foundation/fabric/dissolution">Dissolution</a></dt>
-			<dd>
-				The looseness of form. Walk this way and the work that ordinarily holds space-time together
-				falls off. A gesture of the hand can raise a tornado; further along, the same gesture may
-				open a black hole or fold a passage of time onto itself.
-			</dd>
-		</dl>
+				<dt><a href="/foundation/fabric/subjectivity">Subjectivity</a></dt>
+				<dd>
+					The intensity of individual perspective. Walk this way and the fabric of a place begins to
+					answer to whoever is in it. Layout, weather, geography bend toward attention, mood, memory
+					— space-time becomes responsive to the perceiver.
+				</dd>
 
-		<p class="map-intro">
-			Each direction has an end — not one you can reach, but one the fabric of a place declares more
-			loudly the closer you get. The corners (<a href="/kinds/cardinal">Cardinals</a>) and edges (<a
-				href="/kinds/horizon">Horizons</a
-			>) of the map are those bounds.
-		</p>
+				<dt><a href="/foundation/fabric/dissolution">Dissolution</a></dt>
+				<dd>
+					The looseness of form. Walk this way and the work that ordinarily holds space-time
+					together falls off. A gesture of the hand can raise a tornado; further along, the same
+					gesture may open a black hole or fold a passage of time onto itself.
+				</dd>
+			</dl>
+
+			<p class="legend-outro">
+				Each direction has an end — not one you can reach, but one the fabric of a place declares
+				more loudly the closer you get. The corners (<a href="/kinds/cardinal">Cardinals</a>) and
+				edges (<a href="/kinds/horizon">Horizons</a>) of the map are those bounds.
+			</p>
+		</div>
 	</section>
 
 	<section class="map-section">
@@ -210,39 +213,6 @@
 		color: var(--accent);
 	}
 
-	.axes-intro {
-		max-width: var(--prose-max);
-		margin: 0 auto var(--space-6);
-	}
-
-	.axes-intro dt {
-		font-family: var(--font-display);
-		font-size: var(--text-lg);
-		font-style: italic;
-		color: var(--ink);
-		margin: var(--space-5) 0 var(--space-2);
-	}
-
-	.axes-intro dt:first-of-type {
-		margin-top: 0;
-	}
-
-	.axes-intro dt a {
-		color: inherit;
-		text-decoration: none;
-		border-bottom: 1px solid var(--rule);
-	}
-
-	.axes-intro dt a:hover {
-		color: var(--accent);
-	}
-
-	.axes-intro dd {
-		margin: 0;
-		color: var(--ink-soft);
-		line-height: var(--leading-relaxed);
-	}
-
 	.legend {
 		max-width: var(--prose-max);
 		margin: var(--space-8) auto 0;
@@ -263,6 +233,31 @@
 		text-align: center;
 	}
 
+	.legend-intro,
+	.legend-outro {
+		margin: 0;
+		color: var(--ink-soft);
+		line-height: var(--leading-relaxed);
+	}
+
+	.legend-intro {
+		margin-bottom: var(--space-5);
+	}
+
+	.legend-outro {
+		margin-top: var(--space-5);
+	}
+
+	.legend-outro a {
+		color: var(--ink);
+		text-decoration: none;
+		border-bottom: 1px solid var(--rule);
+	}
+
+	.legend-outro a:hover {
+		color: var(--accent);
+	}
+
 	.legend dl {
 		margin: 0;
 	}
@@ -277,6 +272,16 @@
 
 	.legend dt:first-of-type {
 		margin-top: 0;
+	}
+
+	.legend dt a {
+		color: inherit;
+		text-decoration: none;
+		border-bottom: 1px solid var(--rule);
+	}
+
+	.legend dt a:hover {
+		color: var(--accent);
 	}
 
 	.legend dd {
