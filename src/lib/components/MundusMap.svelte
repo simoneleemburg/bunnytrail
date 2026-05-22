@@ -50,12 +50,15 @@
 	const CHAOS = { x: CX + SIDE / 2, y: BOT_Y };
 
 	// Interior centroid — where the three axes converge.
-	// Equilibrium sits here. Mundus itself is the whole interior
-	// of the triangle; it has no in-diagram label.
+	// Equilibrium sits here.
 	const MID = {
 		x: (SOURCE.x + SELF.x + CHAOS.x) / 3,
 		y: (SOURCE.y + SELF.y + CHAOS.y) / 3
 	};
+
+	// Mundus label position: in the lower interior, well below
+	// Equilibrium and above the Nullity edge.
+	const MUNDUS_LABEL = { x: MID.x, y: MID.y + 95 };
 
 	// Axis lines: from a point near (but not at) the centroid, outward
 	// toward each corner, stopping short of the corner. Each axis points
@@ -417,6 +420,14 @@
 			</g>
 		</a>
 
+		<!-- ───────── Mundus label, lower interior ──────────────────── -->
+		<a href="/foundation/fabric/mundus" class="mundus-label-link">
+			<g class="mundus-label" transform={`translate(${MUNDUS_LABEL.x} ${MUNDUS_LABEL.y})`}>
+				<text class="cardinal-sigil" text-anchor="middle" y="-2">🜃</text>
+				<text class="cardinal-name" text-anchor="middle" y="22">Mundus</text>
+			</g>
+		</a>
+
 		<!-- ───────── Cardinals: the three corners ──────────────────── -->
 		<a href="/foundation/fabric/source" class="cardinal-link">
 			<g class="cardinal" transform={`translate(${SOURCE.x} ${SOURCE.y - 4})`}>
@@ -625,6 +636,16 @@
 
 	.equilibrium-link:hover .equilibrium-sigil,
 	.equilibrium-link:hover .equilibrium-name {
+		fill: var(--accent);
+	}
+
+	/* ── Mundus label, lower interior ─────────────────────────── */
+	.mundus-label-link {
+		cursor: pointer;
+	}
+
+	.mundus-label-link:hover .cardinal-sigil,
+	.mundus-label-link:hover .cardinal-name {
 		fill: var(--accent);
 	}
 </style>
