@@ -40,11 +40,10 @@
 	<section class="map-section">
 		<h2>The local sky</h2>
 		<p class="map-intro">
-			<a href="/aurethia/places/celestial/aureth-system/aureth">Aureth</a>, eight planets, and two
-			parallel layers of being. Three of the planets — the habitable-zone worlds — are settled
-			territory; the others are sketches, their names still tentative. Across the long gulf, the
-			neighbouring <em>Hollow Binary</em> is visible from Cognita: a single companion star, and the
-			unresolved body it orbits —
+			<a href="/aurethia/places/celestial/aureth-system/aureth">Aureth</a> and its eight planets.
+			Three of them — the habitable-zone worlds — are settled territory; the others are sketches,
+			their names still tentative. Across the long gulf, the neighbouring <em>Hollow Binary</em> is
+			visible from Cognita: a single companion star, and the unresolved body it orbits —
 			<a href="/aurethia/places/celestial/hollow-binary/the-dark-companion">the Dark Companion</a>,
 			which gives off no light and is known only by what it does.
 		</p>
@@ -53,22 +52,14 @@
 		<div class="legend">
 			<h3>How to read it</h3>
 			<dl>
-				<dt><a href="/aurethia/places/realms/asthera">Asthera</a> · the material</dt>
+				<dt>The eight planets</dt>
 				<dd>
-					The persistent layer. Bodies in their solid forms; orbits that keep; histories that stay
-					put long enough to be written down.
-				</dd>
-
-				<dt><a href="/aurethia/places/realms/nareth">Nareth</a> · the resonant</dt>
-				<dd>
-					The substrate beneath. The same bodies are here too, but as identity and memory rather
-					than stone — fluid, interconnected, available to drift and transformation.
-				</dd>
-
-				<dt>The threads</dt>
-				<dd>
-					Faint vertical lines between the twin bodies. Existence is rarely just one or the other;
-					the threads are how a thing reaches across.
+					Ranged outward from <a href="/aurethia/places/celestial/aureth-system/aureth">Aureth</a>
+					on flat orbital arcs, innermost to outermost. Three —
+					<a href="/aurethia/places/celestial/aureth-system/bayurinda">Bayurinda</a>,
+					<a href="/aurethia/places/celestial/aureth-system/sharazan">Sharazan</a>,
+					<a href="/aurethia/places/celestial/aureth-system/nebelheim">Nebelheim</a> — have full entries;
+					the others are working sketches.
 				</dd>
 
 				<dt>The tentative</dt>
@@ -84,6 +75,15 @@
 					<a href="/aurethia/places/celestial/hollow-binary/the-dark-companion"
 						>the Dark Companion</a
 					>, shown as a hollow rather than drawn solidly, because no light has ever come from it.
+				</dd>
+
+				<dt>Realms are not depicted here</dt>
+				<dd>
+					<a href="/aurethia/places/realms/asthera">Asthera</a>,
+					<a href="/aurethia/places/realms/nareth">Nareth</a>, and the other Aurethian realms are
+					regions of <a href="/foundation/fabric/mundus">Mundus</a> defined by their
+					<a href="/foundation/fabric/mundus-frame">Mundus Frame</a>, not parallel planes the bodies
+					sit on. The cosmological frame is the map above; this one is just the local sky.
 				</dd>
 			</dl>
 		</div>
@@ -195,16 +195,6 @@
 
 	dt:first-of-type {
 		margin-top: 0;
-	}
-
-	dt a {
-		color: inherit;
-		text-decoration: none;
-		border-bottom: 1px solid var(--rule);
-	}
-
-	dt a:hover {
-		color: var(--accent);
 	}
 
 	dd {

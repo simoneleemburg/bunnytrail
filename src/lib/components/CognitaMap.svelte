@@ -2,21 +2,18 @@
 	/**
 	 * The Alteria Cognita star-map.
 	 *
-	 * Two parallel planes:
-	 *   • Asthera — the material plane, drawn as a horizontal axis with
-	 *     the star at the left and eight planets on flat orbital arcs,
-	 *     ordered from innermost to outermost.
-	 *   • Nareth — the resonant plane, drawn as a translucent overlay
-	 *     arching above. The same bodies exist there too, shown as
-	 *     ghost-points connected to their Astheran twins by faint
-	 *     vertical resonance threads.
+	 * A stellar map of the Aureth system — the star at the left and
+	 * eight planets on flat orbital arcs, ordered from innermost to
+	 * outermost — and, off to the right across a wide gulf of
+	 * interstellar space, the neighbouring Hollow Binary. The visible
+	 * companion star turns around the Dark Companion, which gives off
+	 * no light and is drawn as a void rather than a body.
 	 *
-	 * The map is zoomed out far enough that the neighbouring Hollow
-	 * Binary system is visible to the right of Cognita — its visible
-	 * companion star, and the empty orbit around which that star
-	 * turns. The body at the centre of that empty orbit is the Dark
-	 * Companion, which gives off no visible light and is not drawn
-	 * solidly.
+	 * The map shows bodies in Mundus; it does not depict realms.
+	 * Asthera, Nareth, Valdor and the rest are regions of Mundus
+	 * defined by their Mundus Frame, not separate planes a body sits
+	 * on. The cosmological frame belongs in the MundusMap above; this
+	 * one is just the local sky.
 	 *
 	 * The map is deliberately hand-coded rather than data-driven: it's a
 	 * one-of-a-kind drawing, not a generated diagram, and small visual
@@ -61,9 +58,8 @@
 
 	// Layout constants — tweak by eye.
 	const W = 1200;
-	const H = 600;
-	const AXIS_Y = 420; // Asthera axis
-	const NARETH_Y = 160; // Nareth overlay band centerline
+	const H = 480;
+	const AXIS_Y = 260; // the stellar axis
 
 	// Cognita system occupies the left portion. Planets squeezed in tight
 	// so the wider neighbourhood has room on the right.
@@ -94,70 +90,12 @@
 	>
 		<title id="cognita-title">Alteria Cognita and the wider stellar neighbourhood</title>
 		<desc id="cognita-desc">
-			A diagram showing Aureth and its eight planets of Alteria Cognita on the material plane of
-			Asthera, with the same bodies echoed on the resonant overlay of Nareth above. To the right,
-			across the long gulf of interstellar space, the neighbouring Hollow Binary is shown — a
+			A stellar map of the Aureth system — eight planets ranged outward from their star — and, to
+			the right across the long gulf of interstellar space, the neighbouring Hollow Binary: a
 			visible companion star orbiting an unresolved body, the Dark Companion.
 		</desc>
 
-		<!-- ───────── Nareth: resonant overlay ──────────────────────── -->
-		<g class="nareth">
-			<!-- The arching boundary of Nareth: a gentle curve above the bodies. -->
-			<path
-				class="nareth-arc"
-				d={`M ${STAR_X - 30} ${NARETH_Y + 80}
-				    Q ${W / 2} ${NARETH_Y - 130}, ${DARK_COMPANION_X + 60} ${NARETH_Y + 80}`}
-			/>
-			<!-- Companion arc, faint, beneath -->
-			<path
-				class="nareth-arc nareth-arc-inner"
-				d={`M ${STAR_X} ${NARETH_Y + 90}
-				    Q ${W / 2} ${NARETH_Y - 70}, ${DARK_COMPANION_X + 30} ${NARETH_Y + 90}`}
-			/>
-
-			<!-- Sigil + label for Nareth -->
-			<text class="realm-sigil" x={W / 2} y={NARETH_Y - 70} text-anchor="middle">🜁</text>
-			<text class="realm-name" x={W / 2} y={NARETH_Y - 40} text-anchor="middle">Nareth</text>
-			<text class="realm-caption" x={W / 2} y={NARETH_Y - 22} text-anchor="middle">
-				the resonant
-			</text>
-
-			<!-- Ghost-points: each Cognita planet's echo on Nareth. -->
-			{#each planets as p, i}
-				{@const cx = planetX(i)}
-				<circle class="nareth-point" {cx} cy={NARETH_Y + 40} r="3.5" />
-			{/each}
-
-			<!-- Ghost-points for the binary: the visible companion echoes
-			     cleanly; the Dark Companion's echo is a void, drawn as a
-			     small dashed ring rather than a dot. -->
-			<circle class="nareth-point" cx={VISIBLE_COMPANION_X} cy={NARETH_Y + 40} r="3.5" />
-			<circle class="nareth-void-point" cx={DARK_COMPANION_X} cy={NARETH_Y + 40} r="6" />
-		</g>
-
-		<!-- ───────── Resonance threads: Asthera ↔ Nareth ───────────── -->
-		<g class="threads">
-			{#each planets as p, i}
-				{@const cx = planetX(i)}
-				<line class="thread" x1={cx} y1={NARETH_Y + 40} x2={cx} y2={AXIS_Y} />
-			{/each}
-			<line
-				class="thread"
-				x1={VISIBLE_COMPANION_X}
-				y1={NARETH_Y + 40}
-				x2={VISIBLE_COMPANION_X}
-				y2={AXIS_Y}
-			/>
-			<line
-				class="thread thread-void"
-				x1={DARK_COMPANION_X}
-				y1={NARETH_Y + 40}
-				x2={DARK_COMPANION_X}
-				y2={AXIS_Y}
-			/>
-		</g>
-
-		<!-- ───────── Asthera: the material plane ───────────────────── -->
+		<!-- ───────── The local sky ─────────────────────────────────── -->
 		<g class="asthera">
 			<!-- The horizontal axis: continuous across the whole sky,
 			     with a faint break to mark the long gulf between systems. -->
@@ -286,22 +224,14 @@
 					the Hollow Binary
 				</text>
 			</g>
-
-			<!-- Sigil + label for Asthera -->
-			<text class="realm-sigil" x={W / 2} y={AXIS_Y + 130} text-anchor="middle">🜃</text>
-			<text class="realm-name" x={W / 2} y={AXIS_Y + 158} text-anchor="middle">Asthera</text>
-			<text class="realm-caption" x={W / 2} y={AXIS_Y + 176} text-anchor="middle">
-				the material
-			</text>
 		</g>
 	</svg>
 
 	<figcaption>
-		Two planes, one cosmos — and not the whole of it. Alteria Cognita's eight planets persist as
-		form on <a href="/aurethia/places/realms/asthera">Asthera</a> and resonate as identity, memory
-		and meaning on
-		<a href="/aurethia/places/realms/nareth">Nareth</a>. Across the long gulf, the neighbouring
-		Hollow Binary turns around something the eye cannot resolve:
+		Alteria Cognita's eight planets ranged outward from
+		<a href="/aurethia/places/celestial/aureth-system/aureth">Aureth</a>, and — across the long gulf
+		of interstellar space — the neighbouring Hollow Binary, turning around something the eye cannot
+		resolve:
 		<a href="/aurethia/places/celestial/hollow-binary/the-dark-companion">the Dark Companion</a>.
 	</figcaption>
 </figure>
@@ -338,45 +268,6 @@
 
 	figcaption a:hover {
 		color: var(--accent);
-	}
-
-	/* ── Nareth: drawn as a faint, vellum-toned arc up top ────── */
-	.nareth-arc {
-		fill: none;
-		stroke: var(--ink-faint);
-		stroke-width: 0.75;
-		opacity: 0.55;
-	}
-
-	.nareth-arc-inner {
-		opacity: 0.3;
-		stroke-dasharray: 2 3;
-	}
-
-	.nareth-point {
-		fill: var(--ink-faint);
-		opacity: 0.65;
-	}
-
-	.nareth-void-point {
-		fill: none;
-		stroke: var(--ink-faint);
-		stroke-width: 0.7;
-		stroke-dasharray: 2 2;
-		opacity: 0.6;
-	}
-
-	/* ── Threads connecting twin bodies between the planes ────── */
-	.thread {
-		stroke: var(--ink-faint);
-		stroke-width: 0.5;
-		stroke-dasharray: 1 4;
-		opacity: 0.55;
-	}
-
-	.thread-void {
-		opacity: 0.3;
-		stroke-dasharray: 1 6;
 	}
 
 	/* ── Asthera: solid ink-on-parchment ──────────────────────── */
@@ -540,26 +431,5 @@
 
 	.dark-companion:hover .dark-label {
 		fill: var(--accent);
-	}
-
-	/* ── Realm sigils & names ─────────────────────────────────── */
-	.realm-sigil {
-		font-size: 22px;
-		fill: var(--ink-soft);
-	}
-
-	.realm-name {
-		font-family: var(--font-display);
-		font-size: 16px;
-		font-variant: small-caps;
-		letter-spacing: 0.12em;
-		fill: var(--ink);
-	}
-
-	.realm-caption {
-		font-family: var(--font-serif);
-		font-size: 11px;
-		font-style: italic;
-		fill: var(--ink-faint);
 	}
 </style>
