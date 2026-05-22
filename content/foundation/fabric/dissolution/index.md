@@ -41,6 +41,17 @@ time onto itself. The work that ordinarily holds space-time
 to its shape is failing along with the work that holds
 things in it together.
 
+The effect is continuous along the axis, not a sudden switch.
+But what counts, in moving any particular thing, is whether
+the local Dissolution is high enough to overcome that thing's
+hold on its own form — and that threshold depends on the
+thing's own properties. Density, structure, and whatever else
+makes a thing robustly itself all raise the threshold; a
+thinner, looser thing yields sooner. A region high enough in
+Dissolution to let a gesture stir a wind will not yet let the
+same gesture move a mountain; further along the axis, the
+mountain yields too.
+
 Walked the other way — into low-Dissolution space-time — the
 fabric stiffens. The region becomes nearly impossible to
 affect: no gesture, no force, no work brought to bear on it

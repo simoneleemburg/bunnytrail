@@ -103,6 +103,17 @@ participates in is more present than the accidents that make any
 particular wall this wall, and the wall's accidents are not
 enough to hold the living thing back.
 
+The effect is continuous along the axis, not a sudden switch.
+But what counts, in passing through ordinary matter, is whether
+the local Essence is high enough to overcome that particular
+matter's hold — and that threshold depends on the matter's own
+properties. Density, structure, and whatever else makes a thing
+robustly itself all raise the threshold; a thinner, looser
+material yields sooner. A region high enough in Essence to let a
+walker pass through a curtain of mist will not yet let them
+pass through a stone wall; further along the axis, the wall
+yields too.
+
 Walked the other way — into low-Essence space-time — that
 quality drains out. Space-time loses its ethereal cast and
 becomes more nearly inert: no longer lively in itself, no
