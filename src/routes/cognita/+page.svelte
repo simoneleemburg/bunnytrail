@@ -246,6 +246,10 @@
 	.legend {
 		max-width: var(--prose-max);
 		margin: var(--space-8) auto 0;
+		padding: var(--space-6) var(--space-7);
+		background: var(--parchment-soft);
+		border: 1px solid var(--rule);
+		border-radius: 2px;
 	}
 
 	.legend h3 {
@@ -259,23 +263,23 @@
 		text-align: center;
 	}
 
-	dl {
+	.legend dl {
 		margin: 0;
 	}
 
-	dt {
+	.legend dt {
 		font-family: var(--font-display);
-		font-size: var(--text-base);
+		font-size: var(--text-lg);
+		font-style: italic;
 		color: var(--ink);
 		margin: var(--space-5) 0 var(--space-2);
-		font-style: italic;
 	}
 
-	dt:first-of-type {
+	.legend dt:first-of-type {
 		margin-top: 0;
 	}
 
-	dd {
+	.legend dd {
 		margin: 0;
 		color: var(--ink-soft);
 		line-height: var(--leading-relaxed);
