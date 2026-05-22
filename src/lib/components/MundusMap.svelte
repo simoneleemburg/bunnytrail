@@ -362,16 +362,18 @@
 		</g>
 
 		<a href="/foundation/fabric/essence" class="axis-link">
-			<text class="axis-name" x={ESS_LABEL.x} y={ESS_LABEL.y} text-anchor="middle"> Essence </text>
+			<text class="axis-name" x={ESS_LABEL.x} y={ESS_LABEL.y} text-anchor="middle">
+				ε Essence
+			</text>
 		</a>
 		<a href="/foundation/fabric/subjectivity" class="axis-link">
 			<text class="axis-name" x={SUB_LABEL.x} y={SUB_LABEL.y + 4} text-anchor="middle">
-				Subjectivity
+				σ Subjectivity
 			</text>
 		</a>
 		<a href="/foundation/fabric/dissolution" class="axis-link">
 			<text class="axis-name" x={DIS_LABEL.x} y={DIS_LABEL.y + 4} text-anchor="middle">
-				Dissolution
+				δ Dissolution
 			</text>
 		</a>
 
@@ -384,7 +386,7 @@
 				text-anchor="middle"
 				transform={`rotate(-60 ${TRANQUILITY_LABEL.x} ${TRANQUILITY_LABEL.y})`}
 			>
-				Tranquility
+				δ̸ Tranquility
 			</text>
 		</a>
 		<a href="/foundation/fabric/oblivion" class="horizon-link">
@@ -395,12 +397,12 @@
 				text-anchor="middle"
 				transform={`rotate(60 ${OBLIVION_LABEL.x} ${OBLIVION_LABEL.y})`}
 			>
-				Oblivion
+				σ̸ Oblivion
 			</text>
 		</a>
 		<a href="/foundation/fabric/nullity" class="horizon-link">
 			<text class="horizon-name" x={NULLITY_LABEL.x} y={NULLITY_LABEL.y} text-anchor="middle">
-				Nullity
+				ε̸ Nullity
 			</text>
 		</a>
 
