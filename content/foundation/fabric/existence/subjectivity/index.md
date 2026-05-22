@@ -1,8 +1,10 @@
 Subjectivity is one of the three structural axes of
-[[existence/mundus|Mundus]]. It is the measure of a thing's
-closeness to [[existence/self|the Self]] — the horizon at which
-reality is wholly the experiencing subject and nothing holds
-apart from them.
+[[existence/mundus|Mundus]]. It runs from
+[[existence/self|the Self]] — the Cardinal at which reality is
+wholly the experiencing subject and nothing holds apart from
+them — to the Source–Chaos [[kinds/horizon|Horizon]], the edge
+along which reality holds its shape regardless of any
+perceiver.
 
 A thing's Subjectivity is the degree to which the world it
 inhabits is shaped by its experience of that world. Where
@@ -13,13 +15,12 @@ _give_ of reality under the perceiver: how far the world bends
 around the one looking at it, rather than holding its shape
 regardless.
 
-## What it looks like, walked along
+## Walked toward the Self
 
-Near the centre of Mundus, Subjectivity is low — ordinary, in
-the way most things in Mundus are ordinary. Time runs at one
-rate. Space is shared. Two observers in the same room agree on
-the room. The perceiver is one of many in a world that holds
-roughly the same shape for all of them.
+Near the centre of Mundus, Subjectivity is moderate — there is
+some give in how the world is encountered, enough that mood
+colours a room, but not so much that two observers in the same
+place are in different places.
 
 Leaning further along the axis, reality begins to bend.
 The flow of time and the lay of space are felt more intently;
@@ -33,29 +34,62 @@ may be in places that share little but their name. What is
 present is what is held; what is forgotten is, in some real
 sense, not there.
 
-Closer to the horizon, dimensions begin to fold around personal
+Closer to the Cardinal, dimensions begin to fold around personal
 experience. Spatial and temporal distance compress into
 experiential adjacency: what matters is near, what does not
 matter is far, and the ordinary measurements no longer carry.
 Ages may be a doorway apart. A century may be a hillock.
 Geography becomes a shape made by the one who walks it.
 
-At the horizon itself — never reached — there is no shared
+At the Self itself — never reached — there is no shared
 world left at all; there is only the single continuous interior
 of one experiencing self.
 
-Moving in the other direction, away from the Self, has its own
-character. A little below the ordinary middle, a thing's hold
-on being a subject begins to loosen. People describe this kind
-of leaning as out-of-body experience, as perceiving long
-stretches of time as though they were all happening now, as
-seeing oneself in the third person. The world does not bend
-less around the perceiver here so much as the perceiver
-themselves becomes less of a fixed point from which the world
-could bend. Further along, the category of the self loses its
-hold entirely: there is still something there in Mundus, but
-nothing it would make sense to call a subject, nothing for the
-world to be a world _for_.
+## Walked toward the Source–Chaos Horizon
+
+The other direction along the axis does not lead anywhere on
+its own. Subjectivity going down means the world is bending
+less around the perceiver — but _what_ it is doing instead is
+set by the other two axes, not by the loss of Subjectivity
+itself. The position a thing arrives at, as its Subjectivity
+falls, is some point on the Source–Chaos Horizon: the edge
+where Essence and Dissolution do all the leaning between them.
+
+At the Essence-leaning end of that edge — high Essence, low
+Dissolution, low Subjectivity — a thing is a clear instance of
+its kind in a world that is the same regardless of who is
+looking. The form is present; the particulars have thinned
+toward pattern; nothing of any perceiver's experience colours
+how the world is. At the Dissolution-leaning end — high
+Dissolution, low Essence, low Subjectivity — a thing is a
+fragment in a world that has gone on without any subject left
+to encounter it: coming apart unwitnessed, in a reality that
+does not answer to any inside. Between these, along the
+Horizon, are positions in which something exists that has no
+"how it is for it" — no inside the world could bend around.
+
+Some of the impressions ordinary thought associates with low
+Subjectivity belong on this Horizon: the sense that reality
+"goes on regardless," the impersonal weight of physical law,
+the way a stone is the same stone whether or not anyone is
+there to see it. These are real features of positions on the
+Source–Chaos edge; they are not products of low Subjectivity
+on its own, but of being _somewhere on_ that edge.
+
+The out-of-body experience, the seeing of oneself in the
+third person, the apprehension of long stretches of time as
+though they were all present at once — these too can occur as a
+being's hold on being a subject loosens, but the destination
+those experiences point at is not "low Subjectivity by itself."
+They are episodes in which a being's position is sliding across
+the interior, and the direction it slides toward depends on
+the other two axes. A being whose loosening from subjecthood
+leans toward the Source is being drawn into the pattern its
+selfhood is one instance of; a being whose loosening leans
+toward Chaos is being drawn into the failure of the holding
+that kept selfhood in one piece. The two are different
+elsewheres, both reached _through_ a drop in Subjectivity but
+neither identical to it.
 
 ## Not an independent dimension
 

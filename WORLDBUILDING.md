@@ -165,14 +165,14 @@ The reserved structural terms, with their pages:
   things have mass, hold form, persist in time, occupy space.
   See [`content/foundation/fabric/existence/mundus/`](content/foundation/fabric/existence/mundus/).
 - **The Source**, **the Self**, **Chaos** — the three horizons
-  that bound Mundus. See `content/foundation/fabric/existence/`.
+  that bound Mundus. See `content/foundation/fabric/`.
 - **Essence**, **Subjectivity**, **Dissolution** — the three
   axes by which a thing's position in Mundus is measured. Each
   is defined by one of the horizons (Essence by the Source,
   Subjectivity by the Self, Dissolution by Chaos). They are
   not independent measures: a thing in Mundus has one position
   in the interior, and the three axes are three readings of
-  that one position. See `content/foundation/fabric/existence/`.
+  that one position. See `content/foundation/fabric/`.
 - **Nearing**, **Remembrance**, **Valdor traversal**, **Drifting**
   — the four Aurethian phenomena of approach toward the horizons.
   Nearing approaches the Source; Remembrance is the bending of

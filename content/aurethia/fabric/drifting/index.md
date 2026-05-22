@@ -29,7 +29,7 @@ That Aurethia names this at all — that Drifting has a word
 where it could have remained simply "what happens when things
 go wrong" — is itself worth marking. The naming places
 Drifting alongside Nearing and Valdor traversal as a third
-recognised passage along a horizon-axis, rather than as the
+recognised passage along a Cardinal-axis, rather than as the
 absence of one.
 
 Whether Drifting can be _undertaken_ deliberately — whether a

@@ -2,26 +2,28 @@
 	/**
 	 * The Mundus triangle — the cosmological map.
 	 *
-	 * Three horizons at the corners, three axes drawn as lines from
+	 * Three Cardinals at the corners, three axes drawn as lines from
 	 * the interior outward toward each corner, Mundus filling the
 	 * interior as the inhabited middle, with faint topographical
-	 * contours showing the asymptotic crowding toward the horizons.
+	 * contours showing the asymptotic crowding toward the bounds.
 	 *
 	 * The geometry is barycentric: any point inside the triangle is a
 	 * weighted blend of the three corners, and the three axis values
 	 * are not independent — they sum to a constant. This image is the
 	 * shape of that constraint.
 	 *
-	 *   - Corners are horizons: the Source (🜁), the Self (🜄), Chaos (🜂).
+	 *   - Corners are Cardinals: the Source (🜁), the Self (🜄), Chaos (🜂).
 	 *     Each is an asymptotic limit, never reached.
-	 *   - Axes are interior lines pointing toward each horizon. Each
-	 *     axis measures distance/closeness to the horizon it points at:
+	 *   - Edges are Horizons: the loci on which one axis goes to its
+	 *     minimum and the other two do the leaning. Also asymptotic.
+	 *   - Axes are interior lines pointing toward each Cardinal. Each
+	 *     axis measures distance/closeness to the Cardinal it points at:
 	 *     Essence → Source, Subjectivity → Self, Dissolution → Chaos.
 	 *   - Interior is Mundus (🜃) — the inhabited middle.
 	 *   - Contours are level sets of ψ = -(log s + log r + log c), the
 	 *     barycentric "cost of approach". The field diverges on the
 	 *     boundary, so the rings crowd tight toward edges and corners,
-	 *     making the asymptotic character of the horizons visible: no
+	 *     making the asymptotic character of all six bounds visible: no
 	 *     thing in Mundus can fully reach any of them.
 	 *
 	 * Layout: equilateral, point-up.
@@ -55,7 +57,7 @@
 
 	// Axis lines: from a point near (but not at) the centroid, outward
 	// toward each corner, stopping short of the corner. Each axis points
-	// toward the horizon it measures distance from.
+	// toward the Cardinal it measures distance from.
 	function axisLine(corner: { x: number; y: number }) {
 		const innerT = 0.22;
 		const outerT = 0.78;
@@ -286,14 +288,15 @@
 		aria-labelledby="mundus-title mundus-desc"
 	>
 		<title id="mundus-title"
-			>The Mundus triangle: three horizons, three axes, the inhabited middle</title
+			>The Mundus triangle: three Cardinals, three axes, the inhabited middle</title
 		>
 		<desc id="mundus-desc">
-			A triangular diagram of existence. The three corners are the horizons — the Source at the
-			apex, the Self at the bottom-left, Chaos at the bottom-right — each an asymptotic limit. Three
-			axes run through the interior toward each corner: Essence toward the Source, Subjectivity
-			toward the Self, Dissolution toward Chaos. The interior is Mundus, the inhabited middle. Faint
-			topographical rings show how the horizons crowd in toward the boundary, never reached.
+			A triangular diagram of existence. The three corners are the Cardinals — the Source at the
+			apex, the Self at the bottom-left, Chaos at the bottom-right — each an asymptotic limit. The
+			three edges between them are the Horizons, also asymptotic. Three axes run through the
+			interior toward each corner: Essence toward the Source, Subjectivity toward the Self,
+			Dissolution toward Chaos. The interior is Mundus, the inhabited middle. Faint topographical
+			rings show how the bounds crowd in toward the boundary, never reached.
 		</desc>
 
 		<defs>
@@ -351,43 +354,44 @@
 		<!-- ───────── Mundus label, centered in the interior ────────── -->
 		<a href="/foundation/fabric/existence/mundus" class="mundus-label-link">
 			<g class="mundus-label" transform={`translate(${MID.x} ${MID.y})`}>
-				<text class="horizon-sigil" text-anchor="middle" y="-14">🜃</text>
-				<text class="horizon-name" text-anchor="middle" y="14">Mundus</text>
-				<text class="horizon-caption" text-anchor="middle" y="32">the inhabited middle</text>
+				<text class="cardinal-sigil" text-anchor="middle" y="-14">🜃</text>
+				<text class="cardinal-name" text-anchor="middle" y="14">Mundus</text>
+				<text class="cardinal-caption" text-anchor="middle" y="32">the inhabited middle</text>
 			</g>
 		</a>
 
-		<!-- ───────── Horizons: the three corners ───────────────────── -->
-		<a href="/foundation/fabric/existence/source" class="horizon-link">
-			<g class="horizon" transform={`translate(${SOURCE.x} ${SOURCE.y - 4})`}>
-				<text class="horizon-sigil" text-anchor="middle" y="-30">🜁</text>
-				<text class="horizon-name" text-anchor="middle" y="-6">the Source</text>
+		<!-- ───────── Cardinals: the three corners ──────────────────── -->
+		<a href="/foundation/fabric/existence/source" class="cardinal-link">
+			<g class="cardinal" transform={`translate(${SOURCE.x} ${SOURCE.y - 4})`}>
+				<text class="cardinal-sigil" text-anchor="middle" y="-30">🜁</text>
+				<text class="cardinal-name" text-anchor="middle" y="-6">the Source</text>
 			</g>
 		</a>
 
-		<a href="/foundation/fabric/existence/self" class="horizon-link">
-			<g class="horizon" transform={`translate(${SELF.x - 6} ${SELF.y + 4})`}>
-				<text class="horizon-sigil" text-anchor="middle" y="30">🜄</text>
-				<text class="horizon-name" text-anchor="middle" y="54">the Self</text>
+		<a href="/foundation/fabric/existence/self" class="cardinal-link">
+			<g class="cardinal" transform={`translate(${SELF.x - 6} ${SELF.y + 4})`}>
+				<text class="cardinal-sigil" text-anchor="middle" y="30">🜄</text>
+				<text class="cardinal-name" text-anchor="middle" y="54">the Self</text>
 			</g>
 		</a>
 
-		<a href="/foundation/fabric/existence/chaos" class="horizon-link">
-			<g class="horizon" transform={`translate(${CHAOS.x + 6} ${CHAOS.y + 4})`}>
-				<text class="horizon-sigil" text-anchor="middle" y="30">🜂</text>
-				<text class="horizon-name" text-anchor="middle" y="54">Chaos</text>
+		<a href="/foundation/fabric/existence/chaos" class="cardinal-link">
+			<g class="cardinal" transform={`translate(${CHAOS.x + 6} ${CHAOS.y + 4})`}>
+				<text class="cardinal-sigil" text-anchor="middle" y="30">🜂</text>
+				<text class="cardinal-name" text-anchor="middle" y="54">Chaos</text>
 			</g>
 		</a>
 	</svg>
 
 	<figcaption>
-		Three horizons at the corners — <a href="/foundation/fabric/existence/source">the Source</a>,
+		Three Cardinals at the corners — <a href="/foundation/fabric/existence/source">the Source</a>,
 		<a href="/foundation/fabric/existence/self">the Self</a>, and
 		<a href="/foundation/fabric/existence/chaos">Chaos</a> — each an asymptotic limit. Three axes
-		measure where in the interior a thing stands, each pointing toward the horizon it tracks:
+		measure where in the interior a thing stands, each pointing toward the Cardinal it tracks:
 		<a href="/foundation/fabric/existence/essence">Essence</a> toward the Source,
 		<a href="/foundation/fabric/existence/subjectivity">Subjectivity</a> toward the Self,
-		<a href="/foundation/fabric/existence/dissolution">Dissolution</a> toward Chaos. The interior is
+		<a href="/foundation/fabric/existence/dissolution">Dissolution</a> toward Chaos. The edges
+		between the corners are the three Horizons, also asymptotic. The interior is
 		<a href="/foundation/fabric/existence/mundus">Mundus</a>, the inhabited middle, where every
 		thing that exists has a place.
 	</figcaption>
@@ -448,7 +452,7 @@
 		pointer-events: none;
 	}
 
-	/* ── Triangle outline: the boundary horizons enclose ──────── */
+	/* ── Triangle outline: the boundary the bounds enclose ────── */
 	.triangle-outline {
 		fill: none;
 		stroke: var(--ink-soft);
@@ -456,7 +460,7 @@
 		pointer-events: none;
 	}
 
-	/* ── Axes: interior lines pointing to each horizon ────────── */
+	/* ── Axes: interior lines pointing to each Cardinal ───────── */
 	.axis {
 		stroke: var(--ink-faint);
 		stroke-width: 1;
@@ -485,13 +489,13 @@
 		fill: var(--accent);
 	}
 
-	/* ── Horizons: corners ────────────────────────────────────── */
-	.horizon-sigil {
+	/* ── Cardinals: corners ───────────────────────────────────── */
+	.cardinal-sigil {
 		font-size: 26px;
 		fill: var(--ink-soft);
 	}
 
-	.horizon-name {
+	.cardinal-name {
 		font-family: var(--font-display);
 		font-size: 16px;
 		font-variant: small-caps;
@@ -500,19 +504,19 @@
 		transition: fill 0.2s;
 	}
 
-	.horizon-caption {
+	.cardinal-caption {
 		font-family: var(--font-serif);
 		font-size: 11px;
 		font-style: italic;
 		fill: var(--ink-faint);
 	}
 
-	.horizon-link {
+	.cardinal-link {
 		cursor: pointer;
 	}
 
-	.horizon-link:hover .horizon-name,
-	.horizon-link:hover .horizon-sigil {
+	.cardinal-link:hover .cardinal-name,
+	.cardinal-link:hover .cardinal-sigil {
 		fill: var(--accent);
 	}
 
@@ -521,8 +525,8 @@
 		cursor: pointer;
 	}
 
-	.mundus-label-link:hover .horizon-name,
-	.mundus-label-link:hover .horizon-sigil {
+	.mundus-label-link:hover .cardinal-name,
+	.mundus-label-link:hover .cardinal-sigil {
 		fill: var(--accent);
 	}
 </style>

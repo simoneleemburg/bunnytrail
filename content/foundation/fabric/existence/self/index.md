@@ -1,9 +1,9 @@
-The Self is the horizon along which the world is the
+The Self is the Cardinal along which the world is the
 experiencing subject.
 
-Where [[existence/source|the Source]] is the horizon of
-emergence and [[existence/chaos|Chaos]] is the horizon of
-coming-apart, the Self is the horizon of subjective reality —
+Where [[existence/source|the Source]] is the Cardinal of
+emergence and [[existence/chaos|Chaos]] is the Cardinal of
+coming-apart, the Self is the Cardinal of subjective reality —
 the limit at which what _is_ is what the subject experiences,
 with nothing left holding apart from that experience.
 
@@ -16,7 +16,7 @@ asymptotic to mass.
 A being that leans hard toward the Self does not become the
 Self. It is a thing in Mundus whose world has begun, more and
 more thoroughly, to be the world its experience makes; it has
-approached one of Mundus's limits.
+approached one of Mundus's [[kinds/bound|bounds]].
 
 ## The Subjectivity axis
 
@@ -24,7 +24,7 @@ The axis whose far limit is the Self is named
 **[[existence/mundus#the-three-axes|Subjectivity]]**: a thing's
 Subjectivity is the degree to which the reality it inhabits is
 shaped by its experience of that reality, and the higher a
-thing's Subjectivity, the closer it leans to the horizon.
+thing's Subjectivity, the closer it leans to the Cardinal.
 
 Near the centre of Mundus, Subjectivity is low. Time runs at
 one rate; space is shared; observers in the same place agree
@@ -38,7 +38,7 @@ the shape made by the one who walks it.
 
 At the Self itself there would be no shared world at all, in
 whatever sense those words have inside Mundus. Nothing native
-to the horizon would have any frame to stand against; there
+to the Cardinal would have any frame to stand against; there
 would be only the single continuous interior of one
 experiencing subject, and no second perspective from which to
 ask whether it was that.
@@ -59,13 +59,23 @@ are real leanings along the same axis. Whether a being can
 _steer_ what bends around them is a separate question from
 whether the bending happens.
 
-## Relation to the other horizons
+## Relation to the other bounds
+
+The Self is one of three [[kinds/cardinal|Cardinals]] that sit
+at the corners of Mundus; [[existence/source|the Source]] and
+[[existence/chaos|Chaos]] are the other two. Three
+[[kinds/horizon|Horizons]] run along the edges between them.
+
+The opposite of the Self, in the sense the axis defines, is
+not another Cardinal. It is the Source–Chaos Horizon — the
+edge along which Subjectivity goes to its minimum, the limit
+of reality untouched by any perceiver.
 
 The Self is not the same as identity at [[existence/source|the
 Source]]. The Source is where selves _arise_; the Self is the
 limit at which a self _becomes the whole world_. The distinction
-is load-bearing. Practices that approach the Source-horizon are
-not the same as practices that approach the Self-horizon, even
+is load-bearing. Practices that approach the Source-Cardinal are
+not the same as practices that approach the Self-Cardinal, even
 when they look similar from outside: the first loosens the
 subject back into the medium it came from; the second tightens
 the world down to the subject.
@@ -89,5 +99,5 @@ passage through the inner-landscape-as-geography that this
 opens up is [[fabric/valdor-traversal|Valdor traversal]].
 
 Whether anything is _at_ the Self — what something without mass
-and native to the horizon would be — is not something the
+and native to the Cardinal would be — is not something the
 foundation layer commits to.

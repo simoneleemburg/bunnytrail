@@ -48,9 +48,9 @@ an exercise of will. (See [[existence/subjectivity|Subjectivity]],
 
 Remembrance, [[fabric/nearing|Nearing]], and
 [[fabric/drifting|Drifting]] are the three Aurethian
-phenomena of approach toward the horizons. Each names the
-local manifestation of motion along one of the three axes of
-Mundus:
+phenomena of approach toward the Cardinals of
+[[existence/mundus|Mundus]]. Each names the local
+manifestation of motion along one of the three axes:
 
 - **[[fabric/nearing|Nearing]]** — approach to
   [[existence/source|the Source]], the loosening of fixed

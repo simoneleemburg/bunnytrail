@@ -1,7 +1,9 @@
 Essence is one of the three structural axes of
-[[existence/mundus|Mundus]]. It is the measure of a thing's
-closeness to [[existence/source|the Source]] — the horizon at
-which pure pattern is unmixed with any particular instance.
+[[existence/mundus|Mundus]]. It runs from
+[[existence/source|the Source]] — the Cardinal at which pure
+pattern is unmixed with any particular instance — to the
+Self–Chaos [[kinds/horizon|Horizon]], the edge along which a
+thing participates in no pattern at all.
 
 A thing's Essence is the degree to which its character is its
 participation in a general pattern, rather than the particulars
@@ -14,7 +16,7 @@ ratio of pattern to accident: how much of what a thing _is_ is
 the kind it instantiates, and how much is the specific
 arrangement of accidents that no kind requires.
 
-## What it looks like, walked along
+## Walked toward the Source
 
 Near the centre of Mundus, Essence is moderate. A particular
 oak is recognisably an oak — the pattern is present, named,
@@ -41,23 +43,50 @@ toward grief-as-such; the specific account a person held of
 themselves shades toward selfhood-as-such. The categories that
 let one kind be one kind and not another apply less and less.
 
-At the horizon itself — never reached — there is no instance
+At the Source itself — never reached — there is no instance
 at all. There is only pattern, with nothing for the pattern to
 be the pattern _of_.
 
-Moving in the other direction, away from the Source, has its
-own character. A little below the ordinary middle, the
-particulars begin to dominate. A thing is recognisable as its
-kind only in passing; what is foregrounded is what is
-idiosyncratic, what is specific, what no general statement
-covers. The artisan's signature mark. The face that no
-description fits. The story that resembles no other story even
-in outline. Further along, the pattern thins to almost nothing
-useful: the thing is so densely itself that calling it by its
-kind feels like missing the point. There is no Self-style or
-Chaos-style horizon at this end of the axis — only the
-interior thickening into thoroughgoing particularity, with no
-limit beyond it.
+## Walked toward the Self–Chaos Horizon
+
+The other direction along the axis does not lead anywhere on
+its own. Essence going down means a thing's participation in
+pattern is becoming a smaller part of what it is — but _what_
+is taking the pattern's place is set by the other two axes, not
+by the loss of Essence itself. The position a thing arrives at,
+as its Essence falls, is some point on the Self–Chaos Horizon:
+the edge where Subjectivity and Dissolution do all the leaning
+between them.
+
+At the Subjectivity-leaning end of that edge — high
+Subjectivity, low Dissolution, low Essence — a thing is densely
+itself in a world that bends to its experience: a self so
+particular and so attended-to that no general account reaches
+it, in surroundings that answer to it alone. At the
+Dissolution-leaning end — high Dissolution, low Subjectivity,
+low Essence — a thing is densely itself in the way a thing
+coming apart is densely itself: every fragment is irreducibly
+its own fragment, with nothing it shares with any other.
+Between these, along the Horizon, are the positions where the
+trade-off between bending-reality and coming-apart is somewhere
+in the middle.
+
+This is what to make of the impressions ordinary thought
+associates with low Essence — the artisan's signature mark, the
+face that no description fits, the story that resembles no
+other in outline. They are not products of low Essence alone.
+They are products of being _somewhere on_ the Self–Chaos
+Horizon, with low Essence as a precondition rather than a
+destination. The signature mark of a beloved artisan, vividly
+held in the regard of those who treasure it, leans more toward
+the Self than toward Chaos; the signature mark of an
+abandoned, weathering tool leans more toward Chaos than toward
+the Self. Both are low in Essence; their differences come from
+the other two axes.
+
+A thing's Essence on its own does not say which end of the
+Self–Chaos Horizon it is closer to, only how far from the
+Source-corner it sits.
 
 ## Not an independent dimension
 
@@ -87,7 +116,8 @@ ideal — it is often speaking of Essence or of some specific
 manifestation of it. Where a cluster speaks of idiosyncrasy,
 of signature, of the artisan's mark, of what is irreducibly
 particular about a person or a place or a moment — it is often
-speaking of the away direction along this axis.
+speaking of positions on the Self–Chaos Horizon, of which low
+Essence is one component.
 
 In Aurethia, the controlled leaning toward the Source is named
 [[fabric/nearing|Nearing]]: practitioners thin their specific
@@ -126,7 +156,7 @@ Essence is not a synonym for "spiritual," "sacred," or
 "ideal." A thing leaning toward the Source is not thereby
 transcendent; a thing leaning away is not thereby fallen. The
 axis measures one specific kind of closeness — to the
-Source-corner of Mundus, the horizon of pure pattern — and
+Source-corner of Mundus, the Cardinal of pure pattern — and
 nothing else.
 
 It is also not a measure of _truth_. A thing high in Essence

@@ -6,18 +6,25 @@ Everything that is, is in Mundus. Bodies, planets, the
 cosmos as a material arrangement; selves, civilisations, the
 remembered shape of their continuities. All of it is here.
 
-## Bounded by horizons
+## Bounded, but not walled
 
-Mundus is bounded, but not walled. Three horizons mark its
-limits: [[existence/source|the Source]], [[existence/self|the
-Self]], and [[existence/chaos|Chaos]]. They are asymptotes to
-mass — directions massive things can lean toward but cannot
-reach. A thing in Mundus is always at some distance from each
-horizon, leaning toward one or another by however much its
-nature permits, without ever leaving Mundus by arriving at one.
+Mundus has a geometry, and the geometry has bounds. Six
+[[kinds/bound|bounds]] enclose the interior, in two shapes:
 
-This is the geometry: Mundus is the interior, the horizons are
-its limits, and nothing with mass is anywhere else.
+- Three **[[kinds/cardinal|Cardinals]]** sit at the corners —
+  [[existence/source|the Source]], [[existence/self|the
+Self]], and [[existence/chaos|Chaos]]. Each is the asymptotic
+  limit of one of Mundus's three axes going to its maximum.
+- Three **[[kinds/horizon|Horizons]]** run along the edges
+  between the Cardinals. Each is the asymptotic limit of one
+  axis going to its minimum — the locus on which the other two
+  axes do all the leaning. The Horizons are unnamed at this
+  layer for now; they are real features of the geometry, but
+  no cluster has yet given them names of their own.
+
+A thing in Mundus is always at some distance from every bound,
+leaning toward one or another by however much its nature
+permits, without ever leaving Mundus by arriving at one.
 
 ## Coherence, and where it fails
 
@@ -27,48 +34,63 @@ enough to be referred to. The categories that let a thing be
 _this thing and not another_ — identity, position, duration,
 separation, continuity — all apply, and apply together.
 
-The horizons are not additional categories of that kind. They
+The bounds are not additional categories of that kind. They
 are not regions farther out, in some direction that ordinary
 existence does not point. They are the limits at which the
 holding-together itself begins to give way — directions along
 which, as a thing leans harder, the conditions that let it be a
 coherent _something_ deform and ultimately cease to be defined.
 
-Each horizon is its own failure of coherence, not a failure of
-some specific physical dimension. A thing leaning hard toward
-[[existence/source|the Source]] thins in its particulars:
-what remains is the pattern it instantiates, with less and less
-of the specific arrangement that made it _this_ instance of
-that pattern. A thing leaning hard toward [[existence/self|the Self]]
-becomes increasingly the account it holds of itself, with less
-and less substrate to rest that account on. A thing leaning
-hard toward [[existence/chaos|Chaos]] simply comes apart, with
-nothing taking the holding's place. At the horizons themselves,
-the categories that let things be things do not apply at all.
+Each Cardinal is its own characteristic failure of coherence, not
+a failure of some specific physical dimension. A thing leaning
+hard toward [[existence/source|the Source]] thins in its
+particulars: what remains is the pattern it instantiates, with
+less and less of the specific arrangement that made it _this_
+instance of that pattern. A thing leaning hard toward
+[[existence/self|the Self]] becomes increasingly the account it
+holds of itself, with less and less substrate to rest that
+account on. A thing leaning hard toward [[existence/chaos|Chaos]]
+simply comes apart, with nothing taking the holding's place. At
+the Cardinals themselves, the categories that let things be
+things do not apply at all.
 
-This is why nothing with mass reaches a horizon. There is no
+The Horizons are characteristic failures too, of a different
+shape. A thing whose [[existence/essence|Essence]] approaches
+its minimum has nothing in it that participates in any general
+pattern — no kind it is an example of. A thing whose
+[[existence/subjectivity|Subjectivity]] approaches its minimum
+is encountered by no one and bends to no perspective; reality
+holds its shape regardless of any being's experience of it. A
+thing whose [[existence/dissolution|Dissolution]] approaches
+its minimum never gives way at all — the work of holding it
+together never fails, never wavers, never lets go. None of
+these conditions is reachable; mass forbids them in the same
+way it forbids the Cardinals.
+
+This is why nothing with mass reaches a bound. There is no
 _there_ to reach. The asymptote to mass and the failure of
 coherence are the same fact, viewed from two sides.
 
 A cluster's physics describes how things hold together inside
 Mundus, in whatever vocabulary that cluster has reached. The
 foundation layer does not adjudicate between those vocabularies
-or map them onto each other. What the horizons are, structurally,
+or map them onto each other. What the bounds are, structurally,
 is the same in every cluster; how each cluster's physics fails
-as those horizons are approached is a cluster-level question.
+as those bounds are approached is a cluster-level question.
 
 ## The three axes
 
-The three horizons of Mundus do not give a thing three
+The three Cardinals of Mundus do not give a thing three
 independent measurements. They give it one position, read three
 ways.
 
 The geometry is closer to a triangle than to a coordinate
-system. The three horizons sit at the corners. Mundus is the
+system. The three Cardinals sit at the corners. The three
+Horizons run along the edges between them. Mundus is the
 interior. A thing in Mundus has a location in that interior,
-and the natural way to describe that location is by its closeness
-to each of the three corners — three quantities, one for each
-horizon. The three quantities have names:
+and the natural way to describe that location is by its
+closeness to each of the three Cardinals — three quantities,
+one for each Cardinal. The three quantities have names:
 
 - **[[existence/essence|Essence]]** is the measure of
   closeness to [[existence/source|the Source]] — the degree to
@@ -85,20 +107,29 @@ horizon. The three quantities have names:
 These three quantities are not independent. A thing in Mundus
 has _one_ position; the three axis-readings are three ways of
 describing that one position. They sum to a constant. Moving
-toward one corner means moving away from at least one of the
+toward one Cardinal means moving away from at least one of the
 others. Nothing in Mundus can lean hard along all three axes at
 once, because the geometry will not permit it: at most a thing
-can be close to one corner, or somewhere along an edge between
+can be close to one Cardinal, or somewhere along an edge between
 two, or at the balance point in the middle.
+
+The low end of any single axis is not a destination in itself.
+A thing low in Essence is somewhere on the Self–Chaos Horizon;
+a thing low in Subjectivity is somewhere on the Source–Chaos
+Horizon; a thing low in Dissolution is somewhere on the
+Source–Self Horizon. Which point on the Horizon depends on the
+other two axes, not on the low one. The Horizons are the loci
+of these low-end limits — bounds in the same sense the
+Cardinals are, but edge-shaped rather than point-shaped.
 
 ### The balance point
 
 The interior has a natural balance — the point equidistant from
-all three corners. A thing whose nature places it in the
+all three Cardinals. A thing whose nature places it in the
 ordinary embodied middle of Mundus sits near this point. It is
 not exactly _at_ the balance point; ordinary existence wobbles
 within some neighbourhood of it, drifting a little toward one
-horizon and a little toward another as conditions and choices
+Cardinal and a little toward another as conditions and choices
 push it around. But the balance point is the centre of that
 wobble, and most of what most things are, most of the time, is
 "somewhere around the middle, leaning a bit."
@@ -108,18 +139,19 @@ three axes describe when their values are about equal.
 
 ### The edges
 
-Between any two corners is an edge — positions of low closeness
-to the third horizon, in which the other two trade against each
-other. The Source–Self edge is low-Dissolution territory: ways
-of being in which coming-apart is minimised and the trade is
-between thinning into pure pattern and bending the world
-around the experiencing subject. The Source–Chaos and
-Self–Chaos edges describe their own trade-offs.
+Each edge of the triangle is a [[kinds/horizon|Horizon]] — a
+bound in the same sense the Cardinals are. The Source–Self
+edge is the Horizon of low Dissolution: positions in which
+coming-apart is minimised and the trade is between thinning
+into pure pattern and bending the world around the experiencing
+subject. The Source–Chaos edge is the Horizon of low
+Subjectivity. The Self–Chaos edge is the Horizon of low
+Essence.
 
-The edges are real features of the geometry; what they look
-like in practice — what existence is like for a thing leaning
-along an edge rather than toward a corner — is not something
-the foundation layer has worked out. Cluster-specific
+The edge-Horizons are real features of the geometry; what they
+look like in practice — what existence is like for a thing
+leaning along an edge rather than toward a corner — is not
+something the foundation layer has worked out. Cluster-specific
 phenomena may describe portions of one edge or another without
 naming it as such.
 
@@ -151,7 +183,7 @@ the boundaries between them are not.
 
 ## What is and isn't claimed at the foundation layer
 
-Whether anything exists _at_ the horizons — anything without
+Whether anything exists _at_ the bounds — anything without
 mass, native to a limit — is left open. Such an entity, if any,
 would not be in Mundus.
 

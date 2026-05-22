@@ -1,8 +1,9 @@
 Dissolution is one of the three structural axes of
-[[existence/mundus|Mundus]]. It is the measure of a thing's
-closeness to [[existence/chaos|Chaos]] — the horizon at which
-the work of holding together gives way entirely, with nothing
-taking its place.
+[[existence/mundus|Mundus]]. It runs from
+[[existence/chaos|Chaos]] — the Cardinal at which the work of
+holding together gives way entirely, with nothing taking its
+place — to the Source–Self [[kinds/horizon|Horizon]], the edge
+along which a thing's coherence never fails.
 
 A thing's Dissolution is the degree to which the work of
 holding itself together is failing. Low Dissolution is the
@@ -11,6 +12,20 @@ healthy bodies, civilisations holding their forms, anything
 whose persistence is not in question. High Dissolution is the
 condition of things that are coming apart — by decay, by
 breaking, by the failure of whatever ordinarily binds them.
+
+The low end of the axis is not a destination on its own.
+Dissolution going down means the holding-together is more
+secure — but _what_ that securely-held thing is leaning toward
+is set by the other two axes, not by the loss of Dissolution
+itself. The position a thing arrives at, as its Dissolution
+falls, is some point on the Source–Self Horizon: the edge
+where Essence and Subjectivity do all the leaning between them.
+The thing might be holding together as a clear participant in a
+pattern (high Essence), or holding together as a self whose
+world answers to it (high Subjectivity), or some mixture along
+the edge. In every case, what is constant along that Horizon is
+that coming-apart is minimised; what varies is the form of the
+holding.
 
 ## Not an independent dimension
 
@@ -22,13 +37,13 @@ three readings of that one position. They sum to a constant.
 A thing whose Dissolution is rising is, by the same fact,
 having its Essence or Subjectivity (or both) lowered.
 
-This has consequences. A thing cannot simultaneously be deep in
-subjective bending of reality and deep in coming-apart, in the
-strict sense in which both axes measure closeness to a horizon.
-Whether and how a thing _moves_ across the interior over time —
-a being beginning high in one axis and ending high in another,
-say — is a separate question, and one the foundation layer does
-not resolve in general terms.
+This has consequences. A thing cannot simultaneously be deep
+in subjective bending of reality and deep in coming-apart, in
+the strict sense in which both axes measure closeness to a
+Cardinal. Whether and how a thing _moves_ across the interior
+over time — a being beginning high in one axis and ending high
+in another, say — is a separate question, and one the
+foundation layer does not resolve in general terms.
 
 ## How clusters speak of it
 
