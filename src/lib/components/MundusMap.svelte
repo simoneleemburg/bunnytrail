@@ -49,7 +49,9 @@
 	const SELF = { x: CX - SIDE / 2, y: BOT_Y };
 	const CHAOS = { x: CX + SIDE / 2, y: BOT_Y };
 
-	// Interior centroid (Mundus label sits here; axes converge here)
+	// Interior centroid — where the three axes converge.
+	// Equilibrium sits here. Mundus itself is the whole interior
+	// of the triangle; it has no in-diagram label.
 	const MID = {
 		x: (SOURCE.x + SELF.x + CHAOS.x) / 3,
 		y: (SOURCE.y + SELF.y + CHAOS.y) / 3
@@ -319,8 +321,9 @@
 			three edges between them are the Horizons — Tranquility along the Source–Self edge, Oblivion
 			along the Source–Chaos edge, Nullity along the Self–Chaos edge — also asymptotic. Three axes
 			run through the interior toward each corner: Essence toward the Source, Subjectivity toward
-			the Self, Dissolution toward Chaos. The interior is Mundus, the inhabited middle. Faint
-			topographical rings show how the bounds crowd in toward the boundary, never reached.
+			the Self, Dissolution toward Chaos. The interior is Mundus, the inhabited middle; at its
+			centroid is Equilibrium, the basin into which ordinary existence settles. Faint topographical
+			rings show how the bounds crowd in toward the boundary, never reached.
 		</desc>
 
 		<defs>
@@ -406,11 +409,11 @@
 			</text>
 		</a>
 
-		<!-- ───────── Mundus label, centered in the interior ────────── -->
-		<a href="/foundation/fabric/mundus" class="mundus-label-link">
-			<g class="mundus-label" transform={`translate(${MID.x} ${MID.y})`}>
-				<text class="cardinal-sigil" text-anchor="middle" y="-14">🜃</text>
-				<text class="cardinal-name" text-anchor="middle" y="14">Mundus</text>
+		<!-- ───────── Equilibrium: the centroid of the interior ────── -->
+		<a href="/foundation/fabric/equilibrium" class="equilibrium-link">
+			<g class="equilibrium" transform={`translate(${MID.x} ${MID.y})`}>
+				<text class="equilibrium-sigil" text-anchor="middle" y="-10">∪</text>
+				<text class="equilibrium-name" text-anchor="middle" y="18">Equilibrium</text>
 			</g>
 		</a>
 
@@ -450,7 +453,9 @@
 		<a href="/foundation/fabric/oblivion">Oblivion</a>, and
 		<a href="/foundation/fabric/nullity">Nullity</a> — also asymptotic. The interior is
 		<a href="/foundation/fabric/mundus">Mundus</a>, the inhabited middle, where every thing that
-		exists has a place.
+		exists has a place. At its centre is
+		<a href="/foundation/fabric/equilibrium">Equilibrium</a>, the soft basin into which ordinary
+		existence settles.
 	</figcaption>
 </figure>
 
@@ -597,13 +602,29 @@
 		fill: var(--accent);
 	}
 
-	/* ── Mundus label in the interior ─────────────────────────── */
-	.mundus-label-link {
+	/* ── Equilibrium label at the centroid ────────────────────── */
+	.equilibrium-link {
 		cursor: pointer;
 	}
 
-	.mundus-label-link:hover .cardinal-name,
-	.mundus-label-link:hover .cardinal-sigil {
+	.equilibrium-sigil {
+		font-family: var(--font-display);
+		font-size: 30px;
+		fill: var(--ink);
+		transition: fill 0.2s;
+	}
+
+	.equilibrium-name {
+		font-family: var(--font-display);
+		font-size: 14px;
+		font-variant: small-caps;
+		letter-spacing: 0.14em;
+		fill: var(--ink-soft);
+		transition: fill 0.2s;
+	}
+
+	.equilibrium-link:hover .equilibrium-sigil,
+	.equilibrium-link:hover .equilibrium-name {
 		fill: var(--accent);
 	}
 </style>

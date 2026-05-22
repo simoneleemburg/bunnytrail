@@ -112,7 +112,7 @@ toward one Cardinal means moving away from at least one of the
 others. Nothing in Mundus can lean hard along all three axes at
 once, because the geometry will not permit it: at most a thing
 can be close to one Cardinal, or somewhere along an edge between
-two, or at the balance point in the middle.
+two, or near [[equilibrium|Equilibrium]] in the middle.
 
 The low end of any single axis is not a destination in itself.
 A thing low in Essence is somewhere on [[nullity|Nullity]], the
@@ -124,20 +124,26 @@ other two axes, not on the low one. The Horizons are the loci
 of these low-end limits — bounds in the same sense the
 Cardinals are, but edge-shaped rather than point-shaped.
 
-### The balance point
+### Equilibrium
 
-The interior has a natural balance — the point equidistant from
-all three Cardinals. A thing whose nature places it in the
-ordinary embodied middle of Mundus sits near this point. It is
-not exactly _at_ the balance point; ordinary existence wobbles
-within some neighbourhood of it, drifting a little toward one
-Cardinal and a little toward another as conditions and choices
-push it around. But the balance point is the centre of that
-wobble, and most of what most things are, most of the time, is
-"somewhere around the middle, leaning a bit."
+The interior has a centre — the point equidistant from all
+three Cardinals, where the three axes are equal. The region
+around that point is [[equilibrium|Equilibrium]], the soft
+basin into which ordinary existence settles. A thing whose
+nature places it in the ordinary embodied middle of Mundus
+sits near Equilibrium. It is not exactly _at_ the centre;
+ordinary existence wobbles within some neighbourhood of it,
+drifting a little toward one Cardinal and a little toward
+another as conditions and choices push it around. But
+Equilibrium is the centre of that wobble, and most of what
+most things are, most of the time, is "somewhere around the
+middle, leaning a bit."
 
-The balance point is not a fourth quantity. It is what the
-three axes describe when their values are about equal.
+Equilibrium is not a fourth quantity. It is what the three
+axes describe when their values are about equal — the
+attractor against which the [[kinds/bound|bounds]] are
+asymptotes. Bounds repel and Equilibrium attracts; that is
+the asymmetry of the geometry.
 
 ### The edges
 
