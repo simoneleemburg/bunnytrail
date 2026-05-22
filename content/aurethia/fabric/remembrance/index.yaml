@@ -2,8 +2,13 @@ name: Remembrance
 kind: phenomenon
 summary: >-
   The Self-axis Aurethian phenomenon — the bending of reality
-  around the experiencing subject as a being leans toward the
-  Self. The local manifestation of Subjectivity, ranging from
-  ordinary mood-coloured perception to the full folding of
-  memory and geography in Valdor.
+  around the experiencing subject as a being's
+  [[mundus-frame|Mundus Frame]] tilts toward
+  [[self|the Self]]. The local manifestation of
+  [[subjectivity|Subjectivity]], ranging from ordinary
+  mood-coloured perception to the full folding of memory and
+  geography in [[realms/valdor|Valdor]].
 tags: [self, memory, ego, perception, subjectivity]
+relations:
+  - kind: local-account-of
+    target: foundation/fabric/mundus-frame

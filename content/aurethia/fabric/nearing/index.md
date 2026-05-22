@@ -1,10 +1,17 @@
+Nearing is the Aurethian tradition of
+[[foundation/fabric/nearing|nearing]] toward
+[[source|the Source]] — what it looks like for a practitioner
+to lean, deliberately and sustainably, against their ordinary
+drift and toward [[realms/nareth|Nareth]], the resonant layer
+where the Source asserts itself in Aurethia. Inside this
+tradition, the word does the work of the idea: one _nears_.
+One does not enter; one does not remain at safe distance
+either. The whole point is the threshold.
+
 Nearing is a partially transcendent state in which an embodied
-being drifts closer to [[realms/nareth|Nareth]] — the fluid
-resonant layer of reality, where identity, emotion, memory,
-distance, and time become less fixed — without crossing into it.
-The word does the work of the idea: one _nears_. One does not
-enter; one does not remain at safe distance either. The whole
-point is the threshold.
+being drifts closer to Nareth — the fluid resonant layer of
+reality, where identity, emotion, memory, distance, and time
+become less fixed — without crossing into it.
 
 It is not teleportation. It is not sleep. It is not simple
 trance. Nearing is a controlled loosening of attachment to

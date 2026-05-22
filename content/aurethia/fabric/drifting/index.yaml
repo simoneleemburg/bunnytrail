@@ -1,4 +1,7 @@
 name: Drifting
 kind: phenomenon
-summary: The Chaos-axis counterpart to Nearing and Valdor traversal — what happens to a being whose coherence fails far enough that they are no longer holding their place in the ordinary world. Unlike Nearing or Valdor traversal, Drifting is not undertaken deliberately. It is what a pilot falls into, not a passage a pilot heads toward.
+summary: The Aurethian name for [[foundation/fabric/drifting|foundation-drifting]] when it carries a being toward [[chaos|Chaos]] — what happens to a pilot whose [[binding|binding]] slips and whose effective [[mundus-frame|Mundus Frame]] has rotated, in the regions Aurethia knows as [[realms/the-void|the Void Between Worlds]], such that local Equilibrium has moved Chaos-ward. Unlike Nearing or Valdor traversal, Drifting is not undertaken deliberately; it is what a pilot falls into when the work of holding together fails.
 tags: [chaos, void, coherence, failure, transit]
+relations:
+  - kind: local-account-of
+    target: foundation/fabric/drifting

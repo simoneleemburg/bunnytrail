@@ -1,6 +1,15 @@
 The space between the worlds is not empty, and it is not, in
 the usual sense, a place at all.
 
+In foundation terms, the Void is the Aurethian name for regions
+of [[mundus|Mundus]] whose [[mundus-frame|Mundus Frame]] is
+rotated such that local [[equilibrium|Equilibrium]] sits near
+[[chaos|Chaos]]. The same stretch of cosmos may be ordinary
+transit for a pilot whose binding holds them in the binding's
+frame, and the long fall for one whose binding has slipped and
+left them in the Void's. The difference is in the pilot, not
+in the distance.
+
 There is no surface to stand on, no atmosphere to breathe, no
 fixed geometry to map. There is also no boundary one crosses to
 arrive there. A pilot in the long passages between
@@ -8,9 +17,7 @@ arrive there. A pilot in the long passages between
 at coordinates. A pilot enters the Void by [[aurethia/fabric/drifting|
 Drifting]] — by losing enough hold on themselves and their
 [[kinds/naya|Naya]] that the interplanetary medium ceases to be
-_medium_ and becomes _the Void_. The same stretch of cosmos may
-be ordinary transit for one pilot and the long fall for
-another. The difference is in the pilot, not in the distance.
+_medium_ and becomes _the Void_.
 
 Pilots passing through call it the Void, the storm-field, the
 breaking-place, the long fall. The

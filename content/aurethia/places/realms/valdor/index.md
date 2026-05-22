@@ -7,6 +7,13 @@ A person may move through eras the way one crosses a valley or
 ascends a mountain. Distance here is measured psychologically
 and narratively rather than physically.
 
+In foundation terms, Valdor is the Aurethian name for the region
+of [[mundus|Mundus]] whose [[mundus-frame|Mundus Frame]] is
+rotated such that local [[equilibrium|Equilibrium]] sits near
+[[self|the Self]] — what the cosmos becomes, locally, when
+Subjectivity is the low point of the basin and reality bends
+around whoever is doing the experiencing.
+
 The realm appears differently to every being who enters it. Its
 landscapes are shaped by ego, memory, and inner structure. One
 traveller may encounter endless libraries, another flooded ruins,
