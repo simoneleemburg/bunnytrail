@@ -3,6 +3,7 @@ import chokidar from 'chokidar';
 import { CONTENT_DIR } from './loader';
 import { KINDS_DIR } from './kinds';
 import { BLOG_DIR, blog } from './blog';
+import { SOURCES_DIR, sources } from './sources';
 import { graph } from './graph';
 
 /**
@@ -38,14 +39,17 @@ export function startWatcher(): void {
 			void blog.load().catch((err) => {
 				console.error('[alteria] blog reload failed:', err);
 			});
+			void sources.load().catch((err) => {
+				console.error('[alteria] sources reload failed:', err);
+			});
 		}, 75);
 	};
 
-	const watcher = chokidar.watch([CONTENT_DIR, KINDS_DIR, BLOG_DIR], {
+	const watcher = chokidar.watch([CONTENT_DIR, KINDS_DIR, BLOG_DIR, SOURCES_DIR], {
 		ignoreInitial: true,
 		ignored: (path) => path.endsWith('.DS_Store')
 	});
 
 	watcher.on('add', trigger).on('change', trigger).on('unlink', trigger);
-	console.log(`[alteria] watching ${CONTENT_DIR}, ${KINDS_DIR}, and ${BLOG_DIR}`);
+	console.log(`[alteria] watching ${CONTENT_DIR}, ${KINDS_DIR}, ${BLOG_DIR}, and ${SOURCES_DIR}`);
 }

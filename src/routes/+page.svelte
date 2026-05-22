@@ -53,6 +53,30 @@
 	<div class="cognita-arrow" aria-hidden="true">→</div>
 </a>
 
+{#if data.sourceProjects.length > 0}
+	<!--
+		Source projects: out-of-world catalogue of feeder works being
+		integrated into Alteria. Cognita/Notebook-style doorway —
+		teases by listing the project names so the visitor knows what's
+		on the workbench; the full list (with sizes, integration
+		bars, entity links) lives at /sources.
+	-->
+	<a class="sources-callout" href="/sources">
+		<div class="sources-rule"></div>
+		<div class="sources-body">
+			<p class="sources-eyebrow">Workbench</p>
+			<p class="sources-title">Source projects</p>
+			<p class="sources-sub">
+				The {data.sourceProjects.length} feeder works being absorbed into Alteria:
+				<span class="sources-names">
+					{data.sourceProjects.map((p) => p.title).join(', ')}.
+				</span>
+			</p>
+		</div>
+		<div class="sources-arrow" aria-hidden="true">→</div>
+	</a>
+{/if}
+
 <!--
 	Notebook callout: a sibling doorway to the author's-room blog,
 	in a cooler register than the world's chrome. Same shape as the
@@ -299,6 +323,84 @@
 	}
 
 	.notebook-callout:hover .notebook-arrow {
+		color: var(--accent);
+	}
+
+	/* ── Source projects callout — out-of-world workbench doorway.
+	   Mirrors the Notebook callout (notebook tint, dashed border)
+	   since both are author's-room material; the third sibling in
+	   the homepage doorway stack. The names are listed inline as a
+	   tease so the visitor sees what's on the workbench without
+	   leaving the page. */
+	.sources-callout {
+		display: flex;
+		align-items: center;
+		gap: var(--space-5);
+		padding: var(--space-5) var(--space-6);
+		margin: 0 0 var(--space-8);
+		text-decoration: none;
+		color: inherit;
+		background: color-mix(in oklab, var(--ink) 4%, var(--page) 96%);
+		border: 1px dashed var(--rule);
+		border-radius: var(--radius-sm);
+		transition: background-color 0.2s ease;
+	}
+
+	.sources-callout:hover {
+		background: color-mix(in oklab, var(--ink) 7%, var(--page) 93%);
+	}
+
+	.sources-rule {
+		width: 3px;
+		align-self: stretch;
+		background: var(--rule);
+		flex-shrink: 0;
+	}
+
+	.sources-body {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.sources-eyebrow {
+		font-size: var(--text-xs);
+		font-variant: small-caps;
+		letter-spacing: 0.14em;
+		color: var(--ink-faint);
+		margin: 0 0 var(--space-1);
+	}
+
+	.sources-title {
+		font-family: var(--font-sans, var(--font-serif));
+		font-weight: 600;
+		font-size: var(--text-xl);
+		color: var(--ink);
+		margin: 0 0 var(--space-2);
+	}
+
+	.sources-callout:hover .sources-title {
+		color: var(--accent);
+	}
+
+	.sources-sub {
+		font-size: var(--text-sm);
+		color: var(--ink-soft);
+		margin: 0;
+		line-height: var(--leading-normal);
+	}
+
+	.sources-names {
+		font-style: italic;
+		color: var(--ink);
+	}
+
+	.sources-arrow {
+		font-size: var(--text-xl);
+		color: var(--ink-faint);
+		flex-shrink: 0;
+	}
+
+	.sources-callout:hover .sources-arrow {
 		color: var(--accent);
 	}
 

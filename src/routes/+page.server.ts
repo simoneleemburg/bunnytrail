@@ -1,4 +1,5 @@
 import { graph } from '$lib/server/graph';
+import { sources } from '$lib/server/sources';
 
 /**
  * Recursively walk every browseable folder under `content/`, in
@@ -20,6 +21,32 @@ function allFolders(): string[] {
 
 export async function load() {
 	await graph.ready();
+	await sources.ready();
+
+	// Source projects — out-of-world author's-room catalogue of the
+	// feeder works being integrated into Alteria. Resolve each
+	// optional `entity` pointer eagerly so the view can render an
+	// EntityLink without re-querying the graph.
+	const sourceProjects = sources.all().map((p) => {
+		const entity = p.entity ? (graph.get(p.entity) ?? null) : null;
+		return {
+			slug: p.slug,
+			title: p.title,
+			yearStart: p.yearStart,
+			genre: p.genre,
+			size: p.size,
+			integration: p.integration,
+			catchline: p.catchline,
+			entity: entity
+				? {
+						id: entity.id,
+						name: entity.meta.name,
+						summary: entity.meta.summary ?? null,
+						sigil: entity.meta.sigil ?? null
+					}
+				: null
+		};
+	});
 
 	// Top-level folders become the home-page "browse by collection"
 	// tiles. Each carries a recursive count and (when authored) its
@@ -85,6 +112,7 @@ export async function load() {
 		kindCount: kinds.length,
 		kindsWithProse,
 		tags: graph.tags().slice(0, 12),
-		issues: graph.issues().length
+		issues: graph.issues().length,
+		sourceProjects
 	};
 }
