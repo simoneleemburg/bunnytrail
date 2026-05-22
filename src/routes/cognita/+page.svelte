@@ -79,7 +79,9 @@
 			been charted so far —
 			<a href="/aurethia">Aurethia</a> and <a href="/earth">Earth</a> — small bright fragments
 			separated by a vast unmeasured dark. Everything around and between them is
-			<em>Alteria Incognita</em>: the part of the universe that has not yet been named.
+			<em>Alteria Incognita</em>: the part of the universe that has not yet been named. However far
+			apart they sit, the same <a href="/foundation">foundational fabric</a> runs through them both; the
+			cosmology above is the frame every cluster turns within.
 		</p>
 		<ClustersMap />
 	</section>
