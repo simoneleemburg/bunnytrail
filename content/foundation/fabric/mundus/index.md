@@ -130,20 +130,38 @@ The interior has a centre — the point equidistant from all
 three Cardinals, where the three axes are equal. The region
 around that point is [[equilibrium|Equilibrium]], the soft
 basin into which ordinary existence settles. A thing whose
-nature places it in the ordinary embodied middle of Mundus
-sits near Equilibrium. It is not exactly _at_ the centre;
-ordinary existence wobbles within some neighbourhood of it,
+nature and place place it in the ordinary embodied middle of
+Mundus drifts toward Equilibrium and wobbles within it,
 drifting a little toward one Cardinal and a little toward
-another as conditions and choices push it around. But
-Equilibrium is the centre of that wobble, and most of what
-most things are, most of the time, is "somewhere around the
-middle, leaning a bit."
+another as conditions and choices push it around.
 
 Equilibrium is not a fourth quantity. It is what the three
 axes describe when their values are about equal — the
 attractor against which the [[kinds/bound|bounds]] are
 asymptotes. Bounds repel and Equilibrium attracts; that is
 the asymmetry of the geometry.
+
+### Drifting, nearing, and frames
+
+The εσδ-geometry is universal. What varies is the map
+between a thing's local experience of Mundus and the global
+εσδ — its [[mundus-frame|Mundus Frame]]. A frame fixes
+which point in εσδ-space the thing experiences as its local
+Equilibrium, and therefore which direction it
+[[foundation/fabric/drifting|drifts]] when nothing else acts on it. For
+most things in most places the frame is trivial and the local
+Equilibrium is the εσδ-centroid. For some things, or in some
+places, the frame is rotated: a [[kinds/naya|Naya's]] local
+Equilibrium sits at the Source, a mortal's near a black hole
+sits toward Chaos.
+
+[[foundation/fabric/nearing|Nearing]] is the opposite of drifting — an
+active lean against the local gradient, toward some point in
+εσδ-space other than the thing's local Equilibrium. Drifting
+is passive; nearing is willed. Together they account for
+where a thing actually is in εσδ-space at any moment: the
+local Equilibrium it drifts toward, plus whatever lean its
+nearing is currently holding.
 
 ### The edges
 

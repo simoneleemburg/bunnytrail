@@ -60,3 +60,10 @@ The rules:
 
 - What is Vochran, structurally — a liquid, a colloid, a living medium, something else?
 - Are the older ruin-structures on the Nuunlau seafloor an active source of Urouch, or only places where ancient Urouch was concentrated?
+
+### Cosmology — frames
+
+- How do a thing's nature-frame and the place-frame it occupies compose? Vectorially, multiplicatively, something stranger? Can a Naya near a black hole have its Source-rotation cancelled by the place's Chaos-rotation?
+- Are there Mundus Frames rotated toward a Horizon rather than a Cardinal? If so, what realms or phenomena correspond to them?
+- Is the εσδ-centroid privileged for any reason beyond being the trivial-frame Equilibrium, or is its centrality entirely an artefact of "most things have trivial frames"?
+- Do frames change continuously across space, or are there frame-discontinuities (sharp transitions between rotation regimes)? What happens at one?
