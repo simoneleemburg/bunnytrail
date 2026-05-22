@@ -23,30 +23,52 @@ the Naya's nature-frame and the surrounding place-frame
 disagree. The Naya has no point at which it is at rest in
 ordinary Asthera, and untethered, it drifts back to Nareth.
 
-What the Eidolon does is **rotate the place-frame inside the
-vessel**. Around the construct's [[materials/skyblood|Skyblood]]
-core, local Equilibrium is held at the Source. Inside that
-small rotated region, the Naya's nature-frame and the
-surrounding place-frame agree, and the Naya is at rest. The
-gradient that would have pushed it back to Nareth is gone —
-not because something is holding the Naya in place, but
-because the geometry around the Naya no longer asks it to be
-anywhere else.
+What the Eidolon does is **hold the Naya at a point**.
+[[materials/skyblood|Skyblood]] is the only material the
+cluster has so far identified that can grip a Source-tilted
+nature-frame. In itself it does not rotate the place-frame
+around it; it does not produce a field. What it does is
+trap, by touch, the kind of being whose Equilibrium sits at
+the Source. With a Naya seated in a Skyblood core, the Naya
+is anchored at the core's location, and the drift back to
+Nareth is interrupted at the surface where Skyblood meets
+the Naya. It does not stop because the geometry has stopped
+asking; it stops because the Naya is held.
 
-Binding is durable for the same reason: nothing is being held
-against tension. The vessel _is_ the rotated region. As long
-as the Skyblood core holds and the vessel's shape remains
-true to its Naya, the place-frame stays rotated and the Naya
-stays.
+The binding is durable for that reason. Nothing in the
+geometry is being maintained against tension. As long as
+the Skyblood core holds and the vessel's shape remains true
+to its Naya, the Naya remains where it was set.
+
+## What the Naya does, once held
+
+A Naya anchored in a Skyblood core is no longer drifting; it
+is fixed at a particular physical location. From that anchor
+it can do something it cannot do from Nareth itself: it can
+[[aurethia/fabric/nearing|Near]] outward through the vessel
+— toward the [[culture/eidolon-knight|Knight]] in contact with
+the construct, toward the Eidolon's own form, toward the
+region of space the vessel sits in.
+
+Almost everything observers attribute to the Eidolon as a
+vessel is the Naya's outward Nearing, projected through the
+vessel's shape. The Eidolon's responsiveness, its presence,
+the small Source-ward tilt readable in the place-frame
+around a working construct — these are the Naya leaning out,
+not the Skyblood broadcasting. Skyblood has no field. An
+Eidolon at rest, with a Naya in it but no Knight calling on
+it, produces no such field; the Naya at rest is not Nearing
+outward. This is why an unpiloted Eidolon is called sleeping.
 
 This is the same kind of arrangement the
 [[culture/oracle-triad|Oracle Triad]] produces at human
 scale: a place-frame rotated Source-ward by a sustained piece
-of structure. Where the Triad's rotation is sustained by three
-oracles in coupled Nearing and collapses when the chain breaks,
-the Eidolon's rotation is sustained by the Skyblood core and
-the vessel's congruity with its Naya, and persists as long as
-they do.
+of structure — except where the Triad rotates the frame
+through three oracles in coupled Nearing, the Eidolon does it
+through one Naya Nearing outward from a held anchor. The
+Eidolon's outward field is smaller and is bounded by what the
+Naya is willing and able to put into it; the Triad's, sustained
+by a coupled chain, is more diffuse and reaches further.
 
 ## What is bound to what
 
@@ -70,48 +92,43 @@ a limited sense, but unable to move into sustained action.
 A Naya cannot be seated into just any construct. The Eidolon
 must be built — or grown, or shaped — with the specific Naya in
 view. The vessel's materials, geometry, and resonance must
-accord with the Naya's nature, because the rotated place-frame
-the vessel produces has to bring local Equilibrium to the
-particular point in εσδ-space the Naya's nature-frame asks
-for. The Source is one point; nature-frames vary in how they
-sit relative to it, and the vessel has to meet the one it
-holds. A binding made into a vessel whose place-frame
-disagrees with the Naya's nature does not stabilise; in
-practice, it does not complete.
+accord with the Naya's nature, because the Skyblood's grip is
+a kind of affinity, and affinity is specific. Nature-frames vary
+in how they sit relative to the Source, and Skyblood does not
+hold all Source-tilted beings the same way; a vessel built
+without regard to which particular Naya it is meant for does
+not, in practice, complete a binding. What completes is the
+match between the Naya's nature and the vessel made for it.
 
 At the centre of every Eidolon is a Skyblood core, and the
-core is what makes the binding possible at all. Skyblood is
-what physical matter has to be made of to hold a Source-rotated
-place-frame at all. Without it the rotation cannot be sustained
-in ordinary matter; with it, the Naya can remain.
+core is what makes the binding possible at all. Without it
+there is nothing in ordinary matter that can hold the Naya;
+with it, in a vessel built for the Naya in question, the Naya
+can remain.
 
 What binding produces is durable in proportion to what went
 into it: an Eidolon built with care, in honest contact with the
-Naya's nature, holds its rotation cleanly. An Eidolon built
-carelessly or against its Naya's nature does not, and the
-failure modes are recognised across all three Sister Worlds.
+Naya's nature, holds cleanly. An Eidolon built carelessly or
+against its Naya's nature does not, and the failure modes are
+recognised across all three Sister Worlds.
 
 ## Failure states
 
-When binding goes wrong, it goes wrong in the vessel — which
-is to say, in the rotation:
+When binding goes wrong, it goes wrong in the grip between
+Skyblood and Naya — which is to say, in the seating itself:
 
-- **Unstable seating**, where the vessel's place-frame
-  rotation fluctuates. Local Equilibrium near the core is not
-  cleanly at the Source; it drifts in and out of agreement
-  with the Naya's nature-frame. The construct becomes
-  intermittently inert, or the Naya's manifestation distorts
-  under load.
-- **Distorted Eidolon forms**, where the place-frame rotates
-  cleanly but not to the point the Naya's nature-frame asks
-  for. Local Equilibrium is somewhere the Naya is not at home,
-  and the vessel's outward shape reflects the mismatch: the
-  construct is the wrong shape for what is inside it.
-- **Loss of binding**, where the place-frame rotation collapses
-  entirely. The Eidolon's interior reverts to the trivial
-  frame. The Naya's nature-frame has nothing to agree with;
-  it drifts back to Nareth. The construct remains; what was
-  inside it does not.
+- **Unstable seating**, where the core's grip on the Naya is
+  incomplete and fluctuates. The Naya is intermittently held
+  and intermittently drifting. The construct becomes
+  intermittently inert; the Naya's outward Nearing through the
+  vessel comes and goes with the seating.
+- **Distorted Eidolon forms**, where the vessel's shape does
+  not accord with the Naya's nature. The Naya is held, but it
+  cannot Near outward through the vessel cleanly; the construct's
+  outward form and behaviour reflect the mismatch.
+- **Loss of binding**, where the Skyblood's grip fails entirely.
+  The Naya is no longer held. It drifts back to Nareth. The
+  construct remains; what was inside it does not.
 
 These failures originate in the binding, not in the Knight.
 A Knight piloting an unstably bound Eidolon will struggle in
@@ -143,21 +160,20 @@ Void's place-frame in the long passages between
 [[kinds/world-pillar|Pillars]]. That is the
 [[culture/eidolon-knight|Knight]]'s _anchor_, and is treated
 in the [[aurethia/fabric/nearing|Nearing]] entry. It is not
-the same as the binding. The binding is what the vessel does
-for the Naya; the anchor is what the Knight does for
-themselves.
+the same as the binding, and it is not given by the Skyblood.
+The binding is what the vessel does for the Naya; the anchor
+is what the Knight does for themselves.
 
 ## The core ethical question
 
 The cosmology has never quite settled whether Naya are
 partners in their binding or objects of it. Different worlds
 answer differently. Different generations of the same world
-answer differently. A Naya bound into a well-built Eidolon
+answer differently. A Naya seated in a well-built Eidolon
 appears, by every indication those in sustained contact can
-read, to be at rest in the rotated frame the vessel offers —
-and apparent rest is not the same as consent. The indications
-are inferential, the Naya does not speak in any human sense,
-and the order's confidence on the point varies between
-centuries. The question is one of the central ethical
-conflicts of Alteria, and it is unlikely ever to be fully
-resolved.
+read, to be at rest in the vessel made for it — and apparent
+rest is not the same as consent. The indications are
+inferential, the Naya does not speak in any human sense, and
+the order's confidence on the point varies between centuries.
+The question is one of the central ethical conflicts of
+Alteria, and it is unlikely ever to be fully resolved.
