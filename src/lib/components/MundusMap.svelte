@@ -363,17 +363,17 @@
 
 		<a href="/foundation/fabric/essence" class="axis-link">
 			<text class="axis-name" x={ESS_LABEL.x} y={ESS_LABEL.y} text-anchor="middle">
-				ε Essence
+				<tspan class="sigil-glyph">ε</tspan> Essence
 			</text>
 		</a>
 		<a href="/foundation/fabric/subjectivity" class="axis-link">
 			<text class="axis-name" x={SUB_LABEL.x} y={SUB_LABEL.y + 4} text-anchor="middle">
-				σ Subjectivity
+				<tspan class="sigil-glyph">σ</tspan> Subjectivity
 			</text>
 		</a>
 		<a href="/foundation/fabric/dissolution" class="axis-link">
 			<text class="axis-name" x={DIS_LABEL.x} y={DIS_LABEL.y + 4} text-anchor="middle">
-				δ Dissolution
+				<tspan class="sigil-glyph">δ</tspan> Dissolution
 			</text>
 		</a>
 
@@ -386,7 +386,7 @@
 				text-anchor="middle"
 				transform={`rotate(-60 ${TRANQUILITY_LABEL.x} ${TRANQUILITY_LABEL.y})`}
 			>
-				δ̸ Tranquility
+				<tspan class="sigil-glyph">δ̸</tspan> Tranquility
 			</text>
 		</a>
 		<a href="/foundation/fabric/oblivion" class="horizon-link">
@@ -397,12 +397,12 @@
 				text-anchor="middle"
 				transform={`rotate(60 ${OBLIVION_LABEL.x} ${OBLIVION_LABEL.y})`}
 			>
-				σ̸ Oblivion
+				<tspan class="sigil-glyph">σ̸</tspan> Oblivion
 			</text>
 		</a>
 		<a href="/foundation/fabric/nullity" class="horizon-link">
 			<text class="horizon-name" x={NULLITY_LABEL.x} y={NULLITY_LABEL.y} text-anchor="middle">
-				ε̸ Nullity
+				<tspan class="sigil-glyph">ε̸</tspan> Nullity
 			</text>
 		</a>
 
@@ -563,6 +563,15 @@
 
 	.horizon-link:hover .horizon-name {
 		fill: var(--accent);
+	}
+
+	/* Sigil glyphs (Greek letters, struck or not) keep their literal
+	   case — small-caps would turn σ into Σ etc. and break the
+	   notation. Slightly larger so they read clearly. */
+	.sigil-glyph {
+		font-variant: normal;
+		letter-spacing: 0;
+		font-size: 1.15em;
 	}
 
 	/* ── Cardinals: corners ───────────────────────────────────── */
