@@ -9,7 +9,7 @@ Pilgrim [[characters/sabina-vaarn|Sabina Vaarn]], and the
 The Triad is the working interpretive instrument of the
 [[culture/knights-of-bellona|Knights of Bellona]]. What the order
 provides materially — the rites, the regulation of
-[[aurethia/fabric/nearing|Nearing]], the public face of doctrine — is in
+[[aurethia/fabric/nearing-source|Nearing]], the public face of doctrine — is in
 the end framing for the Triad's actual labour, which is the
 high-order translation of [[kinds/naya|Naya]] symbol systems
 into [[culture/languages/old-tongue|Old Tongue]] names the Sister Worlds
@@ -110,7 +110,7 @@ rule, not by case-by-case decision.
 
 The Triad has been these three, by name, for centuries. They have
 lived this long because they have lived Near — held in a
-prolonged [[aurethia/fabric/nearing|Nearing]] state, ageing only
+prolonged [[aurethia/fabric/nearing-source|Nearing]] state, ageing only
 partially in the material world while the body's pace slows
 under the pressure of sustained resonance.
 

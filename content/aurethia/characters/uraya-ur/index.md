@@ -48,7 +48,7 @@ Almost every [[kinds/naya|Naya]] present in
 [[binding|binding]] — seated into an
 [[kinds/eidolon|Eidolon]] built for them. Uraya is not.
 What sustains her in Asthera is the Triad: the continuous joint
-[[aurethia/fabric/nearing|Nearing]] of the other two Oracles, held
+[[aurethia/fabric/nearing-source|Nearing]] of the other two Oracles, held
 intact across centuries, giving her enough to be present
 _through_. The partnership is, in effect, her vessel.
 

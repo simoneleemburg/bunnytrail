@@ -118,7 +118,7 @@ speaking of positions on Nullity, of which low Essence is one
 component.
 
 In Aurethia, the controlled leaning toward the Source is named
-[[aurethia/fabric/nearing|Nearing]]: practitioners thin their specific
+[[aurethia/fabric/nearing-source|Nearing]]: practitioners thin their specific
 selves toward the resonant substrate, where what they share
 with everything that has ever risen from that substrate becomes
 more present than what is theirs alone. The region of Mundus

@@ -7,7 +7,7 @@ another may be related causally, or not at all, but they are
 never simply _simultaneous_.
 
 Layered on top of this — and the older record, in Aurethia at
-least — is [[aurethia/fabric/nearing|Nearing]], the only practice
+least — is [[aurethia/fabric/nearing-source|Nearing]], the only practice
 that has ever been recorded to cross such distances. What Nearing
 loosens is not only the practitioner's grip on linear time and
 spatial distance but their grip on _who they are_: identity,

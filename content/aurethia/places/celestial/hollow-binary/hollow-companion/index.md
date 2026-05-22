@@ -7,7 +7,7 @@ resolve. That something is the
 What the visible star is, in itself, is a star — in working
 scholarly catalogues, one that does not move as a single
 star moves. The account of what the Hollow Binary's
-arrangement does to [[aurethia/fabric/nearing|Nearing]] lives on the
+arrangement does to [[aurethia/fabric/nearing-source|Nearing]] lives on the
 [[the-dark-companion|Dark Companion]] entry.
 
 "The Hollow Companion" is the standard scholarly counterpart

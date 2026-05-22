@@ -9,7 +9,7 @@ Ngonawan hears the resonance. He perceives Naretic signal in fine
 grain — the shifting tonal substrate that carries
 [[kinds/naya|Naya]] meaning before it has become anything a
 human can call a symbol. Where another practitioner of
-[[aurethia/fabric/nearing|Nearing]] might come back from contact with
+[[aurethia/fabric/nearing-source|Nearing]] might come back from contact with
 [[realms/nareth|Nareth]] holding sensation, image, dread, or
 unspeakable certainty, Ngonawan finds the signal under the
 noise.

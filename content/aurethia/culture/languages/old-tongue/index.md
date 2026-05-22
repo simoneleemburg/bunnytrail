@@ -35,7 +35,7 @@ Listeners. They were of the **surface civilisation** of that age
 — a civilisation that no longer exists in the form it had then,
 and whose principal land masses and cities are now on the ocean
 floor (see [[the-drowning|the drowning]]).
-Through prolonged [[aurethia/fabric/nearing|Nearing]] states, they
+Through prolonged [[aurethia/fabric/nearing-source|Nearing]] states, they
 reached far enough toward [[realms/nareth|Nareth]] to perceive
 Naya symbols directly, and they tried to record what they
 perceived.
