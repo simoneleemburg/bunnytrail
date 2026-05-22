@@ -71,16 +71,29 @@ the condition tends to assert itself, in the long interplanetary
 passages between Pillar-launches. The condition itself is not
 a location.
 
-This mode of approach — [[aurethia/fabric/drifting|Drifting]] — is the
-Chaos-axis counterpart to the practices that approach the other
-Cardinals: [[aurethia/fabric/nearing|Nearing]] toward
-[[source|the Source]], [[fabric/valdor-traversal|Valdor
-traversal]] toward [[self|the Self]]. The asymmetry
-is real: Nearing and Valdor traversal are undertaken
-deliberately. Drifting, as Aurethia records it, is not. It is
-what happens to coherence when the work of holding it together
-fails — what a pilot falls into rather than what a pilot
-heads toward.
+This mode of approach — [[aurethia/fabric/drifting|Drifting]]
+— is what Aurethia names when a pilot's
+[[binding|binding]] slips in the long interplanetary passages
+and their local [[mundus-frame|Mundus Frame]] rotates toward
+Chaos. The motion is not specific to Chaos at the foundation
+level; it is the ordinary passive slide of
+[[foundation/fabric/drifting|drifting]], which happens in
+every frame. What distinguishes Aurethian Drifting is the
+direction the local Equilibrium has moved.
+
+Aurethia's older vocabulary placed Drifting alongside
+[[aurethia/fabric/nearing|Nearing]] toward
+[[source|the Source]] and
+[[fabric/valdor-traversal|Valdor traversal]] toward
+[[self|the Self]] as a parallel third phenomenon — a passive
+counterpart to two deliberate practices. The new account does
+not preserve that parallelism: Nearing and Valdor traversal
+are active leans against the local gradient, Drifting is what
+that lean's absence produces in a Chaos-rotated frame. The
+asymmetry the Aurethian framing noticed is real; it is the
+asymmetry between [[foundation/fabric/nearing|nearing]] and
+[[foundation/fabric/drifting|drifting]] anywhere, not a property of the
+Chaos axis specifically.
 
 Whether anything is _at_ Chaos — what a thing native to the
 Cardinal, without mass, would be — is not something the

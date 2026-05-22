@@ -11,7 +11,7 @@ least — is [[aurethia/fabric/nearing|Nearing]], the only practice
 that has ever been recorded to cross such distances. What Nearing
 loosens is not only the practitioner's grip on linear time and
 spatial distance but their grip on _who they are_: identity,
-memory, emotion, bodily form. The three axes give way together,
+memory, emotion, bodily form. The three threads give way together,
 and they give way because, at root, they are not as separate as
 ordinary experience makes them feel. To cross a great distance by
 Nearing is the same act as to drift loose of one's own moment

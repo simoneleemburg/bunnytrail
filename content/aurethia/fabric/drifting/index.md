@@ -41,10 +41,16 @@ Drift goes far enough that no one catches them.
 
 That Aurethia names this at all — that Drifting has a word
 where it could have remained simply "what happens when things
-go wrong" — is itself worth marking. The naming places
-Drifting alongside Nearing and Valdor traversal as a third
-recognised passage along a Cardinal-axis, rather than as the
-absence of one.
+go wrong" — is itself worth marking. The Aurethian record
+treated Drifting as a third recognised passage alongside
+Nearing and Valdor traversal: a passive counterpart to two
+deliberate practices. The new account preserves the insight
+under a different organisation. The thing the Aurethian word
+points to is real, frequent, and worth naming; it is not a
+separate kind of motion but a particular case of
+[[foundation/fabric/drifting|foundation-drifting]] — the
+ordinary passive slide of Mundus, made vivid by the
+Chaos-rotated frame of the Void.
 
 Whether Drifting can be _undertaken_ deliberately — whether a
 pilot could choose to Drift, the way one chooses to Near or to
