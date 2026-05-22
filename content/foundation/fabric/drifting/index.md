@@ -52,3 +52,21 @@ Chaos but never reach it, because the place-frame moves
 Equilibrium _toward_ Chaos asymptotically without ever
 placing it there. The asymmetry of the geometry holds in
 every frame.
+
+## Notation
+
+The sigil for Drifting is **↧** — an arrow falling away from
+the bar it rested on. It reads as motion taken by a thing
+that has stopped holding itself, and lets the local gradient
+carry it. (Compare
+[[foundation/fabric/nearing|Nearing]], whose sigil **↥** is
+the same shape inverted.)
+
+Drifting always heads to local Equilibrium, so the destination
+is fixed by the thing's [[mundus-frame|frame]] and need not be
+written. Where the rotation of the place-frame matters and
+clarity helps, the axis-sigil can be prepended to say which
+way the local gradient is leaning the drift: **δ↧** for a
+thing whose place-frame is rotated toward [[chaos|Chaos]] and
+which is therefore drifting Chaos-ward, and analogously for
+the other axes.

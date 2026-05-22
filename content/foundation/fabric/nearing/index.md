@@ -54,6 +54,30 @@ that move pilots between leaned-on regions — are at
 foundation level sustained nearings, held against the
 gradient by the practitioner.
 
+## Notation
+
+The sigil for Nearing is **↥** — an arrow lifted clear of the
+bar it rests on. It reads as motion taken up against the
+local pull, rather than motion along it. (Compare
+[[foundation/fabric/drifting|Drifting]], whose sigil **↧**
+is the same shape inverted.)
+
+The sigil composes with the axis-glyphs to name what is being
+neared toward. Where the destination matters, write the
+axis-sigil first and the motion-sigil after:
+
+- **ε↥** — nearing the [[source|Source]]
+- **σ↥** — nearing the [[self|Self]]
+- **δ↥** — nearing [[chaos|Chaos]]
+
+Nearings toward a [[kinds/horizon|Horizon]] compose the same
+way against the struck-Greek of the Horizon: **δ̸↥** for
+nearing [[tranquility|Tranquility]], **σ̸↥** for nearing
+[[oblivion|Oblivion]], **ε̸↥** for nearing
+[[nullity|Nullity]]. A nearing toward an arbitrary point in
+the interior — neither Cardinal nor Horizon — is written
+just **↥** with the destination specified in prose.
+
 ## Cluster accounts
 
 Where clusters describe particular practices of nearing —
