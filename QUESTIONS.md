@@ -55,6 +55,7 @@ The rules:
 - What happens to Uraya-Ur if the Pilgrim–Oracle partnership ends?
 - Which Knight pilots the Eidolon paired with Viynangor Viyar?
 - Whose "shattered god" is which, across the traditions that reference one?
+- Does any Aurethian tradition deliberately practise nearing-Chaos, or is the cluster's silence on the question itself an artefact of curation — by the Knights, by the Triad, by something older? Is the absence honest or curated?
 
 ### Materials
 
