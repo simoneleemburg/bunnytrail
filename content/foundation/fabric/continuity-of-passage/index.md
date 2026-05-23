@@ -47,18 +47,17 @@ Self-rotated region may find that the way out winds through
 landscape no map would predict. The shape of the path can answer
 to the lean. Its continuity cannot.
 
-It does not say which path is shortest, or that observers would
-agree on the answer. "Shortest in metres traced by the body,"
-"shortest in subjective duration," and "shortest as the
-Equilibrium frame measures it" are three different questions, and
-displacement can pull their answers apart the same way it pulls
-the two clocks apart. A route an outside observer would call
-roundabout may be the only viable path from inside a lean; a
-route that looks straight on a map may be untraversable in
-practice for a displaced traveller. The law fixes only that
-**some** continuous path exists and is the one the body
-traverses. Which path that is — and what it would be called by
-which measure — the law does not fix.
+It does not say which path is shortest, or that observers in
+different frames would agree on the answer. "Shortest" is always
+shortest **against some metric**, and displacement is what
+changes the metric. A path that is a geodesic in the Equilibrium
+frame need not be a geodesic in a Self-rotated frame; a route
+that is the natural one from inside a lean may look roundabout
+from the outside, and vice versa. Neither frame is wrong; each
+has its own geometry and its own shortest paths through it. The
+law fixes only that **some** continuous path exists and is the
+one the body traverses. Which path that is, and what it would
+be called by which measure, the law does not fix.
 
 It does not say what is encountered along the path. A leaned
 region contains the local material expressing itself under the
