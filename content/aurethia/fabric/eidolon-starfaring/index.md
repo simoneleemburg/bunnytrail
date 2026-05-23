@@ -26,6 +26,13 @@ sufficiently that crossing it becomes possible in a span of
 hours or days, rather than the span raw velocity alone would
 predict.
 
+The non-teleportation is structural, not a limit of the
+practice. The
+[[foundation/fabric/continuity-of-passage|continuity of passage]]
+is what rules out shortcutting the medium; what Nearing changes
+is the rate of crossing and the character of the medium, not its
+extent.
+
 This second Nearing is held _on top of_ the piloting Nearing,
 not in place of it. The Knight does not stop being in contact
 with the Naya during travel. They are in deeper contact with

@@ -134,6 +134,13 @@ The further the place-frame's local Equilibrium sits from the
 εσδ-centroid, the more durational divergence the region carries
 against the Equilibrium frame.
 
+A rotated frame is, throughout, a description of how the local
+material expresses itself — not a deformation of the space it
+sits in. A traveller entering, traversing, or leaving a rotated
+region does so along a continuous path in ordinary space, by the
+[[continuity-of-passage|continuity of passage]]. The lean
+changes the journey; it does not contract the distance.
+
 Whether some frames are rotated toward Horizons rather than
 toward Cardinals is left open at the foundation layer. The
 geometry does not forbid it.

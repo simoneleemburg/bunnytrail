@@ -105,3 +105,10 @@ clocks disagree does not let either frame reach into the other.
 What a displaced thing carries back into Equilibrium is whatever
 it has, in its own subjective duration, brought through the
 return.
+
+It does not, finally, contract space. Displacement dilates
+duration; it does not shorten the path. A displaced traveller
+still crosses every metre of ordinary space their journey
+includes, by the [[continuity-of-passage|continuity of passage]].
+The two laws are complementary: time can run longer with
+displacement, distance cannot run shorter.
