@@ -9,7 +9,8 @@ import type {
 	Kind
 } from '$lib/types';
 import { folderLabels } from '$lib/types';
-import { buildEdges, CONTENT_DIR, loadAll, resolveWikilink } from './loader';
+import { CONTENT_DIR } from './globals';
+import { buildEdges, loadAll, resolveWikilink } from './loader';
 
 /**
  * In-memory worldbuilding graph, built from the `content/` directory at boot

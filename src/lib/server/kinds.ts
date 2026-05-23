@@ -3,32 +3,7 @@ import type { Dirent } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import type { HealthIssue, Kind, KindMeta } from '$lib/types';
-
-/**
- * Where the central kind registry lives. The directory mirrors the
- * kind hierarchy as a folder tree: each kind is a directory named
- * after its id, optionally containing `_kind.yaml` (label overrides
- * + description) and `_kind.md` (editorial prose). Nesting expresses
- * the parent/child relationship; there is no `kindParent` field.
- *
- * Override with `ALTERIA_KINDS_DIR` for testing.
- *
- * The registry sits outside `content/` on purpose: kinds are
- * structural metadata about the worldbuilding vocabulary, not
- * worldbuilding prose themselves. Their `.md` companions are the
- * one exception — short editorial blurbs that render on the kind's
- * own page.
- */
-function defaultKindsDir(): string {
-	return process.env.ALTERIA_KINDS_DIR ?? resolve(process.cwd(), 'content_meta/kinds');
-}
-
-/**
- * Back-compat export. Resolved at import time of the caller, which
- * is fine for production but should not be relied on in tests —
- * pass the dir to `loadKindRegistry` explicitly instead.
- */
-export const KINDS_DIR = defaultKindsDir();
+import { defaultKindsDir } from './globals';
 
 const KIND_ID_RE = /^[a-z][a-z0-9-]*$/;
 

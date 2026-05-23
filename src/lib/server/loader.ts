@@ -1,6 +1,6 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
 import type { Dirent } from 'node:fs';
-import { join, resolve } from 'node:path';
+import path, { join, resolve } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import type {
 	BookFormat,
@@ -18,12 +18,7 @@ import type {
 	ResolvedBookMeta
 } from '$lib/types';
 import { loadKindRegistry } from './kinds';
-
-/**
- * Where the canonical worldbuilding data lives, relative to the project root.
- * Override with ALTERIA_CONTENT_DIR for testing.
- */
-export const CONTENT_DIR = process.env.ALTERIA_CONTENT_DIR ?? resolve(process.cwd(), 'content');
+import { CONTENT_DIR } from './globals';
 
 /**
  * Match `[[type/slug]]` or `[[type/<sub>/.../slug]]` (optionally
