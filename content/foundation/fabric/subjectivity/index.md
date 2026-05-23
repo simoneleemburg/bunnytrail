@@ -34,12 +34,18 @@ may be in places that share little but their name. What is
 present is what is held; what is forgotten is, in some real
 sense, not there.
 
-Closer to the Cardinal, dimensions begin to fold around personal
-experience. Spatial and temporal distance compress into
-experiential adjacency: what matters is near, what does not
-matter is far, and the ordinary measurements no longer carry.
-Ages may be a doorway apart. A century may be a hillock.
-Geography becomes a shape made by the one who walks it.
+Closer to the Cardinal, the local terrain takes on the shape
+inner life imposes when it becomes the load-bearing thing.
+What ordinary geography holds to its own form, here gives:
+distance answers to what matters; the landscape a traveller
+crosses is the landscape their experience makes it. What is
+encountered in a high-Subjectivity region is not a preserved
+elsewhere but the local material expressing itself under the
+lean — imprints of remembered or experienced selfhood, made
+traversable. The
+[[foundation/fabric/subjective-time|durational divergence]] of
+displaced existence runs in step: subjective time accumulates
+longer per unit of Equilibrium time as the lean deepens.
 
 At the Self itself — never reached — there is no shared
 world left at all; there is only the single continuous interior
@@ -190,8 +196,8 @@ landscape is naming the further reaches.
 In Aurethia the phenomenon of motion along this axis is the
 Self-ward direction of [[aurethia/fabric/nearing|Nearing]];
 the region of Mundus that leans hardest toward the Self is
-known as [[realms/valdor|Valdor]], where memory and ego become
-geography.
+known as [[realms/valdor|Valdor]], where remembered selfhood
+becomes traversable as landscape.
 
 ## A condition, not a power
 

@@ -38,10 +38,15 @@ one rate; space is shared; observers in the same place agree
 on the place. Further along, reality begins to bend: the flow
 of time and the lay of space are felt more intently; sensory
 qualities answer to mood and attention; the perceiver and the
-perceived are no longer entirely separate. Deeper still,
-dimensions begin to fold around personal experience: an age
-becomes a doorway away, a century a hillock, and geography is
-the shape made by the one who walks it.
+perceived are no longer entirely separate. Deeper still, the
+local terrain takes on the shape inner life imposes when it
+becomes the load-bearing thing: the landscape a Self-leaning
+traveller crosses is the landscape their experience makes it,
+not a terrain that happens to look that way. The
+[[foundation/fabric/subjective-time|durational divergence]] of
+displaced existence intensifies along this axis like any
+other; subjective time runs longer per unit of Equilibrium
+time the further the lean goes.
 
 At the Self itself there would be no shared world at all, in
 whatever sense those words have inside Mundus. Nothing native
@@ -97,14 +102,13 @@ however much its nature permits.
 
 Aurethia knows the region of Mundus that leans hardest toward
 the Self as [[realms/valdor|Valdor]] — a liminal region where
-memory and ego become geography, where dimensions fold around
-personal experience, where no two travellers' accounts of the
-landscape agree. The Aurethian phenomenon of motion along this
-axis — the deliberate or accidental bending of reality around
-the experiencing subject, and the controlled practice of
-passage through the inner-landscape-as-geography that this
-opens up — is the Self-ward direction of
-[[aurethia/fabric/nearing|Nearing]].
+remembered selfhood becomes traversable as landscape, where
+no two travellers' accounts of the geography agree. What is
+encountered there is not preserved chronological time but the
+local material of Mundus expressed under the Self-ward lean:
+memory, ego, and narrative made spatial. The Aurethian
+phenomenon of motion along this axis is the Self-ward direction
+of [[aurethia/fabric/nearing|Nearing]].
 
 Whether anything is _at_ the Self — what something without mass
 and native to the Cardinal would be — is not something the
