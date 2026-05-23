@@ -106,6 +106,34 @@ foundation layer registers that such regions exist; it does
 not enumerate them or claim that every Cardinal-rotated
 region is a realm of any cluster.
 
+A rotated region is not the Cardinal it leans toward. The
+basin's geometry is asymptotic: no rotation reaches the
+[[kinds/bound|bound]]. What such a region contains is the
+**local material of Mundus expressing itself under the lean**.
+A place-frame rotated toward the [[self|Self]] does not put
+the traveller _at_ the Self; it puts the local landscape into
+the shape selfhood imposes when it organises terrain. A
+place-frame rotated toward the [[source|Source]] does not
+deposit the traveller _at_ Source-truth; it makes the local
+environment carry what carries through under that lean —
+whispers, presences, the things that survive being pulled
+that way. The Cardinals themselves remain at the bounds, never
+arrived at. What clusters report from their realms is the
+texture of approach, not the thing approached.
+
+This matters when accounts from such regions are read back in
+the ordinary frame. Travellers do not return with the Cardinal;
+they return with what was made of their own material — and the
+local material around them — by the lean. The realm was always
+the lean, not the destination.
+
+Subjective time also diverges inside a rotated region, in the
+direction
+[[foundation/fabric/subjective-time|subjective time]] sets out.
+The further the place-frame's local Equilibrium sits from the
+εσδ-centroid, the more durational divergence the region carries
+against the Equilibrium frame.
+
 Whether some frames are rotated toward Horizons rather than
 toward Cardinals is left open at the foundation layer. The
 geometry does not forbid it.
