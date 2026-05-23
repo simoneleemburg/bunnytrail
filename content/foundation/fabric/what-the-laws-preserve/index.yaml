@@ -1,0 +1,16 @@
+name: What the Laws Preserve
+kind: law-of-nature
+summary: >-
+  The three foundation laws — [[mundus-frame|Mundus Frame]],
+  [[subjective-time|Subjective Time]], and
+  [[continuity-of-passage|Continuity of Passage]] — leave a
+  consistent set of structural commitments standing. Causality
+  holds inside every frame. No frame can revisit its own past or
+  reach across into another's. No path skips its passage. No
+  displacement is a shortcut: whatever the lean changes about the
+  journey, the traveller pays for it in the journey itself. This
+  entry names what survives the divergences the three laws permit.
+tags: [law, conservation, causality, displacement, cost, frame]
+relations:
+  - kind: governed-by
+    target: foundation/fabric/mundus-frame

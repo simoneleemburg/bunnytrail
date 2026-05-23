@@ -153,3 +153,7 @@ It is not a moral or narrative principle dressed as physics.
 Things in Alteria do not arrive without travel because the
 geometry does not permit it. The closed door is not a metaphor;
 it is a wall.
+
+What this law shares with the other two — the commitments that
+hold no matter which frame is doing the looking — is set out in
+[[what-the-laws-preserve|what the laws preserve]].

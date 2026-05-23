@@ -139,7 +139,9 @@ material expresses itself — not a deformation of the space it
 sits in. A traveller entering, traversing, or leaving a rotated
 region does so along a continuous path in ordinary space, by the
 [[continuity-of-passage|continuity of passage]]. The lean
-changes the journey; it does not contract the distance.
+changes the journey; it does not contract the distance. What
+that lean costs the leaner is set out in
+[[what-the-laws-preserve|what the laws preserve]].
 
 Whether some frames are rotated toward Horizons rather than
 toward Cardinals is left open at the foundation layer. The

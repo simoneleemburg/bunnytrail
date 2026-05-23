@@ -111,4 +111,7 @@ duration; it does not shorten the path. A displaced traveller
 still crosses every metre of ordinary space their journey
 includes, by the [[continuity-of-passage|continuity of passage]].
 The two laws are complementary: time can run longer with
-displacement, distance cannot run shorter.
+displacement, distance cannot run shorter. What the laws taken
+together do **not** permit — revisiting, reaching across,
+skipping the passage, getting something for nothing — is the
+subject of [[what-the-laws-preserve|what the laws preserve]].
