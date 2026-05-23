@@ -1,5 +1,9 @@
 {
 	"$schema": "https://opencode.ai/config.json",
+
+	"model": "anthropic/claude-sonnet-4.6",
+	"small_model": "anthropic/claude-haiku-4.5",
+
 	"plugin": ["@sveltejs/opencode"],
 	"mcp": {
 		"chrome-devtools": {
@@ -12,5 +16,26 @@
 			],
 			"enabled": true
 		}
-	}
+	},
+
+	"provider": {
+		"openrouter": {
+			"models": {
+				"anthropic/claude-sonnet-4.6": {
+					"options": {
+						"transform": "middle-out",
+						"max_tokens": 6000
+					}
+				},
+				"anthropic/claude-haiku-4.5": {
+					"options": {
+						"transform": "middle-out",
+						"max_tokens": 6000
+					}
+				}
+			}
+		}
+	},
+
+	"instructions": [".opencode/rules/alteria-core.md"]
 }
