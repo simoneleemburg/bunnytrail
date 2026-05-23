@@ -151,3 +151,32 @@ near pilots and Nearing happens because of what it _is_, not
 because it has chosen to do anything. This is the position
 the order maintains in public. Whether the order maintains it
 in private is a separate question.
+
+## In the foundation register
+
+The cultural readings above are how the Sister Worlds talk
+about the Dark Companion among themselves. The foundation
+account — what
+[[foundation/fabric/mundus-frame|Mundus Frame]] would say of it —
+is the language the order's scholars use when they are being
+technical rather than poetic.
+
+In that register, the Dark Companion is an extreme feature of
+**εσδ-curvature**. The mass of the body — or whatever the
+absent thing's geometric weight amounts to — curves εσδ-space
+around it the same way mass curves ordinary space-time in
+[[earth/fabric/general-relativity|known physics]]. Near the
+Dark Companion, the place-frame is rotated, and at depth the
+curvature is severe enough to push the geometry out of the
+regime the foundation laws describe. The currents that bend
+near it, the Nearing that distorts, the falling-further-than-
+the-journey-accounts-for — all of these are what extreme
+εσδ-curvature does to bodies and practices passing through it.
+
+This does not displace the cultural readings. _The Mouth of
+Returning_, _the Ash-Eye_, _the Unholding_ are not less true
+for being statable in another vocabulary; they are reports
+from inside the curvature, where what the geometry _is_ and
+what it _means_ to the worlds living near it are not the same
+question. The foundation register names the structure; the
+cultural readings name the encounter. Both are recorded.

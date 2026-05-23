@@ -37,19 +37,65 @@ produce rotations:
   Equilibrium. From its own perspective it is at rest, at
   home, at the natural centre; from an ordinary mortal's
   perspective it sits at the Source.
-- A **place-frame** belongs to a region of space. Near a
-  black hole, the geometry of the local region maps to
-  εσδ-space such that [[chaos|Chaos]] is the local
-  Equilibrium. Anything entering the region inherits that
+- A **place-frame** belongs to a region of space. The
+  εσδ-geometry around a sufficiently massive or otherwise
+  exceptional body is **curved** there, the way ordinary
+  spacetime is curved around the same body in
+  [[earth/fabric/general-relativity|known physics]]. The
+  curvature displaces local Equilibrium away from the
+  εσδ-centroid. Near a black hole, the curvature is
+  extreme enough that [[chaos|Chaos]] is the local
+  Equilibrium. Anything entering such a region inherits the
   rotation while it remains there. The thing is not being
   pulled toward Chaos by some new force; it is drifting
   toward Equilibrium in the local frame, as everything
   always does — but local Equilibrium now points to Chaos
-  in εσδ-coordinates.
+  in εσδ-coordinates because the region's εσδ-geometry is
+  curved that way.
 
 A thing's effective frame is the composition of its
 nature-frame with the place-frame it currently occupies. How
 the two compose is left open at the foundation layer.
+
+## εσδ-curvature
+
+Place-frames have a physical origin. The εσδ-geometry of a
+region depends on what the region contains. Where the region
+contains a mass — or any feature with the geometric weight a
+mass would have — the εσδ-geometry around it is curved, and
+local Equilibrium sits somewhere other than the εσδ-centroid.
+
+This is the εσδ-counterpart to ordinary-space curvature in
+[[earth/fabric/general-relativity|known physics]]. The same
+features that bend ordinary spacetime — mass, energy, whatever
+generalisation of those the geometry recognises — bend
+εσδ-space. The bending is structural: it is a property of the
+region, not of any practice. No one is sustaining a black
+hole's place-frame. The geometry around the body is curved
+because the body is there.
+
+This distinguishes place-frame displacement from displacement
+produced by [[foundation/fabric/nearing|Nearing]] or other
+active practice. Curvature is passive: a region is curved or
+it is not, and a traveller entering pays only for being in the
+region, not for sustaining its shape. The region's curvature
+costs the region itself — structurally, in whatever the
+geometry's accounting is — and that cost is not the
+traveller's to pay. The displacement of a leaner toward a
+Cardinal, by contrast, is sustained by the leaner; release
+the lean and the displacement releases. The two kinds of
+displacement compose in the same way that nature-frames and
+place-frames compose. They are distinct in mechanism.
+
+Most of Mundus is not strongly curved in εσδ-space. The
+trivial frame is the trivial frame because, almost
+everywhere, εσδ-space is approximately flat and local
+Equilibrium sits at the εσδ-centroid. Curvature shows itself
+near features that warp the geometry: massive bodies,
+singularities, certain exceptional structures. Where the
+curvature is extreme — at a singularity — the geometry stops
+being generic, and what the laws say about it is set out in
+[[what-the-laws-preserve|what the laws preserve]].
 
 ## Frames sustained by other beings
 

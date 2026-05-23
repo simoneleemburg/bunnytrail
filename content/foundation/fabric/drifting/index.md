@@ -17,11 +17,13 @@ A mortal in an ordinary place has the trivial frame: local
 Equilibrium is the εσδ-centroid, and drift is toward
 ε = σ = δ. This is what most things do most of the time.
 
-A mortal near a black hole has a rotated place-frame: local
-Equilibrium has moved toward the [[chaos|Chaos]] cardinal,
-and the same passive drift now pulls them Chaos-ward. The
-mortal is not being attracted by a new force; the basin's
-low point has moved in εσδ-coordinates.
+A mortal near a black hole has a rotated place-frame: the
+black hole's mass curves the local εσδ-geometry, and the
+displaced local Equilibrium sits toward the [[chaos|Chaos]]
+cardinal. The same passive drift now pulls them Chaos-ward.
+The mortal is not being attracted by a new force; the basin's
+low point has moved in εσδ-coordinates because the local
+εσδ-geometry is curved.
 
 A [[kinds/naya|Naya]] anywhere has a rotated nature-frame:
 local Equilibrium sits at the [[source|Source]], and the same
@@ -48,8 +50,8 @@ A thing cannot reach a [[kinds/bound|bound]] by drifting,
 because the bounds are repellers — the gradient gets steeper
 as a thing leans toward one, and no Equilibrium ever sits
 exactly on a bound. Things near a black hole drift toward
-Chaos but never reach it, because the place-frame moves
-Equilibrium _toward_ Chaos asymptotically without ever
+Chaos but never reach it, because the εσδ-curvature moves
+local Equilibrium _toward_ Chaos asymptotically without ever
 placing it there. The asymmetry of the geometry holds in
 every frame.
 

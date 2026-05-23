@@ -136,6 +136,17 @@ is not Nareth travelling. It is resonance carried through the
 local material's lean. Nothing crosses ordinary space gaplessly,
 because nothing crosses ordinary space at all in this case.
 
+Non-generic geometry is not a counterexample. A singularity or
+exotic connection — a region where εσδ-curvature is extreme
+enough that the ambient metric stops describing the local
+behaviour — still provides a **continuous** path. A body
+using such a connection traverses every point along it. The
+connection may link locations the ambient geometry would call
+far apart; the law does not guarantee that "far apart" is
+metric-invariant across all geometric features. It guarantees
+that whatever the path is, it is continuous, and that the body
+walks it.
+
 ## What this is not
 
 The law is not a claim about the path's **measurability** in

@@ -94,11 +94,16 @@ divergence is ontological: it depends on where the thing sits
 in Mundus, not on how attentively it experiences its own
 duration.
 
-It is also not time travel. A displaced traveller still moves
-forward in their own subjective time; an Equilibrium-frame
-observer still moves forward in theirs. Neither can revisit a
-prior moment of their own. What the divergence permits is
-asymmetry between the two rates, not reversibility.
+It is also not, generically, time travel. A displaced traveller
+still moves forward in their own subjective time; an
+Equilibrium-frame observer still moves forward in theirs.
+Neither can, by displacement alone, revisit a prior moment of
+their own. What the divergence permits is asymmetry between the
+two rates, not reversibility. (Non-generic geometry — a
+singularity, an exotic connection — is the carve-out set out in
+[[what-the-laws-preserve|what the laws preserve]]; the law of
+displacement does not undertake to describe what happens at
+such points.)
 
 And it is not action at a distance. The fact that two frames'
 clocks disagree does not let either frame reach into the other.
