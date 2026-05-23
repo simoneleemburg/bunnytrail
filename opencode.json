@@ -24,13 +24,13 @@
 				"anthropic/claude-sonnet-4.6": {
 					"options": {
 						"transform": "middle-out",
-						"max_tokens": 6000
+						"max_tokens": 2000
 					}
 				},
 				"anthropic/claude-haiku-4.5": {
 					"options": {
 						"transform": "middle-out",
-						"max_tokens": 6000
+						"max_tokens": 1500
 					}
 				}
 			}
