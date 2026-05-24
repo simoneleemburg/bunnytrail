@@ -1,8 +1,6 @@
-import { BLOG_DIR } from '$lib/server/blog';
+
+import { BLOG_DIR, CONTENT_DIR, KINDS_DIR, SOURCES_DIR } from '$lib/server/globals';
 import { graph } from '$lib/server/graph';
-import { KINDS_DIR } from '$lib/server/kinds';
-import { CONTENT_DIR } from '$lib/server/loader';
-import { SOURCES_DIR } from '$lib/server/sources';
 import { startWatcher } from '$lib/server/watcher';
 import 'dotenv/config';
 

@@ -1,9 +1,9 @@
 import { dev } from '$app/environment';
 import chokidar from 'chokidar';
 import { blog } from './blog';
-import { SOURCES_DIR, sources } from './sources';
+import { sources } from './sources';
 import { graph } from './graph';
-import { CONTENT_DIR, BLOG_DIR, KINDS_DIR } from './globals';
+import { CONTENT_DIR, BLOG_DIR, KINDS_DIR, SOURCES_DIR } from './globals';
 
 /**
  * In dev, watch the worldbuilding source trees and reload the graph

@@ -61,3 +61,25 @@ export function defaultBlogDir(): string {
 }
 
 export const BLOG_DIR = defaultBlogDir();
+
+/**
+ * Where the "source projects" catalogue lives. Each project sits
+ * under `content_meta/sources/<slug>/index.yaml` carrying the
+ * structured fields below. An optional `index.md` is allowed for
+ * future per-project prose, but the loader does not require it and
+ * the homepage section ignores it.
+ *
+ * Like the blog, this is out-of-world authoring material: it is
+ * *about* the worldbuilding project — the feeder works that are
+ * being integrated into Alteria — rather than part of the world
+ * itself. It is loaded as its own singleton so source projects
+ * never leak into entity counts, tag indexes, or any cross-cluster
+ * aggregate.
+ *
+ * Override the directory with `ALTERIA_SOURCES_DIR` for testing.
+ */
+export function defaultSourcesDir(): string {
+	return process.env.ALTERIA_SOURCES_DIR ?? resolve(process.env.ALTERIA_WORLD_DIR ?? process.cwd(), 'content_meta/sources');
+}
+
+export const SOURCES_DIR = defaultSourcesDir();
