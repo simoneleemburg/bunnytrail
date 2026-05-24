@@ -1,10 +1,12 @@
 import { resolve } from "path";
+import dotenv from 'dotenv';
 
+dotenv.config();
 /**
  * Where the canonical worldbuilding data lives, relative to the project root.
  * Override with ALTERIA_CONTENT_DIR for testing.
  */
-export const CONTENT_DIR = process.env.ALTERIA_CONTENT_DIR ?? resolve(process.env.ALTERIA_WORLD_DIR ?? process.cwd(), 'content');
+export const CONTENT_DIR = process.env.ALTERIA_CONTENT_DIR ?? resolve(process.env.ALTERIA_WORLD_DIR ?? "", 'content');
 
 
 /**
@@ -23,7 +25,7 @@ export const CONTENT_DIR = process.env.ALTERIA_CONTENT_DIR ?? resolve(process.en
  * own page.
  */
 export function defaultKindsDir(): string {
-    return process.env.ALTERIA_KINDS_DIR ?? resolve(process.env.ALTERIA_WORLD_DIR ?? process.cwd(), 'content_meta/kinds');
+    return process.env.ALTERIA_KINDS_DIR ?? resolve(process.env.ALTERIA_WORLD_DIR ?? "", 'content_meta/kinds');
 }
 
 /**
@@ -79,7 +81,7 @@ export const BLOG_DIR = defaultBlogDir();
  * Override the directory with `ALTERIA_SOURCES_DIR` for testing.
  */
 export function defaultSourcesDir(): string {
-	return process.env.ALTERIA_SOURCES_DIR ?? resolve(process.env.ALTERIA_WORLD_DIR ?? process.cwd(), 'content_meta/sources');
+	return process.env.ALTERIA_SOURCES_DIR ?? resolve(process.env.ALTERIA_WORLD_DIR ?? "", 'content_meta/sources');
 }
 
 export const SOURCES_DIR = defaultSourcesDir();
