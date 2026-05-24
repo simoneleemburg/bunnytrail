@@ -1,9 +1,0 @@
-name: Aureth
-kind: star
-language: tha
-summary: The star at the centre of the Aureth System — the source of light and time for Bayurinda, Nebelheim, and Sharazan. Aureth is Thallish, the standard scholarly name across the Sister Worlds; vernacular names in local registers may differ.
-tags: [sister-worlds]
-relations:
-  - kind: member-of
-    target: aurethia/places/celestial/aureth-system
-    order: 0

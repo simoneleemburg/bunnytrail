@@ -1,7 +1,0 @@
-name: The Dark Companion
-kind: black-hole
-summary: The invisible second body of a neighbouring binary star system, visible from Alteria Cognita only by what it does to its companion star. Known across all three Sister Worlds under various names. Distorts Nearing; the cosmology has not settled what else it is.
-tags: [cosmology, binary, threshold, fallen-naya, threat, mythic]
-relations:
-  - kind: member-of
-    target: aurethia/places/celestial/hollow-binary

@@ -1,9 +1,0 @@
-name: Leyla
-kind: moon
-language: tho
-summary: Nebelheim's moon — itself molten and volcanic, a second furnace in the sky.
-tags: [volcanic, molten, sky]
-relations:
-  - kind: orbits
-    target: aurethia/places/celestial/aureth-system/nebelheim
-    note: Nebelheim's moon.

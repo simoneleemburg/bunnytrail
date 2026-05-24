@@ -1,1 +1,0 @@
-A category page rather than an entity in its own right. _Celestial body_ is the umbrella term for stars, black holes, planets, and moons together — used when the distinction between them isn't the point, or when the working cosmology gathers them under one heading.
