@@ -3,7 +3,8 @@ import chokidar from 'chokidar';
 import { blog } from './blog';
 import { sources } from './sources';
 import { graph } from './graph';
-import { CONTENT_DIR, BLOG_DIR, KINDS_DIR, SOURCES_DIR } from './globals';
+import { assets } from './assets';
+import { CONTENT_DIR, BLOG_DIR, KINDS_DIR, SOURCES_DIR, ASSETS_DIR } from './globals';
 
 /**
  * In dev, watch the worldbuilding source trees and reload the graph
@@ -51,4 +52,20 @@ export function startWatcher(): void {
 
 	watcher.on('add', trigger).on('change', trigger).on('unlink', trigger);
 	console.log(`[alteria] watching ${CONTENT_DIR}, ${KINDS_DIR}, ${BLOG_DIR}, and ${SOURCES_DIR}`);
+
+	// Watch the assets directory separately — changes only invalidate
+	// the asset cache, no graph rebuild needed.
+	const assetTrigger = (path: string) => {
+		const name = path.split('/').pop() ?? path;
+		assets.invalidate(name);
+		console.log(`[alteria] asset invalidated: ${name}`);
+	};
+
+	const assetWatcher = chokidar.watch(ASSETS_DIR, {
+		ignoreInitial: true,
+		ignored: (path) => path.endsWith('.DS_Store')
+	});
+
+	assetWatcher.on('add', assetTrigger).on('change', assetTrigger).on('unlink', assetTrigger);
+	console.log(`[alteria] watching assets: ${ASSETS_DIR}`);
 }

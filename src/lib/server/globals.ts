@@ -85,3 +85,22 @@ export function defaultSourcesDir(): string {
 }
 
 export const SOURCES_DIR = defaultSourcesDir();
+
+/**
+ * Where pre-baked SVG assets (e.g. mundus-map.svg) live.
+ *
+ * When ALTERIA_WORLD_DIR is set, assets are read from
+ * `<world_dir>/assets/` so they can be updated independently of
+ * the SvelteKit build.  Without it, the bundled fallback under
+ * `src/lib/assets/` is used.
+ *
+ * Override with `ALTERIA_ASSETS_DIR` for testing.
+ */
+export function defaultAssetsDir(): string {
+	if (process.env.ALTERIA_ASSETS_DIR) return process.env.ALTERIA_ASSETS_DIR;
+	const worldDir = process.env.ALTERIA_WORLD_DIR;
+	if (worldDir) return resolve(worldDir, 'assets');
+	return resolve(process.cwd(), 'src/lib/assets');
+}
+
+export const ASSETS_DIR = defaultAssetsDir();

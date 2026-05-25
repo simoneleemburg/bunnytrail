@@ -2,6 +2,8 @@
 	import ClustersMap from '$lib/components/ClustersMap.svelte';
 	import CognitaMap from '$lib/components/CognitaMap.svelte';
 	import MundusMap from '$lib/components/MundusMap.svelte';
+
+	const { data } = $props();
 </script>
 
 <svelte:head>
@@ -33,7 +35,7 @@
 			<a href="/foundation/fabric/equilibrium">Equilibrium</a>. Most things, most of the time, are
 			there.
 		</p>
-		<MundusMap />
+		<MundusMap svg={data.mundusMapSvg} />
 
 		<div class="legend">
 			<h3>How to read it</h3>
