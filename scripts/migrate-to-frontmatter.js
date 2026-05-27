@@ -28,7 +28,14 @@
  *
  * Defaults: walks `content/`, `content_meta/kinds/`, `content_meta/blog/`,
  * and `content_meta/sources/` under the world root. The world root is
- * `$ALTERIA_WORLD_DIR` if set, else the project root.
+ * resolved as: `--root <path>` (CLI), then `$ALTERIA_WORLD_DIR`, then
+ * the current working directory. The script loads `.env` at startup
+ * via `dotenv` (matching `src/lib/server/globals.ts`), so the same
+ * `.env` the dev server reads also drives the migration.
+ *
+ * Per-tree env vars (`ALTERIA_CONTENT_DIR`, `ALTERIA_KINDS_DIR`,
+ * `ALTERIA_BLOG_DIR`, `ALTERIA_SOURCES_DIR`) are honoured when set:
+ * each takes precedence over `<root>/<default-subpath>` for its tree.
  *
  * Usage:
  *
@@ -42,27 +49,51 @@
  */
 
 import { readdir, readFile, stat, writeFile, unlink } from 'node:fs/promises';
-import { join, resolve, relative, dirname } from 'node:path';
+import { join, resolve, relative } from 'node:path';
 import { parse as parseYaml } from 'yaml';
+import dotenv from 'dotenv';
+
+// Load `.env` the same way `src/lib/server/globals.ts` does, so a
+// user running the migration sees the same `ALTERIA_WORLD_DIR` (and
+// per-tree overrides) the dev server uses. dotenv won't overwrite
+// values that are already set in the process environment, so an
+// explicit `ALTERIA_WORLD_DIR=… node scripts/...` still wins.
+dotenv.config();
 
 const TREES = {
-	content: { dir: 'content', meta: 'index.yaml', body: 'index.md', recurse: true },
+	content: {
+		// Subpath under the world root. Used when no explicit
+		// per-tree env var override is in effect.
+		dir: 'content',
+		// Per-tree env var override, matching `src/lib/server/globals.ts`.
+		// When set, it takes precedence over `<root>/<dir>`.
+		env: 'ALTERIA_CONTENT_DIR',
+		// Each entry is a (meta, body) pair to look for inside every
+		// folder. The content tree carries two: entity files
+		// (`index.yaml`/`index.md`) and collection files
+		// (`_collection.yaml`/`_collection.md`).
+		pairs: [
+			{ meta: 'index.yaml', body: 'index.md' },
+			{ meta: '_collection.yaml', body: '_collection.md' }
+		],
+		recurse: true
+	},
 	kinds: {
 		dir: 'content_meta/kinds',
-		meta: '_kind.yaml',
-		body: '_kind.md',
+		env: 'ALTERIA_KINDS_DIR',
+		pairs: [{ meta: '_kind.yaml', body: '_kind.md' }],
 		recurse: true
 	},
 	blog: {
 		dir: 'content_meta/blog',
-		meta: 'index.yaml',
-		body: 'index.md',
+		env: 'ALTERIA_BLOG_DIR',
+		pairs: [{ meta: 'index.yaml', body: 'index.md' }],
 		recurse: false
 	},
 	sources: {
 		dir: 'content_meta/sources',
-		meta: 'index.yaml',
-		body: 'index.md',
+		env: 'ALTERIA_SOURCES_DIR',
+		pairs: [{ meta: 'index.yaml', body: 'index.md' }],
 		recurse: false
 	}
 };
@@ -184,7 +215,11 @@ async function planMigration(dir, metaName, bodyName) {
 	const hasMd = await exists(mdPath);
 
 	if (!hasYaml && !hasMd) return { action: 'skip', reason: 'no marker files' };
-	if (!hasYaml) return { action: 'skip', reason: `${bodyName} only (already frontmatter-shaped or prose-only)` };
+	if (!hasYaml)
+		return {
+			action: 'skip',
+			reason: `${bodyName} only (already frontmatter-shaped or prose-only)`
+		};
 
 	let mdRaw = '';
 	if (hasMd) {
@@ -219,11 +254,29 @@ async function planMigration(dir, metaName, bodyName) {
 	return { action: 'migrate', yamlPath, mdPath, content };
 }
 
+/**
+ * Resolve the absolute directory for a given tree.
+ *
+ * Precedence, mirroring `src/lib/server/globals.ts`:
+ *
+ *   1. The tree's per-tree env var (`ALTERIA_CONTENT_DIR`,
+ *      `ALTERIA_KINDS_DIR`, etc.) when set.
+ *   2. `<rootDir>/<tree.dir>` otherwise.
+ *
+ * The world root itself is resolved separately in `main()` (CLI
+ * `--root`, then `ALTERIA_WORLD_DIR`, then cwd).
+ */
+function treeDirFor(rootDir, cfg) {
+	const override = process.env[cfg.env];
+	if (override && override.length > 0) return override;
+	return join(rootDir, cfg.dir);
+}
+
 async function migrateTree(rootDir, treeKey, opts) {
 	const cfg = TREES[treeKey];
-	const treeDir = join(rootDir, cfg.dir);
+	const treeDir = treeDirFor(rootDir, cfg);
 	if (!(await isDir(treeDir))) {
-		return { tree: treeKey, scanned: 0, migrated: 0, skipped: 0, errors: 0 };
+		return { tree: treeKey, dir: treeDir, scanned: 0, migrated: 0, skipped: 0, errors: 0 };
 	}
 
 	let scanned = 0;
@@ -232,41 +285,43 @@ async function migrateTree(rootDir, treeKey, opts) {
 	let errors = 0;
 
 	for await (const dir of walkDirs(treeDir, cfg.recurse)) {
-		const yamlPath = join(dir, cfg.meta);
-		if (!(await exists(yamlPath))) continue;
-		scanned++;
+		for (const pair of cfg.pairs) {
+			const yamlPath = join(dir, pair.meta);
+			if (!(await exists(yamlPath))) continue;
+			scanned++;
 
-		const plan = await planMigration(dir, cfg.meta, cfg.body);
-		const rel = relative(rootDir, dir) || '.';
-		if (plan.action === 'skip') {
-			skipped++;
-			if (opts.verbose) console.log(`  skip   ${rel}: ${plan.reason}`);
-			continue;
-		}
-		if (plan.action === 'error') {
-			errors++;
-			console.warn(`  ERROR  ${rel}: ${plan.reason}`);
-			continue;
-		}
+			const plan = await planMigration(dir, pair.meta, pair.body);
+			const rel = relative(rootDir, dir) || relative(treeDir, dir) || '.';
+			if (plan.action === 'skip') {
+				skipped++;
+				if (opts.verbose) console.log(`  skip   ${rel}: ${plan.reason}`);
+				continue;
+			}
+			if (plan.action === 'error') {
+				errors++;
+				console.warn(`  ERROR  ${rel}: ${plan.reason}`);
+				continue;
+			}
 
-		// migrate
-		migrated++;
-		const action = opts.write ? 'WRITE ' : 'plan  ';
-		console.log(`  ${action} ${rel}  (${cfg.meta} + ${cfg.body} -> ${cfg.body})`);
+			migrated++;
+			const action = opts.write ? 'WRITE ' : 'plan  ';
+			console.log(`  ${action} ${rel}  (${pair.meta} + ${pair.body} -> ${pair.body})`);
 
-		if (opts.write) {
-			await writeFile(plan.mdPath, plan.content, 'utf8');
-			await unlink(plan.yamlPath);
+			if (opts.write) {
+				await writeFile(plan.mdPath, plan.content, 'utf8');
+				await unlink(plan.yamlPath);
+			}
 		}
 	}
 
-	return { tree: treeKey, scanned, migrated, skipped, errors };
+	return { tree: treeKey, dir: treeDir, scanned, migrated, skipped, errors };
 }
 
 async function main() {
 	const args = parseArgs(process.argv);
-	const root =
-		args.root ?? process.env.ALTERIA_WORLD_DIR ?? resolve(process.cwd());
+	// World root: explicit --root, then $ALTERIA_WORLD_DIR (loaded
+	// from .env above), then the current working directory.
+	const root = args.root ?? process.env.ALTERIA_WORLD_DIR ?? resolve(process.cwd());
 	const trees = args.only.length > 0 ? args.only : Object.keys(TREES);
 
 	for (const t of trees) {
@@ -280,11 +335,23 @@ async function main() {
 	console.log(`  root:  ${root}`);
 	console.log(`  mode:  ${args.write ? 'WRITE (will modify files)' : 'dry run'}`);
 	console.log(`  trees: ${trees.join(', ')}`);
+	// Surface any per-tree env overrides so the user can see exactly
+	// which directories will be touched. Silent when nothing is
+	// overridden.
+	const overrides = trees
+		.map((t) => ({ tree: t, env: TREES[t].env, value: process.env[TREES[t].env] }))
+		.filter((o) => o.value && o.value.length > 0);
+	if (overrides.length > 0) {
+		console.log(`  overrides:`);
+		for (const o of overrides) console.log(`    ${o.env}=${o.value}`);
+	}
 	console.log('');
 
 	const summaries = [];
 	for (const t of trees) {
-		console.log(`[${t}]`);
+		const cfg = TREES[t];
+		const dir = treeDirFor(root, cfg);
+		console.log(`[${t}]  ${dir}`);
 		const summary = await migrateTree(root, t, { write: args.write, verbose: false });
 		summaries.push(summary);
 		console.log('');
