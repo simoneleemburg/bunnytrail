@@ -16,10 +16,7 @@ const BUNDLED_ASSETS_DIR = resolve(process.cwd(), 'src/lib/assets');
  * @returns          File contents as a UTF-8 string, or null if not found.
  * @throws           On a name that looks like a path traversal attempt.
  */
-export async function readAsset(
-	name: string,
-	assetsDir: string
-): Promise<string | null> {
+export async function readAsset(name: string, assetsDir: string): Promise<string | null> {
 	if (name.includes('/') || name.includes('\\') || name.includes('..')) {
 		throw new Error(`readAsset: invalid asset name "${name}"`);
 	}

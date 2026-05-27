@@ -132,4 +132,45 @@ describe('loadKindRegistry', () => {
 		// Bad field is dropped but the kind still registers.
 		expect(result.kinds.get('place')?.meta.singular).toBeUndefined();
 	});
+
+	it('loads a kind whose metadata lives in _kind.md frontmatter', async () => {
+		const dir = await seedKindsDir({
+			place: {
+				md: [
+					'---',
+					'singular: Place',
+					'plural: Places',
+					'description: A registered location.',
+					'---',
+					'',
+					'Editorial prose for the place kind.',
+					''
+				].join('\n')
+			}
+		});
+		const result = await loadKindRegistry(dir);
+		const place = result.kinds.get('place');
+		expect(place).toBeDefined();
+		expect(place!.meta.singular).toBe('Place');
+		expect(place!.meta.plural).toBe('Places');
+		expect(place!.meta.description).toBe('A registered location.');
+		expect(place!.body!.startsWith('\nEditorial prose')).toBe(true);
+		expect(result.issues).toEqual([]);
+	});
+
+	it('emits an issue when both _kind.yaml and _kind.md frontmatter declare metadata', async () => {
+		const dir = await seedKindsDir({
+			place: {
+				yaml: 'singular: From YAML',
+				md: '---\nsingular: From Frontmatter\n---\n\nProse.\n'
+			}
+		});
+		const result = await loadKindRegistry(dir);
+		expect(result.issues.some((i) => i.detail.includes('pick one'))).toBe(true);
+		// Conflict surfaces — meta defaults, but the kind still registers
+		// (the body is preserved so the kind page still renders).
+		const place = result.kinds.get('place');
+		expect(place).toBeDefined();
+		expect(place!.meta.singular).toBeUndefined();
+	});
 });

@@ -571,3 +571,117 @@ describe('loadAll: chapters', () => {
 		expect(kael.chapters).toEqual([]);
 	});
 });
+
+describe('loadAll frontmatter layout', () => {
+	it('loads an entity from index.md with YAML frontmatter', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-front-'));
+		await mkdir(join(dir, 'places', 'sharazan'), { recursive: true });
+		await writeFile(
+			join(dir, 'places', 'sharazan', 'index.md'),
+			[
+				'---',
+				'name: Sharazan',
+				'kind: settlement',
+				'tags: [city]',
+				'---',
+				'',
+				'A city of [[places/duskmere]] dialects.',
+				''
+			].join('\n')
+		);
+		await mkdir(join(dir, 'places', 'duskmere'), { recursive: true });
+		await writeFile(
+			join(dir, 'places', 'duskmere', 'index.md'),
+			'---\nname: Duskmere\nkind: place\n---\n\nA border town.\n'
+		);
+
+		const { entities, issues } = await loadAll(dir);
+		const sharazan = entities.get('places/sharazan');
+		expect(sharazan).toBeDefined();
+		expect(sharazan!.meta.name).toBe('Sharazan');
+		expect(sharazan!.meta.kind).toBe('settlement');
+		expect(sharazan!.meta.tags).toEqual(['city']);
+		expect(sharazan!.body.startsWith('\nA city of')).toBe(true);
+		expect(sharazan!.wikilinks).toEqual(['places/duskmere']);
+		// metaPath should point at the .md file when frontmatter sourced
+		expect(sharazan!.yamlPath.endsWith('places/sharazan/index.md')).toBe(true);
+		expect(issues.filter((i) => i.kind === 'broken-link')).toEqual([]);
+	});
+
+	it('emits a health issue when both index.yaml and index.md frontmatter are present', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-front-conflict-'));
+		await mkdir(join(dir, 'places', 'twin'), { recursive: true });
+		await writeFile(join(dir, 'places', 'twin', 'index.yaml'), 'name: Twin (yaml)\nkind: place\n');
+		await writeFile(
+			join(dir, 'places', 'twin', 'index.md'),
+			'---\nname: Twin (frontmatter)\nkind: place\n---\n\nBody.\n'
+		);
+
+		const { entities, issues } = await loadAll(dir);
+		expect(entities.has('places/twin')).toBe(false);
+		const conflict = issues.find(
+			(i) => i.entity === 'places/twin' && i.detail.includes('pick one')
+		);
+		expect(conflict).toBeDefined();
+	});
+
+	it('treats a leading --- without a closing fence as plain markdown', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-front-hr-'));
+		await mkdir(join(dir, 'places', 'hr'), { recursive: true });
+		await writeFile(join(dir, 'places', 'hr', 'index.yaml'), 'name: HR\nkind: place\n');
+		await writeFile(
+			join(dir, 'places', 'hr', 'index.md'),
+			'---\n\nBody starting with a horizontal rule.\n'
+		);
+		const { entities, issues } = await loadAll(dir);
+		const hr = entities.get('places/hr');
+		expect(hr).toBeDefined();
+		expect(hr!.body.startsWith('---')).toBe(true);
+		// No conflict expected.
+		expect(issues.find((i) => i.detail.includes('pick one'))).toBeUndefined();
+	});
+
+	it('loads a collection from _collection.md frontmatter', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-coll-front-'));
+		await mkdir(join(dir, 'places'), { recursive: true });
+		await writeFile(
+			join(dir, 'places', '_collection.md'),
+			[
+				'---',
+				'title: Places',
+				'description: Where things happen.',
+				'---',
+				'',
+				'A walkthrough of all places.',
+				''
+			].join('\n')
+		);
+		await mkdir(join(dir, 'places', 'town'), { recursive: true });
+		await writeFile(join(dir, 'places', 'town', 'index.yaml'), 'name: Town\nkind: place\n');
+		await writeFile(join(dir, 'places', 'town', 'index.md'), 'A town.\n');
+
+		const { collections } = await loadAll(dir);
+		const places = collections.get('places');
+		expect(places).toBeDefined();
+		expect(places!.meta.title).toBe('Places');
+		expect(places!.meta.description).toBe('Where things happen.');
+		expect(places!.body!.startsWith('\nA walkthrough')).toBe(true);
+	});
+
+	it('emits a health issue when both _collection.yaml and _collection.md frontmatter are present', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-coll-conflict-'));
+		await mkdir(join(dir, 'places'), { recursive: true });
+		await writeFile(join(dir, 'places', '_collection.yaml'), 'title: From YAML\n');
+		await writeFile(
+			join(dir, 'places', '_collection.md'),
+			'---\ntitle: From Frontmatter\n---\n\nBody.\n'
+		);
+		await mkdir(join(dir, 'places', 'town'), { recursive: true });
+		await writeFile(join(dir, 'places', 'town', 'index.yaml'), 'name: Town\nkind: place\n');
+		await writeFile(join(dir, 'places', 'town', 'index.md'), 'A town.\n');
+
+		const { collections, issues } = await loadAll(dir);
+		expect(collections.has('places')).toBe(false);
+		expect(issues.some((i) => i.detail.includes('pick one'))).toBe(true);
+	});
+});

@@ -89,9 +89,12 @@ const triPath = `M ${SOURCE.x} ${SOURCE.y} L ${SELF.x} ${SELF.y} L ${CHAOS.x} ${
 // ─── Contour generation ──────────────────────────────────────────────────────
 
 function bary(x, y) {
-	const x1 = SOURCE.x, y1 = SOURCE.y;
-	const x2 = SELF.x,   y2 = SELF.y;
-	const x3 = CHAOS.x,  y3 = CHAOS.y;
+	const x1 = SOURCE.x,
+		y1 = SOURCE.y;
+	const x2 = SELF.x,
+		y2 = SELF.y;
+	const x3 = CHAOS.x,
+		y3 = CHAOS.y;
 	const denom = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3);
 	const s = ((y2 - y3) * (x - x3) + (x3 - x2) * (y - y3)) / denom;
 	const r = ((y3 - y1) * (x - x3) + (x1 - x3) * (y - y3)) / denom;
@@ -170,26 +173,44 @@ function generateContours(levels) {
 					return [xa + (xb - xa) * tc, ya + (yb - ya) * tc];
 				};
 
-				const top    = () => interp(v00, v10, x0, y0, x1, y0);
-				const right  = () => interp(v10, v11, x1, y0, x1, y1);
+				const top = () => interp(v00, v10, x0, y0, x1, y0);
+				const right = () => interp(v10, v11, x1, y0, x1, y1);
 				const bottom = () => interp(v01, v11, x0, y1, x1, y1);
-				const left   = () => interp(v00, v01, x0, y0, x0, y1);
+				const left = () => interp(v00, v01, x0, y0, x0, y1);
 
 				const seg = (p1, p2) => {
 					pathData += `M${p1[0].toFixed(1)} ${p1[1].toFixed(1)}L${p2[0].toFixed(1)} ${p2[1].toFixed(1)} `;
 				};
 
 				switch (idx) {
-					case 1: case 14: seg(left(), top());    break;
-					case 2: case 13: seg(top(), right());   break;
-					case 3: case 12: seg(left(), right());  break;
-					case 4: case 11: seg(right(), bottom()); break;
+					case 1:
+					case 14:
+						seg(left(), top());
+						break;
+					case 2:
+					case 13:
+						seg(top(), right());
+						break;
+					case 3:
+					case 12:
+						seg(left(), right());
+						break;
+					case 4:
+					case 11:
+						seg(right(), bottom());
+						break;
 					case 5:
 						seg(left(), top());
 						seg(right(), bottom());
 						break;
-					case 6: case 9:  seg(top(), bottom());  break;
-					case 7: case 8:  seg(left(), bottom()); break;
+					case 6:
+					case 9:
+						seg(top(), bottom());
+						break;
+					case 7:
+					case 8:
+						seg(left(), bottom());
+						break;
 					case 10:
 						seg(top(), right());
 						seg(left(), bottom());
@@ -229,9 +250,7 @@ function n(v) {
 
 const contourPaths = buildContourPaths();
 
-const contoursInner = contourPaths
-	.map((d) => `    <path d="${d.trim()}"/>`)
-	.join('\n');
+const contoursInner = contourPaths.map((d) => `    <path d="${d.trim()}"/>`).join('\n');
 
 const svg = `<svg
   viewBox="100 0 800 ${H}"

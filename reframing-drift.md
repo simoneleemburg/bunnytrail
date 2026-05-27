@@ -81,9 +81,9 @@ The elegant physical analogy
 
 You’ve basically rediscovered the distinction between:
 
-Concept	Analogy
-Drift tendency	force field / potential gradient
-Drift trajectory	actual motion
+Concept Analogy
+Drift tendency force field / potential gradient
+Drift trajectory actual motion
 
 Or:
 

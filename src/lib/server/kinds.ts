@@ -4,6 +4,7 @@ import { join, resolve } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import type { HealthIssue, Kind, KindMeta } from '$lib/types';
 import { defaultKindsDir } from './globals';
+import { splitFrontmatter } from './frontmatter';
 
 const KIND_ID_RE = /^[a-z][a-z0-9-]*$/;
 
@@ -72,8 +73,7 @@ async function walk(
 		}
 
 		const kindDir = join(absDir, id);
-		const meta = await loadKindMeta(kindDir, id, rootDir, issues);
-		const body = await readOptional(join(kindDir, '_kind.md'));
+		const { meta, body } = await loadKindFiles(kindDir, id, rootDir, issues);
 
 		// First declaration wins; warn on the duplicate but keep
 		// walking so a sibling typo doesn't hide the rest of the
@@ -91,16 +91,63 @@ async function walk(
 	}
 }
 
-async function loadKindMeta(
+/**
+ * Load a kind's editorial files. Two layouts are supported:
+ *
+ *   1. Sidecar (legacy): `_kind.yaml` carries the metadata,
+ *      `_kind.md` carries the prose.
+ *   2. Frontmatter:      `_kind.md` carries both — a `---`-fenced
+ *      YAML block at the top, followed by the prose body.
+ *
+ * If both `_kind.yaml` and `_kind.md` frontmatter declare metadata
+ * for the same kind, that's an authoring mistake: emit a health
+ * issue and fall back to default labels (no body, no description)
+ * so the conflict surfaces rather than one source silently
+ * shadowing the other.
+ */
+async function loadKindFiles(
 	kindDir: string,
 	id: string,
 	rootDir: string,
 	issues: HealthIssue[]
-): Promise<KindMeta> {
+): Promise<{ meta: KindMeta; body: string | null }> {
 	const yamlPath = join(kindDir, '_kind.yaml');
-	const raw = await readOptional(yamlPath);
-	if (raw === null) return {};
+	const mdPath = join(kindDir, '_kind.md');
+	const yamlRaw = await readOptional(yamlPath);
+	const mdRaw = await readOptional(mdPath);
+	const mdSplit = mdRaw !== null ? splitFrontmatter(mdRaw) : null;
+	const hasFrontmatter = mdSplit?.frontmatter !== null && mdSplit?.frontmatter !== undefined;
 
+	if (yamlRaw !== null && hasFrontmatter) {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: `${relTo(kindDir, rootDir)}: both _kind.yaml and _kind.md frontmatter declare metadata; pick one`
+		});
+		// Surface a consistent body so the kind is still browseable.
+		return { meta: {}, body: mdSplit?.body ?? null };
+	}
+
+	if (hasFrontmatter && mdSplit) {
+		const meta = parseKindMeta(mdSplit.frontmatter ?? '', mdPath, rootDir, issues);
+		return { meta, body: mdSplit.body };
+	}
+
+	const meta = yamlRaw !== null ? parseKindMeta(yamlRaw, yamlPath, rootDir, issues) : {};
+	void id;
+	return { meta, body: mdRaw };
+}
+
+/**
+ * Parse + validate a YAML document into a `KindMeta`. Pure aside
+ * from pushing health issues. Used both for `_kind.yaml` files and
+ * for the YAML body of a `_kind.md` frontmatter block.
+ */
+function parseKindMeta(
+	raw: string,
+	yamlPath: string,
+	rootDir: string,
+	issues: HealthIssue[]
+): KindMeta {
 	let parsed: unknown;
 	try {
 		parsed = parseYaml(raw);
@@ -137,9 +184,6 @@ async function loadKindMeta(
 			meta[field] = undefined;
 		}
 	}
-
-	// id is taken from the folder name, not from the yaml.
-	void id;
 
 	return meta;
 }

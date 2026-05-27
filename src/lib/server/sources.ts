@@ -4,6 +4,7 @@ import { join, resolve } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import type { HealthIssue } from '$lib/types';
 import { defaultSourcesDir, SOURCES_DIR } from './globals';
+import { splitFrontmatter } from './frontmatter';
 
 const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
 const SIZE_VALUES = new Set(['S', 'M', 'L', 'XL']);
@@ -104,7 +105,31 @@ async function loadProject(
 	issues: HealthIssue[]
 ): Promise<SourceProject | null> {
 	const yamlRaw = await readOptional(join(dir, 'index.yaml'));
-	if (yamlRaw === null) {
+	const mdRaw = await readOptional(join(dir, 'index.md'));
+	const mdSplit = mdRaw !== null ? splitFrontmatter(mdRaw) : null;
+	const hasMdFrontmatter = mdSplit?.frontmatter !== null && mdSplit?.frontmatter !== undefined;
+
+	// Two layouts are supported, mirroring the rest of the loader
+	// surface: a sidecar `index.yaml` (legacy), or an `index.md`
+	// with a `---`-fenced YAML frontmatter block. Mixing both is an
+	// authoring error.
+	if (yamlRaw !== null && hasMdFrontmatter) {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: `content_meta/sources/${slug}: both index.yaml and index.md frontmatter declare metadata; pick one`
+		});
+		return null;
+	}
+
+	let metaSource: string;
+	let where: string;
+	if (hasMdFrontmatter && mdSplit) {
+		metaSource = mdSplit.frontmatter ?? '';
+		where = `content_meta/sources/${slug}/index.md`;
+	} else if (yamlRaw !== null) {
+		metaSource = yamlRaw;
+		where = `content_meta/sources/${slug}/index.yaml`;
+	} else {
 		issues.push({
 			kind: 'invalid-yaml',
 			detail: `content_meta/sources/${slug}: missing index.yaml`
@@ -114,24 +139,23 @@ async function loadProject(
 
 	let parsed: unknown;
 	try {
-		parsed = parseYaml(yamlRaw);
+		parsed = parseYaml(metaSource);
 	} catch (err) {
 		issues.push({
 			kind: 'invalid-yaml',
-			detail: `content_meta/sources/${slug}/index.yaml: ${err instanceof Error ? err.message : String(err)}`
+			detail: `${where}: ${err instanceof Error ? err.message : String(err)}`
 		});
 		return null;
 	}
 	if (!parsed || typeof parsed !== 'object') {
 		issues.push({
 			kind: 'invalid-yaml',
-			detail: `content_meta/sources/${slug}/index.yaml: expected a mapping`
+			detail: `${where}: expected a mapping`
 		});
 		return null;
 	}
 
 	const meta = parsed as Record<string, unknown>;
-	const where = `content_meta/sources/${slug}/index.yaml`;
 
 	const title = meta.title;
 	if (typeof title !== 'string' || title.trim() === '') {

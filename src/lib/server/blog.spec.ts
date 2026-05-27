@@ -166,6 +166,47 @@ describe('loadBlog', () => {
 		expect(result.posts.map((p) => p.slug)).toEqual(['real']);
 		expect(result.issues).toEqual([]);
 	});
+
+	it('loads a post written entirely as index.md with frontmatter', async () => {
+		const dir = await seedBlogDir({
+			'front-post': {
+				md: [
+					'---',
+					'title: Front post',
+					'date: 2026-05-22',
+					'tags: [first]',
+					'---',
+					'',
+					'Hello from frontmatter.',
+					''
+				].join('\n')
+			}
+		});
+		const result = await loadBlog(dir);
+		expect(result.issues).toEqual([]);
+		expect(result.posts).toHaveLength(1);
+		expect(result.posts[0]).toMatchObject({
+			slug: 'front-post',
+			title: 'Front post',
+			date: '2026-05-22',
+			tags: ['first']
+		});
+		// Body must be the post-fence remainder, not the whole file.
+		expect(result.posts[0].body.startsWith('---')).toBe(false);
+		expect(result.posts[0].body.includes('Hello from frontmatter.')).toBe(true);
+	});
+
+	it('rejects a post that mixes index.yaml and index.md frontmatter', async () => {
+		const dir = await seedBlogDir({
+			both: {
+				yaml: 'title: From yaml\ndate: 2026-05-22\n',
+				md: '---\ntitle: From frontmatter\ndate: 2026-05-22\n---\n\nBody.\n'
+			}
+		});
+		const result = await loadBlog(dir);
+		expect(result.posts).toEqual([]);
+		expect(result.issues.some((i) => i.detail.includes('pick one'))).toBe(true);
+	});
 });
 
 describe('formatPostDate', () => {

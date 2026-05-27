@@ -18,6 +18,7 @@ import type {
 	ResolvedBookMeta
 } from '$lib/types';
 import { loadKindRegistry } from './kinds';
+import { splitFrontmatter } from './frontmatter';
 import { CONTENT_DIR } from './globals';
 
 /**
@@ -274,49 +275,96 @@ async function walk(args: WalkArgs): Promise<void> {
 	const hasCollectionYaml = await exists(collectionYamlPath);
 	const hasCollectionMd = await exists(collectionMdPath);
 
-	// Load _collection.yaml if present. Collections are pure browsing
-	// metadata. Skipped at the content root (relPath === '').
-	if (hasCollectionYaml && relPath) {
+	// Load _collection.yaml if present, or frontmatter from
+	// _collection.md, to register an editorial collection.
+	// Collections are pure browsing metadata. Skipped at the content
+	// root (relPath === '').
+	//
+	// Two layouts are supported, mirroring entities:
+	//
+	//   1. Sidecar: `_collection.yaml` (+ optional `_collection.md`).
+	//   2. Frontmatter: `_collection.md` with a `---`-delimited
+	//      YAML block at the top.
+	//
+	// If both `_collection.yaml` and `_collection.md` frontmatter
+	// are present, that's an authoring mistake: emit a health issue
+	// and fall back to treating the folder as a collection with no
+	// editorial metadata.
+	if (relPath && (hasCollectionYaml || hasCollectionMd)) {
+		const collectionMdRaw = hasCollectionMd ? await readFile(collectionMdPath, 'utf8') : null;
+		const collectionMdSplit = collectionMdRaw !== null ? splitFrontmatter(collectionMdRaw) : null;
+		const collectionHasFrontmatter =
+			collectionMdSplit?.frontmatter !== null && collectionMdSplit?.frontmatter !== undefined;
+
 		let meta: CollectionMeta = {};
-		try {
-			const raw = await readFile(collectionYamlPath, 'utf8');
-			const parsed = parseYaml(raw);
-			meta = (parsed && typeof parsed === 'object' ? parsed : {}) as CollectionMeta;
-		} catch (err) {
+		let body: string | null = null;
+		let conflict = false;
+
+		if (hasCollectionYaml && collectionHasFrontmatter) {
+			conflict = true;
 			issues.push({
 				kind: 'invalid-yaml',
-				detail: `${collectionYamlPath}: ${err instanceof Error ? err.message : String(err)}`
+				detail: `${relPath}: both _collection.yaml and _collection.md frontmatter declare metadata; pick one`
 			});
-		}
-		let body: string | null = null;
-		if (hasCollectionMd) {
+		} else if (hasCollectionYaml) {
 			try {
-				body = await readFile(collectionMdPath, 'utf8');
+				const raw = await readFile(collectionYamlPath, 'utf8');
+				const parsed = parseYaml(raw);
+				meta = (parsed && typeof parsed === 'object' ? parsed : {}) as CollectionMeta;
+			} catch (err) {
+				issues.push({
+					kind: 'invalid-yaml',
+					detail: `${collectionYamlPath}: ${err instanceof Error ? err.message : String(err)}`
+				});
+			}
+			if (hasCollectionMd && collectionMdRaw !== null) {
+				body = collectionMdRaw;
+			}
+		} else if (collectionHasFrontmatter && collectionMdSplit) {
+			try {
+				const parsed = parseYaml(collectionMdSplit.frontmatter ?? '');
+				meta = (parsed && typeof parsed === 'object' ? parsed : {}) as CollectionMeta;
 			} catch (err) {
 				issues.push({
 					kind: 'invalid-yaml',
 					detail: `${collectionMdPath}: ${err instanceof Error ? err.message : String(err)}`
 				});
 			}
+			body = collectionMdSplit.body;
+		} else if (hasCollectionMd && collectionMdRaw !== null) {
+			// Bare `_collection.md` with no frontmatter: collection with
+			// default labels, raw markdown body.
+			body = collectionMdRaw;
 		}
-		collections.set(relPath, { path: relPath, meta, body });
-	} else if (hasCollectionMd && relPath) {
-		// A bare `_collection.md` without a yaml marker is treated as
-		// a collection with default labels.
-		try {
-			const body = await readFile(collectionMdPath, 'utf8');
-			collections.set(relPath, { path: relPath, meta: {}, body });
-		} catch (err) {
-			issues.push({
-				kind: 'invalid-yaml',
-				detail: `${collectionMdPath}: ${err instanceof Error ? err.message : String(err)}`
-			});
+
+		if (!conflict) {
+			collections.set(relPath, { path: relPath, meta, body });
 		}
 	}
 
-	// Load index.yaml if present. The current folder is an entity.
+	// Load index.yaml if present, or frontmatter from index.md, to
+	// classify the current folder as an entity.
+	//
+	// Two layouts are supported:
+	//
+	//   1. Sidecar (legacy): `index.yaml` carries the metadata,
+	//      `index.md` carries the prose.
+	//   2. Frontmatter:      `index.md` carries both — a standard
+	//      `---`-delimited YAML block at the top, followed by the
+	//      prose body.
+	//
+	// If both an `index.yaml` AND an `index.md` with a frontmatter
+	// fence are present in the same folder, that's an authoring
+	// mistake: emit an `invalid-yaml` issue and skip the entity so
+	// the conflict surfaces loudly rather than one source silently
+	// shadowing the other.
 	let nextParentEntity = args.parentEntity;
-	if (hasIndexYaml && relPath) {
+	const mdRaw = hasIndexMd ? await readFile(indexMdPath, 'utf8') : null;
+	const mdSplit = mdRaw !== null ? splitFrontmatter(mdRaw) : null;
+	const hasMdFrontmatter = mdSplit?.frontmatter !== null && mdSplit?.frontmatter !== undefined;
+	const isEntity = relPath !== '' && (hasIndexYaml || hasMdFrontmatter);
+
+	if (isEntity) {
 		const id: EntityId = relPath;
 		const slug = leafOf(relPath);
 		// `type` is the parent-folder path: one segment shorter than
@@ -325,22 +373,54 @@ async function walk(args: WalkArgs): Promise<void> {
 		const entityType = parentOf(relPath);
 
 		let meta: EntityMeta | null = null;
-		try {
-			const raw = await readFile(indexYamlPath, 'utf8');
-			meta = (parseYaml(raw) ?? {}) as EntityMeta;
-			if (!meta.name) meta.name = slug;
-		} catch (err) {
+		// `metaPath` is what we report in diagnostics: the file the
+		// metadata was actually parsed from. May be the `.md` file
+		// when frontmatter is in use.
+		let metaPath = indexYamlPath;
+		let conflict = false;
+
+		if (hasIndexYaml && hasMdFrontmatter) {
+			conflict = true;
 			issues.push({
 				kind: 'invalid-yaml',
 				entity: id,
-				detail: err instanceof Error ? err.message : String(err)
+				detail: `both index.yaml and index.md frontmatter declare metadata; pick one`
 			});
+		} else if (hasIndexYaml) {
+			try {
+				const raw = await readFile(indexYamlPath, 'utf8');
+				meta = (parseYaml(raw) ?? {}) as EntityMeta;
+				if (!meta.name) meta.name = slug;
+			} catch (err) {
+				issues.push({
+					kind: 'invalid-yaml',
+					entity: id,
+					detail: err instanceof Error ? err.message : String(err)
+				});
+			}
+		} else if (hasMdFrontmatter && mdSplit) {
+			metaPath = indexMdPath;
+			try {
+				const parsed = parseYaml(mdSplit.frontmatter ?? '');
+				meta = ((parsed && typeof parsed === 'object' ? parsed : {}) as EntityMeta) ?? null;
+				if (meta && !meta.name) meta.name = slug;
+			} catch (err) {
+				issues.push({
+					kind: 'invalid-yaml',
+					entity: id,
+					detail: `${indexMdPath}: ${err instanceof Error ? err.message : String(err)}`
+				});
+			}
 		}
 
+		// Determine the body. Frontmatter wins (its body is the
+		// post-fence remainder). The sidecar layout uses the whole
+		// file. When neither side carries an md, we still emit the
+		// missing-md health issue exactly as before.
 		let body = '';
 		if (hasIndexMd) {
-			body = await readFile(indexMdPath, 'utf8');
-		} else {
+			body = hasMdFrontmatter && mdSplit ? mdSplit.body : (mdRaw ?? '');
+		} else if (hasIndexYaml) {
 			issues.push({ kind: 'missing-md', entity: id, detail: indexMdPath });
 		}
 
@@ -365,7 +445,7 @@ async function walk(args: WalkArgs): Promise<void> {
 		const craftMdPath = join(absDir, 'craft.md');
 		const craft = (await exists(craftMdPath)) ? await readFile(craftMdPath, 'utf8') : null;
 
-		if (meta) {
+		if (meta && !conflict) {
 			entities.set(id, {
 				id,
 				type: entityType,
@@ -375,7 +455,7 @@ async function walk(args: WalkArgs): Promise<void> {
 				wikilinks: mergedWikilinks,
 				kindLinks: mergedKindLinks,
 				kindRefs: extractKindRefs(meta),
-				yamlPath: indexYamlPath,
+				yamlPath: metaPath,
 				mdPath: indexMdPath,
 				parent: args.parentEntity,
 				children: [],
@@ -383,9 +463,9 @@ async function walk(args: WalkArgs): Promise<void> {
 				book: chapters.length > 0 ? resolveBookMeta(meta.book) : null,
 				craft
 			});
-		}
 
-		nextParentEntity = id;
+			nextParentEntity = id;
+		}
 	}
 
 	// Recurse into subdirectories.

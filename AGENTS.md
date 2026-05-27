@@ -8,15 +8,26 @@ Alteria is a personal worldbuilding compendium. Alteria is the
 universe; **clusters** of that universe live as top-level folders under
 `content/` (currently `content/aurethia/` — the Aureth system and its
 immediate neighbourhood — and `content/earth/`). Canonical data lives in
-`content/` as one folder per entity:
-`content/<...collection-path>/<slug>/index.yaml` holds structured
-metadata and `index.md` holds the prose; sibling files (images, etc.)
-live alongside. Folders are **collections** — narrative shelves of
-the field-notebook — and may carry an optional `_collection.yaml`
-describing their display label and prose. The **kinds** every entity
-declares (its taxonomic classification) live separately in
-`content_meta/kinds/` as a nested folder tree, each node optionally
-carrying a `_kind.yaml` and `_kind.md`. Kinds are universal — they
+`content/` as one folder per entity. Each entity may be authored as
+either:
+
+- **Sidecar layout** (legacy): `index.yaml` for structured metadata
+  plus `index.md` for prose; or
+- **Frontmatter layout**: a single `index.md` that opens with a
+  `---`-fenced YAML block, followed by the prose body.
+
+Both layouts produce the same loaded entity; pick whichever is more
+comfortable per file. **Don't mix them in the same folder** — having
+both an `index.yaml` and an `index.md` with frontmatter is treated
+as an authoring error and the entity is skipped with a health-page
+issue. Sibling files (images, etc.) live alongside. Folders are
+**collections** — narrative shelves of the field-notebook — and may
+carry an optional `_collection.yaml` (or a `_collection.md` with
+frontmatter) describing their display label and prose. The **kinds**
+every entity declares (its taxonomic classification) live separately
+in `content_meta/kinds/` as a nested folder tree, each node
+optionally carrying a `_kind.yaml` and `_kind.md` (or, equivalently,
+a single `_kind.md` with frontmatter). Kinds are universal — they
 describe categories in the abstract and apply across clusters. On top
 of `kind:`, instances may declare additional **lenses** — spatial,
 temporal, account-relative, kind-affinity — as structured `relations:`
@@ -107,6 +118,33 @@ The compendium is built on one foundational separation and a
 number of optional lenses on top. See
 [`WORLDBUILDING.md`](./WORLDBUILDING.md) for the editorial
 treatment; this section covers the operational placement.
+
+### Authoring layouts
+
+Every entity, collection, and kind can be authored in either of
+two equivalent layouts. Pick whichever feels more comfortable
+per file; the loader produces the same in-memory shape from
+both.
+
+- **Sidecar** (legacy): structured fields in a `.yaml` file,
+  prose in a sibling `.md` file. For an entity:
+  `<slug>/index.yaml` + `<slug>/index.md`.
+- **Frontmatter**: a single `.md` file that opens with a
+  `---`-fenced YAML block, followed by the prose body. For an
+  entity: `<slug>/index.md` only.
+
+**Don't mix the two in one folder.** Both an `index.yaml` and an
+`index.md` with frontmatter is treated as an authoring error —
+the entity is skipped and an issue appears on the health page.
+Same rule for `_collection.yaml` + `_collection.md`-with-frontmatter
+and `_kind.yaml` + `_kind.md`-with-frontmatter.
+
+A bare `_collection.md` or `_kind.md` with no frontmatter remains
+a prose-only companion, exactly as before.
+
+Path notation in this document uses `index.{yaml,md}` to mean
+"either layout"; concrete examples in `content/` are free to use
+whichever suits the entry.
 
 **Foundational:**
 

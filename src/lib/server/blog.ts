@@ -4,7 +4,7 @@ import { join, resolve } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import type { HealthIssue } from '$lib/types';
 import { defaultBlogDir } from './globals';
-
+import { splitFrontmatter } from './frontmatter';
 
 const MONTHS = [
 	'January',
@@ -160,16 +160,9 @@ async function loadPost(
 	issues: HealthIssue[]
 ): Promise<BlogPost | null> {
 	const yamlRaw = await readOptional(join(postDir, 'index.yaml'));
-	const body = await readOptional(join(postDir, 'index.md'));
+	const mdRaw = await readOptional(join(postDir, 'index.md'));
 
-	if (yamlRaw === null) {
-		issues.push({
-			kind: 'invalid-yaml',
-			detail: `content_meta/blog/${slug}: missing index.yaml`
-		});
-		return null;
-	}
-	if (body === null) {
+	if (mdRaw === null) {
 		issues.push({
 			kind: 'invalid-yaml',
 			detail: `content_meta/blog/${slug}: missing index.md`
@@ -177,20 +170,58 @@ async function loadPost(
 		return null;
 	}
 
+	// Two layouts are supported:
+	//
+	//   1. Sidecar (legacy): `index.yaml` carries the frontmatter
+	//      fields, `index.md` carries the prose.
+	//   2. Frontmatter:      `index.md` carries both — a `---`-fenced
+	//      YAML block at the top, followed by the body.
+	//
+	// Mixing the two in the same post is an authoring error.
+	const mdSplit = splitFrontmatter(mdRaw);
+	const hasMdFrontmatter = mdSplit.frontmatter !== null;
+
+	if (yamlRaw !== null && hasMdFrontmatter) {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: `content_meta/blog/${slug}: both index.yaml and index.md frontmatter declare metadata; pick one`
+		});
+		return null;
+	}
+
+	let metaSource: string;
+	let metaPath: string;
+	let body: string;
+	if (hasMdFrontmatter) {
+		metaSource = mdSplit.frontmatter ?? '';
+		metaPath = `content_meta/blog/${slug}/index.md`;
+		body = mdSplit.body;
+	} else if (yamlRaw !== null) {
+		metaSource = yamlRaw;
+		metaPath = `content_meta/blog/${slug}/index.yaml`;
+		body = mdRaw;
+	} else {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: `content_meta/blog/${slug}: missing index.yaml`
+		});
+		return null;
+	}
+
 	let parsed: unknown;
 	try {
-		parsed = parseYaml(yamlRaw);
+		parsed = parseYaml(metaSource);
 	} catch (err) {
 		issues.push({
 			kind: 'invalid-yaml',
-			detail: `content_meta/blog/${slug}/index.yaml: ${err instanceof Error ? err.message : String(err)}`
+			detail: `${metaPath}: ${err instanceof Error ? err.message : String(err)}`
 		});
 		return null;
 	}
 	if (!parsed || typeof parsed !== 'object') {
 		issues.push({
 			kind: 'invalid-yaml',
-			detail: `content_meta/blog/${slug}/index.yaml: expected a mapping`
+			detail: `${metaPath}: expected a mapping`
 		});
 		return null;
 	}
@@ -201,7 +232,7 @@ async function loadPost(
 	if (typeof title !== 'string' || title.trim() === '') {
 		issues.push({
 			kind: 'invalid-yaml',
-			detail: `content_meta/blog/${slug}/index.yaml: title must be a non-empty string`
+			detail: `${metaPath}: title must be a non-empty string`
 		});
 		return null;
 	}
@@ -210,7 +241,7 @@ async function loadPost(
 	if (typeof date !== 'string' || !DATE_RE.test(date)) {
 		issues.push({
 			kind: 'invalid-yaml',
-			detail: `content_meta/blog/${slug}/index.yaml: date must be a string in YYYY-MM-DD form`
+			detail: `${metaPath}: date must be a string in YYYY-MM-DD form`
 		});
 		return null;
 	}
@@ -220,7 +251,7 @@ async function loadPost(
 		if (!Array.isArray(meta.tags) || meta.tags.some((t) => typeof t !== 'string')) {
 			issues.push({
 				kind: 'invalid-yaml',
-				detail: `content_meta/blog/${slug}/index.yaml: tags must be an array of strings`
+				detail: `${metaPath}: tags must be an array of strings`
 			});
 			return null;
 		}
