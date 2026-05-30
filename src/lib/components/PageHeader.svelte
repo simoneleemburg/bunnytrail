@@ -66,7 +66,7 @@
 		const path = page.url?.pathname ?? '/';
 		const segments = path.replace(/\/+$/, '').split('/').filter(Boolean);
 		if (segments.length <= 1) {
-			return { href: '/', label: 'Alteria' };
+			return { href: '/', label: page.data?.world?.name ?? 'Home' };
 		}
 		const parentSegs = segments.slice(0, -1);
 		const parentSlug = parentSegs[parentSegs.length - 1];

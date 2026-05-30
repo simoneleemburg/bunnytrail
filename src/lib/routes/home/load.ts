@@ -1,6 +1,7 @@
 import { graph } from '$lib/server/graph';
 import { guides } from '$lib/server/guides';
 import { sources } from '$lib/server/sources';
+import { world } from '$lib/server/world';
 
 /**
  * Recursively walk every browseable folder under `content/`, in
@@ -24,6 +25,7 @@ export async function load() {
 	await graph.ready();
 	await guides.ready();
 	await sources.ready();
+	await world.ready();
 
 	// Guide callouts — content-authored tours of the world that live
 	// under `content_meta/guides/`. The homepage renders one card per
@@ -38,7 +40,7 @@ export async function load() {
 	}));
 
 	// Source projects — out-of-world author's-room catalogue of the
-	// feeder works being integrated into Alteria. Resolve each
+	// feeder works being integrated into the world. Resolve each
 	// optional `entity` pointer eagerly so the view can render an
 	// EntityLink without re-querying the graph.
 	const sourceProjects = sources.all().map((p) => {
@@ -128,7 +130,12 @@ export async function load() {
 		tags: graph.tags().slice(0, 12),
 		issues: graph.issues().length,
 		sourceProjects,
-		guides: guideCallouts
+		guides: guideCallouts,
+		// Homepage hero lede, rendered from the body of
+		// `content_meta/world.md`. `null` when the file is missing or
+		// its body is empty — the page renders a placeholder in that
+		// case so a freshly scaffolded world still has a coherent hero.
+		lede: world.ledeHtml()
 	};
 }
 

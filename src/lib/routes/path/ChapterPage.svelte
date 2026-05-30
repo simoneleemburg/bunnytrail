@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import type { ChapterPageData } from './chapterPage.load';
 
 	let { data }: { data: ChapterPageData } = $props();
@@ -36,7 +37,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.chapter.title} · {data.work.name} · Alteria</title>
+	<title>{data.chapter.title} · {data.work.name} · {page.data.world.shortName}</title>
 </svelte:head>
 
 <article class="book" data-book-format={format}>

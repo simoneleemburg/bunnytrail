@@ -4,7 +4,8 @@
  * link rewriting).
  *
  * Scope = which cluster the user is currently "in" for nav purposes.
- * Values: a cluster id (e.g. `'aurethia'`) or `null` for "All Alteria".
+ * Values: a cluster id (e.g. `'mistwood'`) or `null` for the
+ * all-clusters scope (labelled by `world.allScopeLabel`).
  *
  * The URL is the source of truth. Precedence:
  *

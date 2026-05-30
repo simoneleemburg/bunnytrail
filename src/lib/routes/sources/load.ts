@@ -3,7 +3,7 @@ import { sources } from '$lib/server/sources';
 
 /**
  * Index of all source projects — the feeder works being absorbed
- * into Alteria. Out-of-world catalogue, sibling to the Notebook.
+ * into the world. Out-of-world catalogue, sibling to the Notebook.
  *
  * Each project's optional `entity:` pointer is resolved against
  * the graph here so the view can render a link without re-querying.

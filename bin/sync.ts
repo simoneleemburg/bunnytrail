@@ -1,6 +1,7 @@
 // `bunnytrail sync` — regenerates src/routes/ shims against the
-// engine's current route surface. Overwrites blindly: shims are
-// considered generated artifacts. Run from the world repo root.
+// engine's current route surface. Overwrites blindly and prunes
+// stale shims that the engine no longer emits. Run from the world
+// repo root.
 //
 // Run this after `npm update bunnytrail` if the engine added,
 // renamed, or removed routes.

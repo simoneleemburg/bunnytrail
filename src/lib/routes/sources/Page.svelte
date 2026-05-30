@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import type { SourcesData } from './load';
 	import EntityLink from '$lib/components/EntityLink.svelte';
 
@@ -6,7 +7,7 @@
 </script>
 
 <svelte:head>
-	<title>Source projects · Alteria</title>
+	<title>Source projects · {page.data.world.shortName}</title>
 </svelte:head>
 
 <!--
@@ -22,7 +23,7 @@
 		<p class="eyebrow">Workbench</p>
 		<h1 class="title">Source projects</h1>
 		<p class="sub">
-			The feeder works being absorbed into Alteria. Out-of-world; ordered newest first.
+			The feeder works being absorbed into {page.data.world.name}. Out-of-world; ordered newest first.
 		</p>
 	</header>
 
@@ -47,7 +48,7 @@
 						<p class="catchline">{p.catchline}</p>
 						{#if p.entity}
 							<p class="entity-link-row">
-								In Alteria: <EntityLink
+								In {page.data.world.name}: <EntityLink
 									id={p.entity.id}
 									name={p.entity.name}
 									summary={p.entity.summary}
@@ -59,7 +60,7 @@
 					</div>
 					<div
 						class="integration"
-						title={`${p.integration}% integrated into Alteria`}
+						title={`${p.integration}% integrated into ${page.data.world.name}`}
 						aria-label={`${p.integration}% integrated`}
 					>
 						<div class="bar" aria-hidden="true">

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import type { CollectionPageData, ContainerNode, OrbitNode } from './collectionPage.load';
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
@@ -349,7 +350,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.label.plural} · Alteria</title>
+	<title>{data.label.plural} · {page.data.world.shortName}</title>
 </svelte:head>
 
 <PageHeader title={data.label.plural} />

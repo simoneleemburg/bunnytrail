@@ -1,11 +1,12 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import type { CraftPageData } from './craftPage.load';
 
 	let { data }: { data: CraftPageData } = $props();
 </script>
 
 <svelte:head>
-	<title>Craft sheet · {data.entity.name} · Alteria</title>
+	<title>Craft sheet · {data.entity.name} · {page.data.world.shortName}</title>
 </svelte:head>
 
 <!--

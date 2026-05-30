@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import type { HealthData } from './load';
 
@@ -6,7 +7,7 @@
 </script>
 
 <svelte:head>
-	<title>Health · Alteria</title>
+	<title>Health · {page.data.world.shortName}</title>
 </svelte:head>
 
 <PageHeader title="Health" />

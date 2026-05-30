@@ -144,8 +144,8 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 	//
 	// A *cluster* is a top-level folder under `content/` that is not
 	// itself marked `universal: true` and that does not itself act as
-	// an entity. Clusters are the editorial neighbourhoods of Alteria
-	// (currently `aurethia` and `earth`).
+	// an entity. Clusters are the editorial neighbourhoods of the
+	// world (e.g. `mistwood`, `tideholm` in the sample world).
 	//
 	// A *universal substrate* is a top-level folder explicitly marked
 	// with `universal: true` in its `_collection.{yaml,md}`. It is

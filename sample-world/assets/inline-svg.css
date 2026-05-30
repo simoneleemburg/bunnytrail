@@ -1,6 +1,6 @@
 /* Sample-world stub for inline-SVG styling. The engine inlines
    any `![alt](foo.svg)` reference in entity/collection/guide prose
-   as a <figure class="alteria-inline-svg"><svg/><figcaption/>…</figure>.
+   as a <figure class="bt-inline-svg"><svg/><figcaption/>…</figure>.
    This file (loaded via /api/assets/inline-svg.css) is where the
    world owner styles those figures. The sample world ships no
    SVG references, so this stylesheet is intentionally empty. */

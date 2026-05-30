@@ -1,24 +1,27 @@
 import { building } from '$app/environment';
 import { graph } from '$lib/server/graph';
+import { world } from '$lib/server/world';
 import { readScope, type ScopeContext } from '$lib/cluster';
 
 /**
  * Cluster scope for the masthead nav.
  *
- * Top-level folders under `content/` are *clusters* of the universe
- * (currently `aurethia/` and `earth/`). The user's current scope is
- * derived from the URL itself — see `$lib/cluster.ts` for the rules.
- * No cookie; the URL is the source of truth.
+ * Top-level folders under `content/` are *clusters* of the universe.
+ * The user's current scope is derived from the URL itself — see
+ * `$lib/cluster.ts` for the rules. No cookie; the URL is the source
+ * of truth.
  *
- * `selectedCluster === null` is the "All Alteria" view: shelf links
+ * `selectedCluster === null` is the all-clusters view: shelf links
  * go to virtual aggregate routes like `/characters` that gather
- * entries from every cluster.
+ * entries from every cluster. The label for this option is
+ * authored in `content_meta/world.md` as `allScopeLabel`.
  *
  * `selectedCluster === '<cluster>'` scopes shelf links to that
- * cluster: `/aurethia/characters` etc. — real folder routes.
+ * cluster: `/<cluster>/characters` etc. — real folder routes.
  */
 export async function load({ url }: { url: URL }) {
 	await graph.ready();
+	await world.ready();
 
 	const clusters = graph.clusters();
 	const unionShelves = graph.unionShelves();
@@ -67,8 +70,9 @@ export async function load({ url }: { url: URL }) {
 		};
 	});
 
+	const worldConfig = world.config();
 	const clusterOptions = [
-		{ value: '', label: 'All Alteria', selected: selectedCluster === null },
+		{ value: '', label: worldConfig.allScopeLabel, selected: selectedCluster === null },
 		...clusters.map((c) => ({
 			value: c,
 			label: graph.folderLabels(c).singular,
@@ -84,6 +88,11 @@ export async function load({ url }: { url: URL }) {
 		kindsHref: selectedCluster ? `/${selectedCluster}/kinds` : '/kinds',
 		clusterOptions,
 		selectedCluster,
+		// World identity (name, tagline, shortName, allScopeLabel),
+		// inherited by every page via `$page.data.world`. Sourced from
+		// `content_meta/world.md`; falls back to "Bunnytrail" defaults
+		// if the file is absent.
+		world: worldConfig,
 		// Surface the scope context to the client so the navigation
 		// hook can rewrite outgoing links without re-deriving it.
 		scopeContext: { clusters, unionShelves, clusterAwarePaths } satisfies ScopeContext

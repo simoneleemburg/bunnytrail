@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import type { TagPageData } from './load';
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
@@ -9,7 +10,7 @@
 </script>
 
 <svelte:head>
-	<title>#{data.tag} · Alteria</title>
+	<title>#{data.tag} · {page.data.world.shortName}</title>
 </svelte:head>
 
 <PageHeader eyebrow={countLabel} title={`#${data.tag}`} />

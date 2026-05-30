@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import type { BlogPostData } from './load';
 	import Tag from '$lib/components/Tag.svelte';
 
@@ -6,7 +7,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.title} · Notebook · Alteria</title>
+	<title>{data.title} · Notebook · {page.data.world.shortName}</title>
 </svelte:head>
 
 <!--

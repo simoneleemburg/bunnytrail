@@ -8,6 +8,7 @@
 // so the top-level await here blocks until the graph is loaded.
 import { BLOG_DIR, CONTENT_DIR, GUIDES_DIR, KINDS_DIR, SOURCES_DIR } from './server/globals';
 import { graph } from './server/graph';
+import { world } from './server/world';
 import { startWatcher } from './server/watcher';
 
 console.log(
@@ -15,4 +16,5 @@ console.log(
 );
 
 await graph.load();
+await world.load();
 startWatcher();

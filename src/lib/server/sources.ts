@@ -18,23 +18,24 @@ export interface SourceProject {
 	yearStart: number;
 	genre: string;
 	size: SourceSize;
-	/** Integration percentage into Alteria, 0–100. */
+	/** Integration percentage into the world, 0–100. */
 	integration: number;
 	catchline: string;
 	/**
 	 * Optional pointer to an in-world entity id (e.g.
-	 * `aurethia/places/celestial/aureth-system/nebelheim`) — set
-	 * for projects already absorbed into the compendium. Resolved
-	 * to a real entity by the page load function; unresolved
-	 * pointers surface as a health issue.
+	 * `mistwood/places/stone-circle`) — set for projects already
+	 * absorbed into the compendium. Resolved to a real entity by
+	 * the page load function; unresolved pointers surface as a
+	 * health issue.
 	 */
 	entity: string | null;
 	/**
-	 * Optional cluster slug (e.g. `aurethia`, `earth`). The cluster
-	 * the project will land in once integrated — even projects that
-	 * haven't been touched yet typically have a known destination.
-	 * Validated by the page load against `graph.topLevelFolders()`;
-	 * unknown values render as the raw slug.
+	 * Optional cluster slug (e.g. `mistwood`, `tideholm`). The
+	 * cluster the project will land in once integrated — even
+	 * projects that haven't been touched yet typically have a known
+	 * destination. Validated by the page load against
+	 * `graph.topLevelFolders()`; unknown values render as the raw
+	 * slug.
 	 */
 	cluster: string | null;
 }

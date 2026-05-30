@@ -1,11 +1,12 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import type { GuideData } from './load';
 
 	let { data }: { data: GuideData } = $props();
 </script>
 
 <svelte:head>
-	<title>{data.title} · Alteria</title>
+	<title>{data.title} · {page.data.world.shortName}</title>
 </svelte:head>
 
 <!--

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import type { BlogIndexData } from './load';
 	import Tag from '$lib/components/Tag.svelte';
 
@@ -6,7 +7,7 @@
 </script>
 
 <svelte:head>
-	<title>Notebook · Alteria</title>
+	<title>Notebook · {page.data.world.shortName}</title>
 </svelte:head>
 
 <!--
@@ -21,7 +22,8 @@
 		<p class="eyebrow">Working notes</p>
 		<h1 class="title">Notebook</h1>
 		<p class="sub">
-			Author&rsquo;s-room reflections on building Alteria. Out-of-world; not part of the compendium.
+			Author&rsquo;s-room reflections on building {page.data.world.name}. Out-of-world; not part of the
+			compendium.
 		</p>
 	</header>
 

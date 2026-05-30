@@ -138,7 +138,7 @@ export const GUIDES_DIR = defaultGuidesDir();
  *
  * Like the blog, this is out-of-world authoring material: it is
  * *about* the worldbuilding project — the feeder works that are
- * being integrated into Alteria — rather than part of the world
+ * being integrated into the world — rather than part of the world
  * itself. It is loaded as its own singleton so source projects
  * never leak into entity counts, tag indexes, or any cross-cluster
  * aggregate.
@@ -175,3 +175,23 @@ export function defaultAssetsDir(): string {
 }
 
 export const ASSETS_DIR = defaultAssetsDir();
+
+/**
+ * Where the world's identity manifest lives. A single markdown file
+ * with YAML frontmatter declaring the world's name, tagline and
+ * shortName, and a body that renders as the homepage hero lede.
+ *
+ * Override with `BUNNYTRAIL_WORLD_CONFIG` for testing.
+ *
+ * Missing file is a valid state — the engine falls back to a
+ * generic "Bunnytrail" identity so a freshly scaffolded world still
+ * renders. See `src/lib/server/world.ts`.
+ */
+export function defaultWorldConfigPath(): string {
+	return (
+		process.env.BUNNYTRAIL_WORLD_CONFIG ??
+		resolve(WORLD_DIR, 'content_meta/world.md')
+	);
+}
+
+export const WORLD_CONFIG_PATH = defaultWorldConfigPath();

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import KindsIndexPage from './KindsIndexPage.svelte';
 	import type { KindNode } from './load';
 
@@ -10,7 +11,7 @@
 </script>
 
 <svelte:head>
-	<title>Kinds · Alteria</title>
+	<title>Kinds · {page.data.world.shortName}</title>
 </svelte:head>
 
 <KindsIndexPage {data} />

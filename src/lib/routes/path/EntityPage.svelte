@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import type { EntityPageData } from './entityPage.load';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import PropertyList from '$lib/components/PropertyList.svelte';
@@ -172,7 +173,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.entity.name} · Alteria</title>
+	<title>{data.entity.name} · {page.data.world.shortName}</title>
 </svelte:head>
 
 <article class="entity">

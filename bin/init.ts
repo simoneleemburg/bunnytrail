@@ -22,6 +22,7 @@
 //       README.md
 //     content/                   (empty — your worldbuilding lives here)
 //     content_meta/
+//       world.md                 (world identity + homepage lede)
 //       kinds/                   (empty — declare taxonomies here)
 import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -58,7 +59,8 @@ const STATIC: FileCopy[] = [
 // Templated copies — read source, substitute __NAME__, write to dest.
 const TEMPLATED: FileCopy[] = [
 	{ from: 'package.json.tpl', to: 'package.json' },
-	{ from: 'README.md.tpl', to: 'README.md' }
+	{ from: 'README.md.tpl', to: 'README.md' },
+	{ from: 'content_meta/world.md.tpl', to: 'content_meta/world.md' }
 ];
 
 // Empty directories the user is meant to fill in.

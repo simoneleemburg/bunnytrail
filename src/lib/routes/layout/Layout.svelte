@@ -12,6 +12,7 @@
 			kindsHref: string;
 			clusterOptions: { value: string; label: string; selected: boolean }[];
 			selectedCluster: string | null;
+			world: { name: string; shortName: string; tagline: string; allScopeLabel: string };
 			scopeContext: ScopeContext;
 		};
 		children: Snippet;
@@ -77,7 +78,7 @@
 <div class="page">
 	<header class="masthead">
 		<div class="masthead-inner">
-			<a class="wordmark" href="/">Alteria</a>
+			<a class="wordmark" href="/">{data.world.name}</a>
 			<nav>
 				{#each data.nav as item (item.href)}
 					<a href={item.href}>{item.label}</a>
@@ -106,7 +107,9 @@
 
 	<footer>
 		<div class="footer-inner">
-			<p>My sacred universe of imagination.</p>
+			{#if data.world.tagline}
+				<p>{data.world.tagline}</p>
+			{/if}
 		</div>
 	</footer>
 </div>

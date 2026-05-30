@@ -5,7 +5,16 @@ import { guides } from './guides';
 import { sources } from './sources';
 import { graph } from './graph';
 import { assets } from './assets';
-import { CONTENT_DIR, BLOG_DIR, GUIDES_DIR, KINDS_DIR, SOURCES_DIR, ASSETS_DIR } from './globals';
+import { world } from './world';
+import {
+	CONTENT_DIR,
+	BLOG_DIR,
+	GUIDES_DIR,
+	KINDS_DIR,
+	SOURCES_DIR,
+	ASSETS_DIR,
+	WORLD_CONFIG_PATH
+} from './globals';
 
 /**
  * In dev, watch the worldbuilding source trees and reload the graph
@@ -48,13 +57,19 @@ export function startWatcher(): void {
 			void sources.load().catch((err) => {
 				console.error('[bunnytrail] sources reload failed:', err);
 			});
+			void world.load().catch((err) => {
+				console.error('[bunnytrail] world reload failed:', err);
+			});
 		}, 75);
 	};
 
-	const watcher = chokidar.watch([CONTENT_DIR, KINDS_DIR, BLOG_DIR, GUIDES_DIR, SOURCES_DIR], {
-		ignoreInitial: true,
-		ignored: (path) => path.endsWith('.DS_Store')
-	});
+	const watcher = chokidar.watch(
+		[CONTENT_DIR, KINDS_DIR, BLOG_DIR, GUIDES_DIR, SOURCES_DIR, WORLD_CONFIG_PATH],
+		{
+			ignoreInitial: true,
+			ignored: (path) => path.endsWith('.DS_Store')
+		}
+	);
 
 	watcher.on('add', trigger).on('change', trigger).on('unlink', trigger);
 	console.log(

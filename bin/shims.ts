@@ -21,8 +21,8 @@
 // constraints (the loader walks `content/` recursively, which only
 // works at build time).
 
-import { mkdir, writeFile } from 'node:fs/promises';
-import { dirname, resolve } from 'node:path';
+import { mkdir, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { dirname, relative, resolve, sep } from 'node:path';
 
 export type ShimMode = 'engine' | 'consumer';
 
@@ -130,9 +130,6 @@ export function planShims(mode: ShimMode): Shim[] {
 		},
 		{ file: 'blog/[slug]/+page.svelte', contents: pageSvelte(mode, 'blog/slug') },
 
-		// Cognita legacy redirect
-		{ file: 'cognita/+server.ts', contents: server(mode, 'cognita') },
-
 		// Everything index
 		{ file: 'everything/+page.server.ts', contents: pageServer(mode, 'everything') },
 		{ file: 'everything/+page.svelte', contents: pageSvelte(mode, 'everything') },
@@ -165,6 +162,7 @@ export function planShims(mode: ShimMode): Shim[] {
 export async function generateShims(opts: GenerateShimsOptions): Promise<string[]> {
 	const root = resolve(opts.targetDir, 'src/routes');
 	const shims = planShims(opts.mode);
+	const plannedSet = new Set(shims.map((s) => s.file.split(/[\\/]/).join('/')));
 	const written: string[] = [];
 	for (const { file, contents } of shims) {
 		const full = resolve(root, file);
@@ -172,5 +170,48 @@ export async function generateShims(opts: GenerateShimsOptions): Promise<string[
 		await writeFile(full, contents);
 		written.push(file);
 	}
+	await reconcile(root, plannedSet);
 	return written;
+}
+
+/**
+ * Delete any stale shim file under `src/routes/` that isn't in the
+ * current plan, then prune the empty directories that result. Only
+ * touches SvelteKit shim filenames (`+layout.*`, `+page.*`,
+ * `+server.ts`) so unrelated hand-authored files (eg. README.md,
+ * static assets a user may have parked there) are left alone.
+ */
+async function reconcile(root: string, planned: Set<string>): Promise<void> {
+	const isShim = (name: string) =>
+		name === '+server.ts' || /^\+layout\.(server\.ts|svelte)$/.test(name) || /^\+page\.(server\.ts|svelte)$/.test(name);
+
+	async function walk(dir: string): Promise<void> {
+		let entries;
+		try {
+			entries = await readdir(dir, { withFileTypes: true });
+		} catch {
+			return;
+		}
+		for (const e of entries) {
+			const full = resolve(dir, e.name);
+			if (e.isDirectory()) {
+				await walk(full);
+				// Prune empty dirs (don't touch the root itself).
+				if (full !== root) {
+					const remaining = await readdir(full);
+					if (remaining.length === 0) await rm(full, { recursive: true });
+				}
+			} else if (e.isFile() && isShim(e.name)) {
+				const rel = relative(root, full).split(sep).join('/');
+				if (!planned.has(rel)) await rm(full);
+			}
+		}
+	}
+
+	try {
+		await stat(root);
+	} catch {
+		return;
+	}
+	await walk(root);
 }

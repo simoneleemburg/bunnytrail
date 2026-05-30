@@ -1,5 +1,5 @@
 /**
- * Core types for the Alteria worldbuilding graph.
+ * Core types for a Bunnytrail worldbuilding graph.
  *
  * On disk, every entity lives in its own folder:
  *   content/<...path>/<slug>/index.yaml — structured metadata (this file's shape)

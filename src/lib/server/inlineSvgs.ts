@@ -15,16 +15,16 @@ import { graph } from './graph';
  * respectively. This pass walks those `<img>` tags, reads the SVG
  * payload off disk, and replaces them with:
  *
- *   <figure class="alteria-inline-svg">
+ *   <figure class="bt-inline-svg">
  *     <svg …>…</svg>
  *     <figcaption>{alt}</figcaption>   ← only when alt is non-empty
  *   </figure>
  *
- * The wrapper class — `alteria-inline-svg` — is styled by the
- * world's own stylesheet at `<world>/assets/inline-svg.css`
- * (served via `/api/assets/inline-svg.css`, linked from
- * `app.html`). That file is world-coupled because it knows the
- * class names the world's bake scripts emit on the SVGs.
+ * The wrapper class — `bt-inline-svg` — is styled by the world's
+ * own stylesheet at `<world>/assets/inline-svg.css` (served via
+ * `/api/assets/inline-svg.css`, linked from `app.html`). That file
+ * is world-coupled because it knows the class names the world's
+ * bake scripts emit on the SVGs.
  *
  * Non-SVG images and any `<img>` whose `src` we don't recognise are
  * left untouched — they keep working as ordinary raster embeds.
@@ -75,7 +75,7 @@ async function buildReplacement(
 
 	const alt = extractAttr(`${pre} ${post}`, 'alt');
 	const captionHtml = alt ? `<figcaption>${escapeHtml(alt)}</figcaption>` : '';
-	return `<figure class="alteria-inline-svg">${svg}${captionHtml}</figure>`;
+	return `<figure class="bt-inline-svg">${svg}${captionHtml}</figure>`;
 }
 
 async function loadSvg(src: string): Promise<string | null> {

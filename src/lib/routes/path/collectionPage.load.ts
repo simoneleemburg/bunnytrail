@@ -1,6 +1,7 @@
 import { graph } from '$lib/server/graph';
 import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderBody, renderSummary } from '$lib/server/markdown';
+import { world } from '$lib/server/world';
 import { buildKindTree, type Entity, type EntityId, type KindTree } from '$lib/types';
 
 /**
@@ -504,7 +505,7 @@ export function loadEverythingIndex() {
 		kind: 'collection' as const,
 		type: '',
 		label: { singular: 'Entry', plural: 'Everything' },
-		description: 'Every entry in Alteria, in one place. Filter or flatten to taste.',
+		description: `Every entry in ${world.config().name}, in one place. Filter or flatten to taste.`,
 		bodyHtml: null,
 		subcollections,
 		subcollectionTrees,
@@ -596,7 +597,7 @@ export function loadAggregateShelfPage(shelf: string) {
 	// cluster-specific. Generate a neutral subtitle from the
 	// shelf's display label instead, so the framing reads as a true
 	// universe-wide view.
-	const description = `${label.plural} across Alteria`;
+	const description = `${label.plural} across ${world.config().name}`;
 
 	return {
 		kind: 'collection' as const,

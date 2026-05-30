@@ -1,17 +1,22 @@
 <script lang="ts">
 	import type { HomeData } from './load';
+	import { page } from '$app/stores';
 	import Tag from '$lib/components/Tag.svelte';
 
 	let { data }: { data: HomeData } = $props();
+
+	const world = $derived($page.data.world);
 </script>
 
 <svelte:head>
-	<title>Alteria</title>
+	<title>{world.name}</title>
 </svelte:head>
 
 <section class="hero">
-	<h1>Alteria</h1>
-	<p class="tagline">My sacred universe of imagination.</p>
+	<h1>{world.name}</h1>
+	{#if world.tagline}
+		<p class="tagline">{world.tagline}</p>
+	{/if}
 	<p class="counter">
 		<em>
 			{data.totalEntities} entries ({data.entitiesWithProse} with prose){#if data.totalChapters > 0}
@@ -23,39 +28,34 @@
 				>{/if}
 		</em>
 	</p>
-	<div class="lede">
-		<p>
-			This shall be the name of my collective ideas and creations. This is where my world-building
-			stops being restrictive and starts being generative.
-		</p>
-		<p>
-			It contains three words in my mind in one: <em>alternate</em>, <em>alteration</em> and
-			<em>altar</em>. Imagining something different, the act of change, and the sacred spirit of it.
-			This is the essence around which all my ideas revolve.
-		</p>
-		<p class="closing">
-			Now it&rsquo;s time for them to come home. No more isolated worlds — but one interconnected
-			universe.
-		</p>
-	</div>
+	{#if data.lede}
+		<div class="lede">{@html data.lede}</div>
+	{:else}
+		<div class="lede">
+			<p>
+				Author <code>content_meta/world.md</code> to set this world&rsquo;s name, tagline, and
+				homepage intro. The body of that file is rendered here as the hero lede.
+			</p>
+		</div>
+	{/if}
 </section>
 
 {#each data.guides as guide (guide.slug)}
-	<a class="cognita-callout" href={guide.href}>
-		<div class="cognita-rule"></div>
-		<div class="cognita-body">
-			<p class="cognita-eyebrow">{guide.eyebrow}</p>
-			<p class="cognita-title">{guide.title}</p>
-			<p class="cognita-sub">{guide.summary}</p>
+	<a class="guide-callout" href={guide.href}>
+		<div class="guide-rule"></div>
+		<div class="guide-body">
+			<p class="guide-eyebrow">{guide.eyebrow}</p>
+			<p class="guide-title">{guide.title}</p>
+			<p class="guide-sub">{guide.summary}</p>
 		</div>
-		<div class="cognita-arrow" aria-hidden="true">→</div>
+		<div class="guide-arrow" aria-hidden="true">→</div>
 	</a>
 {/each}
 
 {#if data.sourceProjects.length > 0}
 	<!--
 		Source projects: out-of-world catalogue of feeder works being
-		integrated into Alteria. Cognita/Notebook-style doorway —
+		integrated into the world. Guide/Notebook-style doorway —
 		teases by listing the project names so the visitor knows what's
 		on the workbench; the full list (with sizes, integration
 		bars, entity links) lives at /sources.
@@ -66,7 +66,7 @@
 			<p class="sources-eyebrow">Workbench</p>
 			<p class="sources-title">Source projects</p>
 			<p class="sources-sub">
-				The {data.sourceProjects.length} feeder works being absorbed into Alteria:
+				The {data.sourceProjects.length} feeder works being absorbed into {world.name}:
 				<span class="sources-names">
 					{data.sourceProjects.map((p) => p.title).join(', ')}.
 				</span>
@@ -79,9 +79,9 @@
 <!--
 	Notebook callout: a sibling doorway to the author's-room blog,
 	in a cooler register than the world's chrome. Same shape as the
-	Cognita callout so the two read as a paired set, but the rule
-	is faint and the surface is the notebook tint to signal that
-	this is *about* Alteria rather than *of* it.
+	guide callout so the two read as a paired set, but the rule is
+	faint and the surface is the notebook tint to signal that this
+	is *about* the world rather than *of* it.
 -->
 <a class="notebook-callout" href="/blog">
 	<div class="notebook-rule"></div>
@@ -89,7 +89,8 @@
 		<p class="notebook-eyebrow">Working notes</p>
 		<p class="notebook-title">Notebook</p>
 		<p class="notebook-sub">
-			Author&rsquo;s-room reflections on building Alteria. Out-of-world; not part of the compendium.
+			Author&rsquo;s-room reflections on building {world.name}. Out-of-world; not part of the
+			compendium.
 		</p>
 	</div>
 	<div class="notebook-arrow" aria-hidden="true">→</div>
@@ -179,18 +180,20 @@
 		margin-bottom: 0;
 	}
 
-	.lede em {
+	.lede :global(em) {
 		font-style: italic;
 		color: var(--ink);
 	}
 
-	.lede .closing {
+	.lede :global(.closing) {
 		margin-top: var(--space-5);
 		color: var(--ink);
 	}
 
-	/* ── Alteria Cognita callout — a prominent doorway ───────── */
-	.cognita-callout {
+	/* ── Guide callout — a prominent doorway to a content-authored
+	   guide (tour, "start here", landing page). Repeated once per
+	   registered guide. */
+	.guide-callout {
 		display: flex;
 		align-items: center;
 		gap: var(--space-5);
@@ -204,22 +207,22 @@
 		transition: background-color 0.2s ease;
 	}
 
-	.cognita-callout:hover {
+	.guide-callout:hover {
 		background: var(--parchment-soft);
 	}
 
-	.cognita-rule {
+	.guide-rule {
 		width: 3px;
 		align-self: stretch;
 		background: var(--accent);
 		flex-shrink: 0;
 	}
 
-	.cognita-body {
+	.guide-body {
 		flex: 1;
 	}
 
-	.cognita-eyebrow {
+	.guide-eyebrow {
 		font-size: var(--text-xs);
 		font-variant: small-caps;
 		letter-spacing: 0.14em;
@@ -227,7 +230,7 @@
 		margin: 0 0 var(--space-1);
 	}
 
-	.cognita-title {
+	.guide-title {
 		font-family: var(--font-display);
 		font-size: var(--text-xl);
 		color: var(--ink);
@@ -235,28 +238,28 @@
 		font-style: italic;
 	}
 
-	.cognita-callout:hover .cognita-title {
+	.guide-callout:hover .guide-title {
 		color: var(--accent);
 	}
 
-	.cognita-sub {
+	.guide-sub {
 		font-size: var(--text-sm);
 		color: var(--ink-soft);
 		margin: 0;
 		line-height: var(--leading-normal);
 	}
 
-	.cognita-arrow {
+	.guide-arrow {
 		font-size: var(--text-xl);
 		color: var(--ink-faint);
 		flex-shrink: 0;
 	}
 
-	.cognita-callout:hover .cognita-arrow {
+	.guide-callout:hover .guide-arrow {
 		color: var(--accent);
 	}
 
-	/* ── Notebook callout — quieter sibling to the Cognita doorway.
+	/* ── Notebook callout — quieter sibling to the guide doorway.
 	   Notebook tint (cool, dashed) so the visual register tracks the
 	   blog/craft-sheet idiom, marking this as out-of-world. */
 	.notebook-callout {
