@@ -60,6 +60,7 @@
 		"prepare": "svelte-kit sync && svelte-package || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"smoke:sample": "BUNNYTRAIL_WORLD_DIR=$PWD/sample-world tsx --tsconfig tsconfig.json scripts/smoke-sample-world.ts",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"format": "prettier --write .",
@@ -79,6 +80,7 @@
 		"prettier-plugin-svelte": "^3.3.0",
 		"svelte": "^5.55.2",
 		"svelte-check": "^4.4.6",
+		"tsx": "^4.22.3",
 		"typescript": "^6.0.2",
 		"vite": "^8.0.7",
 		"vitest": "^2.1.0"

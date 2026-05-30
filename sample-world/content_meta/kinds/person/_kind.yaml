@@ -1,0 +1,5 @@
+singular: Person
+plural: People
+description: |
+  Any named human-scale being — by default the inhabitants of
+  the world the reader encounters as characters.

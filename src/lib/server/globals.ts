@@ -1,13 +1,42 @@
+import { existsSync } from 'fs';
 import { resolve } from 'path';
 import dotenv from 'dotenv';
 
 dotenv.config();
+
+/**
+ * Where the world being rendered lives on disk.
+ *
+ * Resolution order:
+ *   1. `BUNNYTRAIL_WORLD_DIR` env var, if set.
+ *   2. `<cwd>/sample-world`, if that directory exists. This is the
+ *      synthetic Embergrove fixture shipped with the engine repo —
+ *      it lets `npm run dev` work out of the box on a fresh
+ *      checkout, with no env configuration.
+ *   3. `<cwd>` itself. Lets a consumer project that keeps
+ *      `content/`, `content_meta/`, and `assets/` at its own root
+ *      run without setting the env var.
+ *
+ * Individual subdirectories (`content/`, `content_meta/kinds/`, etc.)
+ * are derived from this base by the dedicated `default*Dir`
+ * functions below; each may still be overridden individually via
+ * its own `BUNNYTRAIL_*_DIR` env var.
+ */
+function defaultWorldDir(): string {
+	if (process.env.BUNNYTRAIL_WORLD_DIR) return process.env.BUNNYTRAIL_WORLD_DIR;
+	const bundledSample = resolve(process.cwd(), 'sample-world');
+	if (existsSync(bundledSample)) return bundledSample;
+	return process.cwd();
+}
+
+const WORLD_DIR = defaultWorldDir();
+
 /**
  * Where the canonical worldbuilding data lives, relative to the project root.
  * Override with BUNNYTRAIL_CONTENT_DIR for testing.
  */
 export const CONTENT_DIR =
-	process.env.BUNNYTRAIL_CONTENT_DIR ?? resolve(process.env.BUNNYTRAIL_WORLD_DIR ?? '', 'content');
+	process.env.BUNNYTRAIL_CONTENT_DIR ?? resolve(WORLD_DIR, 'content');
 
 /**
  * Where the central kind registry lives. The directory mirrors the
@@ -27,7 +56,7 @@ export const CONTENT_DIR =
 export function defaultKindsDir(): string {
 	return (
 		process.env.BUNNYTRAIL_KINDS_DIR ??
-		resolve(process.env.BUNNYTRAIL_WORLD_DIR ?? '', 'content_meta/kinds')
+		resolve(WORLD_DIR, 'content_meta/kinds')
 	);
 }
 
@@ -63,7 +92,7 @@ export const KINDS_DIR = defaultKindsDir();
 export function defaultBlogDir(): string {
 	return (
 		process.env.BUNNYTRAIL_BLOG_DIR ??
-		resolve(process.env.BUNNYTRAIL_WORLD_DIR ?? process.cwd(), 'content_meta/blog')
+		resolve(WORLD_DIR, 'content_meta/blog')
 	);
 }
 
@@ -94,7 +123,7 @@ export const BLOG_DIR = defaultBlogDir();
 export function defaultGuidesDir(): string {
 	return (
 		process.env.BUNNYTRAIL_GUIDES_DIR ??
-		resolve(process.env.BUNNYTRAIL_WORLD_DIR ?? process.cwd(), 'content_meta/guides')
+		resolve(WORLD_DIR, 'content_meta/guides')
 	);
 }
 
@@ -119,7 +148,7 @@ export const GUIDES_DIR = defaultGuidesDir();
 export function defaultSourcesDir(): string {
 	return (
 		process.env.BUNNYTRAIL_SOURCES_DIR ??
-		resolve(process.env.BUNNYTRAIL_WORLD_DIR ?? '', 'content_meta/sources')
+		resolve(WORLD_DIR, 'content_meta/sources')
 	);
 }
 
@@ -128,17 +157,20 @@ export const SOURCES_DIR = defaultSourcesDir();
 /**
  * Where pre-baked SVG assets (e.g. mundus-map.svg) live.
  *
- * When BUNNYTRAIL_WORLD_DIR is set, assets are read from
- * `<world_dir>/assets/` so they can be updated independently of
- * the SvelteKit build.  Without it, the bundled fallback under
- * `src/lib/assets/` is used.
+ * Resolution order, mirroring `defaultWorldDir`:
+ *   1. `BUNNYTRAIL_ASSETS_DIR`, if set.
+ *   2. `<WORLD_DIR>/assets/`, if that directory exists. Lets a
+ *      world owner ship its own asset folder alongside `content/`
+ *      and have it picked up automatically.
+ *   3. The bundled fallback under `src/lib/assets/` — the engine's
+ *      own dev assets, used when nothing else is on offer.
  *
  * Override with `BUNNYTRAIL_ASSETS_DIR` for testing.
  */
 export function defaultAssetsDir(): string {
 	if (process.env.BUNNYTRAIL_ASSETS_DIR) return process.env.BUNNYTRAIL_ASSETS_DIR;
-	const worldDir = process.env.BUNNYTRAIL_WORLD_DIR;
-	if (worldDir) return resolve(worldDir, 'assets');
+	const worldAssets = resolve(WORLD_DIR, 'assets');
+	if (existsSync(worldAssets)) return worldAssets;
 	return resolve(process.cwd(), 'src/lib/assets');
 }
 

@@ -1,0 +1,5 @@
+singular: Place
+plural: Places
+description: |
+  A locatable site — dwelling, ruin, landmark, region. Anything
+  characters can be *at*.

@@ -1,0 +1,7 @@
+title: Embergrove
+description: |
+  A tiny sample universe shipped with the bunnytrail engine.
+  Two clusters — Mistwood and Tideholm — exist only to exercise
+  the loader, the wikilink resolver, and the cluster nav. Replace
+  this fixture with your own world by pointing `BUNNYTRAIL_WORLD_DIR`
+  at a different folder.
