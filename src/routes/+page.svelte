@@ -40,18 +40,17 @@
 	</div>
 </section>
 
-<a class="cognita-callout" href="/cognita">
-	<div class="cognita-rule"></div>
-	<div class="cognita-body">
-		<p class="cognita-eyebrow">Start here</p>
-		<p class="cognita-title">Alteria Cognita</p>
-		<p class="cognita-sub">
-			The mapped territory — what I&rsquo;ve been able to give a place so far. One star, seven
-			planets, two layers of being.
-		</p>
-	</div>
-	<div class="cognita-arrow" aria-hidden="true">→</div>
-</a>
+{#each data.guides as guide (guide.slug)}
+	<a class="cognita-callout" href={guide.href}>
+		<div class="cognita-rule"></div>
+		<div class="cognita-body">
+			<p class="cognita-eyebrow">{guide.eyebrow}</p>
+			<p class="cognita-title">{guide.title}</p>
+			<p class="cognita-sub">{guide.summary}</p>
+		</div>
+		<div class="cognita-arrow" aria-hidden="true">→</div>
+	</a>
+{/each}
 
 {#if data.sourceProjects.length > 0}
 	<!--

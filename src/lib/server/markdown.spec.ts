@@ -294,6 +294,63 @@ describe('renderBody', () => {
 			expect(html).not.toContain('/api/entity-assets');
 		});
 	});
+
+	describe('wikilinks inside raw HTML chrome', () => {
+		it('rescues a wikilink inside a <dt> block as a real anchor', () => {
+			const html = renderBody(
+				'<dl>\n  <dt>[[characters/kael|Kael]]</dt>\n  <dd>The hero.</dd>\n</dl>',
+				resolve,
+				langs
+			);
+			expect(html).toContain('<a href="/characters/kael">Kael</a>');
+			expect(html).not.toContain('[Kael](');
+		});
+
+		it('rescues a wikilink inside a <dd> block as a real anchor', () => {
+			const html = renderBody(
+				'<dl>\n  <dt>Hero</dt>\n  <dd>See [[characters/kael|Kael]] for context.</dd>\n</dl>',
+				resolve,
+				langs
+			);
+			expect(html).toContain('<a href="/characters/kael">Kael</a>');
+		});
+
+		it('marks an unresolved wikilink inside chrome as broken', () => {
+			const html = renderBody(
+				'<dl>\n  <dt>[[characters/nobody|Ghost]]</dt>\n  <dd>x</dd>\n</dl>',
+				resolve,
+				langs
+			);
+			expect(html).toContain('<a href="/characters/nobody" data-broken="true">Ghost</a>');
+		});
+
+		it('rescues a plain markdown link inside chrome (no wikilink required)', () => {
+			const html = renderBody(
+				'<dl>\n  <dt>External</dt>\n  <dd>See [the docs](https://example.com).</dd>\n</dl>',
+				resolve,
+				langs
+			);
+			expect(html).toContain('<a href="https://example.com">the docs</a>');
+		});
+
+		it('rescues links inside <figcaption>', () => {
+			const html = renderBody(
+				'<figure>\n  <img src="/x.png" alt="x">\n  <figcaption>See [[characters/kael|Kael]].</figcaption>\n</figure>',
+				resolve,
+				langs
+			);
+			expect(html).toContain('<a href="/characters/kael">Kael</a>');
+		});
+
+		it('leaves [text](url) outside chrome tags alone (marked handles those)', () => {
+			// Plain markdown links in ordinary prose should already be
+			// real anchors after marked.parse — this test guards
+			// against double-processing.
+			const html = renderBody('See [Kael](/characters/kael) please.', resolve, langs);
+			const matches = html.match(/<a href="\/characters\/kael">Kael<\/a>/g);
+			expect(matches).toHaveLength(1);
+		});
+	});
 });
 
 describe('renderSummary', () => {

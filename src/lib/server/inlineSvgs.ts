@@ -20,9 +20,11 @@ import { graph } from './graph';
  *     <figcaption>{alt}</figcaption>   ← only when alt is non-empty
  *   </figure>
  *
- * The wrapper class is shared with `MundusMap.svelte`; styles live
- * globally in `src/lib/styles/global.css` so they reach into
- * server-rendered prose where component-scoped CSS can't.
+ * The wrapper class — `alteria-inline-svg` — is styled by the
+ * world's own stylesheet at `<world>/assets/inline-svg.css`
+ * (served via `/api/assets/inline-svg.css`, linked from
+ * `app.html`). That file is world-coupled because it knows the
+ * class names the world's bake scripts emit on the SVGs.
  *
  * Non-SVG images and any `<img>` whose `src` we don't recognise are
  * left untouched — they keep working as ordinary raster embeds.

@@ -1,4 +1,5 @@
 import { graph } from '$lib/server/graph';
+import { guides } from '$lib/server/guides';
 import { sources } from '$lib/server/sources';
 
 /**
@@ -21,7 +22,20 @@ function allFolders(): string[] {
 
 export async function load() {
 	await graph.ready();
+	await guides.ready();
 	await sources.ready();
+
+	// Guide callouts — content-authored tours of the world that live
+	// under `content_meta/guides/`. The homepage renders one card per
+	// guide; with a single guide this reads as a "start here" panel,
+	// with several it becomes a small index.
+	const guideCallouts = guides.all().map((g) => ({
+		slug: g.slug,
+		eyebrow: g.eyebrow,
+		title: g.title,
+		summary: g.summary,
+		href: `/guides/${g.slug}`
+	}));
 
 	// Source projects — out-of-world author's-room catalogue of the
 	// feeder works being integrated into Alteria. Resolve each
@@ -113,6 +127,7 @@ export async function load() {
 		kindsWithProse,
 		tags: graph.tags().slice(0, 12),
 		issues: graph.issues().length,
-		sourceProjects
+		sourceProjects,
+		guides: guideCallouts
 	};
 }

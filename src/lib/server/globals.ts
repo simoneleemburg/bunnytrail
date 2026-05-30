@@ -70,6 +70,37 @@ export function defaultBlogDir(): string {
 export const BLOG_DIR = defaultBlogDir();
 
 /**
+ * Where guides live. Each guide is a directory under
+ * `content_meta/guides/<slug>/` carrying:
+ *
+ *   - `index.yaml` (or frontmatter inside `index.md`) — required.
+ *     Fields: `title` (string), `summary` (string), optional
+ *     `eyebrow` (string; defaults to "Start here").
+ *   - `index.md` — required. The guide body. Unlike the blog,
+ *     wikilinks DO resolve in guides: they are tours *of* the
+ *     world and need first-class links into it.
+ *   - Sibling files (images, SVG maps) are allowed and are
+ *     resolved as entity-asset-style siblings via the same
+ *     `![alt](foo.svg)` rewrite as collections and entities.
+ *
+ * Override with `ALTERIA_GUIDES_DIR` for testing.
+ *
+ * Guides sit alongside the blog as out-of-world meta-pages: they
+ * are *about* the world (tours, landings, "start here" pages)
+ * rather than part of it. Like the blog they live as their own
+ * singleton, with their own watcher hook, and never leak into
+ * entity counts or aggregates.
+ */
+export function defaultGuidesDir(): string {
+	return (
+		process.env.ALTERIA_GUIDES_DIR ??
+		resolve(process.env.ALTERIA_WORLD_DIR ?? process.cwd(), 'content_meta/guides')
+	);
+}
+
+export const GUIDES_DIR = defaultGuidesDir();
+
+/**
  * Where the "source projects" catalogue lives. Each project sits
  * under `content_meta/sources/<slug>/index.yaml` carrying the
  * structured fields below. An optional `index.md` is allowed for

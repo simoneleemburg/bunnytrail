@@ -221,10 +221,22 @@ WORLDBUILDING.md).
   indexes, or any cross-cluster aggregate, and the masthead nav
   doesn't link to `/blog` — only the home-page Notebook callout
   does.
+- **New guide** (a tour of the world rendered at `/guides/<slug>`) →
+  `content_meta/guides/<slug>/index.{yaml,md}`. Guides are
+  out-of-world meta-pages — landing pages, "start here" walkthroughs,
+  conceptual tours — that have a foot in both worlds: they live
+  outside the entity graph (their own loader singleton,
+  `src/lib/server/guides.ts`), but wikilinks DO resolve in guide
+  bodies because their job is to send the reader _into_ the world.
+  Frontmatter requires `title` (string) and `summary` (string);
+  `eyebrow` is optional and defaults to "Start here". The homepage
+  renders one callout per guide automatically. Image references use
+  the `assets/foo.svg` form (sibling files aren't supported in guide
+  bodies because guide folders aren't in the entity graph).
 - **New UI primitive** → `src/lib/components/`. Existing primitives:
   `EntityCard`, `EntityLink`, `PageHeader`, `PropertyList`, `Tag`.
 - **Graph / loader logic** → `src/lib/server/`
-  (`loader.ts`, `graph.ts`, `kinds.ts`, `blog.ts`, `markdown.ts`, `watcher.ts`).
+  (`loader.ts`, `graph.ts`, `kinds.ts`, `blog.ts`, `guides.ts`, `markdown.ts`, `watcher.ts`).
 - **Design tokens / base styles** → `src/lib/styles/`.
 
 ## Agent etiquette

@@ -1,10 +1,11 @@
 import { dev } from '$app/environment';
 import chokidar from 'chokidar';
 import { blog } from './blog';
+import { guides } from './guides';
 import { sources } from './sources';
 import { graph } from './graph';
 import { assets } from './assets';
-import { CONTENT_DIR, BLOG_DIR, KINDS_DIR, SOURCES_DIR, ASSETS_DIR } from './globals';
+import { CONTENT_DIR, BLOG_DIR, GUIDES_DIR, KINDS_DIR, SOURCES_DIR, ASSETS_DIR } from './globals';
 
 /**
  * In dev, watch the worldbuilding source trees and reload the graph
@@ -12,13 +13,15 @@ import { CONTENT_DIR, BLOG_DIR, KINDS_DIR, SOURCES_DIR, ASSETS_DIR } from './glo
  * the graph is built once at startup.
  *
  * We watch `content/` (entities + collections),
- * `content_meta/kinds/` (the kind registry), and
- * `content_meta/blog/` (the author's notebook) so edits to any of
+ * `content_meta/kinds/` (the kind registry),
+ * `content_meta/blog/` (the author's notebook), and
+ * `content_meta/guides/` (tours / landing pages) so edits to any of
  * them show up in the running dev server without a manual restart.
- * The blog is loaded into its own singleton — `graph.load()` and
- * `blog.load()` are independent — but they share one watcher and
- * one debounce window, since saving across trees is rare and a
- * tiny over-reload is cheaper than a second timer.
+ * Blog and guides each have their own singleton; `graph.load()`,
+ * `blog.load()`, and `guides.load()` are independent — but they
+ * share one watcher and one debounce window, since saving across
+ * trees is rare and a tiny over-reload is cheaper than juggling
+ * multiple timers.
  *
  * Reloads are debounced so saving a YAML + MD pair together doesn't
  * trigger two rebuilds back-to-back.
@@ -39,19 +42,24 @@ export function startWatcher(): void {
 			void blog.load().catch((err) => {
 				console.error('[alteria] blog reload failed:', err);
 			});
+			void guides.load().catch((err) => {
+				console.error('[alteria] guides reload failed:', err);
+			});
 			void sources.load().catch((err) => {
 				console.error('[alteria] sources reload failed:', err);
 			});
 		}, 75);
 	};
 
-	const watcher = chokidar.watch([CONTENT_DIR, KINDS_DIR, BLOG_DIR, SOURCES_DIR], {
+	const watcher = chokidar.watch([CONTENT_DIR, KINDS_DIR, BLOG_DIR, GUIDES_DIR, SOURCES_DIR], {
 		ignoreInitial: true,
 		ignored: (path) => path.endsWith('.DS_Store')
 	});
 
 	watcher.on('add', trigger).on('change', trigger).on('unlink', trigger);
-	console.log(`[alteria] watching ${CONTENT_DIR}, ${KINDS_DIR}, ${BLOG_DIR}, and ${SOURCES_DIR}`);
+	console.log(
+		`[alteria] watching ${CONTENT_DIR}, ${KINDS_DIR}, ${BLOG_DIR}, ${GUIDES_DIR}, and ${SOURCES_DIR}`
+	);
 
 	// Watch the assets directory separately — changes only invalidate
 	// the asset cache, no graph rebuild needed.

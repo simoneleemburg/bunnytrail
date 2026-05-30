@@ -353,10 +353,54 @@ export function renderBody(
 	};
 
 	const html = marked.parse(rewritten, { async: false, renderer }) as string;
+	// Authors sometimes scaffold prose with raw HTML chrome (`<dl>`,
+	// `<figure>`, etc.) — typically in guides, occasionally in long
+	// entity bodies. marked passes the contents of those blocks
+	// through verbatim, so any wikilinks inside them survive
+	// `rewriteBrackets` (which turns `[[slug]]` into markdown-link
+	// syntax) but never become real anchors. This second pass walks
+	// the leaf chrome tags (`<dt>`, `<dd>`, `<figcaption>`,
+	// `<summary>`) and converts any remaining `[text](url)` and
+	// `[text](url "broken-link")` patterns into proper `<a>` tags.
+	const rescued = rescueLinksInHtmlChrome(html);
 	// `marked` renders `[text](url "title")` as `<a href="url" title="title">…</a>`.
 	// Convert our sentinel title into a data attribute the UI can style.
-	const linkified = html.replace(/title="broken-link"/g, 'data-broken="true"');
+	const linkified = rescued.replace(/title="broken-link"/g, 'data-broken="true"');
 	return rewriteImageSrcs(linkified, imageBaseDir);
+}
+
+const HTML_CHROME_TAGS = ['dt', 'dd', 'figcaption', 'summary'] as const;
+const MARKDOWN_LINK_RE = /\[([^\]\n]+)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)/g;
+
+/**
+ * Convert any orphaned `[text](url)` patterns found inside leaf HTML
+ * chrome tags into proper `<a>` tags. See the call site in
+ * `renderBody` for the rationale.
+ *
+ * Only operates on tags whose contents are typically authored as
+ * markdown-with-links rather than as already-baked HTML — picking
+ * `<a>` or `<code>` here would corrupt code samples and existing
+ * anchors. Keep the list conservative.
+ */
+function rescueLinksInHtmlChrome(html: string): string {
+	let out = html;
+	for (const tag of HTML_CHROME_TAGS) {
+		const blockRe = new RegExp(`(<${tag}\\b[^>]*>)([\\s\\S]*?)(</${tag}>)`, 'gi');
+		out = out.replace(blockRe, (_whole, open: string, inner: string, close: string) => {
+			const converted = inner.replace(
+				MARKDOWN_LINK_RE,
+				(_m, label: string, href: string, title: string | undefined) => {
+					if (title === 'broken-link') {
+						return `<a href="${href}" data-broken="true">${label}</a>`;
+					}
+					const titleAttr = title ? ` title="${title}"` : '';
+					return `<a href="${href}"${titleAttr}>${label}</a>`;
+				}
+			);
+			return open + converted + close;
+		});
+	}
+	return out;
 }
 
 /** Convenience for entity bodies. */
