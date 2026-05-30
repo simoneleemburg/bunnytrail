@@ -46,8 +46,21 @@ function prerender(mode: ShimMode): boolean {
 	return mode === 'consumer';
 }
 
-const pageServer = (mode: ShimMode, lib: string, extra = '') =>
-	`export { load } from '${importBase(mode)}/${lib}/load';\n${extra}`;
+// Kit infers PageData/LayoutData by inspecting the load file's
+// return type, but only when `load` is re-exported by name —
+// `export *` defeats the inference and PageData collapses to `{}`.
+// So we keep explicit named re-exports, and let routes opt in to
+// extra named exports (currently just `entries` for prerender
+// enumeration) via the `extraExports` option.
+
+interface RouteShimOpts {
+	extraExports?: string[];
+}
+
+const pageServer = (mode: ShimMode, lib: string, opts: RouteShimOpts = {}, extra = '') => {
+	const names = ['load', ...(opts.extraExports ?? [])];
+	return `export { ${names.join(', ')} } from '${importBase(mode)}/${lib}/load';\n${extra}`;
+};
 
 const pageSvelte = (mode: ShimMode, lib: string) => `<script lang="ts">
 \timport Page from '${importBase(mode)}/${lib}/Page.svelte';
@@ -106,7 +119,10 @@ export function planShims(mode: ShimMode): Shim[] {
 		},
 		{ file: 'blog/+page.server.ts', contents: pageServer(mode, 'blog') },
 		{ file: 'blog/+page.svelte', contents: pageSvelte(mode, 'blog') },
-		{ file: 'blog/[slug]/+page.server.ts', contents: pageServer(mode, 'blog/slug') },
+		{
+			file: 'blog/[slug]/+page.server.ts',
+			contents: pageServer(mode, 'blog/slug', { extraExports: ['entries'] })
+		},
 		{ file: 'blog/[slug]/+page.svelte', contents: pageSvelte(mode, 'blog/slug') },
 
 		// Cognita legacy redirect
