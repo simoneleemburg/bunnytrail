@@ -1,5 +1,5 @@
 ---
-description: Lightweight file inspection for Alteria compendium
+description: Lightweight file inspection for the bunnytrail engine
 agent: plan
 model: anthropic/claude-haiku-4.5
 provider: openrouter
