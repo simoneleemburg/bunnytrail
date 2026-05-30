@@ -1,4 +1,4 @@
-import { readFile, stat } from 'node:fs/promises';
+import { readFile, readdir, stat } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { ASSETS_DIR } from './globals';
 
@@ -80,6 +80,34 @@ class AssetCache {
 	/** Evict all entries. */
 	invalidateAll(): void {
 		this.#cache.clear();
+	}
+
+	/**
+	 * Enumerate the union of asset filenames available across the
+	 * configured ASSETS_DIR and the bundled fallback. Used by the
+	 * /api/assets/[name] handler's prerender entries() so every
+	 * static asset becomes a real file in the build output instead
+	 * of relying on a serverless function (which adapter-vercel
+	 * can't satisfy because the assets dir isn't bundled into the
+	 * function's filesystem).
+	 *
+	 * Duplicates are de-duped; primary dir wins over fallback.
+	 * Missing dirs are silently treated as empty.
+	 */
+	async names(): Promise<string[]> {
+		const seen = new Set<string>();
+		for (const dir of [ASSETS_DIR, BUNDLED_ASSETS_DIR]) {
+			if (dir === ASSETS_DIR && dir === BUNDLED_ASSETS_DIR && seen.size > 0) break;
+			try {
+				const entries = await readdir(dir, { withFileTypes: true });
+				for (const e of entries) {
+					if (e.isFile()) seen.add(e.name);
+				}
+			} catch {
+				// Dir doesn't exist — fine.
+			}
+		}
+		return [...seen];
 	}
 }
 

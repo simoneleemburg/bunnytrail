@@ -86,8 +86,10 @@ const layoutSvelte = (mode: ShimMode, lib: string) => `<script lang="ts">
 <Layout {data} {children} />
 `;
 
-const server = (mode: ShimMode, lib: string, verb = 'GET') =>
-	`export { ${verb} } from '${importBase(mode)}/${lib}/handler';\n`;
+const server = (mode: ShimMode, lib: string, opts: RouteShimOpts = {}, verb = 'GET') => {
+	const names = [verb, ...(opts.extraExports ?? [])];
+	return `export { ${names.join(', ')} } from '${importBase(mode)}/${lib}/handler';\n`;
+};
 
 export function planShims(mode: ShimMode): Shim[] {
 	const rootLayoutExtras = prerender(mode)
@@ -106,7 +108,10 @@ export function planShims(mode: ShimMode): Shim[] {
 		{ file: '[...path]/+page.svelte', contents: pageSvelte(mode, 'path') },
 
 		// API endpoints
-		{ file: 'api/assets/[name]/+server.ts', contents: server(mode, 'api/assets') },
+		{
+			file: 'api/assets/[name]/+server.ts',
+			contents: server(mode, 'api/assets', { extraExports: ['prerender', 'entries'] })
+		},
 		{
 			file: 'api/entity-assets/[...path]/+server.ts',
 			contents: server(mode, 'api/entityAssets')

@@ -24,6 +24,27 @@ import { error } from '@sveltejs/kit';
 const BUNDLED_ASSETS_DIR = resolve(process.cwd(), 'src/lib/assets');
 const TEXT_EXTENSIONS = new Set(['svg', 'css']);
 
+/**
+ * Prerender every asset filename at build time. adapter-vercel
+ * can't read the world's assets/ dir from a serverless function
+ * (it's not bundled in), so the only way these URLs work in
+ * production is as static files. SvelteKit only generates static
+ * files for dynamic endpoints when both `prerender = true` and
+ * `entries()` are exported.
+ */
+export const prerender = true;
+
+export const entries = async (): Promise<Array<{ name: string }>> => {
+	const names = await assets.names();
+	return names
+		.filter((n) => {
+			const dot = n.lastIndexOf('.');
+			const ext = dot >= 0 ? n.slice(dot + 1).toLowerCase() : '';
+			return IMAGE_EXTENSIONS.has(ext) || TEXT_EXTENSIONS.has(ext);
+		})
+		.map((name) => ({ name }));
+};
+
 export const GET = async ({ params }: { params: { name: string } }) => {
 	const { name } = params;
 	if (name.includes('/') || name.includes('\\') || name.includes('..')) {

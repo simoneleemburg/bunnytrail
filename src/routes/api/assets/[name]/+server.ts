@@ -1,1 +1,1 @@
-export { GET } from '$lib/routes/api/assets/handler';
+export { GET, prerender, entries } from '$lib/routes/api/assets/handler';
