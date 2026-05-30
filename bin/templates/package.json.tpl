@@ -1,0 +1,26 @@
+{
+	"name": "__NAME__",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"sync": "bunnytrail sync",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+	},
+	"dependencies": {
+		"bunnytrail": "github:simoneleemburg/bunnytrail#main"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-vercel": "^5.0.0",
+		"@sveltejs/kit": "^2.57.0",
+		"@sveltejs/vite-plugin-svelte": "^7.0.0",
+		"@types/node": "^22.10.0",
+		"svelte": "^5.55.2",
+		"svelte-check": "^4.4.6",
+		"typescript": "^6.0.2",
+		"vite": "^8.0.7"
+	}
+}

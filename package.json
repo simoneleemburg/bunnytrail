@@ -13,6 +13,9 @@
 		"dist",
 		"bin"
 	],
+	"bin": {
+		"bunnytrail": "./bin/bunnytrail.ts"
+	},
 	"svelte": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
@@ -80,7 +83,6 @@
 		"prettier-plugin-svelte": "^3.3.0",
 		"svelte": "^5.55.2",
 		"svelte-check": "^4.4.6",
-		"tsx": "^4.22.3",
 		"typescript": "^6.0.2",
 		"vite": "^8.0.7",
 		"vitest": "^2.1.0"
@@ -89,6 +91,7 @@
 		"chokidar": "^4.0.0",
 		"dotenv": "^17.4.2",
 		"marked": "^15.0.0",
+		"tsx": "^4.22.3",
 		"yaml": "^2.6.0"
 	}
 }
