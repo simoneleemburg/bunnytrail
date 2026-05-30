@@ -3,6 +3,9 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/stores';
 	import { beforeNavigate, goto } from '$app/navigation';
+	import { browser, dev } from '$app/environment';
+	import { onMount } from 'svelte';
+	import { injectAnalytics } from '@vercel/analytics/sveltekit';
 	import { paintAllScope, translateUrl, type ScopeContext } from '$lib/cluster';
 	import type { Snippet } from 'svelte';
 
@@ -19,6 +22,16 @@
 	}
 
 	let { data, children }: Props = $props();
+
+	// Vercel Web Analytics. Safe to call unconditionally — on
+	// non-Vercel deployments the beacon endpoint is absent, so the
+	// script no-ops. Mode='development' silences beacons during
+	// local dev but still wires the page-view listener so a build
+	// against a real Vercel project keeps working.
+	onMount(() => {
+		if (!browser) return;
+		injectAnalytics({ mode: dev ? 'development' : 'production' });
+	});
 
 	// Set to true while the user-initiated cluster switch is
 	// navigating. The beforeNavigate hook checks this and bows out
