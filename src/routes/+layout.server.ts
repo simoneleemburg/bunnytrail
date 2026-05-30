@@ -48,6 +48,18 @@ export async function load({ url }) {
 			return { href, label, count };
 		});
 
+	// Universal-substrate shelves (e.g. `foundation/fabric`) are
+	// shared across clusters: same href, same count, always visible.
+	// Appended after cluster shelves, inline.
+	const universalNav = graph.universalShelves().map(({ root, shelf }) => {
+		const path = `${root}/${shelf}`;
+		return {
+			href: `/${path}`,
+			label: graph.folderLabels(path).plural,
+			count: graph.byFolderRecursive(path).length
+		};
+	});
+
 	const clusterOptions = [
 		{ value: '', label: 'All Alteria', selected: selectedCluster === null },
 		...clusters.map((c) => ({
@@ -58,7 +70,7 @@ export async function load({ url }) {
 	];
 
 	return {
-		nav,
+		nav: [...nav, ...universalNav],
 		// Kinds is its own destination (taxonomy), separate from the
 		// content shelves above. In a cluster scope it points at the
 		// per-cluster filtered view.

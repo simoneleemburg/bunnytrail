@@ -1,6 +1,6 @@
 # Alteria Engine
 
-The engine behind Alteria. 
+The engine behind Alteria.
 A personal compendium for the worlds, characters, and ideas.
 
 The canonical data lives in a separate project, as a collection of frontmatter files.

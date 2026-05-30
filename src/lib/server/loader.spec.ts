@@ -762,6 +762,16 @@ describe('loadAll: cluster-scoped wikilinks', () => {
 		expect([...universalFolders].sort()).toEqual(['foundation']);
 	});
 
+	it('exposes universal-substrate sub-shelves via Graph.universalShelves()', async () => {
+		const dir = await seedClusters();
+		const { Graph } = await import('./graph');
+		const g = new Graph();
+		await g.load(dir);
+		expect(g.universalShelves()).toEqual([{ root: 'foundation', shelf: 'concepts' }]);
+		// And `concepts` must NOT leak into the cluster union shelves.
+		expect(g.unionShelves()).not.toContain('concepts');
+	});
+
 	it('resolves cluster-local bare slugs without cluster prefix', async () => {
 		const dir = await seedClusters();
 		const { entities } = await loadAll(dir);

@@ -19,7 +19,7 @@ import { buildEdges, loadAll, resolveWikilink } from './loader';
  * It is intentionally simple: a few maps, no query language. If the data grows
  * past "thousands of entities" we can revisit.
  */
-class Graph {
+export class Graph {
 	#entities = new Map<EntityId, Entity>();
 	#outEdges = new Map<EntityId, Edge[]>();
 	#inEdges = new Map<EntityId, Edge[]>();
@@ -241,6 +241,30 @@ class Graph {
 			}
 		}
 		return [...seen].sort();
+	}
+
+	/**
+	 * Immediate sub-shelves of every universal-substrate top-level
+	 * folder, paired with their root. Universal substrate is shared
+	 * across all clusters, so these shelves are surfaced inline in
+	 * the masthead nav alongside cluster union shelves and remain
+	 * visible in every cluster scope.
+	 *
+	 * Unlike `unionShelves()`, entries are returned with their root
+	 * intact (e.g. `{ root: 'foundation', shelf: 'fabric' }`) because
+	 * universal shelves don't aggregate across roots — each one
+	 * lives at its real folder path. Sorted by shelf id, then root.
+	 */
+	universalShelves(): { root: string; shelf: string }[] {
+		const out: { root: string; shelf: string }[] = [];
+		for (const root of this.universalFolders()) {
+			for (const childPath of this.childFolders(root)) {
+				const shelf = childPath.slice(root.length + 1);
+				if (shelf && !shelf.includes('/')) out.push({ root, shelf });
+			}
+		}
+		out.sort((a, b) => a.shelf.localeCompare(b.shelf) || a.root.localeCompare(b.root));
+		return out;
 	}
 
 	/**
