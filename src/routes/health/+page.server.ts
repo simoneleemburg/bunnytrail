@@ -1,4 +1,5 @@
 import { graph } from '$lib/server/graph';
+import { guides, validateGuideLinks } from '$lib/server/guides';
 import type { HealthIssue } from '$lib/types';
 
 /**
@@ -7,14 +8,24 @@ import type { HealthIssue } from '$lib/types';
  * need registering, prose files without yaml, broken cross-references,
  * and so on.
  *
- * Issue kinds are taken from `HealthIssue['kind']`; the loader is the
- * sole authority on what shows up here. Each group is sorted by
- * entity path for predictable scanning.
+ * Issues come from two sources:
+ *   • the graph itself (entity wikilinks, kind references, missing
+ *     metadata, malformed yaml, orphans);
+ *   • the guides loader (broken targets in `content_meta/guides/`
+ *     prose, validated lazily here against the graph since guides
+ *     live outside it).
+ *
+ * Each group is sorted by entity path for predictable scanning.
  */
 export async function load() {
 	await graph.ready();
+	await guides.ready();
 
-	const issues = graph.issues();
+	const issues: HealthIssue[] = [
+		...graph.issues(),
+		...guides.issues(),
+		...validateGuideLinks(guides.all(), (p) => graph.resolveLink(p), graph.kindIds())
+	];
 
 	type Group = {
 		kind: HealthIssue['kind'];
@@ -63,8 +74,9 @@ export async function load() {
 			// the graph knows about. Some issues (e.g. invalid-yaml from
 			// a yaml that failed to register) carry an id that isn't in
 			// the entity map; for those we still want to show the path
-			// but not link it into a 404.
-			href: i.entity && graph.get(i.entity) ? `/${i.entity}` : null,
+			// but not link it into a 404. Guide issues use the
+			// `guides/<slug>` prefix and route to /guides/<slug>.
+			href: hrefForIssueSource(i.entity),
 			detail: i.detail
 		});
 	}
@@ -87,4 +99,18 @@ export async function load() {
 		total: issues.length,
 		groups
 	};
+}
+
+/**
+ * Resolve an issue's `entity` field to a clickable href, or `null`
+ * if the path isn't something we can route to. Real entities go to
+ * their compendium page; the synthetic `guides/<slug>` prefix used
+ * by guide-source issues routes to the guide itself; anything
+ * else (e.g. a path from a yaml that failed to register) shows the
+ * text uncliked rather than risking a 404.
+ */
+function hrefForIssueSource(entity: string | undefined): string | null {
+	if (!entity) return null;
+	if (entity.startsWith('guides/')) return `/${entity}`;
+	return graph.get(entity) ? `/${entity}` : null;
 }

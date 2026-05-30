@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { loadGuides } from './guides';
+import { loadGuides, validateGuideLinks, type Guide } from './guides';
 
 /**
  * Seed a guides tree on disk. `tree` is keyed by slug; each value
@@ -193,5 +193,86 @@ describe('loadGuides', () => {
 		const result = await loadGuides(dir);
 		expect(result.guides.map((g) => g.slug)).toEqual(['real']);
 		expect(result.issues).toEqual([]);
+	});
+
+	it('extracts entity wikilinks and kind-links from the body', async () => {
+		const dir = await seedGuidesDir({
+			g: {
+				yaml: 'title: T\nsummary: S\n',
+				md: 'See [[characters/kael]] and [[bayurinda]] and [[kinds/planet|a planet]].\n'
+			}
+		});
+		const result = await loadGuides(dir);
+		expect(result.guides[0].wikilinks).toEqual(['characters/kael', 'bayurinda']);
+		expect(result.guides[0].kindLinks).toEqual(['planet']);
+	});
+});
+
+describe('validateGuideLinks', () => {
+	function guide(slug: string, wikilinks: string[], kindLinks: string[] = []): Guide {
+		return {
+			slug,
+			title: `${slug} title`,
+			eyebrow: 'Start here',
+			summary: 's',
+			body: '',
+			wikilinks,
+			kindLinks
+		};
+	}
+
+	const resolver = (known: Iterable<string>) => {
+		const set = new Set(known);
+		return (path: string) => (set.has(path) ? path : null);
+	};
+
+	it('returns no issues when every link resolves', () => {
+		const issues = validateGuideLinks(
+			[guide('tour', ['characters/kael', 'places/duskmere'], ['planet'])],
+			resolver(['characters/kael', 'places/duskmere']),
+			new Set(['planet'])
+		);
+		expect(issues).toEqual([]);
+	});
+
+	it('flags an unresolved entity wikilink as a broken-link issue', () => {
+		const issues = validateGuideLinks(
+			[guide('tour', ['characters/ghost'])],
+			resolver([]),
+			new Set()
+		);
+		expect(issues).toHaveLength(1);
+		expect(issues[0]).toMatchObject({
+			kind: 'broken-link',
+			entity: 'guides/tour',
+			detail: 'wikilink → characters/ghost (not found)'
+		});
+	});
+
+	it('flags an unresolved kind-link as a broken-link issue', () => {
+		const issues = validateGuideLinks(
+			[guide('tour', [], ['no-such-kind'])],
+			resolver([]),
+			new Set(['planet'])
+		);
+		expect(issues).toHaveLength(1);
+		expect(issues[0]).toMatchObject({
+			kind: 'broken-link',
+			entity: 'guides/tour',
+			detail: 'wikilink → kinds/no-such-kind (not found)'
+		});
+	});
+
+	it('attributes issues from multiple guides to the correct slug', () => {
+		const issues = validateGuideLinks(
+			[guide('alpha', ['missing/one']), guide('beta', ['missing/two'])],
+			resolver([]),
+			new Set()
+		);
+		expect(issues.map((i) => i.entity)).toEqual(['guides/alpha', 'guides/beta']);
+	});
+
+	it('returns an empty array when given no guides', () => {
+		expect(validateGuideLinks([], resolver([]), new Set())).toEqual([]);
 	});
 });

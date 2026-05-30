@@ -5,6 +5,7 @@ import { parse as parseYaml } from 'yaml';
 import type { HealthIssue } from '$lib/types';
 import { defaultGuidesDir } from './globals';
 import { splitFrontmatter } from './frontmatter';
+import { extractKindLinks, extractWikilinks } from './loader';
 
 const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
 
@@ -18,6 +19,16 @@ export interface Guide {
 	summary: string;
 	/** Raw markdown body; rendered with full wikilink support. */
 	body: string;
+	/**
+	 * Entity wikilink paths (`[[type/slug]]` and bare `[[slug]]`)
+	 * extracted from the body at load time. Used by
+	 * `validateGuideLinks` to flag unresolved targets on the health
+	 * page. `[[kinds/<id>]]` paths are excluded here — they live on
+	 * `kindLinks` instead.
+	 */
+	wikilinks: string[];
+	/** Kind ids referenced via `[[kinds/<id>]]` in the body. */
+	kindLinks: string[];
 }
 
 export interface GuidesLoadResult {
@@ -187,7 +198,9 @@ async function loadGuide(
 		title: title.trim(),
 		eyebrow,
 		summary: summary.trim(),
-		body
+		body,
+		wikilinks: extractWikilinks(body),
+		kindLinks: extractKindLinks(body)
 	};
 }
 
@@ -257,3 +270,51 @@ class Guides {
 }
 
 export const guides = new Guides();
+
+/**
+ * Walk every guide's extracted wikilinks and kind-links and flag the
+ * ones whose targets aren't known to the graph. Guides live outside
+ * the entity graph, so their links can't be validated at graph-build
+ * time the way entity wikilinks are — instead the health page calls
+ * this after both singletons are ready and merges the result with
+ * the graph's own issues.
+ *
+ * Guides have no cluster, so wikilink resolution uses the cross-
+ * cluster path (`fromCluster: null`). That matches how guide bodies
+ * are actually rendered in `renderBody`.
+ *
+ * `kinds/<id>` paths are validated against the registry: any id not
+ * present becomes a `broken-link` issue, same shape as entity-side
+ * kind-link validation in `loader.ts`.
+ *
+ * Each returned issue carries `entity: "guides/<slug>"` so the
+ * health page can show which guide raised it; the prefix is shaped
+ * to avoid colliding with any real entity id.
+ */
+export function validateGuideLinks(
+	all: readonly Guide[],
+	resolveLink: (path: string) => string | null,
+	kindIds: ReadonlySet<string>
+): HealthIssue[] {
+	const issues: HealthIssue[] = [];
+	for (const guide of all) {
+		const key = `guides/${guide.slug}`;
+		for (const raw of guide.wikilinks) {
+			if (resolveLink(raw)) continue;
+			issues.push({
+				kind: 'broken-link',
+				entity: key,
+				detail: `wikilink → ${raw} (not found)`
+			});
+		}
+		for (const raw of guide.kindLinks) {
+			if (kindIds.has(raw)) continue;
+			issues.push({
+				kind: 'broken-link',
+				entity: key,
+				detail: `wikilink → kinds/${raw} (not found)`
+			});
+		}
+	}
+	return issues;
+}
