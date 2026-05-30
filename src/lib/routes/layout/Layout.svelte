@@ -40,6 +40,19 @@
 	// switch.
 	let bypassScopePaint = false;
 
+	// Mobile nav drawer open state + cluster picker open state.
+	// Both are auto-closed on route change and on Escape; the
+	// cluster picker also closes on outside click.
+	let drawerOpen = $state(false);
+	let clusterOpen = $state(false);
+
+	// Active label for the cluster trigger. Falls back to the world
+	// "all" label when nothing's flagged selected (defensive — the
+	// loader always marks one).
+	let clusterLabel = $derived(
+		data.clusterOptions.find((o) => o.selected)?.label ?? data.world.allScopeLabel
+	);
+
 	// In-app navigation hook: when the user is browsing in All
 	// scope, paint `?scope=all` onto outgoing internal links that
 	// would otherwise look scoped (i.e. start with a cluster prefix).
@@ -52,6 +65,11 @@
 	// — that's intentional. In those cases the URL alone determines
 	// scope, which is the honest behaviour for a brand-new context.
 	beforeNavigate((nav) => {
+		// Always shut both menus on a navigation; the new page
+		// shouldn't inherit the previous chrome state.
+		drawerOpen = false;
+		clusterOpen = false;
+
 		if (bypassScopePaint) {
 			bypassScopePaint = false;
 			return;
@@ -80,38 +98,136 @@
 			data.scopeContext
 		);
 		bypassScopePaint = true;
+		clusterOpen = false;
+		drawerOpen = false;
 		goto(target);
 	}
+
+	// Escape closes whichever menu is open (cluster picker first
+	// since it's the inner-most layer).
+	function onKeydown(e: KeyboardEvent) {
+		if (e.key !== 'Escape') return;
+		if (clusterOpen) clusterOpen = false;
+		else if (drawerOpen) drawerOpen = false;
+	}
+
+	// Close the cluster picker when a click lands outside it. The
+	// listener is only attached while it's open; the picker itself
+	// stops propagation on its trigger so the toggle click doesn't
+	// immediately re-close it.
+	function onDocumentClick(e: MouseEvent) {
+		const target = e.target as Element | null;
+		if (target?.closest('[data-cluster-picker]')) return;
+		clusterOpen = false;
+	}
+
+	$effect(() => {
+		if (!browser) return;
+		if (!clusterOpen) return;
+		document.addEventListener('click', onDocumentClick);
+		return () => document.removeEventListener('click', onDocumentClick);
+	});
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<div class="page">
+<svelte:window on:keydown={onKeydown} />
+
+<div class="page" class:drawer-open={drawerOpen}>
 	<header class="masthead">
 		<div class="masthead-inner">
 			<a class="wordmark" href="/">{data.world.name}</a>
-			<nav>
+
+			<nav class="nav-desktop" aria-label="Primary">
 				{#each data.nav as item (item.href)}
 					<a href={item.href}>{item.label}</a>
 				{/each}
 				<span class="nav-sep" aria-hidden="true">·</span>
 				<a href={data.kindsHref}>Kinds</a>
 			</nav>
-			{#if data.clusterOptions.length > 1}
-				<div class="cluster-form">
-					<label class="cluster-label">
-						<span class="cluster-label-text">Cluster</span>
-						<select name="cluster" onchange={(e) => switchCluster(e.currentTarget.value)}>
-							{#each data.clusterOptions as opt (opt.value)}
-								<option value={opt.value} selected={opt.selected}>{opt.label}</option>
-							{/each}
-						</select>
-					</label>
-				</div>
-			{/if}
+
+			<div class="chrome-end">
+				{#if data.clusterOptions.length > 1}
+					<div class="cluster-picker cluster-picker-desktop" data-cluster-picker>
+						<button
+							type="button"
+							class="cluster-trigger"
+							aria-haspopup="listbox"
+							aria-expanded={clusterOpen}
+							onclick={() => (clusterOpen = !clusterOpen)}
+						>
+							<span class="cluster-eyebrow">Cluster</span>
+							<span class="cluster-current">{clusterLabel}</span>
+							<span class="cluster-caret" aria-hidden="true">▾</span>
+						</button>
+						{#if clusterOpen}
+							<ul class="cluster-menu" role="listbox">
+								{#each data.clusterOptions as opt (opt.value)}
+									<li>
+										<button
+											type="button"
+											role="option"
+											aria-selected={opt.selected}
+											class:selected={opt.selected}
+											onclick={() => switchCluster(opt.value)}
+										>
+											{opt.label}
+										</button>
+									</li>
+								{/each}
+							</ul>
+						{/if}
+					</div>
+				{/if}
+
+				<button
+					type="button"
+					class="hamburger"
+					aria-label={drawerOpen ? 'Close menu' : 'Open menu'}
+					aria-expanded={drawerOpen}
+					aria-controls="mobile-drawer"
+					onclick={() => (drawerOpen = !drawerOpen)}
+				>
+					<span class="hamburger-bar" aria-hidden="true"></span>
+					<span class="hamburger-bar" aria-hidden="true"></span>
+					<span class="hamburger-bar" aria-hidden="true"></span>
+				</button>
+			</div>
 		</div>
+
+		{#if drawerOpen}
+			<div class="drawer" id="mobile-drawer">
+				<nav class="nav-mobile" aria-label="Primary mobile">
+					{#each data.nav as item (item.href)}
+						<a href={item.href}>{item.label}</a>
+					{/each}
+					<a href={data.kindsHref}>Kinds</a>
+				</nav>
+
+				{#if data.clusterOptions.length > 1}
+					<div class="drawer-cluster">
+						<p class="drawer-cluster-eyebrow">Cluster</p>
+						<ul class="drawer-cluster-list" role="listbox">
+							{#each data.clusterOptions as opt (opt.value)}
+								<li>
+									<button
+										type="button"
+										role="option"
+										aria-selected={opt.selected}
+										class:selected={opt.selected}
+										onclick={() => switchCluster(opt.value)}
+									>
+										{opt.label}
+									</button>
+								</li>
+							{/each}
+						</ul>
+					</div>
+				{/if}
+			</div>
+		{/if}
 	</header>
 
 	<main>
@@ -137,6 +253,7 @@
 	.masthead {
 		border-bottom: var(--rule-thin);
 		padding: var(--space-5) var(--space-6);
+		position: relative;
 	}
 
 	.masthead-inner {
@@ -153,19 +270,20 @@
 		letter-spacing: 0.04em;
 		color: var(--ink);
 		text-decoration: none;
+		white-space: nowrap;
 	}
 
 	.wordmark:hover {
 		color: var(--accent);
 	}
 
-	nav {
+	.nav-desktop {
 		display: flex;
 		align-items: baseline;
 		gap: var(--space-5);
 	}
 
-	nav a {
+	.nav-desktop a {
 		font-size: var(--text-sm);
 		font-variant: small-caps;
 		letter-spacing: 0.08em;
@@ -173,7 +291,7 @@
 		text-decoration: none;
 	}
 
-	nav a:hover {
+	.nav-desktop a:hover {
 		color: var(--accent);
 	}
 
@@ -185,45 +303,271 @@
 		font-size: var(--text-sm);
 	}
 
-	.cluster-form {
-		margin: 0 0 0 auto;
-		padding: 0;
+	.chrome-end {
+		margin-left: auto;
+		display: flex;
+		align-items: center;
+		gap: var(--space-4);
 	}
 
-	.cluster-label {
+	/* ── Custom cluster picker ─────────────────────────────────
+	   Replaces the native <select>. Trigger is a quiet pill that
+	   carries both the eyebrow ("Cluster") and the current value;
+	   click opens a small parchment menu of all options. */
+	.cluster-picker {
+		position: relative;
+	}
+
+	.cluster-trigger {
 		display: inline-flex;
 		align-items: baseline;
-		gap: var(--space-2);
-		font-size: var(--text-sm);
-		font-variant: small-caps;
-		letter-spacing: 0.08em;
+		gap: var(--space-3);
+		font: inherit;
 		color: var(--ink-soft);
+		background: transparent;
+		border: 1px solid transparent;
+		border-radius: var(--radius-md);
+		padding: var(--space-2) var(--space-3);
+		cursor: pointer;
+		transition:
+			background-color 120ms,
+			border-color 120ms,
+			color 120ms;
 	}
 
-	.cluster-label-text {
+	.cluster-trigger:hover,
+	.cluster-trigger:focus-visible {
+		background: var(--paper-warm);
+		border-color: var(--rule);
+		outline: none;
+	}
+
+	.cluster-trigger[aria-expanded='true'] {
+		background: var(--paper-warm);
+		border-color: var(--rule);
+	}
+
+	.cluster-eyebrow {
+		font-size: var(--text-xs);
+		font-variant: small-caps;
+		letter-spacing: 0.1em;
 		color: var(--ink-faint);
 	}
 
-	.cluster-label select {
-		font: inherit;
-		font-variant: inherit;
-		letter-spacing: inherit;
+	.cluster-current {
+		font-family: var(--font-display);
+		font-size: var(--text-sm);
+		letter-spacing: 0.02em;
 		color: var(--ink);
+	}
+
+	.cluster-caret {
+		font-size: 0.7em;
+		color: var(--ink-faint);
+		transition: transform 120ms;
+	}
+
+	.cluster-trigger[aria-expanded='true'] .cluster-caret {
+		transform: rotate(180deg);
+	}
+
+	.cluster-menu {
+		position: absolute;
+		top: calc(100% + var(--space-2));
+		right: 0;
+		min-width: 12rem;
+		margin: 0;
+		padding: var(--space-2);
+		list-style: none;
+		background: var(--vellum);
+		border: 1px solid var(--rule);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-hover);
+		z-index: 20;
+	}
+
+	.cluster-menu li {
+		margin: 0;
+	}
+
+	.cluster-menu button {
+		width: 100%;
+		text-align: left;
+		font-family: var(--font-display);
+		font-size: var(--text-sm);
+		letter-spacing: 0.02em;
+		color: var(--ink-soft);
 		background: transparent;
-		border: none;
-		border-bottom: 1px solid var(--rule);
-		padding: 0 var(--space-1);
+		border: 0;
+		border-radius: var(--radius-sm);
+		padding: var(--space-2) var(--space-3);
 		cursor: pointer;
 	}
 
-	.cluster-label select:hover {
-		border-bottom-color: var(--accent);
+	.cluster-menu button:hover,
+	.cluster-menu button:focus-visible {
+		background: var(--paper-warm);
+		color: var(--accent);
+		outline: none;
+	}
+
+	.cluster-menu button.selected {
 		color: var(--accent);
 	}
 
-	.cluster-label select:focus-visible {
+	.cluster-menu button.selected::before {
+		content: '· ';
+		color: var(--accent);
+	}
+
+	/* ── Hamburger ───────────────────────────────────────────── */
+	.hamburger {
+		display: none;
+		flex-direction: column;
+		justify-content: center;
+		gap: 4px;
+		width: 2.25rem;
+		height: 2.25rem;
+		padding: 0.5rem;
+		background: transparent;
+		border: 1px solid transparent;
+		border-radius: var(--radius-md);
+		cursor: pointer;
+		transition:
+			background-color 120ms,
+			border-color 120ms;
+	}
+
+	.hamburger:hover,
+	.hamburger:focus-visible {
+		background: var(--paper-warm);
+		border-color: var(--rule);
 		outline: none;
-		border-bottom-color: var(--accent);
+	}
+
+	.hamburger-bar {
+		display: block;
+		height: 1px;
+		background: var(--ink);
+		transition:
+			transform 160ms,
+			opacity 160ms;
+	}
+
+	.hamburger[aria-expanded='true'] .hamburger-bar:nth-child(1) {
+		transform: translateY(5px) rotate(45deg);
+	}
+	.hamburger[aria-expanded='true'] .hamburger-bar:nth-child(2) {
+		opacity: 0;
+	}
+	.hamburger[aria-expanded='true'] .hamburger-bar:nth-child(3) {
+		transform: translateY(-5px) rotate(-45deg);
+	}
+
+	/* ── Drawer ──────────────────────────────────────────────── */
+	.drawer {
+		display: none;
+		flex-direction: column;
+		gap: var(--space-5);
+		max-width: var(--page-max);
+		margin: var(--space-5) auto 0;
+		padding-top: var(--space-5);
+		border-top: var(--rule-thin);
+	}
+
+	.nav-mobile {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+	}
+
+	.nav-mobile a {
+		font-family: var(--font-display);
+		font-size: var(--text-lg);
+		letter-spacing: 0.02em;
+		color: var(--ink);
+		text-decoration: none;
+		padding: var(--space-2) 0;
+	}
+
+	.nav-mobile a:hover {
+		color: var(--accent);
+	}
+
+	.drawer-cluster {
+		border-top: var(--rule-thin);
+		padding-top: var(--space-4);
+	}
+
+	.drawer-cluster-eyebrow {
+		margin: 0 0 var(--space-3);
+		font-size: var(--text-xs);
+		font-variant: small-caps;
+		letter-spacing: 0.1em;
+		color: var(--ink-faint);
+	}
+
+	.drawer-cluster-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+	}
+
+	.drawer-cluster-list button {
+		width: 100%;
+		text-align: left;
+		font-family: var(--font-display);
+		font-size: var(--text-base);
+		letter-spacing: 0.02em;
+		color: var(--ink-soft);
+		background: transparent;
+		border: 0;
+		border-radius: var(--radius-sm);
+		padding: var(--space-2) var(--space-3);
+		cursor: pointer;
+	}
+
+	.drawer-cluster-list button:hover,
+	.drawer-cluster-list button:focus-visible {
+		background: var(--paper-warm);
+		color: var(--accent);
+		outline: none;
+	}
+
+	.drawer-cluster-list button.selected {
+		color: var(--accent);
+	}
+
+	.drawer-cluster-list button.selected::before {
+		content: '· ';
+		color: var(--accent);
+	}
+
+	/* ── Responsive collapse ─────────────────────────────────── */
+	@media (max-width: 760px) {
+		.masthead {
+			padding: var(--space-4) var(--space-5);
+		}
+
+		.masthead-inner {
+			align-items: center;
+		}
+
+		.nav-desktop,
+		.cluster-picker-desktop {
+			display: none;
+		}
+
+		.hamburger {
+			display: flex;
+		}
+
+		.page.drawer-open .drawer {
+			display: flex;
+		}
 	}
 
 	main {

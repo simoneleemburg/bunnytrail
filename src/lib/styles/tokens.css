@@ -83,6 +83,10 @@
 	--page-max: 64rem;
 	--prose-max: 38rem;
 
+	/* Breakpoint where the masthead collapses into a hamburger
+	   drawer and entity-page two-column layouts fold to one. */
+	--bp-md: 760px;
+
 	/* ── Book mode ────────────────────────────────────────────── */
 	/* Used by chapter pages of book-shaped entities (works that
 	   carry a `chapters/` subfolder, e.g. the Bonedust Scrolls).
