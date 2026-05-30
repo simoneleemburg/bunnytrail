@@ -3,7 +3,6 @@ import { guides } from '$lib/server/guides';
 import { graph } from '$lib/server/graph';
 import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderBody, renderSummary } from '$lib/server/markdown';
-import type { PageServerLoad } from './$types';
 
 /**
  * A single guide — a tour of the world, or a "start here" landing
@@ -18,7 +17,7 @@ import type { PageServerLoad } from './$types';
  * a folder known to the graph. Use `![alt](assets/foo.svg)` for
  * map references, which routes through the global assets endpoint.
  */
-export const load: PageServerLoad = async ({ params }) => {
+export async function load({ params }: { params: { slug: string } }) {
 	await guides.ready();
 	const guide = guides.get(params.slug);
 	if (!guide) error(404, `No guide at /guides/${params.slug}`);
@@ -46,4 +45,6 @@ export const load: PageServerLoad = async ({ params }) => {
 		summaryHtml,
 		html
 	};
-};
+}
+
+export type GuideData = Awaited<ReturnType<typeof load>>;

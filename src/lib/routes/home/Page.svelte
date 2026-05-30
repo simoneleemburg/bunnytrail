@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { HomeData } from './load';
 	import Tag from '$lib/components/Tag.svelte';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: { data: HomeData } = $props();
 </script>
 
 <svelte:head>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { CollectionPageData, ContainerNode, OrbitNode } from './_collectionPage.load';
+	import type { CollectionPageData, ContainerNode, OrbitNode } from './collectionPage.load';
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import Tag from '$lib/components/Tag.svelte';

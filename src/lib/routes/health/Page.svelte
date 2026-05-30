@@ -1,8 +1,8 @@
 <script lang="ts">
 	import PageHeader from '$lib/components/PageHeader.svelte';
-	import type { PageData } from './$types';
+	import type { HealthData } from './load';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: { data: HealthData } = $props();
 </script>
 
 <svelte:head>

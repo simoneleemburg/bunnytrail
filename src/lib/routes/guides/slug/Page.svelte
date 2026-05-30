@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { GuideData } from './load';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: { data: GuideData } = $props();
 </script>
 
 <svelte:head>

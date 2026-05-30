@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { BlogIndexData } from './load';
 	import Tag from '$lib/components/Tag.svelte';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: { data: BlogIndexData } = $props();
 </script>
 
 <svelte:head>
@@ -53,7 +53,7 @@
 
 <style>
 	/* Shared notebook surface — identical to .craft in
-	   _CraftPage.svelte so the two pages read as the same
+	   CraftPage.svelte so the two pages read as the same
 	   author's-room artefact. */
 	.notebook-index {
 		max-width: var(--prose-max);

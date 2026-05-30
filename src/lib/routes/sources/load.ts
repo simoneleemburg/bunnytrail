@@ -1,6 +1,5 @@
 import { graph } from '$lib/server/graph';
 import { sources } from '$lib/server/sources';
-import type { PageServerLoad } from './$types';
 
 /**
  * Index of all source projects — the feeder works being absorbed
@@ -13,7 +12,7 @@ import type { PageServerLoad } from './$types';
  * singletons explicitly because /sources doesn't share a layout
  * with the rest of the worldbuilding pages.
  */
-export const load: PageServerLoad = async () => {
+export async function load() {
 	await graph.ready();
 	await sources.ready();
 
@@ -45,4 +44,6 @@ export const load: PageServerLoad = async () => {
 	});
 
 	return { projects };
-};
+}
+
+export type SourcesData = Awaited<ReturnType<typeof load>>;

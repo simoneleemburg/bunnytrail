@@ -1,7 +1,7 @@
 import { graph } from '$lib/server/graph';
-import { loadKindsIndexPage } from './_kindsIndexPage.load';
+import { loadKindsIndexPage } from './kindsIndexPage.load';
 
-export type { KindNode } from './_kindsIndexPage.load';
+export type { KindNode } from './kindsIndexPage.load';
 
 /**
  * Global kind hierarchy overview (cross-cluster). Walks the kind
@@ -18,3 +18,6 @@ export async function load() {
 	await graph.ready();
 	return loadKindsIndexPage(null);
 }
+
+
+export type KindsIndexData = Awaited<ReturnType<typeof load>>;

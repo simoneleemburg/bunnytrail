@@ -1,11 +1,11 @@
 import { error } from '@sveltejs/kit';
 import { graph } from '$lib/server/graph';
-import { loadEntityPage } from './_entityPage.load';
-import { loadAggregateShelfPage, loadCollectionPage } from './_collectionPage.load';
-import { loadChapterPage } from './_chapterPage.load';
-import { loadCraftPage } from './_craftPage.load';
-import { loadKindsIndexPage } from '../kinds/_kindsIndexPage.load';
-import { loadKindPage } from '../kinds/[kind]/_kindPage.load';
+import { loadEntityPage } from './entityPage.load';
+import { loadAggregateShelfPage, loadCollectionPage } from './collectionPage.load';
+import { loadChapterPage } from './chapterPage.load';
+import { loadCraftPage } from './craftPage.load';
+import { loadKindsIndexPage } from '../kinds/kindsIndexPage.load';
+import { loadKindPage } from '../kinds/kind/kindPage.load';
 
 /**
  * Unified route for everything that lives inside the worldbuilding
@@ -33,7 +33,7 @@ import { loadKindPage } from '../kinds/[kind]/_kindPage.load';
  * folder's children. Real folders take precedence over aggregate
  * shelves with the same name.
  */
-export async function load({ params }) {
+export async function load({ params }: { params: { path: string } }) {
 	await graph.ready();
 
 	const path = params.path;
@@ -96,3 +96,5 @@ export async function load({ params }) {
 
 	error(404, `Not found: ${path}`);
 }
+
+export type PathPageData = Awaited<ReturnType<typeof load>>;

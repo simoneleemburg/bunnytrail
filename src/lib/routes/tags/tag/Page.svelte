@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { TagPageData } from './load';
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: { data: TagPageData } = $props();
 
 	const countLabel = $derived(`${data.count} ${data.count === 1 ? 'entry' : 'entries'} tagged`);
 </script>

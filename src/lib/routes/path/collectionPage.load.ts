@@ -473,7 +473,7 @@ export type CollectionPageData = Awaited<ReturnType<typeof loadCollectionPage>>;
  * and a flat view (one big grid).
  *
  * Reuses the same data shape as the per-folder collection page so
- * the `_CollectionPage.svelte` component renders both. Differences:
+ * the `CollectionPage.svelte` component renders both. Differences:
  *
  *   • `subcollections` is filled with every top-level folder.
  *   • `containers` is always empty (container nesting is local).
@@ -532,7 +532,7 @@ function labelForFolder(path: string): string {
  * folder and presents them as one collection.
  *
  * Aggregate pages mirror the shape of the per-folder collection page so
- * the existing `_CollectionPage.svelte` renders both. Differences:
+ * the existing `CollectionPage.svelte` renders both. Differences:
  *
  *   • Subcollection tiles are the *per-cluster* shelves (e.g.
  *     `aurethia/characters`) rather than child folders, so a reader

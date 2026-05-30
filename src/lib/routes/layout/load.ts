@@ -16,7 +16,7 @@ import { readScope, type ScopeContext } from '$lib/cluster';
  * `selectedCluster === '<cluster>'` scopes shelf links to that
  * cluster: `/aurethia/characters` etc. — real folder routes.
  */
-export async function load({ url }) {
+export async function load({ url }: { url: URL }) {
 	await graph.ready();
 
 	const clusters = graph.clusters();
@@ -82,3 +82,5 @@ export async function load({ url }) {
 		scopeContext: { clusters, unionShelves, clusterAwarePaths } satisfies ScopeContext
 	};
 }
+
+export type LayoutData = Awaited<ReturnType<typeof load>>;

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { CraftPageData } from './_craftPage.load';
+	import type { CraftPageData } from './craftPage.load';
 
 	let { data }: { data: CraftPageData } = $props();
 </script>

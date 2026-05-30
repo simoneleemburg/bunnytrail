@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import { graph } from '$lib/server/graph';
 import { renderSummary } from '$lib/server/markdown';
 
-export async function load({ params }) {
+export async function load({ params }: { params: { tag: string } }) {
 	await graph.ready();
 
 	const tag = decodeURIComponent(params.tag);
@@ -50,6 +50,8 @@ export async function load({ params }) {
 		groups
 	};
 }
+
+export type TagPageData = Awaited<ReturnType<typeof load>>;
 
 function toCard(
 	entity: ReturnType<typeof graph.all>[number],

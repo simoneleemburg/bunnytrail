@@ -101,6 +101,8 @@ export async function load() {
 	};
 }
 
+export type HealthData = Awaited<ReturnType<typeof load>>;
+
 /**
  * Resolve an issue's `entity` field to a clickable href, or `null`
  * if the path isn't something we can route to. Real entities go to

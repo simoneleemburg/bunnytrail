@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { EntityPageData } from './_entityPage.load';
+	import type { EntityPageData } from './entityPage.load';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import PropertyList from '$lib/components/PropertyList.svelte';
 	import EntityLink from '$lib/components/EntityLink.svelte';

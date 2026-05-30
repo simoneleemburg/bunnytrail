@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import CollectionPage from '../[...path]/_CollectionPage.svelte';
+	import type { EverythingData } from './load';
+	import CollectionPage from '../path/CollectionPage.svelte';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: { data: EverythingData } = $props();
 </script>
 
 <CollectionPage {data} />

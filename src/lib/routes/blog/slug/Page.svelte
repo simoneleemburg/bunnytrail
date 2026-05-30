@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { BlogPostData } from './load';
 	import Tag from '$lib/components/Tag.svelte';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: { data: BlogPostData } = $props();
 </script>
 
 <svelte:head>
@@ -42,7 +42,7 @@
 
 <style>
 	/* Shared notebook surface — identical to .craft in
-	   _CraftPage.svelte so notebook posts and craft sheets
+	   CraftPage.svelte so notebook posts and craft sheets
 	   read as the same author's-room artefact. */
 	.notebook {
 		max-width: var(--prose-max);

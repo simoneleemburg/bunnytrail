@@ -1,5 +1,4 @@
 import { blog, excerpt, formatPostDate } from '$lib/server/blog';
-import type { PageServerLoad } from './$types';
 
 /**
  * Index of all notebook posts, newest first. Only the fields the
@@ -7,7 +6,7 @@ import type { PageServerLoad } from './$types';
  * via the single-post route), but a short plain-text excerpt is
  * computed so readers can preview each entry from the index.
  */
-export const load: PageServerLoad = async () => {
+export async function load() {
 	const posts = blog.all().map((p) => ({
 		slug: p.slug,
 		title: p.title,
@@ -17,4 +16,6 @@ export const load: PageServerLoad = async () => {
 		excerpt: excerpt(p.body)
 	}));
 	return { posts };
-};
+}
+
+export type BlogIndexData = Awaited<ReturnType<typeof load>>;

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ChapterPageData } from './_chapterPage.load';
+	import type { ChapterPageData } from './chapterPage.load';
 
 	let { data }: { data: ChapterPageData } = $props();
 

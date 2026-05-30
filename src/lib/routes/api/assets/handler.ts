@@ -4,7 +4,6 @@ import { assets } from '$lib/server/assets';
 import { ASSETS_DIR } from '$lib/server/globals';
 import { IMAGE_EXTENSIONS } from '$lib/server/markdown';
 import { error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
 
 /**
  * GET /api/assets/[name]
@@ -25,7 +24,7 @@ import type { RequestHandler } from './$types';
 const BUNDLED_ASSETS_DIR = resolve(process.cwd(), 'src/lib/assets');
 const TEXT_EXTENSIONS = new Set(['svg', 'css']);
 
-export const GET: RequestHandler = async ({ params }) => {
+export const GET = async ({ params }: { params: { name: string } }) => {
 	const { name } = params;
 	if (name.includes('/') || name.includes('\\') || name.includes('..')) {
 		error(400, 'invalid asset name');

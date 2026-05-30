@@ -131,3 +131,6 @@ export async function load() {
 		guides: guideCallouts
 	};
 }
+
+
+export type HomeData = Awaited<ReturnType<typeof load>>;

@@ -1,5 +1,4 @@
 import { blog } from '$lib/server/blog';
-import type { LayoutServerLoad } from './$types';
 
 /**
  * The blog tree lives outside the worldbuilding graph, so it gets
@@ -8,7 +7,9 @@ import type { LayoutServerLoad } from './$types';
  * before any of them render. The watcher is already started from
  * `hooks.server.ts` and picks up `content_meta/blog/` from there.
  */
-export const load: LayoutServerLoad = async () => {
+export async function load() {
 	await blog.ready();
 	return {};
-};
+}
+
+export type BlogLayoutData = Awaited<ReturnType<typeof load>>;

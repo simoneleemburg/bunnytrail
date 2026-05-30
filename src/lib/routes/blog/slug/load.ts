@@ -1,7 +1,6 @@
 import { error } from '@sveltejs/kit';
 import { blog, formatPostDate } from '$lib/server/blog';
 import { renderPlainBody } from '$lib/server/markdown';
-import type { PageServerLoad } from './$types';
 
 /**
  * A single notebook post. The body is rendered with the plain
@@ -10,7 +9,7 @@ import type { PageServerLoad } from './$types';
  * graph and shouldn't accumulate inbound backlinks from prose
  * here.
  */
-export const load: PageServerLoad = async ({ params }) => {
+export async function load({ params }: { params: { slug: string } }) {
 	const post = blog.get(params.slug);
 	if (!post) error(404, `No notebook post at /blog/${params.slug}`);
 
@@ -22,4 +21,6 @@ export const load: PageServerLoad = async ({ params }) => {
 		tags: post.tags,
 		html: renderPlainBody(post.body)
 	};
-};
+}
+
+export type BlogPostData = Awaited<ReturnType<typeof load>>;

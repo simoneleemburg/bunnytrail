@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { SourcesData } from './load';
 	import EntityLink from '$lib/components/EntityLink.svelte';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: { data: SourcesData } = $props();
 </script>
 
 <svelte:head>

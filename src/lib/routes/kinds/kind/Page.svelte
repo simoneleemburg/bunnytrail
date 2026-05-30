@@ -1,6 +1,6 @@
 <script lang="ts">
-	import KindPage from './_KindPage.svelte';
-	import type { KindCard, KindRefSection, KindSliceNode } from './+page.server';
+	import KindPage from './KindPage.svelte';
+	import type { KindCard, KindRefSection, KindSliceNode } from './load';
 
 	let {
 		data

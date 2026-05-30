@@ -1,5 +1,5 @@
 import { graph } from '$lib/server/graph';
-import { loadEverythingIndex } from '../[...path]/_collectionPage.load';
+import { loadEverythingIndex } from '../path/collectionPage.load';
 
 /**
  * Global all-content index. Reuses the same loader + view-model
@@ -10,3 +10,6 @@ export async function load() {
 	await graph.ready();
 	return loadEverythingIndex();
 }
+
+
+export type EverythingData = Awaited<ReturnType<typeof load>>;

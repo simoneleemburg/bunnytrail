@@ -4,7 +4,6 @@ import { error } from '@sveltejs/kit';
 import { graph } from '$lib/server/graph';
 import { CONTENT_DIR } from '$lib/server/globals';
 import { IMAGE_EXTENSIONS } from '$lib/server/markdown';
-import type { RequestHandler } from './$types';
 
 /**
  * GET /api/entity-assets/<folder-path>/<filename>
@@ -28,11 +27,11 @@ import type { RequestHandler } from './$types';
  * Caching mirrors `/api/assets/[name]`: no-store in dev, 1h in
  * production.
  */
-export const GET: RequestHandler = async ({ params }) => {
+export const GET = async ({ params }: { params: { path: string } }) => {
 	const rawPath = params.path ?? '';
 	const segments = rawPath.split('/').filter(Boolean);
 	if (segments.length < 2) error(404, 'not found');
-	if (segments.some((s) => s === '..' || s === '.' || !s)) error(400, 'bad path');
+	if (segments.some((s: string) => s === '..' || s === '.' || !s)) error(400, 'bad path');
 
 	const filename = segments[segments.length - 1];
 	const folder = segments.slice(0, -1).join('/');

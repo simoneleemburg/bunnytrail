@@ -1,14 +1,14 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import CollectionPage from './_CollectionPage.svelte';
-	import EntityPage from './_EntityPage.svelte';
-	import ChapterPage from './_ChapterPage.svelte';
-	import CraftPage from './_CraftPage.svelte';
-	import KindsIndexPage from '../kinds/_KindsIndexPage.svelte';
-	import KindPage from '../kinds/[kind]/_KindPage.svelte';
+	import type { PathPageData } from './load';
+	import CollectionPage from './CollectionPage.svelte';
+	import EntityPage from './EntityPage.svelte';
+	import ChapterPage from './ChapterPage.svelte';
+	import CraftPage from './CraftPage.svelte';
+	import KindsIndexPage from '../kinds/KindsIndexPage.svelte';
+	import KindPage from '../kinds/kind/KindPage.svelte';
 	import { page } from '$app/state';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: { data: PathPageData } = $props();
 
 	// Scope-aware "↑ Kinds" up-link for the cluster-scoped kind
 	// page: walks back to `/<cluster>/kinds` rather than the

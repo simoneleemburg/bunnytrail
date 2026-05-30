@@ -1,6 +1,6 @@
 <script lang="ts">
-	import KindsIndexPage from './_KindsIndexPage.svelte';
-	import type { KindNode } from './+page.server';
+	import KindsIndexPage from './KindsIndexPage.svelte';
+	import type { KindNode } from './load';
 
 	let {
 		data

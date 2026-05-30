@@ -5,7 +5,7 @@ import { titleCaseSlug, type Entity } from '$lib/types';
 
 /**
  * Build the view-model for an entity page. Returned shape is consumed
- * by `_EntityPage.svelte`.
+ * by `EntityPage.svelte`.
  */
 export async function loadEntityPage(entity: Entity) {
 	const id = entity.id;
