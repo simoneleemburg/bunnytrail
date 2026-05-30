@@ -7,6 +7,9 @@ node_modules
 .wrangler
 /.svelte-kit
 /build
+# svelte-package output. Built by the `prepare` hook on consumer
+# installs (and on `npm run package` in this repo), never committed.
+/dist
 
 # OS
 .DS_Store

@@ -3,11 +3,61 @@
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
+	"description": "Knowledge-graph engine for personal compendiums. Drives the Alteria worldbuilding site.",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/simoneleemburg/bunnytrail.git"
+	},
+	"files": [
+		"dist",
+		"bin"
+	],
+	"svelte": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"svelte": "./dist/index.js",
+			"default": "./dist/index.js"
+		},
+		"./routes/*": {
+			"types": "./dist/routes/*.d.ts",
+			"svelte": "./dist/routes/*",
+			"default": "./dist/routes/*"
+		},
+		"./components/*": {
+			"types": "./dist/components/*.d.ts",
+			"svelte": "./dist/components/*",
+			"default": "./dist/components/*"
+		},
+		"./server/*": {
+			"types": "./dist/server/*.d.ts",
+			"default": "./dist/server/*"
+		},
+		"./styles/*": "./dist/styles/*",
+		"./assets/*": "./dist/assets/*",
+		"./types": {
+			"types": "./dist/types.d.ts",
+			"default": "./dist/types.js"
+		},
+		"./cluster": {
+			"types": "./dist/cluster.d.ts",
+			"svelte": "./dist/cluster.js",
+			"default": "./dist/cluster.js"
+		},
+		"./hooks": {
+			"types": "./dist/hooks.d.ts",
+			"default": "./dist/hooks.js"
+		}
+	},
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''",
+		"package": "svelte-kit sync && svelte-package",
+		"prepublishOnly": "npm run package",
+		"prepare": "svelte-kit sync && svelte-package || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "vitest run",
@@ -15,9 +65,14 @@
 		"format": "prettier --write .",
 		"format:check": "prettier --check ."
 	},
+	"peerDependencies": {
+		"@sveltejs/kit": "^2.0.0",
+		"svelte": "^5.0.0"
+	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^7.0.1",
 		"@sveltejs/kit": "^2.57.0",
+		"@sveltejs/package": "^2.5.7",
 		"@sveltejs/vite-plugin-svelte": "^7.0.0",
 		"@types/node": "^22.10.0",
 		"prettier": "^3.4.0",
@@ -31,7 +86,6 @@
 	"dependencies": {
 		"chokidar": "^4.0.0",
 		"dotenv": "^17.4.2",
-		"gray-matter": "^4.0.3",
 		"marked": "^15.0.0",
 		"yaml": "^2.6.0"
 	}
