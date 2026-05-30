@@ -235,6 +235,65 @@ describe('renderBody', () => {
 			expect(html).toContain('data-broken="true"');
 		});
 	});
+
+	describe('image src rewriting', () => {
+		const base = 'aurethia/places/duskmere';
+
+		it('rewrites a bare image filename to the entity-assets endpoint', () => {
+			const html = renderBody('![map](map.svg)', resolve, langs, new Set(), undefined, base);
+			expect(html).toContain(`src="/api/entity-assets/${base}/map.svg"`);
+		});
+
+		it('strips a leading ./ on sibling images', () => {
+			const html = renderBody('![p](./photo.png)', resolve, langs, new Set(), undefined, base);
+			expect(html).toContain(`src="/api/entity-assets/${base}/photo.png"`);
+		});
+
+		it('rewrites assets/<name> to /api/assets/<name>', () => {
+			const html = renderBody(
+				'![m](assets/fabric.svg)',
+				resolve,
+				langs,
+				new Set(),
+				undefined,
+				base
+			);
+			expect(html).toContain('src="/api/assets/fabric.svg"');
+		});
+
+		it('leaves absolute URLs alone', () => {
+			const html = renderBody(
+				'![ext](https://example.com/x.png)',
+				resolve,
+				langs,
+				new Set(),
+				undefined,
+				base
+			);
+			expect(html).toContain('src="https://example.com/x.png"');
+		});
+
+		it('leaves root-rooted paths alone', () => {
+			const html = renderBody('![s](/static/foo.png)', resolve, langs, new Set(), undefined, base);
+			expect(html).toContain('src="/static/foo.png"');
+		});
+
+		it('leaves bare srcs alone when no imageBaseDir is supplied', () => {
+			const html = renderBody('![x](map.svg)', resolve, langs);
+			expect(html).toContain('src="map.svg"');
+		});
+
+		it('does not rewrite non-image extensions', () => {
+			const html = renderBody('![x](notes.txt)', resolve, langs, new Set(), undefined, base);
+			expect(html).toContain('src="notes.txt"');
+		});
+
+		it('refuses path-traversal in srcs', () => {
+			const html = renderBody('![x](../secret.png)', resolve, langs, new Set(), undefined, base);
+			expect(html).toContain('src="../secret.png"');
+			expect(html).not.toContain('/api/entity-assets');
+		});
+	});
 });
 
 describe('renderSummary', () => {

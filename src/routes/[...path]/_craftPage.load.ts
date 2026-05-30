@@ -1,4 +1,5 @@
 import { graph } from '$lib/server/graph';
+import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderBody, renderSummary } from '$lib/server/markdown';
 import type { Entity } from '$lib/types';
 
@@ -16,7 +17,7 @@ import type { Entity } from '$lib/types';
  *
  * Caller has already verified `entity.craft !== null`.
  */
-export function loadCraftPage(entity: Entity) {
+export async function loadCraftPage(entity: Entity) {
 	const resolveLink = (path: string) => graph.resolveLink(path, graph.clusterOf(entity.id));
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();
@@ -28,12 +29,15 @@ export function loadCraftPage(entity: Entity) {
 		kindIds
 	});
 
-	const html = renderBody(
-		entity.craft ?? '',
-		resolveLink,
-		languageCodes,
-		kindIds,
-		resolveCollection
+	const html = await inlineSvgFigures(
+		renderBody(
+			entity.craft ?? '',
+			resolveLink,
+			languageCodes,
+			kindIds,
+			resolveCollection,
+			entity.id
+		)
 	);
 
 	const summaryHtml = (s: string | null | undefined) =>
@@ -50,4 +54,4 @@ export function loadCraftPage(entity: Entity) {
 	};
 }
 
-export type CraftPageData = ReturnType<typeof loadCraftPage>;
+export type CraftPageData = Awaited<ReturnType<typeof loadCraftPage>>;

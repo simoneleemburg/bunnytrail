@@ -56,7 +56,7 @@ export async function load({ params }) {
 
 	const entity = graph.get(path);
 	if (entity) {
-		return { kind: 'entity' as const, ...loadEntityPage(entity) };
+		return { kind: 'entity' as const, ...(await loadEntityPage(entity)) };
 	}
 
 	// Chapter dispatch: split off a trailing `/chapters/<slug>` and
@@ -67,7 +67,7 @@ export async function load({ params }) {
 		if (work && work.chapters.length > 0) {
 			const chapter = work.chapters.find((c) => c.slug === chapterMatch[2]);
 			if (chapter) {
-				return { kind: 'chapter' as const, ...loadChapterPage(work, chapter) };
+				return { kind: 'chapter' as const, ...(await loadChapterPage(work, chapter)) };
 			}
 		}
 	}
@@ -79,12 +79,12 @@ export async function load({ params }) {
 	if (craftMatch) {
 		const subject = graph.get(craftMatch[1]);
 		if (subject && subject.craft !== null) {
-			return { kind: 'craft' as const, ...loadCraftPage(subject) };
+			return { kind: 'craft' as const, ...(await loadCraftPage(subject)) };
 		}
 	}
 
 	if (graph.isFolder(path)) {
-		return loadCollectionPage(path);
+		return await loadCollectionPage(path);
 	}
 
 	// Cross-cluster aggregate: a single segment that names a shelf

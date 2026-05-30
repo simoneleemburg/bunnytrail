@@ -60,6 +60,80 @@ function expandCollectionIncludes(text: string, resolveCollection?: CollectionRe
 	});
 }
 
+/**
+ * Allow-list of image file extensions that may appear in prose. Used
+ * by both the markdown image-src rewriter and the HTTP handlers that
+ * serve sibling/asset files. Everything else is left alone (in prose)
+ * or 404'd (in the handler).
+ */
+export const IMAGE_EXTENSIONS = new Set(['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'avif']);
+
+function isImageExt(name: string): boolean {
+	const dot = name.lastIndexOf('.');
+	if (dot < 0) return false;
+	return IMAGE_EXTENSIONS.has(name.slice(dot + 1).toLowerCase());
+}
+
+/**
+ * Rewrite relative image srcs in already-rendered HTML so authors
+ * can write `![alt](foo.svg)` (sibling file in the entity/collection
+ * folder) or `![alt](assets/foo.svg)` (global assets dir) without
+ * worrying about hosting paths.
+ *
+ * Rules, applied in order:
+ *
+ *   1. Source has a scheme (`http:`, `https:`, `data:`, …) or starts
+ *      with `/` → leave alone. Authors who want absolute URLs get
+ *      them.
+ *   2. Source starts with `assets/` and the remainder is a flat
+ *      filename with an image extension → rewrite to
+ *      `/api/assets/<filename>`.
+ *   3. Source is a flat filename with an image extension and
+ *      `imageBaseDir` is set → rewrite to
+ *      `/api/entity-assets/<imageBaseDir>/<filename>`.
+ *   4. Anything else → leave alone (will 404 visibly, surfacing the
+ *      typo).
+ *
+ * Only the `src` attribute is touched. Other attributes (alt, title,
+ * width) round-trip unchanged.
+ */
+function rewriteImageSrcs(html: string, imageBaseDir?: string): string {
+	return html.replace(/<img\b([^>]*?)\ssrc="([^"]+)"([^>]*)>/gi, (whole, pre, src, post) => {
+		const rewritten = rewriteImageSrc(src, imageBaseDir);
+		if (rewritten === src) return whole;
+		return `<img${pre} src="${rewritten}"${post}>`;
+	});
+}
+
+function rewriteImageSrc(src: string, imageBaseDir?: string): string {
+	// Strip a leading `./` — authors may use it to signal "this folder".
+	const trimmed = src.startsWith('./') ? src.slice(2) : src;
+
+	// (1) Absolute URL or root-rooted path: leave alone.
+	if (/^[a-z][a-z0-9+.-]*:/i.test(trimmed) || trimmed.startsWith('/') || trimmed.startsWith('//')) {
+		return src;
+	}
+	// Reject path-traversal attempts; pass through so the broken
+	// image is visible.
+	if (trimmed.includes('..')) return src;
+
+	// (2) `assets/<filename>` → global assets endpoint.
+	if (trimmed.startsWith('assets/')) {
+		const rest = trimmed.slice('assets/'.length);
+		if (rest && !rest.includes('/') && isImageExt(rest)) {
+			return `/api/assets/${rest}`;
+		}
+		return src;
+	}
+
+	// (3) Bare filename, sibling of the rendering entity/collection.
+	if (!trimmed.includes('/') && isImageExt(trimmed) && imageBaseDir) {
+		return `/api/entity-assets/${imageBaseDir}/${trimmed}`;
+	}
+
+	return src;
+}
+
 function escapeHtml(s: string): string {
 	return s
 		.replace(/&/g, '&amp;')
@@ -252,7 +326,8 @@ export function renderBody(
 	resolveLink: LinkResolver,
 	languageCodes: Map<string, EntityId> = new Map(),
 	kindIds: ReadonlySet<string> = new Set(),
-	resolveCollection?: CollectionResolver
+	resolveCollection?: CollectionResolver,
+	imageBaseDir?: string
 ): string {
 	const expanded = expandCollectionIncludes(body, resolveCollection);
 	const rewritten = rewriteBrackets(expanded, resolveLink, languageCodes, kindIds);
@@ -280,7 +355,8 @@ export function renderBody(
 	const html = marked.parse(rewritten, { async: false, renderer }) as string;
 	// `marked` renders `[text](url "title")` as `<a href="url" title="title">…</a>`.
 	// Convert our sentinel title into a data attribute the UI can style.
-	return html.replace(/title="broken-link"/g, 'data-broken="true"');
+	const linkified = html.replace(/title="broken-link"/g, 'data-broken="true"');
+	return rewriteImageSrcs(linkified, imageBaseDir);
 }
 
 /** Convenience for entity bodies. */
@@ -291,7 +367,7 @@ export function renderEntityBody(
 	kindIds: ReadonlySet<string> = new Set(),
 	resolveCollection?: CollectionResolver
 ): string {
-	return renderBody(entity.body, resolveLink, languageCodes, kindIds, resolveCollection);
+	return renderBody(entity.body, resolveLink, languageCodes, kindIds, resolveCollection, entity.id);
 }
 
 /**
@@ -352,7 +428,7 @@ export function makeCollectionResolver(deps: {
 		const parentPlural = parentPath ? folderLabels(parentPath).plural : null;
 		const title = parentPlural ? `${parentPlural} of ${leaf}` : leaf;
 		const bodyHtml = collection.body
-			? renderBody(collection.body, resolveLink, languageCodes, kindIds)
+			? renderBody(collection.body, resolveLink, languageCodes, kindIds, undefined, path)
 			: null;
 		return { title, href: `/${path}`, bodyHtml };
 	};

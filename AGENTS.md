@@ -76,6 +76,35 @@ npm run format:check  # Prettier check
   anchors, language tags, kind links, the collection fold-out
   directive, ambiguity, and the global suffix-match resolution rule —
   see [`WIKILINKS.md`](./WIKILINKS.md).
+- **Images in prose**: standard markdown `![alt](src)` works in entity
+  bodies, collection bodies (`_collection.md`), chapter bodies, and
+  craft sheets. Three forms of `src` are special-cased by
+  `rewriteImageSrcs` in `src/lib/server/markdown.ts`:
+  - `![alt](foo.png)` or `![alt](./foo.png)` — sibling file in the
+    same entity/collection folder. Served from
+    `/api/entity-assets/<folder>/<filename>`. The folder must be
+    known to the graph; the filename must carry an allow-listed image
+    extension (`png, jpg, jpeg, gif, svg, webp, avif`).
+  - `![alt](assets/foo.svg)` — file from the global assets dir
+    (`<world>/assets/` or the bundled `src/lib/assets/` fallback).
+    Served from `/api/assets/<filename>`.
+  - Absolute URLs (`https://…`, `/static/…`) pass through unchanged.
+
+  Authors drop the image file next to the entity's `index.md` (or in
+  `assets/`) and reference it by bare filename — no path juggling.
+  Kind bodies and blog posts don't get the sibling rewrite; they can
+  still use the `assets/` form (kind) or absolute URLs (blog).
+
+  **SVG references are auto-inlined.** `inlineSvgFigures` in
+  `src/lib/server/inlineSvgs.ts` runs after `renderBody` on
+  entity/collection/chapter/craft pages and replaces every
+  `<img …src="…something.svg">` with `<figure class="alteria-inline-svg"><svg…></svg><figcaption>{alt}</figcaption></figure>`,
+  so any class names baked into the SVG become live, styleable DOM.
+  The figure chrome and SVG-internal styles live in the world repo
+  under `<world>/assets/inline-svg.css` (loaded via `/api/assets/inline-svg.css`
+  from `app.html`) — that file is world-coupled because it knows the
+  class names the world's bake scripts emit.
+
 - **Commit messages**: short, imperative subject (e.g.
   `add backlink rendering on entity pages`). No ticket prefixes — this
   project doesn't use an issue tracker.

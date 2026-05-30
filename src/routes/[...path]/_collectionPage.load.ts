@@ -1,4 +1,5 @@
 import { graph } from '$lib/server/graph';
+import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderBody, renderSummary } from '$lib/server/markdown';
 import { buildKindTree, type Entity, type EntityId, type KindTree } from '$lib/types';
 
@@ -219,7 +220,7 @@ const ORBIT_KINDS = new Set(['member-of', 'orbits']);
  * regardless of view-mode. Kind labels are pulled from the central
  * registry (`content_meta/kinds/`).
  */
-export function loadCollectionPage(path: string) {
+export async function loadCollectionPage(path: string) {
 	const label = graph.folderLabels(path);
 	const collection = graph.collection(path);
 	const description = collection?.meta.description ?? null;
@@ -250,7 +251,9 @@ export function loadCollectionPage(path: string) {
 	// language tags all resolve. Sits between the one-liner
 	// description and the filter chips on the collection page.
 	const bodyHtml = collection?.body
-		? renderBody(collection.body, resolveLink, languageCodes, kindIds, resolveCollection)
+		? await inlineSvgFigures(
+				renderBody(collection.body, resolveLink, languageCodes, kindIds, resolveCollection, path)
+			)
 		: null;
 	const cardSummaryHtml = (s: string | null | undefined) =>
 		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;
@@ -461,7 +464,7 @@ function serialiseKinds(): Record<string, string | null> {
 	return out;
 }
 
-export type CollectionPageData = ReturnType<typeof loadCollectionPage>;
+export type CollectionPageData = Awaited<ReturnType<typeof loadCollectionPage>>;
 
 /**
  * View-model for the global "everything" index — every entity in

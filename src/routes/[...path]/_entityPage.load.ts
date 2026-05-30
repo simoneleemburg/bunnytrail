@@ -1,4 +1,5 @@
 import { graph } from '$lib/server/graph';
+import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderEntityBody, renderSummary } from '$lib/server/markdown';
 import { titleCaseSlug, type Entity } from '$lib/types';
 
@@ -6,7 +7,7 @@ import { titleCaseSlug, type Entity } from '$lib/types';
  * Build the view-model for an entity page. Returned shape is consumed
  * by `_EntityPage.svelte`.
  */
-export function loadEntityPage(entity: Entity) {
+export async function loadEntityPage(entity: Entity) {
 	const id = entity.id;
 	const type = entity.type;
 
@@ -21,7 +22,9 @@ export function loadEntityPage(entity: Entity) {
 		kindIds
 	});
 
-	const html = renderEntityBody(entity, resolveLink, languageCodes, kindIds, resolveCollection);
+	const html = await inlineSvgFigures(
+		renderEntityBody(entity, resolveLink, languageCodes, kindIds, resolveCollection)
+	);
 
 	const summaryHtml = (s: string | null | undefined) =>
 		s ? renderSummary(s, resolveLink, languageCodes, { kindIds }) : null;
@@ -196,7 +199,7 @@ export function loadEntityPage(entity: Entity) {
 	};
 }
 
-export type EntityPageData = ReturnType<typeof loadEntityPage>;
+export type EntityPageData = Awaited<ReturnType<typeof loadEntityPage>>;
 
 function pickCard(
 	e: ReturnType<typeof graph.get>,

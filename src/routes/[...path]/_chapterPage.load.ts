@@ -1,4 +1,5 @@
 import { graph } from '$lib/server/graph';
+import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderBody, renderSummary } from '$lib/server/markdown';
 import type { Chapter, Entity } from '$lib/types';
 
@@ -8,7 +9,7 @@ import type { Chapter, Entity } from '$lib/types';
  * they live under `<entity>/chapters/<NN-slug>.md`. The route
  * surface for a chapter is `/<entity-id>/chapters/<chapter-slug>`.
  */
-export function loadChapterPage(entity: Entity, chapter: Chapter) {
+export async function loadChapterPage(entity: Entity, chapter: Chapter) {
 	const resolveLink = (path: string) => graph.resolveLink(path, graph.clusterOf(entity.id));
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();
@@ -20,7 +21,9 @@ export function loadChapterPage(entity: Entity, chapter: Chapter) {
 		kindIds
 	});
 
-	const html = renderBody(chapter.body, resolveLink, languageCodes, kindIds, resolveCollection);
+	const html = await inlineSvgFigures(
+		renderBody(chapter.body, resolveLink, languageCodes, kindIds, resolveCollection, entity.id)
+	);
 
 	const summaryHtml = (s: string | null | undefined) =>
 		s ? renderSummary(s, resolveLink, languageCodes, { kindIds }) : null;
@@ -61,4 +64,4 @@ export function loadChapterPage(entity: Entity, chapter: Chapter) {
 	};
 }
 
-export type ChapterPageData = ReturnType<typeof loadChapterPage>;
+export type ChapterPageData = Awaited<ReturnType<typeof loadChapterPage>>;
