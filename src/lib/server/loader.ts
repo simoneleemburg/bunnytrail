@@ -50,6 +50,18 @@ export interface LoadResult {
 	 * folders are still browseable but have no editorial metadata.
 	 */
 	collections: Map<string, Collection>;
+	/**
+	 * Top-level folders treated as clusters — the editorial
+	 * neighbourhoods used for cluster-scoped wikilink resolution.
+	 * Excludes any folder marked `universal: true`.
+	 */
+	clusters: Set<string>;
+	/**
+	 * Top-level folders explicitly marked as universal substrate via
+	 * `universal: true` in their `_collection.{yaml,md}`. Bare-slug
+	 * wikilinks fall back to these when no in-cluster match exists.
+	 */
+	universalFolders: Set<string>;
 }
 
 /**
@@ -128,21 +140,61 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 		}
 	}
 
+	// Determine the cluster set and the universal-substrate set.
+	//
+	// A *cluster* is a top-level folder under `content/` that is not
+	// itself marked `universal: true` and that does not itself act as
+	// an entity. Clusters are the editorial neighbourhoods of Alteria
+	// (currently `aurethia` and `earth`).
+	//
+	// A *universal substrate* is a top-level folder explicitly marked
+	// with `universal: true` in its `_collection.{yaml,md}`. It is
+	// reachable as a fallback from any cluster's bare-slug links and
+	// never participates in cluster-scoping itself.
+	//
+	// Together these drive `resolveWikilink`: cluster-prefixed paths
+	// resolve globally, bare paths resolve in the source cluster
+	// first and then fall back to universal substrates.
+	const clusterSet = new Set<string>();
+	const universalSet = new Set<string>();
+	for (const id of entities.keys()) {
+		const first = id.split('/')[0];
+		if (!first) continue;
+		if (entities.has(first)) continue;
+		clusterSet.add(first);
+	}
+	for (const [path, collection] of collections) {
+		if (path.includes('/')) continue; // top-level only
+		if (collection.meta.universal === true) {
+			universalSet.add(path);
+			clusterSet.delete(path);
+		}
+	}
+
 	// Resolve wikilinks.
 	for (const entity of entities.values()) {
 		const resolved = new Set<EntityId>();
+		const fromCluster = clusterSet.has(entity.id.split('/')[0]) ? entity.id.split('/')[0] : null;
 		for (const raw of entity.wikilinks) {
 			if (langCodes.has(raw)) continue;
-			const r = resolveWikilink(raw, entities);
+			const r = resolveWikilink(raw, entities, fromCluster, clusterSet, universalSet);
 			if (r.id !== null) {
 				resolved.add(r.id);
 				continue;
 			}
-			if (r.reason === 'ambiguous') {
+			if (r.reason === 'ambiguous' || r.reason === 'ambiguous-in-cluster') {
+				const scope =
+					r.reason === 'ambiguous-in-cluster' && fromCluster ? ` in cluster ${fromCluster}` : '';
 				issues.push({
 					kind: 'broken-link',
 					entity: entity.id,
-					detail: `wikilink → ${raw} (ambiguous: matches ${r.matches.join(', ')})`
+					detail: `wikilink → ${raw} (ambiguous${scope}: matches ${r.matches.join(', ')})`
+				});
+			} else if (r.reason === 'missing-in-cluster' && fromCluster) {
+				issues.push({
+					kind: 'broken-link',
+					entity: entity.id,
+					detail: `wikilink → ${raw} (not found in cluster ${fromCluster}; for cross-cluster references write the full path starting with a cluster name)`
 				});
 			} else {
 				issues.push({
@@ -245,7 +297,9 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 		entities,
 		issues,
 		kindRegistry: registryResult.kinds,
-		collections
+		collections,
+		clusters: clusterSet,
+		universalFolders: universalSet
 	};
 }
 
@@ -681,20 +735,100 @@ export function extractKindRefs(meta: unknown): Record<string, string[]> {
 }
 
 /**
- * Resolve a wikilink path to a canonical entity id, with one
- * fallback step:
+ * Resolve a wikilink path to a canonical entity id.
  *
- *   1. Exact match — if the path is already a known id, use it.
- *   2. Suffix match — if exactly one known id ends with the path
- *      (with a `/` separator, or equals it), use that one.
- *   3. Otherwise — return `null` and let the caller raise a
- *      `broken-link` issue. Ambiguous suffix matches also fall
- *      into this case; the issue's `detail` will explain.
+ * The algorithm is cluster-scoped when `fromCluster` is set and the
+ * raw path does not itself begin with a known cluster or universal
+ * substrate name; otherwise it falls back to global resolution.
+ *
+ * Order:
+ *
+ *   1. **Cluster-prefixed or no-cluster context** — if `rawPath`
+ *      starts with a known cluster id or a universal-substrate id,
+ *      or if `fromCluster` is `null`, resolve globally:
+ *        a. Exact match.
+ *        b. Suffix match across all entities. Exactly one → use it.
+ *        c. Else → `missing` / `ambiguous`.
+ *
+ *   2. **Cluster-local** — otherwise the path is treated as relative
+ *      to `fromCluster`:
+ *        a. Exact match against `<fromCluster>/<rawPath>`.
+ *        b. Suffix match restricted to ids in `<fromCluster>/`.
+ *           Exactly one in-cluster → use it.
+ *        c. Universal-substrate fallback: try exact and suffix match
+ *           across every universal root combined. Exactly one match
+ *           → use it.
+ *        d. Else → `missing-in-cluster` / `ambiguous-in-cluster`.
+ *
+ * Bare-slug `[[foo]]` is supported via the suffix match. Authors who
+ * need cross-cluster references must write the full path beginning
+ * with a cluster id (e.g. `[[earth/places/sharazan]]`) — that hits
+ * branch 1.
  */
+export type WikilinkResolveResult =
+	| { id: EntityId }
+	| {
+			id: null;
+			reason: 'missing' | 'ambiguous' | 'missing-in-cluster' | 'ambiguous-in-cluster';
+			matches: EntityId[];
+	  };
+
 export function resolveWikilink(
 	rawPath: string,
+	entities: ReadonlyMap<EntityId, unknown>,
+	fromCluster: string | null = null,
+	clusters: ReadonlySet<string> = new Set(),
+	universal: ReadonlySet<string> = new Set()
+): WikilinkResolveResult {
+	const firstSeg = rawPath.split('/')[0];
+	const isPrefixed = clusters.has(firstSeg) || universal.has(firstSeg);
+
+	if (isPrefixed || fromCluster === null) {
+		return resolveGlobal(rawPath, entities);
+	}
+
+	// (a) Cluster-local exact.
+	const localExact = `${fromCluster}/${rawPath}`;
+	if (entities.has(localExact)) return { id: localExact };
+
+	// (b) Cluster-local suffix.
+	const prefix = `${fromCluster}/`;
+	const suffix = `/${rawPath}`;
+	const localMatches: EntityId[] = [];
+	for (const id of entities.keys()) {
+		if (id.startsWith(prefix) && id.endsWith(suffix)) localMatches.push(id);
+	}
+	if (localMatches.length === 1) return { id: localMatches[0] };
+	if (localMatches.length > 1) {
+		return { id: null, reason: 'ambiguous-in-cluster', matches: localMatches };
+	}
+
+	// (c) Universal-substrate fallback across all universal roots.
+	const universalMatches: EntityId[] = [];
+	for (const root of universal) {
+		const exact = `${root}/${rawPath}`;
+		if (entities.has(exact)) universalMatches.push(exact);
+	}
+	if (universalMatches.length === 0) {
+		for (const root of universal) {
+			const rootPrefix = `${root}/`;
+			for (const id of entities.keys()) {
+				if (id.startsWith(rootPrefix) && id.endsWith(suffix)) universalMatches.push(id);
+			}
+		}
+	}
+	if (universalMatches.length === 1) return { id: universalMatches[0] };
+	if (universalMatches.length > 1) {
+		return { id: null, reason: 'ambiguous-in-cluster', matches: universalMatches };
+	}
+
+	return { id: null, reason: 'missing-in-cluster', matches: [] };
+}
+
+function resolveGlobal(
+	rawPath: string,
 	entities: ReadonlyMap<EntityId, unknown>
-): { id: EntityId } | { id: null; reason: 'missing' | 'ambiguous'; matches: EntityId[] } {
+): WikilinkResolveResult {
 	if (entities.has(rawPath)) return { id: rawPath };
 	const suffix = `/${rawPath}`;
 	const matches: EntityId[] = [];

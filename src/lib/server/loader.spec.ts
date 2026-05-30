@@ -3,7 +3,14 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { buildKindTree } from '$lib/types';
-import { buildEdges, extractKindLinks, extractKindRefs, extractWikilinks, loadAll } from './loader';
+import {
+	buildEdges,
+	extractKindLinks,
+	extractKindRefs,
+	extractWikilinks,
+	loadAll,
+	resolveWikilink
+} from './loader';
 
 /**
  * Most loader tests use a tiny in-memory kind registry so kind
@@ -683,5 +690,154 @@ describe('loadAll frontmatter layout', () => {
 		const { collections, issues } = await loadAll(dir);
 		expect(collections.has('places')).toBe(false);
 		expect(issues.some((i) => i.detail.includes('pick one'))).toBe(true);
+	});
+});
+
+describe('loadAll: cluster-scoped wikilinks', () => {
+	/**
+	 * Two clusters (`aurethia`, `earth`) plus a universal-substrate
+	 * folder (`foundation`) declared via `_collection.md` frontmatter.
+	 * Exercises in-cluster local resolution, cross-cluster strictness,
+	 * universal fallback, and the cluster/universal split surfaced
+	 * on the `LoadResult`.
+	 */
+	async function seedClusters(): Promise<string> {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-clusters-'));
+
+		// Universal substrate.
+		await mkdir(join(dir, 'foundation', 'concepts', 'harmonia'), { recursive: true });
+		await writeFile(
+			join(dir, 'foundation', '_collection.md'),
+			'---\ntitle: Foundation\nuniversal: true\n---\nUniversal substrate.\n'
+		);
+		await writeFile(
+			join(dir, 'foundation', 'concepts', 'harmonia', 'index.yaml'),
+			'name: Harmonia\nkind: concept\n'
+		);
+		await writeFile(
+			join(dir, 'foundation', 'concepts', 'harmonia', 'index.md'),
+			'A foundational concept.\n'
+		);
+
+		// Cluster A: aurethia.
+		await mkdir(join(dir, 'aurethia', 'places', 'duskmere'), { recursive: true });
+		await writeFile(
+			join(dir, 'aurethia', 'places', 'duskmere', 'index.yaml'),
+			'name: Duskmere\nkind: place\n'
+		);
+		await writeFile(join(dir, 'aurethia', 'places', 'duskmere', 'index.md'), 'A town.\n');
+
+		await mkdir(join(dir, 'aurethia', 'characters', 'kael'), { recursive: true });
+		await writeFile(
+			join(dir, 'aurethia', 'characters', 'kael', 'index.yaml'),
+			'name: Kael\nkind: character\n'
+		);
+		// Local bare slug, cross-cluster bare (broken), cross-cluster
+		// full path (ok), universal bare slug (ok).
+		await writeFile(
+			join(dir, 'aurethia', 'characters', 'kael', 'index.md'),
+			[
+				'Kael walks [[duskmere]] roads,',
+				'remembers [[shanghai]],',
+				'visits [[earth/places/shanghai]],',
+				'and meditates on [[harmonia]].'
+			].join(' ')
+		);
+
+		// Cluster B: earth.
+		await mkdir(join(dir, 'earth', 'places', 'shanghai'), { recursive: true });
+		await writeFile(
+			join(dir, 'earth', 'places', 'shanghai', 'index.yaml'),
+			'name: Shanghai\nkind: place\n'
+		);
+		await writeFile(join(dir, 'earth', 'places', 'shanghai', 'index.md'), 'A city.\n');
+
+		return dir;
+	}
+
+	it('derives clusters from top-level folders and excludes universal substrates', async () => {
+		const dir = await seedClusters();
+		const { clusters, universalFolders } = await loadAll(dir);
+		expect([...clusters].sort()).toEqual(['aurethia', 'earth']);
+		expect([...universalFolders].sort()).toEqual(['foundation']);
+	});
+
+	it('resolves cluster-local bare slugs without cluster prefix', async () => {
+		const dir = await seedClusters();
+		const { entities } = await loadAll(dir);
+		const r = resolveWikilink(
+			'duskmere',
+			entities,
+			'aurethia',
+			new Set(['aurethia', 'earth']),
+			new Set(['foundation'])
+		);
+		expect(r).toEqual({ id: 'aurethia/places/duskmere' });
+	});
+
+	it('does not resolve cross-cluster bare slugs (strict)', async () => {
+		const dir = await seedClusters();
+		const { entities } = await loadAll(dir);
+		const r = resolveWikilink(
+			'shanghai',
+			entities,
+			'aurethia',
+			new Set(['aurethia', 'earth']),
+			new Set(['foundation'])
+		);
+		expect(r.id).toBeNull();
+		if (r.id === null) expect(r.reason).toBe('missing-in-cluster');
+	});
+
+	it('resolves full cross-cluster paths through the global branch', async () => {
+		const dir = await seedClusters();
+		const { entities } = await loadAll(dir);
+		const r = resolveWikilink(
+			'earth/places/shanghai',
+			entities,
+			'aurethia',
+			new Set(['aurethia', 'earth']),
+			new Set(['foundation'])
+		);
+		expect(r).toEqual({ id: 'earth/places/shanghai' });
+	});
+
+	it('falls back to universal substrate for bare slugs after in-cluster miss', async () => {
+		const dir = await seedClusters();
+		const { entities } = await loadAll(dir);
+		const r = resolveWikilink(
+			'harmonia',
+			entities,
+			'aurethia',
+			new Set(['aurethia', 'earth']),
+			new Set(['foundation'])
+		);
+		expect(r).toEqual({ id: 'foundation/concepts/harmonia' });
+	});
+
+	it('treats fromCluster=null (kind/tag/aggregate pages) as global', async () => {
+		const dir = await seedClusters();
+		const { entities } = await loadAll(dir);
+		const r = resolveWikilink(
+			'shanghai',
+			entities,
+			null,
+			new Set(['aurethia', 'earth']),
+			new Set(['foundation'])
+		);
+		expect(r).toEqual({ id: 'earth/places/shanghai' });
+	});
+
+	it('surfaces broken cluster-local links with a missing-in-cluster issue', async () => {
+		const dir = await seedClusters();
+		const { issues } = await loadAll(dir);
+		const broken = issues.filter(
+			(i) => i.kind === 'broken-link' && i.entity === 'aurethia/characters/kael'
+		);
+		// `[[shanghai]]` from aurethia is the only broken link; the
+		// other three (`duskmere`, `earth/places/shanghai`, `harmonia`)
+		// all resolve.
+		expect(broken.length).toBe(1);
+		expect(broken[0].detail).toContain('shanghai');
 	});
 });

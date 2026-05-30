@@ -227,7 +227,14 @@ export function loadCollectionPage(path: string) {
 	// Direct entities of this folder, sorted by name.
 	const entities = graph.byFolder(path).sort((a, b) => a.meta.name.localeCompare(b.meta.name));
 
-	const resolveLink = (p: string) => graph.resolveLink(p);
+	// Wikilinks in a collection's prose resolve from the
+	// collection's own cluster (the first path segment, if it's a
+	// registered cluster). Sub-collections inherit their cluster
+	// from their top-level folder; collections sitting under a
+	// universal-substrate folder have no cluster context and
+	// resolve globally.
+	const fromCluster = graph.clusterOf(path);
+	const resolveLink = (p: string) => graph.resolveLink(p, fromCluster);
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();
 	const resolveCollection = makeCollectionResolver({
@@ -353,7 +360,7 @@ export function loadCollectionPage(path: string) {
 		.map((bucket) => {
 			const folderId = `${path}/${bucket}`;
 			const slug = bucket.slice(bucket.lastIndexOf('/') + 1);
-			const resolved = graph.resolveLink(slug);
+			const resolved = graph.resolveLink(slug, fromCluster);
 			const linked = resolved && resolved !== folderId ? graph.get(resolved) : null;
 			const name =
 				linked?.meta.name ?? slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
@@ -407,7 +414,7 @@ export function loadCollectionPage(path: string) {
 			// → `places/regions/bayurinda`), prefer that entity's
 			// display name over a title-cased slug. Otherwise fall
 			// back to title-casing.
-			const resolved = graph.resolveLink(slug);
+			const resolved = graph.resolveLink(slug, fromCluster);
 			const linked = resolved && resolved !== `${path}/${p}` ? graph.get(resolved) : null;
 			const name =
 				linked?.meta.name ?? slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());

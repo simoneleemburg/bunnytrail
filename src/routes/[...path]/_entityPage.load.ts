@@ -10,7 +10,7 @@ export function loadEntityPage(entity: Entity) {
 	const id = entity.id;
 	const type = entity.type;
 
-	const resolveLink = (path: string) => graph.resolveLink(path);
+	const resolveLink = (path: string) => graph.resolveLink(path, graph.clusterOf(id));
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();
 	const resolveCollection = makeCollectionResolver({

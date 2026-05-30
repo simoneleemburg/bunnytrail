@@ -84,6 +84,10 @@ export function loadKindPage(kindId: string, scope: ClusterScope): KindPageData 
 	const hrefForKind = (k: string): string =>
 		scope === null ? `/kinds/${k}` : `/${scope}/kinds/${k}`;
 
+	// Kind pages are intentionally cross-cluster: a kind is a
+	// universal taxonomy node, and its prose may reach into any
+	// cluster's content. Resolve wikilinks globally regardless of
+	// the URL scope.
 	const resolveLink = (path: string) => graph.resolveLink(path);
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();

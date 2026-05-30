@@ -26,6 +26,8 @@ class Graph {
 	#issues: HealthIssue[] = [];
 	#kindRegistry: Map<string, Kind> = new Map();
 	#collections: Map<string, Collection> = new Map();
+	#clusters: Set<string> = new Set();
+	#universalFolders: Set<string> = new Set();
 	#loaded = false;
 	#loading: Promise<void> | null = null;
 
@@ -33,7 +35,8 @@ class Graph {
 	async load(contentDir: string = CONTENT_DIR): Promise<void> {
 		if (this.#loading) return this.#loading;
 		this.#loading = (async () => {
-			const { entities, issues, kindRegistry, collections } = await loadAll(contentDir);
+			const { entities, issues, kindRegistry, collections, clusters, universalFolders } =
+				await loadAll(contentDir);
 			const edges = buildEdges(entities);
 			this.#entities = entities;
 			this.#outEdges = edges.out;
@@ -41,6 +44,8 @@ class Graph {
 			this.#issues = issues;
 			this.#kindRegistry = kindRegistry;
 			this.#collections = collections;
+			this.#clusters = clusters;
+			this.#universalFolders = universalFolders;
 			this.#loaded = true;
 		})();
 		try {
@@ -194,15 +199,29 @@ class Graph {
 	}
 
 	/**
-	 * Top-level folders are *clusters* of the universe — distinct
-	 * charted neighbourhoods like `aurethia/` (a star system and its
-	 * surroundings) or `earth/` (a single world). Aliases
-	 * `topLevelFolders()` for now; if cluster structure ever needs
-	 * its own filter (e.g. "real" clusters vs scratch shelves), it
-	 * lives here.
+	 * Top-level folders that act as *clusters* of the universe —
+	 * distinct charted neighbourhoods like `aurethia/` (a star
+	 * system and its surroundings) or `earth/` (a single world).
+	 *
+	 * Excludes any top-level folder marked `universal: true` in its
+	 * `_collection.{yaml,md}` — those are universal substrate
+	 * (e.g. `foundation/`), not peer clusters. They remain fully
+	 * browseable and reachable, but they do not appear in the
+	 * cluster selector and do not participate in cluster-scoped
+	 * resolution as a "from" cluster.
 	 */
 	clusters(): string[] {
-		return this.topLevelFolders();
+		return [...this.#clusters].sort();
+	}
+
+	/**
+	 * Top-level folders explicitly marked as universal substrate
+	 * (`universal: true` in their `_collection.{yaml,md}`).
+	 * Bare-slug wikilinks fall back to these when no in-cluster
+	 * match is found.
+	 */
+	universalFolders(): string[] {
+		return [...this.#universalFolders].sort();
 	}
 
 	/**
@@ -371,14 +390,48 @@ class Graph {
 	}
 
 	/**
-	 * Resolve a wikilink path to a canonical entity id, with one
-	 * fallback step (suffix match). Returns `null` if the path is
-	 * missing or ambiguous; the markdown renderer treats both as
-	 * broken links.
+	 * Resolve a wikilink path to a canonical entity id.
+	 *
+	 * When `fromCluster` is set, resolution is cluster-scoped: bare
+	 * and partial paths resolve within that cluster first, then fall
+	 * back to any universal-substrate folders. Cluster-prefixed
+	 * paths (e.g. `[[earth/places/sharazan]]`) always resolve
+	 * globally, regardless of `fromCluster`. See `resolveWikilink`
+	 * in `loader.ts` for the full algorithm and `WIKILINKS.md` for
+	 * the authoring contract.
+	 *
+	 * When `fromCluster` is `null` (or omitted), resolution is
+	 * fully global — equivalent to the pre-cluster-scoping
+	 * behaviour. Use this for contexts that legitimately span all
+	 * clusters (e.g. kind pages, the tag index).
+	 *
+	 * Returns `null` if the path is missing or ambiguous; the
+	 * markdown renderer treats both as broken links.
 	 */
-	resolveLink(rawPath: string): EntityId | null {
-		const r = resolveWikilink(rawPath, this.#entities);
+	resolveLink(rawPath: string, fromCluster: string | null = null): EntityId | null {
+		const r = resolveWikilink(
+			rawPath,
+			this.#entities,
+			fromCluster,
+			this.#clusters,
+			this.#universalFolders
+		);
 		return r.id;
+	}
+
+	/**
+	 * Compute the cluster a given entity id belongs to, or `null`
+	 * if it doesn't sit under one of the registered clusters
+	 * (e.g. entities under a universal-substrate folder, or
+	 * pre-cluster flat-layout fixtures in tests).
+	 *
+	 * Use this from page-load callsites to curry `resolveLink`
+	 * with the correct cluster context for the entity being
+	 * rendered.
+	 */
+	clusterOf(id: EntityId): string | null {
+		const first = id.split('/')[0];
+		return this.#clusters.has(first) ? first : null;
 	}
 
 	/** Outgoing edges from `id`. */

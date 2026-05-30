@@ -90,6 +90,19 @@ export interface CollectionMeta {
 	title?: string;
 	/** A short editorial description shown at the top of the collection page. */
 	description?: string;
+	/**
+	 * When set on a *top-level* collection (a folder directly under
+	 * `content/`), marks that folder as a **universal substrate**
+	 * rather than a peer cluster. Universal substrates are not
+	 * clusters: they sit outside the cluster set, and cluster-local
+	 * wikilink resolution falls back to them when no in-cluster
+	 * match is found. Use for shared metaphysics/fabric content
+	 * referenced as bare slugs from every cluster.
+	 *
+	 * Has no effect on non-top-level collections; sub-collections
+	 * inherit their cluster from their containing top-level folder.
+	 */
+	universal?: boolean;
 }
 
 /**

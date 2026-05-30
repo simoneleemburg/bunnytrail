@@ -9,7 +9,7 @@ import type { Chapter, Entity } from '$lib/types';
  * surface for a chapter is `/<entity-id>/chapters/<chapter-slug>`.
  */
 export function loadChapterPage(entity: Entity, chapter: Chapter) {
-	const resolveLink = (path: string) => graph.resolveLink(path);
+	const resolveLink = (path: string) => graph.resolveLink(path, graph.clusterOf(entity.id));
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();
 	const resolveCollection = makeCollectionResolver({

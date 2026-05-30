@@ -17,7 +17,7 @@ import type { Entity } from '$lib/types';
  * Caller has already verified `entity.craft !== null`.
  */
 export function loadCraftPage(entity: Entity) {
-	const resolveLink = (path: string) => graph.resolveLink(path);
+	const resolveLink = (path: string) => graph.resolveLink(path, graph.clusterOf(entity.id));
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();
 	const resolveCollection = makeCollectionResolver({

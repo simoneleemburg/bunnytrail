@@ -72,7 +72,10 @@ npm run format:check  # Prettier check
   fix the loader or the source files under `content/`.
 - **Wikilinks**: use `[[type/slug]]` or `[[type/slug|Display Name]]` in
   prose. The markdown renderer (`src/lib/server/markdown.ts`) handles
-  resolution and backlinks.
+  resolution and backlinks. For the full contract — bare slugs,
+  anchors, language tags, kind links, the collection fold-out
+  directive, ambiguity, and the global suffix-match resolution rule —
+  see [`WIKILINKS.md`](./WIKILINKS.md).
 - **Commit messages**: short, imperative subject (e.g.
   `add backlink rendering on entity pages`). No ticket prefixes — this
   project doesn't use an issue tracker.
