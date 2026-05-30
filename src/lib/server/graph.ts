@@ -420,18 +420,27 @@ class Graph {
 	}
 
 	/**
-	 * Compute the cluster a given entity id belongs to, or `null`
-	 * if it doesn't sit under one of the registered clusters
-	 * (e.g. entities under a universal-substrate folder, or
-	 * pre-cluster flat-layout fixtures in tests).
+	 * Compute the wikilink-resolution scope for a given entity or
+	 * collection id: the top-level folder it lives under, if that
+	 * folder is either a registered cluster or a universal
+	 * substrate. Returns `null` for ids outside both (e.g. flat
+	 * pre-cluster fixtures in tests).
+	 *
+	 * Universal substrates count as their own scope so that
+	 * authoring within `foundation/` can use bare slugs the same
+	 * way authoring within a cluster does — bare `[[oblivion]]`
+	 * from `foundation/fabric/quantities/subjectivity` resolves
+	 * cluster-locally to `foundation/.../oblivion`, rather than
+	 * leaking to global suffix match.
 	 *
 	 * Use this from page-load callsites to curry `resolveLink`
-	 * with the correct cluster context for the entity being
-	 * rendered.
+	 * with the correct context for the entity being rendered.
 	 */
 	clusterOf(id: EntityId): string | null {
 		const first = id.split('/')[0];
-		return this.#clusters.has(first) ? first : null;
+		if (this.#clusters.has(first)) return first;
+		if (this.#universalFolders.has(first)) return first;
+		return null;
 	}
 
 	/** Outgoing edges from `id`. */

@@ -27,9 +27,13 @@ don't resolve locally.
 
 The cluster of a wikilink is the cluster of the **page rendering the
 link**. Most rendering happens from inside an entity page, where the
-cluster is the entity id's first segment. Kind pages, tag pages, the
-everything-index, and other aggregate views have no cluster — links
-in their prose use global resolution (see below).
+cluster is the entity id's first segment. Universal-substrate roots
+(e.g. `foundation`) count as their own scope: a bare slug written
+inside `foundation/` resolves against `foundation/` first, exactly as
+a bare slug inside `aurethia/` resolves against `aurethia/`. Kind
+pages, tag pages, the everything-index, and other aggregate views
+have no cluster — links in their prose use global resolution (see
+below).
 
 ## Supported forms
 

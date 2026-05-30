@@ -840,4 +840,21 @@ describe('loadAll: cluster-scoped wikilinks', () => {
 		expect(broken.length).toBe(1);
 		expect(broken[0].detail).toContain('shanghai');
 	});
+
+	it('treats universal-substrate roots as their own scope (bare slugs resolve locally)', async () => {
+		// From inside foundation/, a bare slug must resolve against
+		// foundation/ itself, not leak to global suffix match. The
+		// caller curries fromCluster='foundation' for pages under
+		// foundation/ (see graph.clusterOf).
+		const dir = await seedClusters();
+		const { entities } = await loadAll(dir);
+		const r = resolveWikilink(
+			'harmonia',
+			entities,
+			'foundation',
+			new Set(['aurethia', 'earth']),
+			new Set(['foundation'])
+		);
+		expect(r).toEqual({ id: 'foundation/concepts/harmonia' });
+	});
 });
