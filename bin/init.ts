@@ -77,25 +77,42 @@ export async function init(argv: string[]): Promise<number> {
 		return 1;
 	}
 
+	const skipped: string[] = [];
+	const wrote: string[] = [];
+
 	for (const { from, to } of STATIC) {
 		const dest = resolve(target, to);
+		if (existsSync(dest)) {
+			skipped.push(to);
+			continue;
+		}
 		await mkdir(dirname(dest), { recursive: true });
 		await copyFile(resolve(TEMPLATES, from), dest);
+		wrote.push(to);
 	}
 
 	for (const { from, to } of TEMPLATED) {
-		const src = await readFile(resolve(TEMPLATES, from), 'utf8');
 		const dest = resolve(target, to);
+		if (existsSync(dest)) {
+			skipped.push(to);
+			continue;
+		}
+		const src = await readFile(resolve(TEMPLATES, from), 'utf8');
 		await mkdir(dirname(dest), { recursive: true });
 		await writeFile(dest, src.replaceAll('__NAME__', name));
+		wrote.push(to);
 	}
 
 	for (const dir of EMPTY_DIRS) {
 		await mkdir(resolve(target, dir), { recursive: true });
 	}
 
+	// Shims are generated artifacts — always overwrite.
 	const shims = await generateShims({ targetDir: target, mode: 'consumer' });
-	console.log(`  wrote ${shims.length} shim files under src/routes/`);
+	console.log(`  wrote ${wrote.length} files, ${shims.length} shims`);
+	if (skipped.length > 0) {
+		console.log(`  skipped (already exists): ${skipped.join(', ')}`);
+	}
 
 	console.log(`
 Done.
