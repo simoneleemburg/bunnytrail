@@ -7,7 +7,15 @@ const config = {
 		runes: ({ filename }) => (filename.split(/[/\\]/).includes('node_modules') ? undefined : true)
 	},
 	kit: {
-		adapter: adapter()
+		adapter: adapter(),
+		prerender: {
+			// Don't fail the build on broken in-site links — they'll
+			// 404 at runtime like any normal site. Common cases: tag
+			// chips pointing at a /tags index that doesn't exist as a
+			// route, breadcrumb links to virtual parent paths, etc.
+			handleHttpError: 'warn',
+			handleMissingId: 'warn'
+		}
 	}
 };
 
