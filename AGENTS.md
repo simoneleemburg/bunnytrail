@@ -80,48 +80,6 @@ npm run format:check  # Prettier check
   `add backlink rendering on entity pages`). No ticket prefixes — this
   project doesn't use an issue tracker.
 
-## Worldbuilding content rules
-
-When authoring or editing files under `content/`, read
-[`WORLDBUILDING.md`](./WORLDBUILDING.md). It is the editorial
-standard for this project: voice, silent absence, disputed truths,
-intersections, the texture we are aiming for.
-
-The highest-priority reminders, in case you only read this file:
-
-- **Don't invent canon.** Worldbuilding is the user's domain.
-  Editing prose for clarity is fine; adding new facts about the
-  world — even small ones — is not.
-- **Flag any inferences you do make** in chat, after the edit.
-  Don't bury small worldbuilding claims in otherwise-routine
-  prose.
-- **Empty is better than padded.** A short entry beats a paragraph
-  of generic worldbuilding. Don't narrate what's missing — Alteria
-  is limitless by definition, so every entry is a fragment. If a
-  missing thread feels worth returning to, add it to
-  `QUESTIONS.md`.
-- **Notice intersections; don't manufacture them.** Worlds come
-  alive at the points where ideas connect — but the agent's job is
-  to surface connections the user has already implied, not to
-  invent new ones.
-- **Content references meta; meta does not reference content.**
-  Files under `content_meta/` describe general kinds; files under
-  `content/` describe specific instances. A specific place may
-  declare `nativeBeings: [kinds/human]`; the `human` kind doc may
-  not name which planet it lives on. See WORLDBUILDING.md for the
-  full rule.
-
-Everything else — disputed truths, tag hygiene, the in-world
-register, the practical pre-save checklist — is in
-`WORLDBUILDING.md`.
-
-## Where things live
-
-The compendium is built on one foundational separation and a
-number of optional lenses on top. See
-[`WORLDBUILDING.md`](./WORLDBUILDING.md) for the editorial
-treatment; this section covers the operational placement.
-
 ### Authoring layouts
 
 Every entity, collection, and kind can be authored in either of
