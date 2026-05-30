@@ -45,16 +45,16 @@ function cap(s: string): string {
 	return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-const ORIGINAL_KINDS_DIR = process.env.ALTERIA_KINDS_DIR;
+const ORIGINAL_KINDS_DIR = process.env.BUNNYTRAIL_KINDS_DIR;
 beforeEach(() => {
 	// Default: no registry — tests that need one set it explicitly.
-	delete process.env.ALTERIA_KINDS_DIR;
+	delete process.env.BUNNYTRAIL_KINDS_DIR;
 });
 afterEach(() => {
 	if (ORIGINAL_KINDS_DIR !== undefined) {
-		process.env.ALTERIA_KINDS_DIR = ORIGINAL_KINDS_DIR;
+		process.env.BUNNYTRAIL_KINDS_DIR = ORIGINAL_KINDS_DIR;
 	} else {
-		delete process.env.ALTERIA_KINDS_DIR;
+		delete process.env.BUNNYTRAIL_KINDS_DIR;
 	}
 });
 
@@ -322,7 +322,7 @@ describe('loadAll: kind validation', () => {
 	});
 
 	it('warns on entities with kinds not in the registry, but still loads them', async () => {
-		process.env.ALTERIA_KINDS_DIR = await seedKindsRegistry([{ id: 'place' }]);
+		process.env.BUNNYTRAIL_KINDS_DIR = await seedKindsRegistry([{ id: 'place' }]);
 		const dir = await mkdtemp(join(tmpdir(), 'alteria-unkind-'));
 		await mkdir(join(dir, 'places', 'a'), { recursive: true });
 		await writeFile(join(dir, 'places', 'a', 'index.yaml'), 'name: A\nkind: not-registered');
@@ -340,7 +340,7 @@ describe('loadAll: kind validation', () => {
 	});
 
 	it('accepts registered kinds silently', async () => {
-		process.env.ALTERIA_KINDS_DIR = await seedKindsRegistry([{ id: 'place' }]);
+		process.env.BUNNYTRAIL_KINDS_DIR = await seedKindsRegistry([{ id: 'place' }]);
 		const dir = await mkdtemp(join(tmpdir(), 'alteria-okind-'));
 		await mkdir(join(dir, 'places', 'a'), { recursive: true });
 		await writeFile(join(dir, 'places', 'a', 'index.yaml'), 'name: A\nkind: place');
@@ -350,7 +350,7 @@ describe('loadAll: kind validation', () => {
 	});
 
 	it('exposes the kind registry on the load result', async () => {
-		process.env.ALTERIA_KINDS_DIR = await seedKindsRegistry([
+		process.env.BUNNYTRAIL_KINDS_DIR = await seedKindsRegistry([
 			{ id: 'celestial-body' },
 			{ id: 'star', parent: 'celestial-body' }
 		]);

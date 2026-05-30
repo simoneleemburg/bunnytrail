@@ -11,7 +11,7 @@ import type { RequestHandler } from './$types';
  *
  * Serves a named pre-baked asset from the ASSETS_DIR, which is
  * either the bundled `src/lib/assets/` fallback or the external
- * alteria_world assets directory when ALTERIA_WORLD_DIR is set.
+ * world assets directory when BUNNYTRAIL_WORLD_DIR is set.
  *
  * SVGs and CSS are routed through the in-memory text cache (same
  * path the cognita page uses to inline `mundus-map.svg`). Other

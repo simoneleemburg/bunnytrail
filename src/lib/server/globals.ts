@@ -4,10 +4,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 /**
  * Where the canonical worldbuilding data lives, relative to the project root.
- * Override with ALTERIA_CONTENT_DIR for testing.
+ * Override with BUNNYTRAIL_CONTENT_DIR for testing.
  */
 export const CONTENT_DIR =
-	process.env.ALTERIA_CONTENT_DIR ?? resolve(process.env.ALTERIA_WORLD_DIR ?? '', 'content');
+	process.env.BUNNYTRAIL_CONTENT_DIR ?? resolve(process.env.BUNNYTRAIL_WORLD_DIR ?? '', 'content');
 
 /**
  * Where the central kind registry lives. The directory mirrors the
@@ -16,7 +16,7 @@ export const CONTENT_DIR =
  * + description) and `_kind.md` (editorial prose). Nesting expresses
  * the parent/child relationship; there is no `kindParent` field.
  *
- * Override with `ALTERIA_KINDS_DIR` for testing.
+ * Override with `BUNNYTRAIL_KINDS_DIR` for testing.
  *
  * The registry sits outside `content/` on purpose: kinds are
  * structural metadata about the worldbuilding vocabulary, not
@@ -26,8 +26,8 @@ export const CONTENT_DIR =
  */
 export function defaultKindsDir(): string {
 	return (
-		process.env.ALTERIA_KINDS_DIR ??
-		resolve(process.env.ALTERIA_WORLD_DIR ?? '', 'content_meta/kinds')
+		process.env.BUNNYTRAIL_KINDS_DIR ??
+		resolve(process.env.BUNNYTRAIL_WORLD_DIR ?? '', 'content_meta/kinds')
 	);
 }
 
@@ -51,7 +51,7 @@ export const KINDS_DIR = defaultKindsDir();
  *   - Sibling files (images, attachments) are allowed but the
  *     loader doesn't track them.
  *
- * Override with `ALTERIA_BLOG_DIR` for testing.
+ * Override with `BUNNYTRAIL_BLOG_DIR` for testing.
  *
  * The blog sits alongside `content_meta/kinds/` for the same
  * reason: it is *about* the worldbuilding project rather than
@@ -62,8 +62,8 @@ export const KINDS_DIR = defaultKindsDir();
  */
 export function defaultBlogDir(): string {
 	return (
-		process.env.ALTERIA_BLOG_DIR ??
-		resolve(process.env.ALTERIA_WORLD_DIR ?? process.cwd(), 'content_meta/blog')
+		process.env.BUNNYTRAIL_BLOG_DIR ??
+		resolve(process.env.BUNNYTRAIL_WORLD_DIR ?? process.cwd(), 'content_meta/blog')
 	);
 }
 
@@ -83,7 +83,7 @@ export const BLOG_DIR = defaultBlogDir();
  *     resolved as entity-asset-style siblings via the same
  *     `![alt](foo.svg)` rewrite as collections and entities.
  *
- * Override with `ALTERIA_GUIDES_DIR` for testing.
+ * Override with `BUNNYTRAIL_GUIDES_DIR` for testing.
  *
  * Guides sit alongside the blog as out-of-world meta-pages: they
  * are *about* the world (tours, landings, "start here" pages)
@@ -93,8 +93,8 @@ export const BLOG_DIR = defaultBlogDir();
  */
 export function defaultGuidesDir(): string {
 	return (
-		process.env.ALTERIA_GUIDES_DIR ??
-		resolve(process.env.ALTERIA_WORLD_DIR ?? process.cwd(), 'content_meta/guides')
+		process.env.BUNNYTRAIL_GUIDES_DIR ??
+		resolve(process.env.BUNNYTRAIL_WORLD_DIR ?? process.cwd(), 'content_meta/guides')
 	);
 }
 
@@ -114,12 +114,12 @@ export const GUIDES_DIR = defaultGuidesDir();
  * never leak into entity counts, tag indexes, or any cross-cluster
  * aggregate.
  *
- * Override the directory with `ALTERIA_SOURCES_DIR` for testing.
+ * Override the directory with `BUNNYTRAIL_SOURCES_DIR` for testing.
  */
 export function defaultSourcesDir(): string {
 	return (
-		process.env.ALTERIA_SOURCES_DIR ??
-		resolve(process.env.ALTERIA_WORLD_DIR ?? '', 'content_meta/sources')
+		process.env.BUNNYTRAIL_SOURCES_DIR ??
+		resolve(process.env.BUNNYTRAIL_WORLD_DIR ?? '', 'content_meta/sources')
 	);
 }
 
@@ -128,16 +128,16 @@ export const SOURCES_DIR = defaultSourcesDir();
 /**
  * Where pre-baked SVG assets (e.g. mundus-map.svg) live.
  *
- * When ALTERIA_WORLD_DIR is set, assets are read from
+ * When BUNNYTRAIL_WORLD_DIR is set, assets are read from
  * `<world_dir>/assets/` so they can be updated independently of
  * the SvelteKit build.  Without it, the bundled fallback under
  * `src/lib/assets/` is used.
  *
- * Override with `ALTERIA_ASSETS_DIR` for testing.
+ * Override with `BUNNYTRAIL_ASSETS_DIR` for testing.
  */
 export function defaultAssetsDir(): string {
-	if (process.env.ALTERIA_ASSETS_DIR) return process.env.ALTERIA_ASSETS_DIR;
-	const worldDir = process.env.ALTERIA_WORLD_DIR;
+	if (process.env.BUNNYTRAIL_ASSETS_DIR) return process.env.BUNNYTRAIL_ASSETS_DIR;
+	const worldDir = process.env.BUNNYTRAIL_WORLD_DIR;
 	if (worldDir) return resolve(worldDir, 'assets');
 	return resolve(process.cwd(), 'src/lib/assets');
 }

@@ -37,16 +37,16 @@ export function startWatcher(): void {
 		if (timer) clearTimeout(timer);
 		timer = setTimeout(() => {
 			void graph.load().catch((err) => {
-				console.error('[alteria] graph reload failed:', err);
+				console.error('[bunnytrail] graph reload failed:', err);
 			});
 			void blog.load().catch((err) => {
-				console.error('[alteria] blog reload failed:', err);
+				console.error('[bunnytrail] blog reload failed:', err);
 			});
 			void guides.load().catch((err) => {
-				console.error('[alteria] guides reload failed:', err);
+				console.error('[bunnytrail] guides reload failed:', err);
 			});
 			void sources.load().catch((err) => {
-				console.error('[alteria] sources reload failed:', err);
+				console.error('[bunnytrail] sources reload failed:', err);
 			});
 		}, 75);
 	};
@@ -58,7 +58,7 @@ export function startWatcher(): void {
 
 	watcher.on('add', trigger).on('change', trigger).on('unlink', trigger);
 	console.log(
-		`[alteria] watching ${CONTENT_DIR}, ${KINDS_DIR}, ${BLOG_DIR}, ${GUIDES_DIR}, and ${SOURCES_DIR}`
+		`[bunnytrail] watching ${CONTENT_DIR}, ${KINDS_DIR}, ${BLOG_DIR}, ${GUIDES_DIR}, and ${SOURCES_DIR}`
 	);
 
 	// Watch the assets directory separately — changes only invalidate
@@ -66,7 +66,7 @@ export function startWatcher(): void {
 	const assetTrigger = (path: string) => {
 		const name = path.split('/').pop() ?? path;
 		assets.invalidate(name);
-		console.log(`[alteria] asset invalidated: ${name}`);
+		console.log(`[bunnytrail] asset invalidated: ${name}`);
 	};
 
 	const assetWatcher = chokidar.watch(ASSETS_DIR, {
@@ -75,5 +75,5 @@ export function startWatcher(): void {
 	});
 
 	assetWatcher.on('add', assetTrigger).on('change', assetTrigger).on('unlink', assetTrigger);
-	console.log(`[alteria] watching assets: ${ASSETS_DIR}`);
+	console.log(`[bunnytrail] watching assets: ${ASSETS_DIR}`);
 }

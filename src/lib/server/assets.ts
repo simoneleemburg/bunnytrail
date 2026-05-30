@@ -34,7 +34,7 @@ export async function readAsset(name: string, assetsDir: string): Promise<string
  * In-memory asset cache singleton.
  *
  * Reads from ASSETS_DIR first (the external world dir's assets/ when
- * ALTERIA_WORLD_DIR is configured), with a transparent fallback to the
+ * BUNNYTRAIL_WORLD_DIR is configured), with a transparent fallback to the
  * bundled src/lib/assets/ if the file isn't found there. This means the
  * bundled file is always available during development even before the
  * external assets directory has been populated.
@@ -63,7 +63,7 @@ class AssetCache {
 		let content = await readAsset(name, ASSETS_DIR);
 
 		// Fall back to bundled copy if the primary location didn't have it
-		// (e.g. ALTERIA_WORLD_DIR is set but assets/ hasn't been populated yet).
+		// (e.g. BUNNYTRAIL_WORLD_DIR is set but assets/ hasn't been populated yet).
 		if (content === null && ASSETS_DIR !== BUNDLED_ASSETS_DIR) {
 			content = await readAsset(name, BUNDLED_ASSETS_DIR);
 		}

@@ -1,4 +1,6 @@
-You are working on the Alteria compendium.
+You are working on Bunnytrail — the knowledge-graph engine that
+powers the Alteria compendium (and any other content tree the user
+points it at).
 
 Default behavior:
 

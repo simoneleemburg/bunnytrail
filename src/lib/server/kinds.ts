@@ -16,7 +16,7 @@ export interface KindLoadResult {
 }
 
 /**
- * Walk `content_meta/kinds/` (or `ALTERIA_KINDS_DIR`) recursively and return
+ * Walk `content_meta/kinds/` (or `BUNNYTRAIL_KINDS_DIR`) recursively and return
  * every declared kind. Each subdirectory whose name passes
  * `KIND_ID_RE` is a kind; its `_kind.yaml` (if present) supplies
  * label and description overrides, and `_kind.md` (if present)

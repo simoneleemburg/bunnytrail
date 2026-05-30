@@ -3,7 +3,7 @@ import { graph } from '$lib/server/graph';
 import { startWatcher } from '$lib/server/watcher';
 
 console.log(
-	`[alteria] booting with: ${CONTENT_DIR}, ${KINDS_DIR}, ${BLOG_DIR}, ${GUIDES_DIR}, and ${SOURCES_DIR}`
+	`[bunnytrail] booting with: ${CONTENT_DIR}, ${KINDS_DIR}, ${BLOG_DIR}, ${GUIDES_DIR}, and ${SOURCES_DIR}`
 );
 // Boot: load the graph once, then start watching the content/ directory in dev.
 // Top-level await is fine here — SvelteKit awaits this module before serving.
