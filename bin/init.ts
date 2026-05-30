@@ -12,6 +12,7 @@
 //     svelte.config.js
 //     tsconfig.json
 //     vite.config.ts
+//     vercel.json
 //     src/
 //       app.d.ts
 //       app.html
@@ -49,6 +50,7 @@ const STATIC: FileCopy[] = [
 	{ from: 'svelte.config.js.tpl', to: 'svelte.config.js' },
 	{ from: 'tsconfig.json.tpl', to: 'tsconfig.json' },
 	{ from: 'vite.config.ts.tpl', to: 'vite.config.ts' },
+	{ from: 'vercel.json', to: 'vercel.json' },
 	{ from: 'src/app.html.tpl', to: 'src/app.html' },
 	{ from: 'src/app.d.ts.tpl', to: 'src/app.d.ts' },
 	{ from: 'src/hooks.server.ts.tpl', to: 'src/hooks.server.ts' },
