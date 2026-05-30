@@ -17,7 +17,12 @@ const config = {
 			// chips pointing at a /tags index that doesn't exist as a
 			// route, breadcrumb links to virtual parent paths, etc.
 			handleHttpError: 'warn',
-			handleMissingId: 'warn'
+			handleMissingId: 'warn',
+			// Some prerenderable endpoints (e.g. /api/entity-assets)
+			// enumerate their entries from the world graph and may
+			// legitimately be empty for a given world. Don't fail
+			// the build when that happens.
+			handleUnseenRoutes: 'warn'
 		}
 	}
 };

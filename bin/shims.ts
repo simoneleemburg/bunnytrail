@@ -114,7 +114,7 @@ export function planShims(mode: ShimMode): Shim[] {
 		},
 		{
 			file: 'api/entity-assets/[...path]/+server.ts',
-			contents: server(mode, 'api/entityAssets')
+			contents: server(mode, 'api/entityAssets', { extraExports: ['prerender', 'entries'] })
 		},
 
 		// Blog

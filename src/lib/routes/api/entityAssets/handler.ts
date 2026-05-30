@@ -1,4 +1,4 @@
-import { readFile, stat } from 'node:fs/promises';
+import { readdir, readFile, stat } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { error } from '@sveltejs/kit';
 import { graph } from '$lib/server/graph';
@@ -27,6 +27,47 @@ import { IMAGE_EXTENSIONS } from '$lib/server/markdown';
  * Caching mirrors `/api/assets/[name]`: no-store in dev, 1h in
  * production.
  */
+
+/**
+ * Prerender every sibling image at build time. Same constraint as
+ * `/api/assets/[name]`: adapter-vercel's serverless functions can't
+ * read the world's `content/` tree, so every image URL must be
+ * baked into the static output. SvelteKit only emits static files
+ * for dynamic endpoints when both `prerender = true` and `entries()`
+ * are exported.
+ */
+export const prerender = true;
+
+export const entries = async (): Promise<Array<{ path: string }>> => {
+	await graph.ready();
+	const folders = new Set<string>();
+	for (const e of graph.all()) folders.add(e.id);
+	for (const cp of graph.collections().keys()) folders.add(cp);
+
+	const out: Array<{ path: string }> = [];
+	for (const folder of folders) {
+		const dir = resolve(CONTENT_DIR, folder);
+		let dirents;
+		try {
+			dirents = await readdir(dir, { withFileTypes: true });
+		} catch {
+			// Folder might not exist on disk (flat-file entity with no
+			// sibling folder), or be unreadable — either way, nothing
+			// to enumerate.
+			continue;
+		}
+		for (const ent of dirents) {
+			if (!ent.isFile()) continue;
+			const name = ent.name;
+			const dot = name.lastIndexOf('.');
+			const ext = dot >= 0 ? name.slice(dot + 1).toLowerCase() : '';
+			if (!IMAGE_EXTENSIONS.has(ext)) continue;
+			out.push({ path: `${folder}/${name}` });
+		}
+	}
+	return out;
+};
+
 export const GET = async ({ params }: { params: { path: string } }) => {
 	const rawPath = params.path ?? '';
 	const segments = rawPath.split('/').filter(Boolean);
