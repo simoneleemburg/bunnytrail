@@ -1,3 +1,4 @@
+import { building } from '$app/environment';
 import { graph } from '$lib/server/graph';
 import { readScope, type ScopeContext } from '$lib/cluster';
 
@@ -26,7 +27,13 @@ export async function load({ url }: { url: URL }) {
 	// the union-shelf list doesn't include it.
 	const clusterAwarePaths = ['kinds'];
 	const ctx: ScopeContext = { clusters, unionShelves, clusterAwarePaths };
-	const selectedCluster = readScope(url.pathname, url.searchParams, ctx);
+	// During prerender, every URL is just a path — querystrings are
+	// not part of the prerender input set, and SvelteKit forbids
+	// reading `url.searchParams` to make sure we don't accidentally
+	// depend on them. The scope falls back to whatever the path
+	// implies, which is what we want for static output.
+	const searchParams = building ? new URLSearchParams() : url.searchParams;
+	const selectedCluster = readScope(url.pathname, searchParams, ctx);
 
 	// In All scope, shelf links go to cross-cluster aggregates; we
 	// don't paint ?scope=all on these because aggregate URLs already
