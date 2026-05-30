@@ -7,7 +7,10 @@ const config = {
 		runes: ({ filename }) => (filename.split(/[/\\]/).includes('node_modules') ? undefined : true)
 	},
 	kit: {
-		adapter: adapter(),
+		// Pin the Vercel runtime — the default tracks the local
+		// Node version, which fails when you build with a newer
+		// Node than Vercel offers (currently up to 22.x).
+		adapter: adapter({ runtime: 'nodejs22.x' }),
 		prerender: {
 			// Don't fail the build on broken in-site links — they'll
 			// 404 at runtime like any normal site. Common cases: tag
