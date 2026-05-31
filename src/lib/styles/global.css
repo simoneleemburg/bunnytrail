@@ -231,38 +231,52 @@ blockquote {
 	}
 }
 
-/* ── Semantic-zoom reveal tiers ─────────────────────────────────
+/* ── Semantic-zoom reveal / hide tiers ─────────────────────────
    Any element inside an inline figure can opt into progressive
-   reveal by setting `data-bt-reveal="<tier>"`:
+   reveal *or* progressive hide by setting one of:
 
-     low   — always visible (default if the attribute is absent;
-             also explicitly settable for elements that want to
-             advertise their tier in markup)
-     mid   — hidden in the inline preview and at low lightbox
-             zoom; revealed at mid + high
-     high  — hidden everywhere except the high lightbox zoom
+     data-bt-reveal="<tier>"  hidden by default, shown once zoom
+                              reaches <tier> or higher
+     data-bt-hide="<tier>"    visible by default, hidden once zoom
+                              reaches <tier> or higher
 
-   The lightbox publishes its current zoom tier via
-   `data-bt-zoom-level` (low | mid | high) on the `.bt-inline-svg`
-   wrapper. Inline figures (no `--lightbox` modifier) read as
-   "low" for the purposes of reveal — supplementary detail stays
-   hidden until the reader explicitly expands the figure.
+   Tiers (low → high): min, low, mid, high, max.
 
-   Opacity is toggled discretely rather than animated. We tried
-   transitioning these but it interleaves with the lightbox's
-   continuous transform during zoom gestures and Chrome leaves
-   stale text glyphs behind. Discrete switching keeps the GPU
-   layer math simple and the figure renders cleanly. */
+   The lightbox stamps the `.bt-inline-svg--lightbox` wrapper with
+   one `data-bt-zoom-<tier>` attribute for every tier ≤ the current
+   scale (cumulative flags). At scale=1 the wrapper carries only
+   `data-bt-zoom-min`; past 2 it picks up `…-low`; past 4, `…-mid`;
+   past 8, `…-high`; past 12 (the cap), `…-max`. Inline previews
+   (no `--lightbox` modifier) carry no flags at all — reveals stay
+   hidden, hides stay visible, so the inline figure shows the
+   overview layer.
 
-.bt-inline-svg [data-bt-reveal='mid'],
-.bt-inline-svg [data-bt-reveal='high'] {
+   The cumulative model means `[data-bt-zoom-mid] [data-bt-reveal='mid']`
+   matches at mid + high + max without enumerating each upper tier.
+
+   Opacity is toggled discretely rather than animated. Transitions
+   interleaved badly with the lightbox's continuous transform
+   during zoom gestures — Chrome left stale text glyphs behind.
+   Discrete switching keeps the GPU layer math simple. */
+
+.bt-inline-svg [data-bt-reveal] {
 	opacity: 0;
 }
 
-.bt-inline-svg--lightbox[data-bt-zoom-level='mid'] [data-bt-reveal='mid'],
-.bt-inline-svg--lightbox[data-bt-zoom-level='high'] [data-bt-reveal='mid'],
-.bt-inline-svg--lightbox[data-bt-zoom-level='high'] [data-bt-reveal='high'] {
+.bt-inline-svg--lightbox[data-bt-zoom-min] [data-bt-reveal='min'],
+.bt-inline-svg--lightbox[data-bt-zoom-low] [data-bt-reveal='low'],
+.bt-inline-svg--lightbox[data-bt-zoom-mid] [data-bt-reveal='mid'],
+.bt-inline-svg--lightbox[data-bt-zoom-high] [data-bt-reveal='high'],
+.bt-inline-svg--lightbox[data-bt-zoom-max] [data-bt-reveal='max'] {
 	opacity: 1;
+}
+
+.bt-inline-svg--lightbox[data-bt-zoom-min] [data-bt-hide='min'],
+.bt-inline-svg--lightbox[data-bt-zoom-low] [data-bt-hide='low'],
+.bt-inline-svg--lightbox[data-bt-zoom-mid] [data-bt-hide='mid'],
+.bt-inline-svg--lightbox[data-bt-zoom-high] [data-bt-hide='high'],
+.bt-inline-svg--lightbox[data-bt-zoom-max] [data-bt-hide='max'] {
+	opacity: 0;
 }
 
 /* ── Text-size cap during lightbox zoom ────────────────────────

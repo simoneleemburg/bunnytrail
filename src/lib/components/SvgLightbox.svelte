@@ -32,6 +32,13 @@
 	 */
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
+	import type { N } from 'vitest/dist/chunks/environment.LoooBwUu.js';
+
+	// Max zoom level, clamped on fast trackpad pinch or wheel gestures.
+	const MAX_SCALE = 12;
+
+	const SEMANTIC_ZOOM_THRESHOLDS = [1, 2, 4, 8, 12];
+	const SEMANTIC_ZOOM_LEVELS = ['min', 'low', 'mid', 'high', 'max'] as const;
 
 	let dialog: HTMLDialogElement | null = $state(null);
 	let zoomTarget: HTMLDivElement | null = $state(null);
@@ -66,8 +73,6 @@
 	// portrait viewports zoomed into wide SVGs (mundus on mobile)
 	// land around 0.5–0.6.
 	let minScale = $state(1);
-	const MAX_SCALE = 12;
-
 	// Close on navigation. Reading `page.url.href` registers the
 	// dependency; the effect re-fires on every route change.
 	$effect(() => {
@@ -163,8 +168,24 @@
 		const wrapper = zoomTarget.firstElementChild as HTMLElement | null;
 		if (wrapper) {
 			wrapper.style.setProperty('--bt-zoom', String(currentScale));
-			wrapper.dataset.btZoomLevel =
-				currentScale < 2 ? 'low' : currentScale < 4 ? 'mid' : 'high';
+			const currentTierIdx = (() => {
+				const found = SEMANTIC_ZOOM_THRESHOLDS.findIndex(
+					(threshold: number) => currentScale <= threshold
+				);
+				return found === -1 ? SEMANTIC_ZOOM_LEVELS.length - 1 : found;
+			})();
+			wrapper.dataset.btZoomLevel = SEMANTIC_ZOOM_LEVELS[currentTierIdx];
+			// Cumulative tier flags: every tier ≤ current is stamped
+			// as a separate data attribute, so authors can write
+			// `[data-bt-zoom-mid] [data-bt-reveal='mid']` (matches at
+			// mid + high + max) without enumerating each higher tier
+			// in the selector. Used by global.css to drive both
+			// `data-bt-reveal` and `data-bt-hide` symmetrically.
+			for (let i = 0; i < SEMANTIC_ZOOM_LEVELS.length; i++) {
+				const attr = `bt-zoom-${SEMANTIC_ZOOM_LEVELS[i]}`;
+				if (i <= currentTierIdx) wrapper.setAttribute(`data-${attr}`, '');
+				else wrapper.removeAttribute(`data-${attr}`);
+			}
 			// Sub-cover zoom-out is done with a CSS transform on the
 			// wrapper rather than viewBox math: at scale < 1 the
 			// entire SVG already fits within the wrapper, so we just
@@ -422,7 +443,8 @@
 				c.startsWith('bt-inline-svg--')
 			);
 			ctx.className = ['bt-inline-svg', ...sourceClasses, 'bt-inline-svg--lightbox'].join(' ');
-			ctx.dataset.btZoomLevel = 'low';
+			ctx.dataset.btZoomLevel = 'min';
+			ctx.setAttribute('data-bt-zoom-min', '');
 			ctx.style.setProperty('--bt-zoom', '1');
 			if (parsedVb[2] > 0 && parsedVb[3] > 0) {
 				ctx.style.setProperty('--bt-svg-aspect', String(parsedVb[2] / parsedVb[3]));
@@ -455,11 +477,23 @@
 	function close() {
 		dialog?.close();
 	}
+
+	// Debug HUD: semantic level derived from the same threshold table
+	// the data attribute uses, so the badge mirrors what CSS sees.
+	const zoomLevel = $derived(
+		SEMANTIC_ZOOM_LEVELS[
+			SEMANTIC_ZOOM_THRESHOLDS.findIndex((threshold: number) => scale <= threshold)
+		] || 'max'
+	);
 </script>
 
 <dialog bind:this={dialog} class="bt-svg-lightbox" onclick={onDialogClick}>
 	<div class="frame">
 		<button type="button" class="close" onclick={close} aria-label="Close">✕</button>
+		<div class="zoom-hud" aria-hidden="true">
+			<span class="zoom-hud__scale">{scale.toFixed(2)}×</span>
+			<span class="zoom-hud__level">{zoomLevel}</span>
+		</div>
 		<div
 			class="stage"
 			role="presentation"
@@ -605,5 +639,30 @@
 		color: var(--accent);
 		background: var(--parchment-soft);
 		outline: none;
+	}
+
+	.zoom-hud {
+		position: absolute;
+		top: calc(var(--space-3) + 2.5rem + var(--space-2));
+		right: var(--space-3);
+		display: flex;
+		gap: var(--space-2);
+		align-items: baseline;
+		padding: 0.35rem 0.7rem;
+		background: var(--vellum);
+		color: var(--ink-soft);
+		border: 1px solid var(--rule);
+		border-radius: var(--radius-md);
+		font-family: var(--font-mono, ui-monospace, monospace);
+		font-size: var(--text-sm);
+		z-index: 2;
+		pointer-events: none;
+	}
+
+	.zoom-hud__level {
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--accent);
 	}
 </style>
