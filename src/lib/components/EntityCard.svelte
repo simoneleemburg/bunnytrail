@@ -88,6 +88,15 @@
 		margin-bottom: var(--space-2);
 	}
 
+	/* The kind token is the card's identity-line — it tells you what
+	   *sort* of thing the card represents. Carry it harder than the
+	   surrounding metadata so it reads as a label, not chrome. */
+	.eyebrow .type {
+		color: var(--accent-deep);
+		font-weight: 600;
+		letter-spacing: 0.1em;
+	}
+
 	.sep {
 		margin: 0 var(--space-2);
 	}
@@ -166,6 +175,9 @@
 		color: var(--ink-soft);
 		font-size: var(--text-sm);
 		line-height: var(--leading-normal);
+		text-align: justify;
+		text-wrap: pretty;
+		hyphens: auto;
 	}
 
 	.tags {
@@ -174,5 +186,17 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--space-2) var(--space-3);
+	}
+
+	/* Tags on cards drop the underline — the card already has its own
+	   chrome (warm fill, lift, gilt title) on hover, so the per-tag
+	   rule reads as redundant noise. Other Tag usages (entity pages,
+	   blog) keep the default underline. */
+	.tags :global(.tag) {
+		border-bottom-color: transparent;
+	}
+
+	.tags :global(a.tag:hover) {
+		border-bottom-color: var(--accent-warm);
 	}
 </style>

@@ -1065,16 +1065,18 @@
 		position: relative;
 		padding: var(--space-4);
 		margin: 0 calc(var(--space-4) * -1);
-		border-radius: 2px;
+		border-radius: 8px;
 		transition:
-			background-color 150ms ease,
-			box-shadow 150ms ease,
-			transform 150ms ease;
+			background-color 200ms ease,
+			box-shadow 200ms ease,
+			transform 200ms ease;
 	}
 
 	.subcollection:hover {
 		background-color: var(--paper-warm);
-		box-shadow: var(--shadow-hover);
+		box-shadow:
+			0 1px 1px rgba(120, 90, 60, 0.04),
+			0 4px 14px -8px rgba(120, 90, 60, 0.1);
 		transform: translateY(-1px);
 	}
 
@@ -1082,6 +1084,8 @@
 		display: block;
 		color: inherit;
 		text-decoration: none;
+		padding-left: var(--space-3);
+		border-left: 2px solid var(--accent-warm);
 	}
 
 	/* Stretched link covers the whole tile, so the description below
@@ -1099,8 +1103,6 @@
 		justify-content: space-between;
 		gap: var(--space-3);
 		margin-bottom: var(--space-2);
-		padding-bottom: var(--space-1);
-		border-bottom: 1px solid var(--rule);
 	}
 
 	.subcollection-tag {
@@ -1117,10 +1119,37 @@
 		font-weight: 500;
 		margin: 0;
 		color: var(--ink);
+		background-image: linear-gradient(
+			115deg,
+			currentColor 0%,
+			currentColor 42%,
+			var(--accent-warm) 50%,
+			currentColor 58%,
+			currentColor 100%
+		);
+		background-size: 250% 100%;
+		background-position: 130% 0;
+		background-clip: text;
+		-webkit-background-clip: text;
 	}
 
 	.subcollection:hover .subcollection-label {
-		color: var(--accent);
+		animation: subcollection-title-gleam 600ms ease-out;
+	}
+
+	@keyframes subcollection-title-gleam {
+		0% {
+			background-position: 130% 0;
+			-webkit-text-fill-color: currentColor;
+		}
+		15%,
+		85% {
+			-webkit-text-fill-color: transparent;
+		}
+		100% {
+			background-position: -30% 0;
+			-webkit-text-fill-color: currentColor;
+		}
 	}
 
 	.subcollection-count {
@@ -1134,6 +1163,9 @@
 		font-size: var(--text-sm);
 		color: var(--ink-soft);
 		line-height: var(--leading-normal);
+		text-align: justify;
+		text-wrap: pretty;
+		hyphens: auto;
 	}
 
 	.subcollection-tags {
@@ -1147,6 +1179,16 @@
 		   are independently clickable. */
 		position: relative;
 		z-index: 2;
+	}
+
+	/* Match EntityCard: drop the per-tag hairline on tile cards;
+	   the tile itself has its own hover affordance. */
+	.subcollection-tags :global(.tag) {
+		border-bottom-color: transparent;
+	}
+
+	.subcollection-tags :global(a.tag:hover) {
+		border-bottom-color: var(--accent-warm);
 	}
 
 	.tag-filter-list {
@@ -1257,6 +1299,8 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-1);
+		padding-left: var(--space-3);
+		border-left: 2px solid var(--accent-warm);
 	}
 
 	.subcollection-tree-heading h2 {
