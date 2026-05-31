@@ -379,149 +379,73 @@
 		<em>No {data.label.plural.toLowerCase()} have been recorded yet.</em>
 	</p>
 {:else}
-	{#if kindCounts.length > 1 || hasViewToggle || visibleFolders.length > 0}
-		<nav class="filters" aria-label="Filter and view">
-			{#if kindCounts.length > 1}
-				<div class="filter-group" role="group" aria-label="Filter by kind">
+	{#if hasViewToggle}
+		<!-- Toolbar above the two-column body. Result count anchors
+		     the left edge as a quiet tally; the view-toggle on the
+		     right switches the *shape* of the index (Index/Tree/Flat
+		     /Orbits) — fundamentally different from the filter
+		     dimensions in the sidebar, so it lives here as a "page
+		     mode" control instead of being mixed in with kind /
+		     folder / tag filters. -->
+		<div class="toolbar">
+			<span class="toolbar-count">
+				{filterEntitySet.length}
+				{filterEntitySet.length === 1 ? 'entry' : 'entries'}
+			</span>
+			<div class="filter-group view-toggle" role="group" aria-label="View mode">
+				<button
+					type="button"
+					class="filter"
+					class:active={viewMode === 'index'}
+					onclick={() => (viewMode = 'index')}
+				>
+					Index
+				</button>
+				{#if hasSubcollections}
 					<button
 						type="button"
 						class="filter"
-						class:active={activeKind === null}
-						onclick={() => (activeKind = null)}
+						class:active={viewMode === 'tree'}
+						onclick={() => (viewMode = 'tree')}
 					>
-						All <span class="count">{filterEntitySet.length}</span>
+						Tree
 					</button>
-					{#each kindCounts as [kind, info] (kind)}
-						<button
-							type="button"
-							class="filter"
-							class:active={activeKind === kind}
-							class:supertype={info.supertype}
-							title={info.supertype ? `${kind} (supertype — ${info.count} total)` : kind}
-							onclick={() => (activeKind = kind)}
-						>
-							{kind}{#if info.supertype}<span class="count">{info.count}</span>{/if}
-						</button>
-					{/each}
-				</div>
-			{/if}
-			{#if visibleFolders.length > 0}
-				<div class="filter-group" role="group" aria-label="Filter by folder">
+				{/if}
+				<button
+					type="button"
+					class="filter"
+					class:active={viewMode === 'flat'}
+					onclick={() => (viewMode = 'flat')}
+				>
+					Flat
+				</button>
+				{#if hasOrbits}
 					<button
 						type="button"
 						class="filter"
-						class:active={activeFolder === null}
-						onclick={() => (activeFolder = null)}
+						class:active={viewMode === 'orbits'}
+						onclick={() => (viewMode = 'orbits')}
 					>
-						All folders
+						Orbits
 					</button>
-					{#each visibleFolders as folder (folder.path)}
-						<button
-							type="button"
-							class="filter folder-chip"
-							class:active={activeFolder === folder.path}
-							title={folder.path}
-							onclick={() => (activeFolder = folder.path)}
-						>
-							{folder.name}<span class="count">{folder.count}</span>
-						</button>
-					{/each}
-				</div>
-			{/if}
-			{#if hasViewToggle}
-				<div class="filter-group view-toggle" role="group" aria-label="View mode">
-					<button
-						type="button"
-						class="filter"
-						class:active={viewMode === 'index'}
-						onclick={() => (viewMode = 'index')}
-					>
-						Index
-					</button>
-					{#if hasSubcollections}
-						<button
-							type="button"
-							class="filter"
-							class:active={viewMode === 'tree'}
-							onclick={() => (viewMode = 'tree')}
-						>
-							Tree
-						</button>
-					{/if}
-					<button
-						type="button"
-						class="filter"
-						class:active={viewMode === 'flat'}
-						onclick={() => (viewMode = 'flat')}
-					>
-						Flat
-					</button>
-					{#if hasOrbits}
-						<button
-							type="button"
-							class="filter"
-							class:active={viewMode === 'orbits'}
-							onclick={() => (viewMode = 'orbits')}
-						>
-							Orbits
-						</button>
-					{/if}
-				</div>
-			{/if}
-		</nav>
+				{/if}
+			</div>
+		</div>
 	{/if}
 
-	{#if availableTags.length > 0}
-		<nav class="tag-filter" aria-label="Filter by tag">
-			<span class="tag-filter-label">Tags</span>
-			<ul class="tag-filter-list">
-				{#each visibleFilterTags as tag (tag.label)}
-					<li>
-						<button
-							type="button"
-							class="tag-chip"
-							class:active={activeTags.has(tag.label)}
-							onclick={() => toggleTag(tag.label)}
-							aria-pressed={activeTags.has(tag.label)}
-						>
-							{tag.label}<span class="tag-chip-count">{tag.count}</span>
-						</button>
-					</li>
-				{/each}
-				{#if hiddenTagCount > 0 && !showAllTags}
-					<li>
-						<button type="button" class="tag-more" onclick={() => (showAllTags = true)}>
-							+{hiddenTagCount} more
-						</button>
-					</li>
-				{/if}
-				{#if showAllTags && availableTags.length > FILTER_TOP_N}
-					<li>
-						<button type="button" class="tag-more" onclick={() => (showAllTags = false)}>
-							show fewer
-						</button>
-					</li>
-				{/if}
-				{#if activeTags.size > 0}
-					<li>
-						<button type="button" class="tag-clear" onclick={clearTags}> clear </button>
-					</li>
-				{/if}
-			</ul>
-		</nav>
-	{/if}
-
-	{#if visibleSubcollections.length > 0}
-		<section class="subcollections" aria-label="Subcollections">
-			<ul class="subcollection-list">
-				{#each visibleSubcollections as sub (sub.type)}
-					<li class="subcollection">
-						<a class="subcollection-link" href={`/${sub.type}`}>
-							<div class="subcollection-eyebrow">
-								<span class="subcollection-tag">Collection</span>
-								<span class="subcollection-count">{sub.visibleCount}</span>
-							</div>
-							<h3 class="subcollection-label">{sub.plural}</h3>
+	<div class="layout">
+		<div class="content">
+			{#if visibleSubcollections.length > 0}
+				<section class="subcollections" aria-label="Subcollections">
+					<ul class="subcollection-list">
+						{#each visibleSubcollections as sub (sub.type)}
+							<li class="subcollection">
+								<a class="subcollection-link" href={`/${sub.type}`}>
+									<div class="subcollection-eyebrow">
+										<span class="subcollection-tag">Collection</span>
+										<span class="subcollection-count">{sub.visibleCount}</span>
+									</div>
+									<h3 class="subcollection-label">{sub.plural}</h3>
 						</a>
 						{#if sub.description}
 							<p class="subcollection-description">{sub.description}</p>
@@ -668,6 +592,113 @@
 			{/each}
 		</div>
 	{/if}
+		</div><!-- /.content -->
+
+		<!-- Filter sidebar: three sectioned groups (Kind, Folder,
+		     Tags), each with a small-caps eyebrow label and a
+		     stack of pill chips. Mirrors the entity-page sidebar
+		     register so collection and entity pages read as the
+		     same family. Sticks below the masthead while scrolling
+		     a long index. -->
+		{#if kindCounts.length > 1 || visibleFolders.length > 0 || availableTags.length > 0}
+			<aside class="sidebar" aria-label="Filters">
+				{#if kindCounts.length > 1}
+					<section class="filter-section" aria-label="Filter by kind">
+						<h3 class="filter-eyebrow">Kind</h3>
+						<div class="filter-stack" role="group">
+							<button
+								type="button"
+								class="filter"
+								class:active={activeKind === null}
+								onclick={() => (activeKind = null)}
+							>
+								All <span class="count">{filterEntitySet.length}</span>
+							</button>
+							{#each kindCounts as [kind, info] (kind)}
+								<button
+									type="button"
+									class="filter"
+									class:active={activeKind === kind}
+									class:supertype={info.supertype}
+									title={info.supertype ? `${kind} (supertype — ${info.count} total)` : kind}
+									onclick={() => (activeKind = kind)}
+								>
+									{kind}{#if info.supertype}<span class="count">{info.count}</span>{/if}
+								</button>
+							{/each}
+						</div>
+					</section>
+				{/if}
+
+				{#if visibleFolders.length > 0}
+					<section class="filter-section" aria-label="Filter by folder">
+						<h3 class="filter-eyebrow">Folder</h3>
+						<div class="filter-stack" role="group">
+							<button
+								type="button"
+								class="filter"
+								class:active={activeFolder === null}
+								onclick={() => (activeFolder = null)}
+							>
+								All
+							</button>
+							{#each visibleFolders as folder (folder.path)}
+								<button
+									type="button"
+									class="filter folder-chip"
+									class:active={activeFolder === folder.path}
+									title={folder.path}
+									onclick={() => (activeFolder = folder.path)}
+								>
+									{folder.name}<span class="count">{folder.count}</span>
+								</button>
+							{/each}
+						</div>
+					</section>
+				{/if}
+
+				{#if availableTags.length > 0}
+					<section class="filter-section" aria-label="Filter by tag">
+						<h3 class="filter-eyebrow">Tags</h3>
+						<ul class="tag-filter-list">
+							{#each visibleFilterTags as tag (tag.label)}
+								<li>
+									<button
+										type="button"
+										class="tag-chip"
+										class:active={activeTags.has(tag.label)}
+										onclick={() => toggleTag(tag.label)}
+										aria-pressed={activeTags.has(tag.label)}
+									>
+										{tag.label}<span class="tag-chip-count">{tag.count}</span>
+									</button>
+								</li>
+							{/each}
+							{#if hiddenTagCount > 0 && !showAllTags}
+								<li>
+									<button type="button" class="tag-more" onclick={() => (showAllTags = true)}>
+										+{hiddenTagCount} more
+									</button>
+								</li>
+							{/if}
+							{#if showAllTags && availableTags.length > FILTER_TOP_N}
+								<li>
+									<button type="button" class="tag-more" onclick={() => (showAllTags = false)}>
+										show fewer
+									</button>
+								</li>
+							{/if}
+							{#if activeTags.size > 0}
+								<li>
+									<button type="button" class="tag-clear" onclick={clearTags}> clear </button>
+								</li>
+							{/if}
+						</ul>
+					</section>
+				{/if}
+			</aside>
+		{/if}
+	</div><!-- /.layout -->
 {/if}
 
 <style>
@@ -816,14 +847,100 @@
 		margin-bottom: 0;
 	}
 
-	.filters {
+	/* Toolbar above the two-column body. Result count anchors the
+	   left edge as a quiet tally; the view-toggle pill row anchors
+	   the right. The toolbar carries the bottom rule that used to
+	   sit on the old `.filters` row, signalling "header above /
+	   index below". */
+	.toolbar {
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: space-between;
+		align-items: baseline;
 		gap: var(--space-3) var(--space-5);
-		margin: 0 0 var(--space-6) 0;
-		padding-bottom: var(--space-4);
+		margin: 0 0 var(--space-5) 0;
+		padding-bottom: var(--space-3);
 		border-bottom: 1px solid var(--rule);
+	}
+
+	.toolbar-count {
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.08em;
+		color: var(--ink-faint);
+	}
+
+	/* Two-column body: content stream on the left (capped at
+	   prose-max), filter sidebar on the right (15rem). Mirrors
+	   the entity-page layout token-for-token so the two pages
+	   feel like one editorial system. Below 60rem the sidebar
+	   stacks above the content (entity-page parity). */
+	.layout {
+		display: grid;
+		grid-template-columns: minmax(0, var(--prose-max)) 15rem;
+		gap: var(--space-7);
+		align-items: start;
+	}
+
+	@media (max-width: 60rem) {
+		.layout {
+			grid-template-columns: minmax(0, 1fr);
+			gap: var(--space-6);
+		}
+	}
+
+	.content {
+		min-width: 0;
+	}
+
+	/* Filter sidebar: column of sectioned filter groups. Sticks
+	   below the masthead while scrolling — long indexes get a
+	   persistent filter rail. The sticky offset matches the
+	   masthead's resting height plus a hair of breathing room. */
+	.sidebar {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-5);
+		font-size: var(--text-sm);
+		position: sticky;
+		top: calc(var(--space-6) + 4rem);
+	}
+
+	@media (max-width: 60rem) {
+		.sidebar {
+			position: static;
+		}
+	}
+
+	.filter-section {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+	}
+
+	/* Eyebrow label above each filter group, matching the entity
+	   sidebar's group-label register so the two pages share the
+	   same small-caps grammar. */
+	.filter-eyebrow {
+		margin: 0 0 var(--space-1) 0;
+		font-family: var(--font-serif);
+		font-size: var(--text-xs);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.08em;
+		color: var(--ink-faint);
+		font-weight: 500;
+	}
+
+	/* Vertical chip stack: one pill per line, left-aligned. The
+	   pills keep their pill geometry from the inline row but each
+	   sits on its own row so a long list scans top-down rather
+	   than wrapping awkwardly inside the narrow sidebar. */
+	.filter-stack {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--space-1);
 	}
 
 	.filter-group {
@@ -1017,28 +1134,13 @@
 		z-index: 2;
 	}
 
-	.tag-filter {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: baseline;
-		gap: var(--space-2) var(--space-3);
-		margin: 0 0 var(--space-6) 0;
-	}
-
-	.tag-filter-label {
-		font-family: var(--font-serif);
-		font-style: italic;
-		font-size: var(--text-sm);
-		color: var(--ink-faint);
-	}
-
 	.tag-filter-list {
 		list-style: none;
 		padding: 0;
 		margin: 0;
 		display: flex;
 		flex-wrap: wrap;
-		gap: var(--space-1) var(--space-3);
+		gap: var(--space-1) var(--space-2);
 	}
 
 	.tag-chip {
