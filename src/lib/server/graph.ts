@@ -431,6 +431,11 @@ export class Graph {
 	 *
 	 * Returns `null` if the path is missing or ambiguous; the
 	 * markdown renderer treats both as broken links.
+	 *
+	 * Entities are tried first. On miss, the same algorithm is
+	 * applied against the collections map, so wikilinks like
+	 * `[[the-three-cardinals]]` (a collection folder, not an
+	 * entity file) resolve to the collection's browse page.
 	 */
 	resolveLink(rawPath: string, fromCluster: string | null = null): EntityId | null {
 		const r = resolveWikilink(
@@ -440,7 +445,15 @@ export class Graph {
 			this.#clusters,
 			this.#universalFolders
 		);
-		return r.id;
+		if (r.id) return r.id;
+		const c = resolveWikilink(
+			rawPath,
+			this.#collections,
+			fromCluster,
+			this.#clusters,
+			this.#universalFolders
+		);
+		return c.id;
 	}
 
 	/**
