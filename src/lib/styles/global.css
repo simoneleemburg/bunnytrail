@@ -146,6 +146,22 @@ blockquote {
 	padding: 0;
 	max-width: var(--figure-max-width);
 	container-type: inline-size;
+	/* The whole figure is click-to-enlarge; signal the affordance.
+	   Links inside the SVG keep `cursor: pointer` via the UA
+	   stylesheet on `<a>`, which has higher specificity than this
+	   element-level rule, so the cursor still differentiates
+	   interactive children. The `--lightbox` modifier suppresses
+	   the cursor in the expanded clone, where the gesture is
+	   pan/zoom rather than open. */
+	cursor: zoom-in;
+}
+
+.bt-inline-svg.bt-inline-svg--lightbox {
+	cursor: inherit;
+}
+
+.bt-inline-svg a {
+	cursor: pointer;
 }
 
 .bt-inline-svg svg {
