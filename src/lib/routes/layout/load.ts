@@ -1,6 +1,7 @@
 import { building } from '$app/environment';
 import { graph } from '$lib/server/graph';
 import { world } from '$lib/server/world';
+import { assets } from '$lib/server/assets';
 import { readScope, type ScopeContext } from '$lib/cluster';
 
 /**
@@ -71,6 +72,11 @@ export async function load({ url }: { url: URL }) {
 	});
 
 	const worldConfig = world.config();
+	// Optional bespoke wordmark SVG. When present, the masthead
+	// renders the inline SVG in place of the text wordmark + glyph
+	// pseudo-element. The link still carries an aria-label with the
+	// world name, so the SVG itself is decorative (aria-hidden).
+	const wordmark = await assets.get('wordmark.svg');
 	const clusterOptions = [
 		{ value: '', label: worldConfig.allScopeLabel, selected: selectedCluster === null },
 		...clusters.map((c) => ({
@@ -93,6 +99,7 @@ export async function load({ url }: { url: URL }) {
 		// `content_meta/world.md`; falls back to "Bunnytrail" defaults
 		// if the file is absent.
 		world: worldConfig,
+		wordmark,
 		// Surface the scope context to the client so the navigation
 		// hook can rewrite outgoing links without re-deriving it.
 		scopeContext: { clusters, unionShelves, clusterAwarePaths } satisfies ScopeContext

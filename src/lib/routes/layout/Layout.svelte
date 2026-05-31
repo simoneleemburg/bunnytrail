@@ -17,6 +17,7 @@
 			clusterOptions: { value: string; label: string; selected: boolean }[];
 			selectedCluster: string | null;
 			world: { name: string; shortName: string; tagline: string; allScopeLabel: string };
+			wordmark: string | null;
 			scopeContext: ScopeContext;
 		};
 		children: Snippet;
@@ -139,9 +140,13 @@
 <div class="page" class:drawer-open={drawerOpen}>
 	<header class="masthead">
 		<div class="masthead-inner">
-			<a class="wordmark" href="/">
-				<span class="wordmark-mark" aria-hidden="true"></span>
-				<span class="wordmark-name">{data.world.name}</span>
+			<a class="wordmark" class:wordmark-svg={data.wordmark} href="/" aria-label={data.world.name}>
+				{#if data.wordmark}
+					<span class="wordmark-figure" aria-hidden="true">{@html data.wordmark}</span>
+				{:else}
+					<span class="wordmark-mark" aria-hidden="true"></span>
+					<span class="wordmark-name">{data.world.name}</span>
+				{/if}
 			</a>
 
 			<nav class="nav-desktop" aria-label="Primary">
@@ -311,6 +316,28 @@
 
 	:global(:where(.wordmark-mark)::before) {
 		content: var(--wordmark-mark, '');
+	}
+
+	/* SVG-wordmark mode. When a world ships assets/wordmark.svg,
+	   the masthead inlines it instead of rendering text + glyph.
+	   The wrapper sets a height; the inlined SVG fills it with
+	   intrinsic aspect ratio. `color` still cascades, so any path
+	   using `currentColor` picks up the masthead ink/accent. */
+	.wordmark-svg {
+		letter-spacing: 0;
+		text-transform: none;
+	}
+
+	.wordmark-figure {
+		display: inline-flex;
+		align-items: center;
+		height: 2.4em;
+	}
+
+	.wordmark-figure :global(svg) {
+		height: 100%;
+		width: auto;
+		display: block;
 	}
 
 	.wordmark:hover {
