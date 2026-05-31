@@ -331,7 +331,7 @@
 	.wordmark-figure {
 		display: inline-flex;
 		align-items: center;
-		height: 2.4em;
+		height: 1.3em;
 	}
 
 	.wordmark-figure :global(svg) {
