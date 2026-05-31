@@ -141,6 +141,31 @@
 	}
 
 	/**
+	 * Size the lightbox wrapper so it covers the stage in both
+	 * dimensions (the smaller stage axis fits exactly; the larger
+	 * one overflows and is clipped by `.stage { overflow: hidden }`,
+	 * so the user pans to reveal off-screen edges). Called on open
+	 * and on viewport resize. We compute imperatively because
+	 * `.bt-inline-svg` sets `container-type: inline-size` for the
+	 * world's cqw-driven font sizes — that makes cq units inside
+	 * the wrapper resolve to its own size, so the obvious
+	 * `max(100cqw, 100cqh*aspect)` CSS expression is circular.
+	 */
+	function sizeWrapperToStage() {
+		if (!stage || !zoomTarget) return;
+		const wrapper = zoomTarget.firstElementChild as HTMLElement | null;
+		if (!wrapper) return;
+		const aspect = origVb.w > 0 && origVb.h > 0 ? origVb.w / origVb.h : 1;
+		const stageRect = stage.getBoundingClientRect();
+		const w = Math.max(stageRect.width, stageRect.height * aspect);
+		const h = Math.max(stageRect.height, stageRect.width / aspect);
+		wrapper.style.width = `${w}px`;
+		wrapper.style.height = `${h}px`;
+		wrapper.style.maxWidth = 'none';
+		wrapper.style.maxHeight = 'none';
+	}
+
+	/**
 	 * Zoom toward a viewport-coordinate anchor (mouse or pinch
 	 * midpoint). Computes the SVG-coord point under the anchor,
 	 * then chooses a new viewBox that keeps that same SVG point
@@ -184,22 +209,23 @@
 	}
 
 	const pointers = new Map<number, { x: number; y: number }>();
+	const pointerStarts = new Map<number, { x: number; y: number }>();
+	const panActive = new Set<number>();
+	const PAN_THRESHOLD = 6;
 	let pinchStartDist = 0;
 	let pinchStartScale = 1;
 
 	function onPointerDown(event: PointerEvent) {
 		pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-		// Only capture the pointer when we actually need to consume
-		// subsequent pointer/mouse events ourselves — i.e. when a
-		// pan is possible (zoomed in) or a pinch is starting. Capturing
-		// unconditionally hijacks the browser's `click` synthesis from
-		// pointer events, which breaks links inside the SVG.
+		pointerStarts.set(event.pointerId, { x: event.clientX, y: event.clientY });
+		// Pinch needs immediate capture so we keep getting move events
+		// on both fingers; pan capture is deferred until the user
+		// actually crosses the drag threshold, so a tap on a link
+		// still synthesises a click through to the <a> inside the SVG.
 		if (pointers.size === 2) {
 			const [a, b] = [...pointers.values()];
 			pinchStartDist = Math.hypot(a.x - b.x, a.y - b.y);
 			pinchStartScale = scale;
-			(event.currentTarget as Element).setPointerCapture(event.pointerId);
-		} else if (scale > MIN_SCALE) {
 			(event.currentTarget as Element).setPointerCapture(event.pointerId);
 		}
 	}
@@ -215,14 +241,44 @@
 			const cx = (a.x + b.x) / 2;
 			const cy = (a.y + b.y) / 2;
 			zoomAt(cx, cy, pinchStartScale * (dist / pinchStartDist));
-		} else if (pointers.size === 1 && scale > MIN_SCALE) {
-			panBy(curr.x - prev.x, curr.y - prev.y);
+			return;
 		}
+		if (pointers.size !== 1) return;
+		// Promote a single-pointer drag into a pan once it crosses
+		// the threshold. Before that, the gesture might still be a
+		// click — leaving the link clickable.
+		if (!panActive.has(event.pointerId)) {
+			const start = pointerStarts.get(event.pointerId);
+			if (!start) return;
+			const moved = Math.hypot(curr.x - start.x, curr.y - start.y);
+			if (moved < PAN_THRESHOLD) return;
+			panActive.add(event.pointerId);
+			try {
+				(event.currentTarget as Element).setPointerCapture(event.pointerId);
+			} catch {
+				// pointer already released or invalid id; ignore
+			}
+		}
+		panBy(curr.x - prev.x, curr.y - prev.y);
 	}
 
 	function onPointerUp(event: PointerEvent) {
 		pointers.delete(event.pointerId);
+		pointerStarts.delete(event.pointerId);
+		const wasPanning = panActive.delete(event.pointerId);
 		if (pointers.size < 2) pinchStartDist = 0;
+		// Suppress the synthesised click that follows pointerup if
+		// the gesture was a pan — otherwise a release over a link
+		// after panning would navigate.
+		if (wasPanning) {
+			const swallow = (e: Event) => {
+				e.stopPropagation();
+				e.preventDefault();
+				window.removeEventListener('click', swallow, true);
+			};
+			window.addEventListener('click', swallow, true);
+			setTimeout(() => window.removeEventListener('click', swallow, true), 0);
+		}
 	}
 
 	function onDoubleClick(event: MouseEvent) {
@@ -295,9 +351,6 @@
 			ctx.className = ['bt-inline-svg', ...sourceClasses, 'bt-inline-svg--lightbox'].join(' ');
 			ctx.dataset.btZoomLevel = 'low';
 			ctx.style.setProperty('--bt-zoom', '1');
-			// Drive aspect-ratio-aware sizing in CSS via container
-			// queries: the wrapper grows to min(100cqw, 100cqh*aspect)
-			// so it always hugs the SVG content without letterboxing.
 			if (parsedVb[2] > 0 && parsedVb[3] > 0) {
 				ctx.style.setProperty('--bt-svg-aspect', String(parsedVb[2] / parsedVb[3]));
 			}
@@ -307,10 +360,19 @@
 			const cap = figure.querySelector('figcaption');
 			captionText = cap?.textContent?.trim() ?? '';
 			dialog.showModal();
+			// Stage layout settles after showModal + caption render.
+			// Wait one frame so the grid row sizing is final before
+			// we measure.
+			requestAnimationFrame(() => sizeWrapperToStage());
 		}
 
 		document.addEventListener('click', onTriggerClick);
-		return () => document.removeEventListener('click', onTriggerClick);
+		const onResize = () => sizeWrapperToStage();
+		window.addEventListener('resize', onResize);
+		return () => {
+			document.removeEventListener('click', onTriggerClick);
+			window.removeEventListener('resize', onResize);
+		};
 	});
 
 	function onDialogClick(event: MouseEvent) {
@@ -376,8 +438,8 @@
 		height: 100%;
 		display: grid;
 		grid-template-rows: 1fr auto;
-		gap: var(--space-3);
-		padding: var(--space-5);
+		gap: 0;
+		padding: 0;
 		box-sizing: border-box;
 	}
 
@@ -405,22 +467,31 @@
 	}
 
 	.zoom-target :global(.bt-inline-svg) {
-		/* Hug the SVG's aspect ratio so there's no wasted whitespace
-		   inside the SVG element. --bt-svg-aspect is set inline in
-		   open() from the source viewBox; if absent we fall back to
-		   1 (square) so layout still works. */
-		--bt-svg-aspect: 1;
-		width: min(100cqw, calc(100cqh * var(--bt-svg-aspect)));
-		height: min(100cqh, calc(100cqw / var(--bt-svg-aspect)));
+		/* Width / height are set inline in open() / resize handler
+		   to cover the stage in both dimensions (the smaller stage
+		   dimension fits exactly; the larger overflows and is
+		   clipped by `.stage { overflow: hidden }`). We can't use
+		   cq units here because `.bt-inline-svg` itself sets
+		   `container-type: inline-size` in global.css, which makes
+		   cq units resolve to the element's own size (circular).
+		   `flex-shrink: 0` prevents the parent flex container from
+		   collapsing the wrapper back to stage width. */
 		margin: 0;
+		flex-shrink: 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
 
 	.zoom-target :global(.bt-inline-svg svg) {
+		/* Fill the wrapper; global.css's max-height: --figure-max-height
+		   would otherwise cap us. The wrapper is sized to the SVG's
+		   own aspect (cover-fit) in JS, so 100% / 100% here does not
+		   distort the content. */
 		width: 100%;
 		height: 100%;
+		max-width: none;
+		max-height: none;
 	}
 
 	/* The inline figure's expand button leaks through the clone;
