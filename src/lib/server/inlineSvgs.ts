@@ -30,11 +30,16 @@ import { graph } from './graph';
  * default action is nothing); progressive enhancement attaches
  * the lightbox handler on mount.
  *
- * The wrapper class — `bt-inline-svg` — is styled by the world's
- * own stylesheet at `<world>/assets/inline-svg.css` (served via
- * `/api/assets/inline-svg.css`, linked from `app.html`). That file
- * is world-coupled because it knows the class names the world's
- * bake scripts emit on the SVGs.
+ * The wrapper carries two classes: the generic `bt-inline-svg`
+ * (styled by the engine: figure chrome, lightbox handler hooks,
+ * container query for `cqw`) and a per-figure modifier
+ * `bt-inline-svg--<base>` where `<base>` is the SVG filename minus
+ * extension. The engine auto-bundles every `<base>.css` next to a
+ * `<base>.svg` in the world's assets dir into
+ * `/api/assets/inline-svg.css`, wrapping each file's rules in
+ * `.bt-inline-svg--<base> { ... }` so they only apply inside the
+ * matching figure. World authors don't need to write `svg.<map>`
+ * scoping selectors.
  *
  * Non-SVG images and any `<img>` whose `src` we don't recognise are
  * left untouched — they keep working as ordinary raster embeds.
@@ -89,7 +94,30 @@ async function buildReplacement(
 	const expandBtn =
 		`<button type="button" class="bt-inline-svg__expand" data-bt-svg-expand ` +
 		`aria-label="${expandLabel}"><span aria-hidden="true">⤢</span></button>`;
-	return `<figure class="bt-inline-svg">${expandBtn}${svg}${captionHtml}</figure>`;
+
+	// Modifier class derived from the SVG basename. Pairs 1:1 with
+	// the world's per-figure CSS file: `<base>.css` is bundled into
+	// `inline-svg.css` wrapped in `.bt-inline-svg--<base> { ... }`,
+	// so its rules only apply inside the matching figure. Author
+	// CSS no longer needs manual `svg.<map>` scoping selectors.
+	const base = svgBasename(src);
+	const cls = base ? `bt-inline-svg bt-inline-svg--${base}` : 'bt-inline-svg';
+	return `<figure class="${cls}">${expandBtn}${svg}${captionHtml}</figure>`;
+}
+
+/**
+ * Strip `/api/(assets|entity-assets)/.../<base>.svg` → `<base>`.
+ * Returns null if the segment doesn't look like a CSS-safe
+ * identifier (only ASCII letters, digits, dash, underscore).
+ */
+function svgBasename(src: string): string | null {
+	const slash = src.lastIndexOf('/');
+	if (slash < 0) return null;
+	const file = src.slice(slash + 1);
+	const dot = file.lastIndexOf('.');
+	if (dot < 0) return null;
+	const base = file.slice(0, dot);
+	return /^[A-Za-z0-9_-]+$/.test(base) ? base : null;
 }
 
 async function loadSvg(src: string): Promise<string | null> {

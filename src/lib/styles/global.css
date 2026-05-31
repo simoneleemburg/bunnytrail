@@ -137,9 +137,11 @@ blockquote {
    Default chrome for figures emitted by `inlineSvgFigures` (the
    markdown post-processor that inlines `![alt](foo.svg)` references).
    World-specific styles for the SVG's interior (label fonts, fills,
-   etc.) live in `<world>/assets/inline-svg.css`; what's here is the
-   engine-level frame: figure sizing, expand-button placement, and
-   the container query that lets in-SVG fonts scale via `cqw`. */
+   etc.) live in `<world>/assets/<name>.css` next to `<name>.svg`;
+   the engine auto-bundles them into `/api/assets/inline-svg.css` —
+   no shell file required. What's here is the engine-level frame:
+   figure sizing, expand-button placement, and the container query
+   that lets in-SVG fonts scale via `cqw`. */
 .bt-inline-svg {
 	position: relative;
 	margin: var(--space-6) auto;
@@ -227,4 +229,73 @@ blockquote {
 	.bt-inline-svg__expand {
 		opacity: 1;
 	}
+}
+
+/* ── Semantic-zoom reveal tiers ─────────────────────────────────
+   Any element inside an inline figure can opt into progressive
+   reveal by setting `data-bt-reveal="<tier>"`:
+
+     low   — always visible (default if the attribute is absent;
+             also explicitly settable for elements that want to
+             advertise their tier in markup)
+     mid   — hidden in the inline preview and at low lightbox
+             zoom; revealed at mid + high
+     high  — hidden everywhere except the high lightbox zoom
+
+   The lightbox publishes its current zoom tier via
+   `data-bt-zoom-level` (low | mid | high) on the `.bt-inline-svg`
+   wrapper. Inline figures (no `--lightbox` modifier) read as
+   "low" for the purposes of reveal — supplementary detail stays
+   hidden until the reader explicitly expands the figure.
+
+   Opacity is toggled discretely rather than animated. We tried
+   transitioning these but it interleaves with the lightbox's
+   continuous transform during zoom gestures and Chrome leaves
+   stale text glyphs behind. Discrete switching keeps the GPU
+   layer math simple and the figure renders cleanly. */
+
+.bt-inline-svg [data-bt-reveal='mid'],
+.bt-inline-svg [data-bt-reveal='high'] {
+	opacity: 0;
+}
+
+.bt-inline-svg--lightbox[data-bt-zoom-level='mid'] [data-bt-reveal='mid'],
+.bt-inline-svg--lightbox[data-bt-zoom-level='high'] [data-bt-reveal='mid'],
+.bt-inline-svg--lightbox[data-bt-zoom-level='high'] [data-bt-reveal='high'] {
+	opacity: 1;
+}
+
+/* ── Text-size cap during lightbox zoom ────────────────────────
+   The lightbox applies a CSS transform with scale `--bt-zoom`
+   to the figure, which visually grows every glyph along with
+   the geometry. Past a point that's a usability regression:
+   the spatial zoom is the useful gesture (panning into a
+   specific region of the SVG), not blowing one label up to
+   fill the screen.
+
+   The actual capping is done in JS (SvgLightbox.svelte) by
+   writing inline `font-size` on each `<text>` node whenever the
+   scale crosses the cap. We do it imperatively for two reasons:
+   (a) CSS `transform: scale()` on text inside an already
+   transform-scaled SVG triggers raster compositing and the text
+   pixelates; inline font-size keeps vector rendering. (b) Inline
+   styles win over per-figure CSS without specificity gymnastics.
+
+   World CSS can override `--bt-text-cap` per figure via the
+   `.bt-inline-svg--<base>` modifier to tighten or loosen the
+   cap for a specific map. */
+.bt-inline-svg--lightbox {
+	--bt-text-cap: 2;
+}
+
+.bt-inline-svg--lightbox text {
+	transform-box: fill-box;
+	transform-origin: center;
+	transform: scale(
+		calc(max(min(var(--bt-text-cap, 1.8), var(--bt-zoom, 1)) / var(--bt-zoom, 1),  1))
+	);
+}
+
+.bt-inline-svg--lightbox text {
+	font-size: calc(min(1em * min(var(--bt-text-cap), var(--bt-zoom, 1)) / var(--bt-zoom, 1), 2em));
 }

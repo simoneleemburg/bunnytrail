@@ -38,12 +38,24 @@
 	let stage: HTMLDivElement | null = $state(null);
 	let captionText = $state('');
 
-	let scale = $state(1);
-	let tx = $state(0);
-	let ty = $state(0);
+	// Zoom + pan are driven by manipulating the cloned SVG's
+	// `viewBox` attribute directly rather than wrapping the SVG in
+	// a CSS `transform: scale()` div. CSS-transformed SVG triggers
+	// raster compositing — the browser rasterises the SVG once at
+	// its natural size and then upscales the bitmap, which makes
+	// everything blur/pixelate at high zoom. viewBox changes are
+	// re-rasterised from the vector source at every frame, so the
+	// figure stays crisp at any scale.
+	let activeSvg: SVGSVGElement | null = null;
+	let origVb = $state({ x: 0, y: 0, w: 0, h: 0 });
+	let vb = $state({ x: 0, y: 0, w: 0, h: 0 });
+
+	// Derived visual scale (used to publish `--bt-zoom` to CSS and
+	// to drive the text-size cap). 1 = native viewBox, > 1 = zoomed in.
+	let scale = $derived(origVb.w > 0 ? origVb.w / vb.w : 1);
 
 	const MIN_SCALE = 1;
-	const MAX_SCALE = 6;
+	const MAX_SCALE = 12;
 
 	// Close on navigation. Reading `page.url.href` registers the
 	// dependency; the effect re-fires on every route change.
@@ -53,42 +65,114 @@
 		if (dialog?.open) dialog.close();
 	});
 
-	// Apply current transform + publish zoom signal.
+	// Map of `<text>` element → its intrinsic font-size in px,
+	// captured the first time we see it (i.e. at the world's
+	// per-figure baseline). We mutate `style.fontSize` past the
+	// cap to counter-scale against `--bt-zoom`; resetting the
+	// inline style restores the cascade-driven baseline.
+	let textBaseSizes = new WeakMap<SVGTextElement, number>();
+
+	/**
+	 * Walk every `<text>` in the lightbox clone and update its
+	 * inline `font-size` so the visual size pins at
+	 * `intrinsic * --bt-text-cap` once `scale > cap`. Below the
+	 * cap we clear the inline style so the world's CSS controls
+	 * the size normally.
+	 *
+	 * Doing this in JS rather than CSS avoids two problems:
+	 *  (1) CSS `transform: scale()` on text inside the figure's
+	 *      own transform triggers raster compositing → blurry/
+	 *      pixelated glyphs.
+	 *  (2) A CSS `font-size` rule would have to outscope every
+	 *      per-figure rule like `.bt-inline-svg--cognita-map
+	 *      .planet-label`, which is a specificity arms race.
+	 * Inline `style.fontSize` wins unconditionally.
+	 */
+	function applyTextCap(wrapper: HTMLElement, currentScale: number): void {
+		const cap = Number.parseFloat(
+			getComputedStyle(wrapper).getPropertyValue('--bt-text-cap').trim() || '1.8'
+		);
+		const factor = Math.min(cap, currentScale) / currentScale;
+		const texts = wrapper.querySelectorAll<SVGTextElement>('text');
+		for (const t of texts) {
+			let base = textBaseSizes.get(t);
+			if (base === undefined) {
+				// Clear any previous inline font-size to read the
+				// cascade-resolved baseline cleanly.
+				const previous = t.style.fontSize;
+				t.style.fontSize = '';
+				base = Number.parseFloat(getComputedStyle(t).fontSize) || 0;
+				if (previous) t.style.fontSize = previous;
+				textBaseSizes.set(t, base);
+			}
+			if (factor >= 0.9999) {
+				t.style.fontSize = '';
+			} else {
+				t.style.fontSize = `${base * factor}px`;
+			}
+		}
+	}
+
+	// Apply current viewBox + publish zoom signal.
 	$effect(() => {
+		// Reads pulled out of the gate so the effect tracks `vb`
+		// from the first run, even before `activeSvg` is set. Without
+		// this, the first invocation (activeSvg null) wouldn't
+		// subscribe to vb and subsequent zoom mutations wouldn't
+		// re-trigger the effect.
+		const { x, y, w, h } = vb;
+		const currentScale = scale;
 		if (!zoomTarget) return;
-		zoomTarget.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
-		zoomTarget.style.setProperty('--bt-zoom', String(scale));
+		if (activeSvg && origVb.w > 0) {
+			activeSvg.setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
+		}
+		zoomTarget.style.setProperty('--bt-zoom', String(currentScale));
 		const wrapper = zoomTarget.firstElementChild as HTMLElement | null;
 		if (wrapper) {
-			wrapper.style.setProperty('--bt-zoom', String(scale));
-			wrapper.dataset.btZoomLevel = scale < 1.25 ? 'low' : scale < 2.25 ? 'mid' : 'high';
+			wrapper.style.setProperty('--bt-zoom', String(currentScale));
+			wrapper.dataset.btZoomLevel =
+				currentScale < 2 ? 'low' : currentScale < 4 ? 'mid' : 'high';
+			applyTextCap(wrapper, currentScale);
 		}
 	});
 
 	function reset() {
-		scale = 1;
-		tx = 0;
-		ty = 0;
+		vb = { ...origVb };
 	}
 
-	/** Zoom toward a viewport-coordinate anchor (mouse or pinch midpoint). */
-	function zoomAt(clientX: number, clientY: number, target: number) {
-		if (!stage) return;
-		const next = Math.max(MIN_SCALE, Math.min(MAX_SCALE, target));
-		const rect = stage.getBoundingClientRect();
-		// Anchor point in stage-local coords (origin at center, where
-		// the transform-origin sits).
-		const ax = clientX - rect.left - rect.width / 2;
-		const ay = clientY - rect.top - rect.height / 2;
-		const ratio = next / scale;
-		tx = ax - (ax - tx) * ratio;
-		ty = ay - (ay - ty) * ratio;
-		scale = next;
-		if (scale <= MIN_SCALE + 0.001) {
-			scale = MIN_SCALE;
-			tx = 0;
-			ty = 0;
-		}
+	/**
+	 * Zoom toward a viewport-coordinate anchor (mouse or pinch
+	 * midpoint). Computes the SVG-coord point under the anchor,
+	 * then chooses a new viewBox that keeps that same SVG point
+	 * under the same screen anchor at the new scale.
+	 */
+	function zoomAt(clientX: number, clientY: number, targetScale: number) {
+		if (!activeSvg || origVb.w === 0) return;
+		const next = Math.max(MIN_SCALE, Math.min(MAX_SCALE, targetScale));
+		const rect = activeSvg.getBoundingClientRect();
+		if (rect.width === 0 || rect.height === 0) return;
+		// Anchor in SVG user coordinates, given the current viewBox.
+		const ax = vb.x + ((clientX - rect.left) / rect.width) * vb.w;
+		const ay = vb.y + ((clientY - rect.top) / rect.height) * vb.h;
+		const newW = origVb.w / next;
+		const newH = origVb.h / next;
+		const newX = ax - ((clientX - rect.left) / rect.width) * newW;
+		const newY = ay - ((clientY - rect.top) / rect.height) * newH;
+		vb = { x: newX, y: newY, w: newW, h: newH };
+		if (next <= MIN_SCALE + 0.001) reset();
+	}
+
+	/** Pan by a screen-pixel delta, converted to SVG user units. */
+	function panBy(dx: number, dy: number) {
+		if (!activeSvg || origVb.w === 0) return;
+		const rect = activeSvg.getBoundingClientRect();
+		if (rect.width === 0 || rect.height === 0) return;
+		vb = {
+			x: vb.x - (dx * vb.w) / rect.width,
+			y: vb.y - (dy * vb.h) / rect.height,
+			w: vb.w,
+			h: vb.h
+		};
 	}
 
 	function onWheel(event: WheelEvent) {
@@ -104,12 +188,19 @@
 	let pinchStartScale = 1;
 
 	function onPointerDown(event: PointerEvent) {
-		(event.currentTarget as Element).setPointerCapture(event.pointerId);
 		pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+		// Only capture the pointer when we actually need to consume
+		// subsequent pointer/mouse events ourselves — i.e. when a
+		// pan is possible (zoomed in) or a pinch is starting. Capturing
+		// unconditionally hijacks the browser's `click` synthesis from
+		// pointer events, which breaks links inside the SVG.
 		if (pointers.size === 2) {
 			const [a, b] = [...pointers.values()];
 			pinchStartDist = Math.hypot(a.x - b.x, a.y - b.y);
 			pinchStartScale = scale;
+			(event.currentTarget as Element).setPointerCapture(event.pointerId);
+		} else if (scale > MIN_SCALE) {
+			(event.currentTarget as Element).setPointerCapture(event.pointerId);
 		}
 	}
 
@@ -125,8 +216,7 @@
 			const cy = (a.y + b.y) / 2;
 			zoomAt(cx, cy, pinchStartScale * (dist / pinchStartDist));
 		} else if (pointers.size === 1 && scale > MIN_SCALE) {
-			tx += curr.x - prev.x;
-			ty += curr.y - prev.y;
+			panBy(curr.x - prev.x, curr.y - prev.y);
 		}
 	}
 
@@ -173,18 +263,38 @@
 			if (!svg || !dialog || !zoomTarget) return;
 
 			event.preventDefault();
-			reset();
 			const clone = svg.cloneNode(true) as SVGSVGElement;
 			clone.removeAttribute('width');
 			clone.removeAttribute('height');
 			clone.style.width = '100%';
 			clone.style.height = '100%';
 
-			// World CSS targets `.bt-inline-svg .foo`. The
-			// `--lightbox` modifier lets authors write rules that
-			// only apply in this expanded view.
+			// Capture the original viewBox so reset/zoom math has a
+			// stable reference. Prefer an explicit `viewBox`; fall
+			// back to width/height (in user units) if absent, which
+			// covers SVGs authored without an explicit viewBox.
+			const vbAttr = svg.getAttribute('viewBox');
+			let parsedVb = vbAttr?.trim().split(/[\s,]+/).map(Number);
+			if (!parsedVb || parsedVb.length !== 4 || parsedVb.some((n) => Number.isNaN(n))) {
+				const w = svg.viewBox.baseVal.width || (svg as SVGSVGElement).width.baseVal.value || 0;
+				const h = svg.viewBox.baseVal.height || (svg as SVGSVGElement).height.baseVal.value || 0;
+				parsedVb = [0, 0, w, h];
+			}
+			origVb = { x: parsedVb[0], y: parsedVb[1], w: parsedVb[2], h: parsedVb[3] };
+			vb = { ...origVb };
+			activeSvg = clone;
+			textBaseSizes = new WeakMap();
+
+			// World CSS targets the auto-scoped wrapper
+			// `.bt-inline-svg--<svg-basename>`. We copy every
+			// modifier class off the source figure so the clone
+			// keeps the same per-figure styles applied, then add
+			// `--lightbox` for rules scoped to the expanded view.
 			const ctx = document.createElement('div');
-			ctx.className = 'bt-inline-svg bt-inline-svg--lightbox';
+			const sourceClasses = [...figure.classList].filter((c) =>
+				c.startsWith('bt-inline-svg--')
+			);
+			ctx.className = ['bt-inline-svg', ...sourceClasses, 'bt-inline-svg--lightbox'].join(' ');
 			ctx.dataset.btZoomLevel = 'low';
 			ctx.style.setProperty('--bt-zoom', '1');
 			ctx.appendChild(clone);
@@ -285,8 +395,6 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		transform-origin: center center;
-		will-change: transform;
 	}
 
 	.zoom-target :global(.bt-inline-svg) {
