@@ -13,21 +13,50 @@
 </svelte:head>
 
 <section class="hero">
-	<h1>{world.name}</h1>
+	<!--
+		Sunburst crest: a small inline SVG ornament that signals "cover
+		page" without committing to any worldbuilding iconography. Pure
+		decoration; world-agnostic; recolors via currentColor so a
+		consumer can theme it through --accent-warm.
+	-->
+	<div class="crest" aria-hidden="true">
+		<svg viewBox="0 0 96 96" width="72" height="72">
+			<g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round">
+				<!-- Twelve rays radiating from centre. Alternate lengths
+				     give the sunburst a flicker rather than a wheel. -->
+				<line x1="48" y1="6" x2="48" y2="20" />
+				<line x1="48" y1="76" x2="48" y2="90" />
+				<line x1="6" y1="48" x2="20" y2="48" />
+				<line x1="76" y1="48" x2="90" y2="48" />
+				<line x1="18" y1="18" x2="27" y2="27" />
+				<line x1="69" y1="69" x2="78" y2="78" />
+				<line x1="78" y1="18" x2="69" y2="27" />
+				<line x1="27" y1="69" x2="18" y2="78" />
+				<line x1="48" y1="11" x2="48" y2="14" opacity="0.6" />
+				<line x1="11" y1="48" x2="14" y2="48" opacity="0.6" />
+				<line x1="82" y1="48" x2="85" y2="48" opacity="0.6" />
+				<line x1="48" y1="82" x2="48" y2="85" opacity="0.6" />
+			</g>
+			<!-- Central halo + inverted triangle with bindi: an esoteric
+			     glyph that reads as "eye / seal" without being literal. -->
+			<circle cx="48" cy="48" r="14" fill="none" stroke="currentColor" stroke-width="0.9" />
+			<polygon points="48,40 55,53 41,53" fill="none" stroke="currentColor" stroke-width="0.9" />
+			<circle cx="48" cy="48" r="1.4" fill="currentColor" />
+		</svg>
+	</div>
+
+	<h1 class="hero-title">{world.name}</h1>
+
+	<div class="hero-fleuron" aria-hidden="true">
+		<span class="fleuron-rule"></span>
+		<span class="fleuron-glyph">❦</span>
+		<span class="fleuron-rule"></span>
+	</div>
+
 	{#if world.tagline}
-		<p class="tagline">{world.tagline}</p>
+		<p class="hero-tagline">{world.tagline}</p>
 	{/if}
-	<p class="counter">
-		<em>
-			{data.totalEntities} entries ({data.entitiesWithProse} with prose){#if data.totalChapters > 0}
-				· {data.totalChapters} chapters across {data.workCount}
-				{data.workCount === 1 ? 'work' : 'works'}{/if} · {data.kindCount} kinds ({data.kindsWithProse}
-			documented) · {data.collectionCount} collections{#if data.issues > 0}
-				· <a class="issues-link" href="/health"
-					>{data.issues} {data.issues === 1 ? 'issue' : 'issues'}</a
-				>{/if}
-		</em>
-	</p>
+
 	{#if data.lede}
 		<div class="lede">{@html data.lede}</div>
 	{:else}
@@ -38,6 +67,35 @@
 			</p>
 		</div>
 	{/if}
+
+	<!--
+		Colophon: three stacked lines of tracked small-caps, like a
+		title-page tally. Lines fold gracefully when the underlying
+		tallies are empty (no chapters in this world, no issues), so
+		a fresh world reads as a clean two-liner rather than a list
+		of zeros.
+	-->
+	<dl class="colophon">
+		<div class="colophon-line">
+			<dt>{data.totalEntities} entries</dt>
+			<dd>{data.entitiesWithProse} with prose</dd>
+		</div>
+		{#if data.totalChapters > 0}
+			<div class="colophon-line">
+				<dt>{data.totalChapters} chapters</dt>
+				<dd>across {data.workCount} {data.workCount === 1 ? 'work' : 'works'}</dd>
+			</div>
+		{/if}
+		<div class="colophon-line">
+			<dt>{data.kindCount} kinds</dt>
+			<dd>
+				{data.kindsWithProse} documented &middot; {data.collectionCount} collections{#if data.issues > 0}
+					&middot; <a class="issues-link" href="/health"
+						>{data.issues} {data.issues === 1 ? 'issue' : 'issues'}</a
+					>{/if}
+			</dd>
+		</div>
+	</dl>
 </section>
 
 {#each data.guides as guide (guide.slug)}
@@ -151,25 +209,76 @@
 
 <style>
 	.hero {
-		margin-bottom: var(--space-8);
+		margin: var(--space-6) auto var(--space-8);
 		max-width: var(--prose-max);
+		text-align: center;
 	}
 
-	.hero h1 {
-		font-size: var(--text-3xl);
-		margin: 0 0 var(--space-2);
-	}
-
-	.tagline {
-		font-style: italic;
-		color: var(--ink-soft);
-		font-size: var(--text-lg);
+	.crest {
+		display: flex;
+		justify-content: center;
+		color: var(--accent-warm);
 		margin: 0 0 var(--space-5);
+	}
+
+	.hero-title {
+		font-family: var(--font-display);
+		font-size: var(--text-4xl);
+		font-weight: 400;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		text-indent: 0.18em; /* compensate for the trailing tracking */
+		margin: 0;
+		line-height: 1.05;
+		background: linear-gradient(
+			180deg,
+			var(--ink) 0%,
+			var(--accent-warm) 55%,
+			var(--accent-deep) 100%
+		);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+	}
+
+	.hero-fleuron {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-3);
+		margin: var(--space-4) auto var(--space-3);
+		max-width: 14rem;
+	}
+
+	.fleuron-rule {
+		flex: 1;
+		height: 1px;
+		background: var(--rule);
+	}
+
+	.fleuron-glyph {
+		font-family: var(--font-display);
+		color: var(--accent-warm);
+		font-size: var(--text-base);
+		line-height: 1;
+	}
+
+	.hero-tagline {
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.22em;
+		color: var(--ink-soft);
+		margin: 0 0 var(--space-6);
 	}
 
 	.lede {
 		color: var(--ink-soft);
-		margin: 0;
+		font-size: var(--text-lg);
+		font-style: italic;
+		line-height: var(--leading-relaxed);
+		text-align: left;
+		margin: 0 auto;
 	}
 
 	.lede p {
@@ -224,7 +333,7 @@
 
 	.guide-eyebrow {
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.14em;
 		color: var(--ink-faint);
 		margin: 0 0 var(--space-1);
@@ -293,7 +402,7 @@
 
 	.notebook-eyebrow {
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.14em;
 		color: var(--ink-faint);
 		margin: 0 0 var(--space-1);
@@ -366,7 +475,7 @@
 
 	.sources-eyebrow {
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.14em;
 		color: var(--ink-faint);
 		margin: 0 0 var(--space-1);
@@ -408,7 +517,7 @@
 
 	.section-heading {
 		font-size: var(--text-sm);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.12em;
 		color: var(--ink-faint);
 		font-weight: 500;
@@ -451,7 +560,7 @@
 	.count {
 		font-size: var(--text-sm);
 		color: var(--ink-faint);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.06em;
 		margin-top: var(--space-1);
 	}
@@ -481,12 +590,49 @@
 		gap: var(--space-2) var(--space-4);
 	}
 
-	.counter {
+	/* Title-page colophon: each row is a tally — strong key in
+	   tracked small-caps, faded gloss in italic serif. Stacked,
+	   centered, separated by hair rules so it reads as the printer's
+	   note on the inside cover. */
+	.colophon {
+		margin: var(--space-7) auto 0;
+		max-width: 28rem;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+		text-align: center;
+		color: var(--ink-faint);
+	}
+
+	.colophon-line {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-1);
+		padding-top: var(--space-3);
+		border-top: 1px solid var(--rule-hair);
+	}
+
+	.colophon-line:first-child {
+		border-top: none;
+		padding-top: 0;
+	}
+
+	.colophon dt {
+		font-family: var(--font-display);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.22em;
+		font-size: var(--text-base);
+		color: var(--ink-soft);
+		margin: 0;
+	}
+
+	.colophon dd {
+		font-family: var(--font-serif);
+		font-style: italic;
 		font-size: var(--text-sm);
 		color: var(--ink-faint);
-		margin: 0 0 var(--space-5);
-		font-variant: small-caps;
-		letter-spacing: 0.06em;
+		margin: 0;
 	}
 
 	/* The "N issues" segment of the counter is itself a link to the

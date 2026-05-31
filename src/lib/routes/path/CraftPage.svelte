@@ -56,7 +56,7 @@
 
 	.frame {
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.08em;
 		color: var(--ink-faint);
 		padding-bottom: var(--space-3);

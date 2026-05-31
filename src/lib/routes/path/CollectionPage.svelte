@@ -788,6 +788,16 @@
 		gap: var(--space-2) var(--space-3);
 	}
 
+	/* View switcher (INDEX/TREE/FLAT/ORBITS) is UI chrome, not an
+	   editorial label — opt out of the small-caps register the
+	   kind/tag filters use. */
+	.view-toggle .filter {
+		font-family: var(--font-display);
+		font-variant-caps: normal;
+		letter-spacing: 0.01em;
+		text-transform: none;
+	}
+
 	.filter {
 		appearance: none;
 		background: transparent;
@@ -795,7 +805,7 @@
 		padding: 0;
 		font-family: var(--font-serif);
 		font-size: var(--text-sm);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.06em;
 		color: var(--ink-soft);
 		cursor: pointer;
@@ -974,7 +984,7 @@
 		padding: 0 var(--space-2);
 		font-family: var(--font-serif);
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.06em;
 		color: var(--ink-soft);
 		cursor: pointer;
@@ -1106,7 +1116,7 @@
 		margin: 0;
 		font-family: var(--font-serif);
 		font-size: var(--text-sm);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.08em;
 		color: var(--ink-faint);
 	}
@@ -1135,7 +1145,7 @@
 	.folder-heading h2 {
 		margin: 0;
 		font-size: var(--text-lg);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.06em;
 		font-weight: 600;
 	}
@@ -1151,7 +1161,7 @@
 
 	.folder-heading .cross-link {
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.1em;
 		color: var(--ink-faint);
 		text-decoration: none;

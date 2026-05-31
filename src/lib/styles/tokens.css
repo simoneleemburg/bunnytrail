@@ -1,56 +1,90 @@
 /**
- * Design tokens for Bunnytrail.
+ * Design tokens for Bunnytrail (engine defaults).
  *
- * Aim: literary / cartographic. Serif body, restrained palette,
- * parchment + ink, generous whitespace. Different visual language
- * from dashboard-style apps.
+ * These are deliberately neutral: a quiet editorial-default look
+ * (system serif, dark-grey ink on near-white paper, single grey
+ * accent, no manuscript flourishes). A world dresses them by
+ * shipping its own `assets/theme.css` — the engine serves that
+ * file from `/api/assets/theme.css`, loaded by `app.html`, so any
+ * token can be overridden and any selector (h1, hr, body::before,
+ * a:hover, .prose dropcap, …) can be decorated on top of the
+ * engine baseline.
+ *
+ * Token names below are the public theming surface. Worlds should
+ * override these by value, not invent new tokens, so the engine
+ * can evolve the default look without breaking themes.
+ *
+ * The defaults are scoped with `:where(:root)` — zero specificity
+ * — so any explicit `:root { ... }` in a world theme.css wins
+ * regardless of load order. (In Vite dev, the engine bundle's CSS
+ * is JS-injected after the static `<link>` to theme.css, so plain
+ * `:root` here would otherwise out-cascade the world theme.)
  */
 
-:root {
+:where(:root) {
 	/* ── Palette ──────────────────────────────────────────────── */
-	--ink: #1b1714;
-	--ink-soft: #463c34;
-	--ink-faint: #7a6d62;
-	--parchment: #f4ecdc;
-	--parchment-soft: #ebe1cc;
-	--parchment-deep: #d9cdb1;
-	--vellum: #faf5e7;
-	--rule: #c9b994;
-	--accent: #7a2b1f; /* iron-oxide red */
-	--accent-soft: #a85544;
-	--ribbon: #2a3a55; /* deep indigo */
-	--gilt: #a38540;
+	/* Ink trio: body / dimmed / faded. Greyscale by default so a
+	   freshly-scaffolded world reads as plain editorial. */
+	--ink: #1f1f1f;
+	--ink-soft: #555;
+	--ink-faint: #777;
 
-	/* Warm paper tint for hover/active surfaces — a faint accent wash
-	   over the parchment. Quieter than parchment-soft; reads as
-	   "this paper is being touched" rather than a different sheet. */
-	--paper-warm: rgba(122, 43, 31, 0.04);
-	--shadow-hover: 0 1px 0 var(--rule), 0 6px 16px -10px rgba(0, 0, 0, 0.18);
+	/* Paper progression. Plain white-ish canvas; soft and deep are
+	   layered surfaces (hover, panels); vellum is the rare
+	   highlight (book mode, callouts). */
+	--parchment: #fafafa;
+	--parchment-soft: #f0f0f0;
+	--parchment-deep: #e2e2e2;
+	--vellum: #ffffff;
+
+	/* Engine pseudo-token: `--page` is the canvas color other
+	   components mix against. Distinct from `--parchment` so a
+	   consumer can override the canvas without disturbing the
+	   parchment palette. */
+	--page: var(--parchment);
+
+	/* Three-tier rule discipline: hair for inline separators, normal
+	   for HR, bold for chapter/section heads. */
+	--rule-hair: #d8d8d8;
+	--rule: #b8b8b8;
+	--rule-bold: #888;
+
+	/* Accent family — single neutral grey by default. A world theme
+	   typically overrides --accent (link color), --accent-warm
+	   (highlight / hover), and --accent-deep (sub-accent / rule). */
+	--accent: #555;
+	--accent-soft: #777;
+	--accent-deep: #444;
+	--accent-warm: #666;
+
+	/* Hover wash and card shadow — neutral grey by default. */
+	--paper-warm: rgba(0, 0, 0, 0.04);
+	--shadow-hover: 0 1px 0 var(--rule), 0 6px 16px -10px rgba(0, 0, 0, 0.15);
+	--shadow-paper: 0 1px 0 var(--rule), 0 12px 24px -18px rgba(0, 0, 0, 0.18);
 
 	/* ── Typography ───────────────────────────────────────────── */
-	--font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
-	--font-display: 'Iowan Old Style', 'Cormorant Garamond', Palatino, Georgia, serif;
-	--font-mono: 'Iosevka', 'JetBrains Mono', 'SFMono-Regular', ui-monospace, monospace;
+	/* All-system stacks by default — no web fonts loaded. A world
+	   theme can swap any of these for branded faces (and is
+	   expected to @import the font file from its theme.css). */
+	--font-serif:
+		'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman',
+		serif;
+	--font-display: var(--font-serif);
+	--font-mono: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, monospace;
 
-	/* Cooler, contemporary register: used by out-of-world surfaces
-	   (the notebook / blog, the craft sheet) where the parchment
-	   serif would feel falsely in-character. System sans stack —
-	   no web font load — chosen to read as plain working type
-	   against the warm body serif. */
+	/* Cooler / contemporary register: used by out-of-world surfaces
+	   (notebook / blog, craft sheet, sources workbench) where the
+	   body serif would feel falsely in-character. */
 	--font-sans:
-		-apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', Helvetica, Arial, system-ui,
+		-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, system-ui,
 		sans-serif;
 
 	/* Archaic / manuscript register: used by book-mode entities
-	   declared as `format: scrolls`. IM Fell English is a 17th-c
-	   English Roman with deliberate ink-bleed irregularity — reads
-	   as hand-set type on rag paper. SC = small caps variant. */
-	--font-archaic:
-		'IM Fell English', 'EB Garamond', 'Cormorant Garamond', 'Iowan Old Style', Palatino, Georgia,
-		serif;
-	--font-archaic-sc:
-		'IM Fell English SC', 'IM Fell English', 'EB Garamond', 'Cormorant Garamond', Palatino, Georgia,
-		serif;
+	   declared as `format: scrolls`. No-op by default (falls
+	   through to the body serif) — worlds wanting an archaic face
+	   override this token and @import the font. */
+	--font-archaic: var(--font-serif);
+	--font-archaic-sc: var(--font-serif);
 
 	--text-xs: 0.75rem;
 	--text-sm: 0.875rem;
@@ -59,10 +93,19 @@
 	--text-xl: 1.5rem;
 	--text-2xl: 2rem;
 	--text-3xl: 2.75rem;
+	--text-4xl: 3.75rem;
 
 	--leading-tight: 1.2;
 	--leading-normal: 1.55;
 	--leading-relaxed: 1.7;
+
+	/* ── Texture ──────────────────────────────────────────────────
+	   Manuscript-craft knobs. Default values are off / neutral
+	   (no grain overlay, no fleuron ornament, no metallic sheen).
+	   A world theme turns these on. */
+	--paper-grain: none;
+	--ornament-glyph: ''; /* HR shows a plain rule when empty */
+	--gilt-sheen-opacity: 0;
 
 	/* ── Space ────────────────────────────────────────────────── */
 	--space-1: 0.25rem;
@@ -77,6 +120,9 @@
 	/* ── Misc ─────────────────────────────────────────────────── */
 	--radius-sm: 2px;
 	--radius-md: 4px;
+	/* Legacy compound rule tokens, kept for components that
+	   reference them. Prefer the raw color tokens above for new
+	   work so the weight tier can be chosen at the call site. */
 	--rule-thin: 1px solid var(--rule);
 	--rule-double: 3px double var(--rule);
 
@@ -90,20 +136,12 @@
 	/* ── Inline SVG figures ───────────────────────────────────
 	   Sizing knobs for figures emitted by the markdown pipeline
 	   (see `inlineSvgs.ts`). Worlds override per map class in
-	   their own `assets/inline-svg.css`. The default is height-
-	   capped because most worldbuilding maps are banner-shaped:
-	   left to themselves, a 2.5:1 viewBox at 100% width becomes
-	   a horizontal sliver. Capping height makes the figure
-	   chooses its own width via the SVG's intrinsic aspect ratio. */
+	   their own `assets/<name>.css`. */
 	--figure-max-height: min(70vh, 36rem);
 	--figure-max-width: 76rem;
 
 	/* ── Book mode ────────────────────────────────────────────── */
-	/* Used by chapter pages of book-shaped entities (works that
-	   carry a `chapters/` subfolder, e.g. the Bonedust Scrolls).
-	   Goal: feel like an open book set against the compendium —
-	   different surface, narrower measure, more leading, display
-	   serif for chapter heads. */
+	/* Used by chapter pages of book-shaped entities. */
 	--book-page: var(--vellum);
 	--book-prose-max: 32rem;
 	--book-leading: 1.75;

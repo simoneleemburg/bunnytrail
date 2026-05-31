@@ -20,10 +20,43 @@ html {
 	line-height: var(--leading-relaxed);
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
+	/* OpenType discipline. `kern` is normally on by default but
+	   we name it for clarity. `liga` enables the standard fi/fl
+	   ligatures; `dlig` opens up discretionary ones (Source Serif
+	   has ct, st, &c.); `onum` swaps lining figures for old-style
+	   numerals, so I.II.III / 1.2.3 read as manuscript pagination
+	   rather than UI data. */
+	font-feature-settings:
+		'kern' 1,
+		'liga' 1,
+		'dlig' 1,
+		'onum' 1;
 }
 
 body {
 	min-height: 100vh;
+	position: relative;
+}
+
+/* Paper grain overlay. World theme.css can set --paper-grain to a
+   tiled noise image (data URL or asset URL) to wash the canvas
+   with manuscript-style texture. Default is `none` so the overlay
+   does nothing and the pseudo-element is effectively invisible. */
+body::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 0;
+	background-image: var(--paper-grain);
+	background-repeat: repeat;
+	mix-blend-mode: multiply;
+	opacity: 0.55;
+}
+
+body > * {
+	position: relative;
+	z-index: 1;
 }
 
 h1,
@@ -64,11 +97,13 @@ a {
 	text-decoration: none;
 	text-decoration-thickness: 1px;
 	text-underline-offset: 2px;
+	transition: color 120ms ease;
 }
 
 a:hover {
-	color: var(--accent-soft);
+	color: var(--accent-warm);
 	text-decoration: underline;
+	text-decoration-color: var(--accent-warm);
 }
 
 a[data-broken='true'] {
@@ -77,9 +112,12 @@ a[data-broken='true'] {
 	cursor: help;
 }
 
+/* Section rule. Plain hairline by default; a world theme can
+   decorate this with a centred ornament glyph by setting
+   --ornament-glyph in tokens (and styling hr::before). */
 hr {
 	border: 0;
-	border-top: var(--rule-thin);
+	border-top: 1px solid var(--rule);
 	margin: var(--space-6) 0;
 }
 
@@ -87,12 +125,13 @@ code,
 pre {
 	font-family: var(--font-mono);
 	font-size: 0.95em;
+	font-feature-settings: 'liga' 0; /* monospaces look weird ligated */
 }
 
 blockquote {
 	margin: var(--space-5) 0;
 	padding-left: var(--space-4);
-	border-left: 2px solid var(--rule);
+	border-left: 2px solid var(--rule-bold);
 	color: var(--ink-soft);
 	font-style: italic;
 }
@@ -107,7 +146,7 @@ blockquote {
 .lang-tag {
 	font-family: var(--font-serif);
 	font-size: 0.6em;
-	font-variant: small-caps;
+	font-variant-caps: all-small-caps;
 	letter-spacing: 0.08em;
 	margin-left: 0.15em;
 	vertical-align: super;

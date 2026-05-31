@@ -75,7 +75,7 @@
 
 	.entity-card:hover {
 		background-color: var(--paper-warm);
-		box-shadow: var(--shadow-hover);
+		box-shadow: var(--shadow-paper);
 		transform: translateY(-1px);
 	}
 
@@ -86,7 +86,7 @@
 
 	.eyebrow {
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.08em;
 		color: var(--ink-faint);
 		margin-bottom: var(--space-2);

@@ -46,7 +46,7 @@
 		font-family: var(--font-display);
 		font-size: var(--text-lg);
 		font-weight: 500;
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.08em;
 		color: var(--ink-soft);
 		margin: 0 0 var(--space-4);

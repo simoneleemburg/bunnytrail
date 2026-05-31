@@ -452,7 +452,7 @@
 
 	.kind-refs dt {
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.08em;
 		color: var(--ink-faint);
 		font-weight: 500;
@@ -491,7 +491,7 @@
 
 	.group-label {
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.08em;
 		color: var(--ink-faint);
 		margin-bottom: var(--space-2);
@@ -504,7 +504,7 @@
 		margin-top: var(--space-2);
 		font: inherit;
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.08em;
 		color: var(--ink-faint);
 		cursor: pointer;
@@ -585,7 +585,7 @@
 
 	.child-kind {
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.08em;
 		color: var(--ink-faint);
 	}
@@ -611,7 +611,7 @@
 		font-family: var(--font-display);
 		font-size: var(--text-lg);
 		font-weight: 500;
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.06em;
 		color: var(--ink);
 		margin: 0 0 var(--space-4) 0;
@@ -650,7 +650,7 @@
 
 	.chapter-numeral {
 		font-family: var(--font-display);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.08em;
 		color: var(--ink-faint);
 		text-align: right;

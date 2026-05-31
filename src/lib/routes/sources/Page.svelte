@@ -104,7 +104,7 @@
 
 	.eyebrow {
 		margin: 0 0 var(--space-2);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.14em;
 		font-size: var(--text-xs);
 		color: var(--ink-faint);
@@ -179,7 +179,7 @@
 
 	.genre {
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.1em;
 		color: var(--ink-faint);
 	}
@@ -202,7 +202,7 @@
 	   reads as actionable. */
 	.cluster {
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.08em;
 		color: var(--accent);
 		background: var(--vellum);
@@ -229,7 +229,7 @@
 
 	.entity-link-row {
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.08em;
 		color: var(--ink-faint);
 		margin: var(--space-2) 0 0;
@@ -258,7 +258,7 @@
 
 	.bar-label {
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.06em;
 		color: var(--ink-faint);
 		text-align: right;

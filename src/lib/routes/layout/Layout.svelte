@@ -139,7 +139,10 @@
 <div class="page" class:drawer-open={drawerOpen}>
 	<header class="masthead">
 		<div class="masthead-inner">
-			<a class="wordmark" href="/">{data.world.name}</a>
+			<a class="wordmark" href="/">
+				<span class="wordmark-mark" aria-hidden="true">❦</span>
+				<span class="wordmark-name">{data.world.name}</span>
+			</a>
 
 			<nav class="nav-desktop" aria-label="Primary">
 				{#each data.nav as item (item.href)}
@@ -268,15 +271,29 @@
 	}
 
 	.wordmark {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.55em;
 		font-family: var(--font-display);
-		font-size: var(--text-xl);
-		letter-spacing: 0.04em;
+		font-size: var(--text-lg);
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
 		color: var(--ink);
 		text-decoration: none;
 		white-space: nowrap;
 	}
 
+	.wordmark-mark {
+		color: var(--accent-warm);
+		font-size: 0.85em;
+		letter-spacing: 0;
+	}
+
 	.wordmark:hover {
+		color: var(--accent);
+	}
+
+	.wordmark:hover .wordmark-mark {
 		color: var(--accent);
 	}
 
@@ -287,9 +304,9 @@
 	}
 
 	.nav-desktop a {
-		font-size: var(--text-sm);
-		font-variant: small-caps;
-		letter-spacing: 0.08em;
+		font-family: var(--font-display);
+		font-size: var(--text-base);
+		letter-spacing: 0.01em;
 		color: var(--ink-soft);
 		text-decoration: none;
 	}
@@ -303,7 +320,7 @@
 	   (taxonomy, not a folder of entities) without shouting. */
 	.nav-sep {
 		color: var(--ink-faint);
-		font-size: var(--text-sm);
+		font-size: var(--text-base);
 	}
 
 	.chrome-end {
@@ -351,9 +368,10 @@
 	}
 
 	.cluster-eyebrow {
-		font-size: var(--text-xs);
-		font-variant: small-caps;
-		letter-spacing: 0.1em;
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-sm);
+		letter-spacing: 0;
 		color: var(--ink-faint);
 	}
 
@@ -504,9 +522,9 @@
 
 	.drawer-cluster-eyebrow {
 		margin: 0 0 var(--space-3);
-		font-size: var(--text-xs);
-		font-variant: small-caps;
-		letter-spacing: 0.1em;
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-sm);
 		color: var(--ink-faint);
 	}
 

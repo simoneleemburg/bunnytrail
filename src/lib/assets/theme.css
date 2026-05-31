@@ -1,0 +1,19 @@
+/**
+ * Bundled fallback theme.
+ *
+ * This file is served at /api/assets/theme.css when the world dir
+ * has no theme.css of its own. By default it is empty: the engine's
+ * src/lib/styles/tokens.css already ships a neutral editorial
+ * palette, so a fresh world looks like plain manuscript-grey type
+ * on near-white paper without any theme file.
+ *
+ * Worlds dress the engine by dropping their own theme.css in
+ * <world>/assets/, which the asset endpoint serves in preference
+ * to this file. World themes typically:
+ *
+ *   1. @import any web fonts they want
+ *   2. Override palette tokens (--ink, --parchment, --accent…)
+ *   3. Override font stacks (--font-serif, --font-display…)
+ *   4. Optionally re-decorate engine selectors (h1, hr, body::before,
+ *      a:hover, .prose dropcap) to add manuscript flourishes.
+ */

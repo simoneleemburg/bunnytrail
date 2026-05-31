@@ -114,7 +114,6 @@
 				><a href={language.href} title={`language: ${language.code}`}>{language.code}</a></sup
 			>{/if}
 	</h1>
-	<div class="double-rule"></div>
 	{#if subtitleHtml}
 		<p class="subtitle">{@html subtitleHtml}</p>
 	{:else if subtitle}
@@ -123,8 +122,15 @@
 </header>
 
 <style>
+	/* Editorial header in the guide register: centred chrome,
+	   confident display H1 (inherits the gilt sheen from global.css),
+	   italic lede underneath. The technical double-rule that used to
+	   sit between title and subtitle has been retired — breathing
+	   room reads as more editorial than a UI separator. */
 	.page-header {
-		margin-bottom: var(--space-6);
+		max-width: var(--prose-max);
+		margin: 0 auto var(--space-7);
+		text-align: center;
 	}
 
 	/* Single metadata row stacked above the title:
@@ -137,20 +143,21 @@
 	.meta-row {
 		display: flex;
 		flex-wrap: wrap;
+		justify-content: center;
 		align-items: baseline;
 		gap: 0 var(--space-2);
-		margin-bottom: var(--space-2);
+		margin-bottom: var(--space-4);
 	}
 
 	.meta-sep {
 		color: var(--ink-faint);
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 	}
 
 	.eyebrow {
-		font-size: var(--text-xs);
-		font-variant: small-caps;
-		letter-spacing: 0.12em;
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.14em;
 		color: var(--ink-faint);
 	}
 
@@ -162,15 +169,15 @@
 		align-items: baseline;
 		gap: 0.35em;
 		font-family: var(--font-serif);
-		font-size: var(--text-xs);
-		font-variant: small-caps;
-		letter-spacing: 0.1em;
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.14em;
 		color: var(--ink-faint);
 		text-decoration: none;
 	}
 
 	.up-link:hover {
-		color: var(--accent);
+		color: var(--accent-warm);
 	}
 
 	.up-arrow {
@@ -184,26 +191,27 @@
 	.crumbs {
 		display: inline-flex;
 		flex-wrap: wrap;
+		justify-content: center;
 		align-items: baseline;
 		gap: 0 var(--space-1);
 	}
 
 	.crumb {
 		font-family: var(--font-serif);
-		font-size: var(--text-xs);
-		font-variant: small-caps;
-		letter-spacing: 0.1em;
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.14em;
 		color: var(--ink-faint);
 		text-decoration: none;
 	}
 
 	.crumb:hover {
-		color: var(--accent);
+		color: var(--accent-warm);
 	}
 
 	.crumb-sep {
 		color: var(--ink-faint);
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 	}
 
 	/* Kind chip. Same small-caps register as the eyebrow so it
@@ -212,15 +220,15 @@
 	   `data-broken` flavour visually marks unregistered kinds the
 	   same way wikilinks mark unresolved targets. */
 	.kind-chip {
-		font-size: var(--text-xs);
-		font-variant: small-caps;
-		letter-spacing: 0.12em;
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.14em;
 		color: var(--ink-faint);
 		text-decoration: none;
 	}
 
 	.kind-chip:hover {
-		color: var(--accent);
+		color: var(--accent-warm);
 	}
 
 	.kind-chip[data-broken='true'] {
@@ -229,20 +237,19 @@
 	}
 
 	h1 {
-		margin: 0 0 var(--space-3);
-	}
-
-	.double-rule {
-		border-top: var(--rule-double);
-		margin-bottom: var(--space-4);
+		font-family: var(--font-display);
+		font-size: var(--text-3xl);
+		margin: 0 0 var(--space-5);
 	}
 
 	.subtitle {
 		font-style: italic;
 		color: var(--ink-soft);
 		font-size: var(--text-lg);
-		margin: 0;
+		line-height: var(--leading-relaxed);
+		margin: 0 auto;
 		max-width: var(--prose-max);
+		text-align: left;
 	}
 
 	/* Local override of the global .lang-tag sizing so the title's

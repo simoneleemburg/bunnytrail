@@ -144,7 +144,7 @@
 		justify-content: space-between;
 		gap: var(--space-4);
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.08em;
 		color: var(--ink-faint);
 	}
@@ -217,7 +217,7 @@
 	.eyebrow {
 		margin: 0 0 var(--space-2);
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.14em;
 		color: var(--ink-faint);
 	}
@@ -259,14 +259,14 @@
 	}
 
 	.prose :global(p:first-of-type::first-line) {
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.04em;
 	}
 
 	.prose :global(h2) {
 		font-family: var(--font-display);
 		font-size: var(--text-lg);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.06em;
 		text-align: center;
 		margin: var(--space-6) 0 var(--space-4);

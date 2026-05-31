@@ -63,7 +63,7 @@
 
 	.frame {
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.08em;
 		color: var(--ink-faint);
 		padding-bottom: var(--space-3);
@@ -85,7 +85,7 @@
 
 	.eyebrow {
 		margin: 0 0 var(--space-2);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.14em;
 		font-size: var(--text-xs);
 		color: var(--ink-faint);

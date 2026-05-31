@@ -202,7 +202,7 @@
 		padding: 0 0 var(--space-2) 0;
 		font-family: var(--font-serif);
 		font-size: var(--text-sm);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.12em;
 		color: var(--ink-faint);
 		cursor: pointer;
@@ -263,7 +263,7 @@
 	.ref-heading {
 		font-family: var(--font-serif);
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.12em;
 		color: var(--ink-faint);
 		font-weight: 500;
@@ -289,7 +289,7 @@
 	.ref-type {
 		color: var(--ink-faint);
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.06em;
 	}
 
@@ -347,7 +347,7 @@
 		gap: 0.35em;
 		font-family: var(--font-serif);
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.1em;
 		color: var(--ink-faint);
 		text-decoration: none;

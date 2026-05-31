@@ -45,7 +45,7 @@
 
 	.eyebrow {
 		font-size: var(--text-sm);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.14em;
 		color: var(--ink-faint);
 		margin: 0 0 var(--space-3);
@@ -104,7 +104,7 @@
 
 	.prose :global(h3) {
 		font-size: var(--text-sm);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.12em;
 		color: var(--ink-faint);
 		font-weight: 500;

@@ -18,17 +18,17 @@
 		display: inline-block;
 		font-family: var(--font-serif);
 		font-size: var(--text-xs);
-		font-variant: small-caps;
+		font-variant-caps: all-small-caps;
 		letter-spacing: 0.06em;
 		color: var(--ink-soft);
 		padding: 0 var(--space-2);
-		border-bottom: 1px solid var(--rule);
+		border-bottom: 1px solid var(--rule-hair);
 		text-decoration: none;
 		line-height: 1.6;
 	}
 
 	a.tag:hover {
-		color: var(--accent);
-		border-bottom-color: var(--accent-soft);
+		color: var(--accent-warm);
+		border-bottom-color: var(--accent-warm);
 	}
 </style>
