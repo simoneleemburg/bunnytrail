@@ -353,11 +353,22 @@
 	<title>{data.label.plural} · {page.data.world.shortName}</title>
 </svelte:head>
 
-<PageHeader title={data.label.plural} />
+<div class="collection-header">
+	<PageHeader title={data.label.plural} subtitle={data.description ?? undefined} />
+</div>
 
-{#if data.description}
-	<p class="type-description">{data.description}</p>
-{/if}
+<!--
+	Collection fleuron: visual signal that this page is a *collection
+	landing*, not an entity page. Short rule + ornamental glyph + short
+	rule. Glyph resolves to --ornament-glyph (e.g. ✶ in Alteria) so
+	each world stamps its own mark. When the token is empty the
+	divider collapses to a centred hairline.
+-->
+<div class="collection-fleuron" aria-hidden="true">
+	<span class="fleuron-rule"></span>
+	<span class="fleuron-glyph"></span>
+	<span class="fleuron-rule"></span>
+</div>
 
 {#if data.bodyHtml}
 	<div class="collection-body">{@html data.bodyHtml}</div>
@@ -670,11 +681,48 @@
 		color: var(--ink-faint);
 	}
 
-	.type-description {
-		max-width: 48rem;
-		margin: 0 0 var(--space-6) 0;
-		color: var(--ink-soft);
-		font-style: italic;
+	/* Collection page subtitle: centre the description rather than
+	   inherit PageHeader's left-aligned subtitle. Collection
+	   descriptions are typically short taglines, not multi-line
+	   prose, so centring reads as editorial chapter copy rather
+	   than an awkwardly-floated paragraph. */
+	.collection-header :global(.subtitle) {
+		text-align: center;
+		max-width: 32rem;
+	}
+
+	/* Collection fleuron — mirrors the home-hero divider but at a
+	   smaller scale, marking the boundary between the editorial
+	   header and the index body. The glyph is theme-driven via
+	   --ornament-glyph; the two flanking rules are short hairlines
+	   in --rule. Sits in its own block, centred, with breathing
+	   room above and below so it reads as a chapter mark rather
+	   than UI chrome. */
+	.collection-fleuron {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-2);
+		max-width: 32rem;
+		margin: 0 auto var(--space-7);
+		color: var(--ink-faint);
+	}
+
+	.fleuron-rule {
+		flex: 1;
+		height: 1px;
+		background: var(--rule);
+	}
+
+	.fleuron-glyph {
+		font-family: var(--font-display);
+		font-size: var(--text-base);
+		line-height: 1;
+		color: var(--accent-warm);
+	}
+
+	.fleuron-glyph::before {
+		content: var(--ornament-glyph, '');
 	}
 
 	.collection-body {
