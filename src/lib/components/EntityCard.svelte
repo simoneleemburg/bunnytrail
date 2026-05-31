@@ -34,7 +34,6 @@
 </script>
 
 <article class="entity-card">
-	<div class="rule"></div>
 	<div class="eyebrow">
 		<span class="type">{kind ?? type}</span>
 		{#if era}
@@ -66,22 +65,19 @@
 		position: relative;
 		padding: var(--space-4) var(--space-4) var(--space-5);
 		margin: 0 calc(var(--space-4) * -1);
-		border-radius: 2px;
+		border-radius: 8px;
 		transition:
-			background-color 150ms ease,
-			box-shadow 150ms ease,
-			transform 150ms ease;
+			background-color 200ms ease,
+			box-shadow 200ms ease,
+			transform 200ms ease;
 	}
 
 	.entity-card:hover {
 		background-color: var(--paper-warm);
-		box-shadow: var(--shadow-paper);
+		box-shadow:
+			0 1px 1px rgba(120, 90, 60, 0.04),
+			0 4px 14px -8px rgba(120, 90, 60, 0.10);
 		transform: translateY(-1px);
-	}
-
-	.rule {
-		border-top: var(--rule-thin);
-		margin-bottom: var(--space-3);
 	}
 
 	.eyebrow {
@@ -107,6 +103,37 @@
 	.card-link {
 		color: inherit;
 		text-decoration: none;
+		background-image: linear-gradient(
+			115deg,
+			currentColor 0%,
+			currentColor 42%,
+			var(--accent-warm) 50%,
+			currentColor 58%,
+			currentColor 100%
+		);
+		background-size: 250% 100%;
+		background-position: 130% 0;
+		background-clip: text;
+		-webkit-background-clip: text;
+	}
+
+	.entity-card:hover .card-link {
+		animation: title-gleam 600ms ease-out;
+	}
+
+	@keyframes title-gleam {
+		0% {
+			background-position: 130% 0;
+			-webkit-text-fill-color: currentColor;
+		}
+		15%,
+		85% {
+			-webkit-text-fill-color: transparent;
+		}
+		100% {
+			background-position: -30% 0;
+			-webkit-text-fill-color: currentColor;
+		}
 	}
 
 	.name .sigil {

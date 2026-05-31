@@ -59,8 +59,8 @@
 
 	/* Hover wash and card shadow — neutral grey by default. */
 	--paper-warm: rgba(0, 0, 0, 0.04);
-	--shadow-hover: 0 1px 0 var(--rule), 0 6px 16px -10px rgba(0, 0, 0, 0.15);
-	--shadow-paper: 0 1px 0 var(--rule), 0 12px 24px -18px rgba(0, 0, 0, 0.18);
+	--shadow-hover: 0 6px 16px -10px rgba(0, 0, 0, 0.15);
+	--shadow-paper: 0 12px 24px -18px rgba(0, 0, 0, 0.18);
 
 	/* ── Typography ───────────────────────────────────────────── */
 	/* All-system stacks by default — no web fonts loaded. A world
