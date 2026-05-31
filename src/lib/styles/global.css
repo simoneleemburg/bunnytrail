@@ -287,15 +287,3 @@ blockquote {
 .bt-inline-svg--lightbox {
 	--bt-text-cap: 2;
 }
-
-.bt-inline-svg--lightbox text {
-	transform-box: fill-box;
-	transform-origin: center;
-	transform: scale(
-		calc(max(min(var(--bt-text-cap, 1.8), var(--bt-zoom, 1)) / var(--bt-zoom, 1),  1))
-	);
-}
-
-.bt-inline-svg--lightbox text {
-	font-size: calc(min(1em * min(var(--bt-text-cap), var(--bt-zoom, 1)) / var(--bt-zoom, 1), 2em));
-}

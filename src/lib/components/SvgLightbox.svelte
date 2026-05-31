@@ -50,11 +50,22 @@
 	let origVb = $state({ x: 0, y: 0, w: 0, h: 0 });
 	let vb = $state({ x: 0, y: 0, w: 0, h: 0 });
 
-	// Derived visual scale (used to publish `--bt-zoom` to CSS and
-	// to drive the text-size cap). 1 = native viewBox, > 1 = zoomed in.
-	let scale = $derived(origVb.w > 0 ? origVb.w / vb.w : 1);
+	// Visual scale, published to CSS as `--bt-zoom`. 1 = cover-fit
+	// (the wrapper exactly covers the stage in both dimensions; the
+	// larger axis overflows and is clipped). > 1 zooms in via
+	// viewBox shrink. < 1 zooms out via CSS `transform: scale()` on
+	// the wrapper — vector downscale stays crisp, and at minScale
+	// the entire SVG fits within the stage in both dimensions so the
+	// user can see corners that were clipped at cover-fit.
+	let scale = $state(1);
 
-	const MIN_SCALE = 1;
+	// Lower bound for `scale`, recomputed per-figure in
+	// sizeWrapperToStage so that minScale corresponds to "whole SVG
+	// fits within stage". Maps with a stage aspect close to their
+	// own (clusters, cognita on landscape) have minScale ≈ 1; tall
+	// portrait viewports zoomed into wide SVGs (mundus on mobile)
+	// land around 0.5–0.6.
+	let minScale = $state(1);
 	const MAX_SCALE = 12;
 
 	// Close on navigation. Reading `page.url.href` registers the
@@ -74,26 +85,50 @@
 
 	/**
 	 * Walk every `<text>` in the lightbox clone and update its
-	 * inline `font-size` so the visual size pins at
-	 * `intrinsic * --bt-text-cap` once `scale > cap`. Below the
-	 * cap we clear the inline style so the world's CSS controls
-	 * the size normally.
+	 * inline `font-size` so the visual glyph size grows as a smooth
+	 * power curve of the zoom level rather than tracking it 1:1.
 	 *
-	 * Doing this in JS rather than CSS avoids two problems:
+	 *   visual = base · scale^k       with k = log(cap) / log(MAX)
+	 *
+	 * So at scale=1 visual=base (the curve meets the no-override
+	 * regime smoothly), at scale=MAX visual=cap·base (the same
+	 * asymptote as a hard cap would give), and in between the
+	 * derivative is continuous — no kink at any threshold. The
+	 * piecewise `min(cap, scale)` version we had before produced a
+	 * visible jump at scale=cap because the visual derivative
+	 * dropped to zero instantly; on trackpads that crosses the
+	 * threshold one wheel tick at a time and reads as text snapping.
+	 *
+	 * Setting `style.fontSize` directly (rather than via CSS rules
+	 * keyed on `--bt-zoom`) avoids two failure modes:
 	 *  (1) CSS `transform: scale()` on text inside the figure's
-	 *      own transform triggers raster compositing → blurry/
-	 *      pixelated glyphs.
+	 *      own zoom would trigger raster compositing → blurry text.
 	 *  (2) A CSS `font-size` rule would have to outscope every
-	 *      per-figure rule like `.bt-inline-svg--cognita-map
+	 *      per-figure world rule like `.bt-inline-svg--cognita-map
 	 *      .planet-label`, which is a specificity arms race.
 	 * Inline `style.fontSize` wins unconditionally.
+	 *
+	 * Sub-cover zoom (scale < 1) is handled by a wrapper CSS
+	 * transform that already shrinks text proportionally; we leave
+	 * `fontSize` untouched there.
 	 */
 	function applyTextCap(wrapper: HTMLElement, currentScale: number): void {
 		const cap = Number.parseFloat(
 			getComputedStyle(wrapper).getPropertyValue('--bt-text-cap').trim() || '1.8'
 		);
-		const factor = Math.min(cap, currentScale) / currentScale;
 		const texts = wrapper.querySelectorAll<SVGTextElement>('text');
+		// At or below cover-fit, defer to the cascade — wrapper
+		// transform handles visual shrink. At cap ≤ 1 (a world
+		// deliberately pinning text size), and at scale=1, the
+		// curve below also returns factor=1, but short-circuiting
+		// here saves the per-text getComputedStyle on the dominant
+		// path.
+		if (currentScale <= 1 || cap <= 1) {
+			for (const t of texts) t.style.fontSize = '';
+			return;
+		}
+		const k = Math.log(cap) / Math.log(MAX_SCALE);
+		const factor = Math.pow(currentScale, k - 1);
 		for (const t of texts) {
 			let base = textBaseSizes.get(t);
 			if (base === undefined) {
@@ -113,13 +148,11 @@
 		}
 	}
 
-	// Apply current viewBox + publish zoom signal.
+	// Apply current viewBox + transform + publish zoom signal.
 	$effect(() => {
 		// Reads pulled out of the gate so the effect tracks `vb`
-		// from the first run, even before `activeSvg` is set. Without
-		// this, the first invocation (activeSvg null) wouldn't
-		// subscribe to vb and subsequent zoom mutations wouldn't
-		// re-trigger the effect.
+		// and `scale` from the first run, even before `activeSvg`
+		// is set.
 		const { x, y, w, h } = vb;
 		const currentScale = scale;
 		if (!zoomTarget) return;
@@ -132,12 +165,26 @@
 			wrapper.style.setProperty('--bt-zoom', String(currentScale));
 			wrapper.dataset.btZoomLevel =
 				currentScale < 2 ? 'low' : currentScale < 4 ? 'mid' : 'high';
+			// Sub-cover zoom-out is done with a CSS transform on the
+			// wrapper rather than viewBox math: at scale < 1 the
+			// entire SVG already fits within the wrapper, so we just
+			// shrink the wrapper visually. Downscaling vectors via
+			// CSS transform doesn't trigger the bitmap blur problem
+			// that upscaling does (the rasteriser still has more
+			// source than target pixels).
+			if (currentScale < 1) {
+				wrapper.style.transform = `scale(${currentScale})`;
+				wrapper.style.transformOrigin = 'center center';
+			} else {
+				wrapper.style.transform = '';
+			}
 			applyTextCap(wrapper, currentScale);
 		}
 	});
 
 	function reset() {
 		vb = { ...origVb };
+		scale = 1;
 	}
 
 	/**
@@ -157,12 +204,23 @@
 		if (!wrapper) return;
 		const aspect = origVb.w > 0 && origVb.h > 0 ? origVb.w / origVb.h : 1;
 		const stageRect = stage.getBoundingClientRect();
-		const w = Math.max(stageRect.width, stageRect.height * aspect);
-		const h = Math.max(stageRect.height, stageRect.width / aspect);
-		wrapper.style.width = `${w}px`;
-		wrapper.style.height = `${h}px`;
+		const coverW = Math.max(stageRect.width, stageRect.height * aspect);
+		const coverH = Math.max(stageRect.height, stageRect.width / aspect);
+		wrapper.style.width = `${coverW}px`;
+		wrapper.style.height = `${coverH}px`;
 		wrapper.style.maxWidth = 'none';
 		wrapper.style.maxHeight = 'none';
+		// minScale = "shrink factor at which the cover-fit wrapper
+		// fits within the stage in both dimensions" → the user can
+		// pinch out far enough to see every corner of the SVG,
+		// including the axis that was clipped at cover-fit.
+		minScale =
+			coverW > 0 && coverH > 0
+				? Math.min(stageRect.width / coverW, stageRect.height / coverH)
+				: 1;
+		// On resize, if the user is already zoomed below the new
+		// floor (e.g. they rotated to landscape), clamp upward.
+		if (scale < minScale) scale = minScale;
 	}
 
 	/**
@@ -173,7 +231,17 @@
 	 */
 	function zoomAt(clientX: number, clientY: number, targetScale: number) {
 		if (!activeSvg || origVb.w === 0) return;
-		const next = Math.max(MIN_SCALE, Math.min(MAX_SCALE, targetScale));
+		const next = Math.max(minScale, Math.min(MAX_SCALE, targetScale));
+		if (next < 1) {
+			// Sub-cover zoom-out: viewBox stays at the natural
+			// extent and the wrapper is CSS-scaled down. Anchor
+			// math doesn't apply — the whole SVG is visible so
+			// "zoom toward the cursor" reduces to "shrink in place".
+			vb = { ...origVb };
+			scale = next;
+			return;
+		}
+		// scale ≥ 1: viewBox-based zoom toward the anchor.
 		const rect = activeSvg.getBoundingClientRect();
 		if (rect.width === 0 || rect.height === 0) return;
 		// Anchor in SVG user coordinates, given the current viewBox.
@@ -184,12 +252,15 @@
 		const newX = ax - ((clientX - rect.left) / rect.width) * newW;
 		const newY = ay - ((clientY - rect.top) / rect.height) * newH;
 		vb = { x: newX, y: newY, w: newW, h: newH };
-		if (next <= MIN_SCALE + 0.001) reset();
+		scale = next;
 	}
 
 	/** Pan by a screen-pixel delta, converted to SVG user units. */
 	function panBy(dx: number, dy: number) {
 		if (!activeSvg || origVb.w === 0) return;
+		// Below cover-fit the entire SVG is visible; panning would
+		// just drag empty space, so we no-op.
+		if (scale < 1) return;
 		const rect = activeSvg.getBoundingClientRect();
 		if (rect.width === 0 || rect.height === 0) return;
 		vb = {
@@ -282,7 +353,7 @@
 	}
 
 	function onDoubleClick(event: MouseEvent) {
-		if (scale > MIN_SCALE + 0.01) reset();
+		if (scale > 1.01) reset();
 		else zoomAt(event.clientX, event.clientY, 2.5);
 	}
 
@@ -336,6 +407,8 @@
 			}
 			origVb = { x: parsedVb[0], y: parsedVb[1], w: parsedVb[2], h: parsedVb[3] };
 			vb = { ...origVb };
+			scale = 1;
+			minScale = 1;
 			activeSvg = clone;
 			textBaseSizes = new WeakMap();
 
