@@ -16,9 +16,19 @@ import { graph } from './graph';
  * payload off disk, and replaces them with:
  *
  *   <figure class="bt-inline-svg">
+ *     <button type="button" class="bt-inline-svg__expand"
+ *             data-bt-svg-expand aria-label="View full size">⤢</button>
  *     <svg …>…</svg>
  *     <figcaption>{alt}</figcaption>   ← only when alt is non-empty
  *   </figure>
+ *
+ * The `[data-bt-svg-expand]` button is the lightbox trigger; a
+ * single global listener (mounted in `Layout.svelte` via the
+ * `SvgLightbox` component) picks it up, clones the sibling SVG,
+ * and renders it full-viewport in a `<dialog>`. The button is
+ * server-rendered so it works without JS as a no-op (the browser's
+ * default action is nothing); progressive enhancement attaches
+ * the lightbox handler on mount.
  *
  * The wrapper class — `bt-inline-svg` — is styled by the world's
  * own stylesheet at `<world>/assets/inline-svg.css` (served via
@@ -75,7 +85,11 @@ async function buildReplacement(
 
 	const alt = extractAttr(`${pre} ${post}`, 'alt');
 	const captionHtml = alt ? `<figcaption>${escapeHtml(alt)}</figcaption>` : '';
-	return `<figure class="bt-inline-svg">${svg}${captionHtml}</figure>`;
+	const expandLabel = alt ? `View full size: ${escapeHtml(alt)}` : 'View full size';
+	const expandBtn =
+		`<button type="button" class="bt-inline-svg__expand" data-bt-svg-expand ` +
+		`aria-label="${expandLabel}"><span aria-hidden="true">⤢</span></button>`;
+	return `<figure class="bt-inline-svg">${expandBtn}${svg}${captionHtml}</figure>`;
 }
 
 async function loadSvg(src: string): Promise<string | null> {

@@ -64,16 +64,6 @@
 		line-height: var(--leading-relaxed);
 	}
 
-	.lede :global(a) {
-		color: var(--ink);
-		text-decoration: none;
-		border-bottom: 1px solid var(--rule);
-	}
-
-	.lede :global(a:hover) {
-		color: var(--accent);
-	}
-
 	/* The body. Prose lines stay narrow and centered; inline-svg
 	   figures break out to their own (wider) max-widths set in
 	   the world's inline-svg.css. */
@@ -126,21 +116,6 @@
 	.prose :global(ul),
 	.prose :global(ol) {
 		padding-left: var(--space-5);
-	}
-
-	.prose :global(a) {
-		color: var(--ink);
-		text-decoration: none;
-		border-bottom: 1px solid var(--rule);
-	}
-
-	.prose :global(a:hover) {
-		color: var(--accent);
-	}
-
-	.prose :global(a[data-broken='true']) {
-		color: var(--ink-faint);
-		border-bottom-style: dashed;
 	}
 
 	/* Definition lists — used in the cognita guide for the

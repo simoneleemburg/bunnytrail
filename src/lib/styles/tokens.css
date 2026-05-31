@@ -87,6 +87,17 @@
 	   drawer and entity-page two-column layouts fold to one. */
 	--bp-md: 760px;
 
+	/* ── Inline SVG figures ───────────────────────────────────
+	   Sizing knobs for figures emitted by the markdown pipeline
+	   (see `inlineSvgs.ts`). Worlds override per map class in
+	   their own `assets/inline-svg.css`. The default is height-
+	   capped because most worldbuilding maps are banner-shaped:
+	   left to themselves, a 2.5:1 viewBox at 100% width becomes
+	   a horizontal sliver. Capping height makes the figure
+	   chooses its own width via the SVG's intrinsic aspect ratio. */
+	--figure-max-height: min(70vh, 36rem);
+	--figure-max-width: 76rem;
+
 	/* ── Book mode ────────────────────────────────────────────── */
 	/* Used by chapter pages of book-shaped entities (works that
 	   carry a `chapters/` subfolder, e.g. the Bonedust Scrolls).

@@ -132,3 +132,83 @@ blockquote {
 	cursor: help;
 	opacity: 0.7;
 }
+
+/* ── Inline SVG figures ────────────────────────────────────────
+   Default chrome for figures emitted by `inlineSvgFigures` (the
+   markdown post-processor that inlines `![alt](foo.svg)` references).
+   World-specific styles for the SVG's interior (label fonts, fills,
+   etc.) live in `<world>/assets/inline-svg.css`; what's here is the
+   engine-level frame: figure sizing, expand-button placement, and
+   the container query that lets in-SVG fonts scale via `cqw`. */
+.bt-inline-svg {
+	position: relative;
+	margin: var(--space-6) auto;
+	padding: 0;
+	max-width: var(--figure-max-width);
+	container-type: inline-size;
+}
+
+.bt-inline-svg svg {
+	display: block;
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: var(--figure-max-height);
+	margin: 0 auto;
+}
+
+.bt-inline-svg figcaption {
+	max-width: var(--prose-max);
+	margin: var(--space-4) auto 0;
+	text-align: center;
+	font-style: italic;
+	color: var(--ink-soft);
+	font-size: var(--text-sm);
+	line-height: var(--leading-normal);
+}
+
+.bt-inline-svg__expand {
+	position: absolute;
+	top: var(--space-2);
+	right: var(--space-2);
+	width: 2.25rem;
+	height: 2.25rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.1rem;
+	line-height: 1;
+	color: var(--ink-soft);
+	background: rgba(244, 236, 220, 0.85);
+	border: 1px solid var(--rule);
+	border-radius: var(--radius-md);
+	cursor: pointer;
+	opacity: 0;
+	transition:
+		opacity 160ms,
+		color 120ms,
+		background-color 120ms;
+	z-index: 1;
+}
+
+.bt-inline-svg:hover .bt-inline-svg__expand,
+.bt-inline-svg:focus-within .bt-inline-svg__expand,
+.bt-inline-svg__expand:focus-visible {
+	opacity: 1;
+}
+
+.bt-inline-svg__expand:hover,
+.bt-inline-svg__expand:focus-visible {
+	color: var(--accent);
+	background: var(--vellum);
+	outline: none;
+}
+
+/* On touch devices the hover-to-reveal pattern doesn't fire, so
+   the expand button stays visible. Worlds can still hide it per
+   figure if they want. */
+@media (hover: none) {
+	.bt-inline-svg__expand {
+		opacity: 1;
+	}
+}

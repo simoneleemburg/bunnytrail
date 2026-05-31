@@ -7,6 +7,7 @@
 	import { onMount } from 'svelte';
 	import { injectAnalytics } from '@vercel/analytics/sveltekit';
 	import { paintAllScope, translateUrl, type ScopeContext } from '$lib/cluster';
+	import SvgLightbox from '$lib/components/SvgLightbox.svelte';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
@@ -242,6 +243,8 @@
 		</div>
 	</footer>
 </div>
+
+<SvgLightbox />
 
 <style>
 	.page {
