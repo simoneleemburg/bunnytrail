@@ -62,6 +62,7 @@
 		text-align: left;
 		margin: 0;
 		line-height: var(--leading-relaxed);
+		font-style: italic;
 	}
 
 	/* The body. Prose lines stay narrow and centered; inline-svg
