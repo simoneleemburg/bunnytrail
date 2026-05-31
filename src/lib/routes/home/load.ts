@@ -125,6 +125,14 @@ export async function load() {
 	// CSS variables / currentColor for theming.
 	const crest = await assets.get('crest.svg');
 
+	// Optional ruler SVG inlined as the centrepiece of the home
+	// hero's fleuron divider (between the title and the tagline).
+	// Worlds drop a `rule.svg` in their assets/ dir to replace the
+	// unicode --ornament-glyph token with a richer mark (an SVG
+	// star, sigil, monogram, etc.). Same currentColor / CSS-vars
+	// theming story as the crest.
+	const ruler = await assets.get('rule.svg');
+
 	return {
 		counts,
 		threads,
@@ -144,7 +152,8 @@ export async function load() {
 		// its body is empty — the page renders a placeholder in that
 		// case so a freshly scaffolded world still has a coherent hero.
 		lede: world.ledeHtml(),
-		crest
+		crest,
+		ruler
 	};
 }
 

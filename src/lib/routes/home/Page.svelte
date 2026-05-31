@@ -27,9 +27,24 @@
 
 	<h1 class="hero-title">{world.name}</h1>
 
+	<!--
+		Hero divider: a thin rule with a centred ornament between
+		two short hairlines. The centrepiece resolves in three
+		tiers:
+		  1. If the world ships `assets/rule.svg`, that SVG is
+		     inlined here (recolours via currentColor).
+		  2. Otherwise, the CSS `::before` content resolves to
+		     --ornament-glyph (e.g. ✶ in alteria's theme).
+		  3. If neither is set, the divider collapses to two
+		     hairlines with an empty gap — still reads as a rule.
+	-->
 	<div class="hero-fleuron" aria-hidden="true">
 		<span class="fleuron-rule"></span>
-		<span class="fleuron-glyph">❦</span>
+		{#if data.ruler}
+			<span class="fleuron-glyph fleuron-glyph-svg">{@html data.ruler}</span>
+		{:else}
+			<span class="fleuron-glyph"></span>
+		{/if}
 		<span class="fleuron-rule"></span>
 	</div>
 
@@ -241,6 +256,26 @@
 		color: var(--accent-warm);
 		font-size: var(--text-base);
 		line-height: 1;
+	}
+
+	/* Unicode-glyph slot: when no rule.svg is present, the
+	   ornament is driven by the --ornament-glyph token so worlds
+	   can swap it (and have it match the masthead wordmark and
+	   <hr>::before in their theme). */
+	.fleuron-glyph:not(.fleuron-glyph-svg)::before {
+		content: var(--ornament-glyph, '');
+	}
+
+	/* SVG slot: size the inlined ruler asset and let strokes /
+	   fills resolve to currentColor (which is --accent-warm). */
+	.fleuron-glyph-svg {
+		display: inline-flex;
+		align-items: center;
+		line-height: 0;
+	}
+	.fleuron-glyph-svg :global(svg) {
+		height: 1.1em;
+		width: auto;
 	}
 
 	.hero-tagline {

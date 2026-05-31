@@ -194,6 +194,18 @@
 		<div class="prose">
 			{@html data.html}
 
+			<!-- Ornamental rule between the entity's free-form prose
+			     and the structural sub-sections that follow
+			     (chapters, contained children). Only renders when
+			     both halves exist, so a body-only entity ends
+			     cleanly and a chapter-list-only entity doesn't
+			     open with an orphan rule. The rule itself is
+			     decorated by the world theme — see theme.css
+			     `hr::before` for the alteria treatment. -->
+			{#if data.html.trim().length > 0 && (data.chapters.length > 0 || data.childGroups.length > 0)}
+				<hr class="prose-end" />
+			{/if}
+
 			{#if data.chapters.length > 0}
 				<section class="chapters" aria-label={data.book?.unitPlural ?? 'Chapters'}>
 					<h2 class="chapters-heading">{data.book?.unitPlural ?? 'Chapters'}</h2>
@@ -534,6 +546,17 @@
 		border-top: var(--rule-thin);
 	}
 
+	/* When the ornamental prose-end rule already divides body
+	   prose from the sub-section, suppress this section's own
+	   top border + the extra padding it needs to clear it.
+	   Keeps a single divider on the page instead of stacking
+	   two. The intrinsic `margin-top` stays so the section
+	   still breathes. */
+	:global(hr.prose-end) + .children {
+		border-top: 0;
+		padding-top: 0;
+	}
+
 	.children-heading {
 		font-family: var(--font-display);
 		font-size: var(--text-lg);
@@ -605,6 +628,13 @@
 		margin-top: var(--space-7);
 		padding-top: var(--space-5);
 		border-top: var(--rule-double);
+	}
+
+	/* See `.children` above — same suppression when the
+	   ornamental prose-end rule precedes the chapters TOC. */
+	:global(hr.prose-end) + .chapters {
+		border-top: 0;
+		padding-top: 0;
 	}
 
 	.chapters-heading {
