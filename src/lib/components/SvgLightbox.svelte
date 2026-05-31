@@ -266,8 +266,6 @@
 			const clone = svg.cloneNode(true) as SVGSVGElement;
 			clone.removeAttribute('width');
 			clone.removeAttribute('height');
-			clone.style.width = '100%';
-			clone.style.height = '100%';
 
 			// Capture the original viewBox so reset/zoom math has a
 			// stable reference. Prefer an explicit `viewBox`; fall
@@ -297,6 +295,12 @@
 			ctx.className = ['bt-inline-svg', ...sourceClasses, 'bt-inline-svg--lightbox'].join(' ');
 			ctx.dataset.btZoomLevel = 'low';
 			ctx.style.setProperty('--bt-zoom', '1');
+			// Drive aspect-ratio-aware sizing in CSS via container
+			// queries: the wrapper grows to min(100cqw, 100cqh*aspect)
+			// so it always hugs the SVG content without letterboxing.
+			if (parsedVb[2] > 0 && parsedVb[3] > 0) {
+				ctx.style.setProperty('--bt-svg-aspect', String(parsedVb[2] / parsedVb[3]));
+			}
 			ctx.appendChild(clone);
 			zoomTarget.replaceChildren(ctx);
 
@@ -383,6 +387,9 @@
 		overflow: hidden;
 		touch-action: none;
 		cursor: grab;
+		/* Container query context: the wrapper below uses 100cqw/cqh
+		   to compute an aspect-preserving size that hugs the SVG. */
+		container-type: size;
 	}
 
 	.stage:active {
@@ -398,29 +405,22 @@
 	}
 
 	.zoom-target :global(.bt-inline-svg) {
-		/* Cap the lightbox figure at the same width as the inline
-		   figure. World CSS uses `cqw` for in-SVG font sizes; if
-		   the container grew to viewport-width here, labels would
-		   scale proportionally and collide with each other (the
-		   labels' viewBox positions were authored for a specific
-		   absolute size). Keeping the container width consistent
-		   means the lightbox is a "focused" view at scale 1, and
-		   zoom-in reveals more detail without distortion. */
-		max-width: var(--figure-max-width);
-		max-height: 100%;
-		width: 100%;
-		height: 100%;
-		margin: 0 auto;
+		/* Hug the SVG's aspect ratio so there's no wasted whitespace
+		   inside the SVG element. --bt-svg-aspect is set inline in
+		   open() from the source viewBox; if absent we fall back to
+		   1 (square) so layout still works. */
+		--bt-svg-aspect: 1;
+		width: min(100cqw, calc(100cqh * var(--bt-svg-aspect)));
+		height: min(100cqh, calc(100cqw / var(--bt-svg-aspect)));
+		margin: 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
 
 	.zoom-target :global(.bt-inline-svg svg) {
-		max-width: 100%;
-		max-height: 100%;
-		width: auto;
-		height: auto;
+		width: 100%;
+		height: 100%;
 	}
 
 	/* The inline figure's expand button leaks through the clone;
