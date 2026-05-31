@@ -339,16 +339,33 @@
 	}
 
 	.layout {
+		--layout-max: min(80rem, calc(100vw - 2 * var(--space-6)));
 		display: grid;
-		grid-template-columns: minmax(0, var(--prose-max)) 16rem;
-		gap: var(--space-7);
+		grid-template-columns: 1fr minmax(0, var(--prose-max)) 1fr 16rem;
+		gap: 0 var(--space-5);
 		align-items: start;
+		width: var(--layout-max);
+		margin-inline: calc((100% - var(--layout-max)) / 2);
+	}
+
+	.prose {
+		grid-column: 2;
+		min-width: 0;
+	}
+
+	.sidebar {
+		grid-column: 4;
 	}
 
 	@media (max-width: 60rem) {
 		.layout {
 			grid-template-columns: minmax(0, 1fr);
 			gap: var(--space-6);
+		}
+
+		.prose,
+		.sidebar {
+			grid-column: 1;
 		}
 	}
 
