@@ -93,27 +93,30 @@
 			</a>
 		{/if}
 		{#if kindChip}
-			<span class="meta-sep" aria-hidden="true">·</span>
-			<a
-				class="kind-chip"
-				href={`/kinds/${kindChip.id}`}
-				data-broken={kindChip.broken ? 'true' : undefined}
-				title={kindChip.broken ? `unregistered kind: ${kindChip.id}` : undefined}
-			>
-				{kindChip.label}
-			</a>
+			<!-- kindChip is rendered beside the title, not in the meta row -->
 		{:else if eyebrow}
 			<span class="meta-sep" aria-hidden="true">·</span>
 			<span class="eyebrow">{eyebrow}</span>
 		{/if}
 	</div>
-	<h1>
-		{#if sigil}<span class="sigil" aria-hidden="true">{sigil}</span>{/if}{title}{#if language}<sup
-				class="lang-tag"
-				data-broken={language.broken ? 'true' : undefined}
-				><a href={language.href} title={`language: ${language.code}`}>{language.code}</a></sup
-			>{/if}
-	</h1>
+	<div class="title-row">
+		<h1>
+			{#if sigil}<span class="sigil" aria-hidden="true">{sigil}</span>{/if}{title}{#if language}<sup
+					class="lang-tag"
+					data-broken={language.broken ? 'true' : undefined}
+					><a href={language.href} title={`language: ${language.code}`}>{language.code}</a></sup
+				>{/if}
+		</h1>
+		{#if kindChip}
+			<a
+				class="kind-chip"
+				href={`/kinds/${kindChip.id}`}
+				data-broken={kindChip.broken ? 'true' : undefined}
+				title={kindChip.broken ? `unregistered kind: ${kindChip.id}` : undefined}
+				>{kindChip.label}</a
+			>
+		{/if}
+	</div>
 	{#if subtitleHtml}
 		<p class="subtitle">{@html subtitleHtml}</p>
 	{:else if subtitle}
@@ -146,7 +149,7 @@
 		justify-content: center;
 		align-items: baseline;
 		gap: 0 var(--space-2);
-		margin-bottom: var(--space-4);
+		margin-bottom: var(--space-6);
 	}
 
 	.meta-sep {
@@ -214,24 +217,32 @@
 		font-size: var(--text-sm);
 	}
 
-	/* Kind chip. Same small-caps register as the eyebrow so it
-	   nests naturally at the end of the meta row, but its linkness
-	   is signalled with a subtle underline on hover. The
+	/* Kind chip. Now lifted out of the meta row and rendered beside
+	   the title as a top-aligned editorial flag — same accent-deep
+	   small-caps treatment as the kind eyebrow on EntityCard, so the
+	   "what is this thing" label reads consistently across surfaces.
 	   `data-broken` flavour visually marks unregistered kinds the
 	   same way wikilinks mark unresolved targets. */
-	.kind-chip {
+	h1 .kind-chip {
+		font-family: var(--font-serif);
 		font-size: var(--text-sm);
 		font-variant-caps: all-small-caps;
-		letter-spacing: 0.14em;
-		color: var(--ink-faint);
+		letter-spacing: 0.1em;
+		font-weight: 600;
+		color: var(--accent-deep);
 		text-decoration: none;
+		margin-left: 0.6em;
+		vertical-align: top;
+		/* Nudge baseline up to sit at the title's cap-height. */
+		position: relative;
+		top: 0.55em;
 	}
 
-	.kind-chip:hover {
-		color: var(--accent-warm);
+	h1 .kind-chip:hover {
+		color: var(--accent);
 	}
 
-	.kind-chip[data-broken='true'] {
+	h1 .kind-chip[data-broken='true'] {
 		color: var(--broken, var(--ink-faint));
 		text-decoration: underline dotted;
 	}
@@ -239,7 +250,47 @@
 	h1 {
 		font-family: var(--font-display);
 		font-size: var(--text-3xl);
+		margin: 0;
+	}
+
+	/* Title + kind chip share one centered row. The chip sits to the
+	   right of the title, aligned to the title's cap-height (not its
+	   baseline) so it reads as a marginal label rather than a tail. */
+	.title-row {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: flex-start;
+		gap: 0 0.7em;
 		margin: 0 0 var(--space-5);
+	}
+
+	/* Kind chip. Lifted out of the meta row and rendered beside the
+	   title in the same accent-deep small-caps treatment as the kind
+	   eyebrow on EntityCard, so the "what is this thing" label reads
+	   consistently across surfaces. `data-broken` flavour marks
+	   unregistered kinds the same way wikilinks mark unresolved
+	   targets. */
+	.kind-chip {
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.1em;
+		font-weight: 600;
+		color: var(--accent-deep);
+		text-decoration: none;
+		/* Nudge down so the chip's cap-height optically sits at the
+		   title's cap-height rather than at the line-box top. */
+		margin-top: 0.85em;
+	}
+
+	.kind-chip:hover {
+		color: var(--accent);
+	}
+
+	.kind-chip[data-broken='true'] {
+		color: var(--broken, var(--ink-faint));
+		text-decoration: underline dotted;
 	}
 
 	.subtitle {

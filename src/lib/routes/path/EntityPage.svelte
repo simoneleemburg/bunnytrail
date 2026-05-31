@@ -510,6 +510,16 @@
 		gap: var(--space-2) var(--space-3);
 	}
 
+	/* Match collection-card / EntityCard treatment: drop the per-tag
+	   hairline in the sidebar; restore on hover. */
+	.tag-row :global(.tag) {
+		border-bottom-color: transparent;
+	}
+
+	.tag-row :global(a.tag:hover) {
+		border-bottom-color: var(--accent-warm);
+	}
+
 	.group {
 		margin-bottom: var(--space-4);
 	}
