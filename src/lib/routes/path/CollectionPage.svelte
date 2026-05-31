@@ -704,7 +704,7 @@
 <style>
 	.grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
 		gap: var(--space-5) var(--space-6);
 	}
 
@@ -853,7 +853,7 @@
 	   sit on the old `.filters` row, signalling "header above /
 	   index below". */
 	.toolbar {
-		--layout-max: min(80rem, calc(100vw - 2 * var(--space-6)));
+		--layout-max: min(88rem, calc(100vw - 2 * var(--space-8)));
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: space-between;
@@ -874,49 +874,38 @@
 		color: var(--ink-faint);
 	}
 
-	/* Two-column body: content stream on the left (capped at
-	   prose-max), filter sidebar pinned to the right edge of the
-	   page wrapper. The flexible 1fr spacers absorb slack so the
-	   content column reads as centred between page-edge and
-	   sidebar instead of clinging to the left margin.
+	/* Two-column body: content stream on the left, filter sidebar
+	   pinned to the right edge of the page wrapper.
+
+	   Unlike the entity page, the collection content is a card grid
+	   (auto-fill, minmax(18rem, 1fr)) — capping it at prose-max
+	   would only ever fit two cards. So the content track is
+	   flexible and capped wider via --layout-max so three or more
+	   cards can sit side-by-side at common laptop widths.
 
 	   The layout intentionally breaks out of <main>'s --page-max
 	   cap (negative inline margin) so the sidebar can sit out at
-	   the right edge of a wider editorial column while the prose
-	   keeps its readable width — without this the spacers
-	   collapse to a few pixels and the page reads left-heavy.
+	   the right edge of a wider editorial column.
 
-	   Mirrors the entity-page layout token-for-token so the two
-	   pages feel like one editorial system. Below 60rem the
-	   sidebar stacks above the content. */
+	   Below 60rem the sidebar stacks above the content. */
 	.layout {
-		--layout-max: min(80rem, calc(100vw - 2 * var(--space-6)));
+		--layout-max: min(88rem, calc(100vw - 2 * var(--space-8)));
 		display: grid;
-		grid-template-columns: 1fr minmax(0, var(--prose-max)) 1fr 15rem;
-		gap: 0 var(--space-5);
+		grid-template-columns: minmax(0, 1fr) 15rem;
+		gap: var(--space-6);
 		align-items: start;
 		width: var(--layout-max);
 		margin-inline: calc((100% - var(--layout-max)) / 2);
 	}
 
 	.content {
-		grid-column: 2;
 		min-width: 0;
-	}
-
-	.sidebar {
-		grid-column: 4;
 	}
 
 	@media (max-width: 60rem) {
 		.layout {
 			grid-template-columns: minmax(0, 1fr);
 			gap: var(--space-6);
-		}
-
-		.content,
-		.sidebar {
-			grid-column: 1;
 		}
 	}
 

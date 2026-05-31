@@ -339,7 +339,7 @@
 	}
 
 	.layout {
-		--layout-max: min(80rem, calc(100vw - 2 * var(--space-6)));
+		--layout-max: min(80rem, calc(100vw - 2 * var(--space-8)));
 		display: grid;
 		grid-template-columns: 1fr minmax(0, var(--prose-max)) 1fr 16rem;
 		gap: 0 var(--space-5);

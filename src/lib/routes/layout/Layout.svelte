@@ -263,12 +263,12 @@
 
 	.masthead {
 		border-bottom: var(--rule-thin);
-		padding: var(--space-5) var(--space-6);
+		padding: var(--space-5) var(--space-8);
 		position: relative;
 	}
 
 	.masthead-inner {
-		max-width: var(--page-max);
+		max-width: none;
 		margin: 0 auto;
 		display: flex;
 		align-items: baseline;
