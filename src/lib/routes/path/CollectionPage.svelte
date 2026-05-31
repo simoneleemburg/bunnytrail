@@ -850,7 +850,7 @@
 		appearance: none;
 		background: transparent;
 		border: 0;
-		padding: 0;
+		padding: 0.18em 0.7em;
 		font-family: var(--font-serif);
 		font-size: var(--text-sm);
 		font-variant-caps: all-small-caps;
@@ -858,16 +858,24 @@
 		color: var(--ink-soft);
 		cursor: pointer;
 		line-height: 1.6;
-		border-bottom: 1px solid transparent;
+		border-radius: 999px;
+		transition:
+			background-color 120ms ease,
+			color 120ms ease;
 	}
 
 	.filter:hover {
 		color: var(--accent);
+		background-color: var(--paper-warm);
 	}
 
 	.filter.active {
-		color: var(--ink);
-		border-bottom-color: var(--ink);
+		color: var(--page);
+		background-color: var(--accent);
+	}
+
+	.filter.active:hover {
+		background-color: var(--accent-soft);
 	}
 
 	/* Supertype chips group every descendant kind. The italic +
@@ -884,20 +892,28 @@
 		margin-right: 0.1em;
 	}
 
+	.filter.supertype:hover::before {
+		color: var(--accent);
+	}
+
 	.filter.supertype.active::before {
-		color: var(--ink-soft);
+		color: var(--page);
+		opacity: 0.75;
 	}
 
 	.count {
 		display: inline-block;
-		margin-left: 0.25em;
+		margin-left: 0.35em;
+		padding: 0 0.4em;
 		font-size: var(--text-xs);
 		color: var(--ink-faint);
 		font-variant: tabular-nums;
+		border-radius: 999px;
 	}
 
 	.filter.active .count {
-		color: var(--ink-soft);
+		background-color: rgba(255, 255, 255, 0.2);
+		color: var(--page);
 	}
 
 	.subcollections {
@@ -1029,7 +1045,7 @@
 		appearance: none;
 		background: transparent;
 		border: 0;
-		padding: 0 var(--space-2);
+		padding: 0.18em 0.7em;
 		font-family: var(--font-serif);
 		font-size: var(--text-xs);
 		font-variant-caps: all-small-caps;
@@ -1037,28 +1053,38 @@
 		color: var(--ink-soft);
 		cursor: pointer;
 		line-height: 1.6;
-		border-bottom: 1px solid var(--rule);
+		border-radius: 999px;
+		transition:
+			background-color 120ms ease,
+			color 120ms ease;
 	}
 
 	.tag-chip:hover {
 		color: var(--accent);
-		border-bottom-color: var(--accent-soft);
+		background-color: var(--paper-warm);
 	}
 
 	.tag-chip.active {
-		color: var(--ink);
-		border-bottom-color: var(--ink);
+		color: var(--page);
+		background-color: var(--accent);
+	}
+
+	.tag-chip.active:hover {
+		background-color: var(--accent-soft);
 	}
 
 	.tag-chip-count {
 		display: inline-block;
-		margin-left: 0.35em;
+		margin-left: 0.4em;
+		padding: 0 0.35em;
 		font-variant: tabular-nums;
 		color: var(--ink-faint);
+		border-radius: 999px;
 	}
 
 	.tag-chip.active .tag-chip-count {
-		color: var(--ink-soft);
+		background-color: rgba(255, 255, 255, 0.2);
+		color: var(--page);
 	}
 
 	.tag-more,
