@@ -140,7 +140,7 @@
 	<header class="masthead">
 		<div class="masthead-inner">
 			<a class="wordmark" href="/">
-				<span class="wordmark-mark" aria-hidden="true">❦</span>
+				<span class="wordmark-mark" aria-hidden="true"></span>
 				<span class="wordmark-name">{data.world.name}</span>
 			</a>
 
@@ -283,10 +283,34 @@
 		white-space: nowrap;
 	}
 
-	.wordmark-mark {
+	/* Both wordmark-mark rules are :global and wrapped in :where()
+	   so a world theme can override them without specificity
+	   gymnastics. Two reasons the :where() matters: (1) Svelte
+	   would otherwise hash the class selector, beating a bare
+	   `.wordmark-mark` from theme.css; (2) in Vite dev the engine
+	   bundle's CSS is JS-injected after the static <link> to
+	   theme.css, so equal-specificity rules would out-cascade the
+	   theme. `:where()` is zero-specificity, so theme.css wins
+	   regardless of load order. */
+	:global(:where(.wordmark-mark)) {
+		/* Optional glyph in front of the world name. Hidden by
+		   default so the engine ships a plain text wordmark; a
+		   world theme un-hides it and supplies the glyph via the
+		   --wordmark-mark token, e.g.:
+
+		     .wordmark-mark { display: inline; }
+		     :root { --wordmark-mark: '❦'; }
+
+		   Kept as a CSS pseudo-element rather than a template slot
+		   so it costs zero markup and zero JS for the no-mark case. */
+		display: none;
 		color: var(--accent-warm);
 		font-size: 0.85em;
 		letter-spacing: 0;
+	}
+
+	:global(:where(.wordmark-mark)::before) {
+		content: var(--wordmark-mark, '');
 	}
 
 	.wordmark:hover {

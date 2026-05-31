@@ -2,6 +2,7 @@ import { graph } from '$lib/server/graph';
 import { guides } from '$lib/server/guides';
 import { sources } from '$lib/server/sources';
 import { world } from '$lib/server/world';
+import { assets } from '$lib/server/assets';
 
 /**
  * Recursively walk every browseable folder under `content/`, in
@@ -117,6 +118,13 @@ export async function load() {
 	const kinds = [...graph.kindRegistry().values()];
 	const kindsWithProse = kinds.filter((k) => (k.body ?? '').trim().length > 0).length;
 
+	// Optional crest SVG inlined above the world title. Worlds drop
+	// a `crest.svg` in their assets/ dir to get a centred ornament
+	// on the home hero; absent that file, the hero renders without
+	// one. Inlined (not <img>) so the SVG can pick up the world's
+	// CSS variables / currentColor for theming.
+	const crest = await assets.get('crest.svg');
+
 	return {
 		counts,
 		threads,
@@ -135,7 +143,8 @@ export async function load() {
 		// `content_meta/world.md`. `null` when the file is missing or
 		// its body is empty — the page renders a placeholder in that
 		// case so a freshly scaffolded world still has a coherent hero.
-		lede: world.ledeHtml()
+		lede: world.ledeHtml(),
+		crest
 	};
 }
 

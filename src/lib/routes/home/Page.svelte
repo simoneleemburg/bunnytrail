@@ -14,36 +14,16 @@
 
 <section class="hero">
 	<!--
-		Sunburst crest: a small inline SVG ornament that signals "cover
-		page" without committing to any worldbuilding iconography. Pure
-		decoration; world-agnostic; recolors via currentColor so a
-		consumer can theme it through --accent-warm.
+		Crest: optional ornament rendered above the world title.
+		Worlds opt in by dropping `assets/crest.svg` in their world
+		dir; the engine reads it server-side and inlines the markup
+		so theme CSS variables / currentColor flow through. Engine
+		ships no default crest — a vanilla world reads as a plain
+		editorial title-page.
 	-->
-	<div class="crest" aria-hidden="true">
-		<svg viewBox="0 0 96 96" width="72" height="72">
-			<g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round">
-				<!-- Twelve rays radiating from centre. Alternate lengths
-				     give the sunburst a flicker rather than a wheel. -->
-				<line x1="48" y1="6" x2="48" y2="20" />
-				<line x1="48" y1="76" x2="48" y2="90" />
-				<line x1="6" y1="48" x2="20" y2="48" />
-				<line x1="76" y1="48" x2="90" y2="48" />
-				<line x1="18" y1="18" x2="27" y2="27" />
-				<line x1="69" y1="69" x2="78" y2="78" />
-				<line x1="78" y1="18" x2="69" y2="27" />
-				<line x1="27" y1="69" x2="18" y2="78" />
-				<line x1="48" y1="11" x2="48" y2="14" opacity="0.6" />
-				<line x1="11" y1="48" x2="14" y2="48" opacity="0.6" />
-				<line x1="82" y1="48" x2="85" y2="48" opacity="0.6" />
-				<line x1="48" y1="82" x2="48" y2="85" opacity="0.6" />
-			</g>
-			<!-- Central halo + inverted triangle with bindi: an esoteric
-			     glyph that reads as "eye / seal" without being literal. -->
-			<circle cx="48" cy="48" r="14" fill="none" stroke="currentColor" stroke-width="0.9" />
-			<polygon points="48,40 55,53 41,53" fill="none" stroke="currentColor" stroke-width="0.9" />
-			<circle cx="48" cy="48" r="1.4" fill="currentColor" />
-		</svg>
-	</div>
+	{#if data.crest}
+		<div class="crest" aria-hidden="true">{@html data.crest}</div>
+	{/if}
 
 	<h1 class="hero-title">{world.name}</h1>
 
