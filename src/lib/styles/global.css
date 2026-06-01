@@ -592,7 +592,7 @@ blockquote {
 	font-feature-settings: 'onum' 0; /* lining numerals — the 1 reads as numeric */
 	letter-spacing: 0.04em;
 	padding: var(--space-6) var(--space-8);
-	margin: 0 auto;
+	margin: var(--space-7) auto;
 	max-width: var(--prose-max);
 }
 
