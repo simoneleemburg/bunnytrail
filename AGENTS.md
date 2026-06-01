@@ -153,6 +153,61 @@ under `alteria_world/WIKILINKS.md`. Engine work that touches
 resolution behaviour should update that contract doc in the consumer
 repo as well.
 
+## Theming hooks for worlds
+
+The engine emits a stable set of `bt-`-prefixed CSS hooks so worlds
+can theme links and pages from `assets/theme.css` without touching
+engine code. The same naming convention as the SVG-figure hooks
+(`bt-inline-svg`, `bt-svg-lightbox`, `data-bt-zoom-level`).
+
+**Per-wikilink hooks** — attached by `decorateEntityLinks` in
+`src/lib/server/markdown.ts` to every internal `<a>` produced from a
+wikilink in rendered prose:
+
+```html
+<a href="/foundation/fabric/geometry/harmonia"
+   class="bt-link bt-link--kind-axioma"
+   data-bt-slug="harmonia"
+   data-bt-kind="axioma">Harmonia</a>
+```
+
+- `class="bt-link"` — universal hook on every internal wikilink.
+- `data-bt-slug="<slug>"` — last segment of the entity id; the
+  most-specific selector (`.bt-link[data-bt-slug='harmonia']`).
+- `data-bt-kind="<kind>"` + `bt-link--kind-<kind>` class — the
+  entity's kind id, when known. Lets a world theme by family
+  (e.g. all `axioma` in gold, all `bunny` in pink).
+- Engine routes (`/kinds/…`, `/guides/…`, `/blog/…`, `/api/…`,
+  `/authors/…`, `/health`) get only `bt-link` — their path segments
+  aren't entity ids.
+- Same-page anchors (`#section`) are untouched.
+- Broken wikilinks still get the hooks alongside `data-broken="true"`,
+  so theming survives unresolved targets.
+
+`renderBody` and `renderSummary` accept an optional `kindLookup:
+(id) => string | undefined` to resolve the kind. Load callsites pass
+`(id) => graph.get(id)?.meta.kind`. Without it, slug hooks still
+fire but kind hooks are omitted.
+
+**Layout-level scope hooks** — set on `<main>` by
+`src/lib/routes/layout/Layout.svelte` from `$page.url.pathname`:
+
+- `data-bt-path="<full-pathname>"` — e.g. `foundation/fabric/geometry/harmonia`.
+- `data-bt-section="<first-segment>"` — e.g. `foundation`, `guides`,
+  `kinds`, or a cluster id.
+
+Worlds combine the two layers to scope rules to a region of the
+world — see `sample-world/assets/theme.css` for a worked example
+where each bunny gets a signature pigment only on the welcome guide
+and on bunny shelves, while the kind-level dotted underline fires
+everywhere. The Alteria reference world uses the same mechanism to
+gild Harmonia inside `foundation/` and `guides/` only.
+
+When the hook surface changes, update this section. Worlds that
+depend on a particular hook will pick it up via `npm update
+bunnytrail` (no shim regeneration needed — these are render-time
+attribute payloads, not route changes).
+
 ## Shipping engine changes
 
 1. Edit on this repo, run `npm run check` + the relevant tests.
