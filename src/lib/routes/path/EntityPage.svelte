@@ -190,6 +190,16 @@
 		<p class="aliases"><em>Also known as: {data.entity.aliases.join(', ')}</em></p>
 	{/if}
 
+	<!-- Fleuron: same ornamental chapter-mark used on collection pages,
+	     marking the boundary between the editorial header zone and the
+	     content body. Unconditional — every entity page has a layout
+	     to follow. -->
+	<div class="bt-fleuron" aria-hidden="true">
+		<span class="bt-fleuron__rule"></span>
+		<span class="bt-fleuron__glyph"></span>
+		<span class="bt-fleuron__rule"></span>
+	</div>
+
 	<div class="layout">
 		<div class="prose">
 			{@html data.html}
@@ -336,6 +346,32 @@
 		color: var(--ink-soft);
 		margin: calc(-1 * var(--space-4)) 0 var(--space-5);
 		max-width: var(--prose-max);
+	}
+
+	.bt-fleuron {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-2);
+		max-width: 32rem;
+		margin: 0 auto var(--space-7);
+		color: var(--ink-faint);
+	}
+
+	.bt-fleuron__rule {
+		flex: 1;
+		height: 1px;
+	}
+
+	.bt-fleuron__glyph {
+		font-family: var(--font-display);
+		font-size: var(--text-base);
+		line-height: 1;
+		color: var(--accent-warm);
+	}
+
+	.bt-fleuron__glyph::before {
+		content: var(--ornament-glyph, '');
 	}
 
 	.layout {

@@ -346,3 +346,12 @@ blockquote {
 .bt-inline-svg--lightbox {
 	--bt-text-cap: 2;
 }
+
+/* Fleuron rule — the flanking hairline used in the home hero,
+   collection, and entity page fleurons. Declared globally so
+   theme CSS can override `background` without needing !important
+   or fighting Svelte-scoped specificity. The layout properties
+   (flex, height) are kept in each component's scoped style. */
+.bt-fleuron__rule {
+	background: var(--rule);
+}

@@ -38,14 +38,14 @@
 		  3. If neither is set, the divider collapses to two
 		     hairlines with an empty gap — still reads as a rule.
 	-->
-	<div class="hero-fleuron" aria-hidden="true">
-		<span class="fleuron-rule"></span>
+	<div class="bt-fleuron" aria-hidden="true">
+		<span class="bt-fleuron__rule"></span>
 		{#if data.ruler}
-			<span class="fleuron-glyph fleuron-glyph-svg">{@html data.ruler}</span>
+			<span class="bt-fleuron__glyph bt-fleuron__glyph--svg">{@html data.ruler}</span>
 		{:else}
-			<span class="fleuron-glyph"></span>
+			<span class="bt-fleuron__glyph"></span>
 		{/if}
-		<span class="fleuron-rule"></span>
+		<span class="bt-fleuron__rule"></span>
 	</div>
 
 	{#if world.tagline}
@@ -236,7 +236,7 @@
 		color: transparent;
 	}
 
-	.hero-fleuron {
+	.bt-fleuron {
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -245,13 +245,12 @@
 		max-width: 14rem;
 	}
 
-	.fleuron-rule {
+	.bt-fleuron__rule {
 		flex: 1;
 		height: 1px;
-		background: var(--rule);
 	}
 
-	.fleuron-glyph {
+	.bt-fleuron__glyph {
 		font-family: var(--font-display);
 		color: var(--accent-warm);
 		font-size: var(--text-base);
@@ -262,18 +261,18 @@
 	   ornament is driven by the --ornament-glyph token so worlds
 	   can swap it (and have it match the masthead wordmark and
 	   <hr>::before in their theme). */
-	.fleuron-glyph:not(.fleuron-glyph-svg)::before {
+	.bt-fleuron__glyph:not(.bt-fleuron__glyph--svg)::before {
 		content: var(--ornament-glyph, '');
 	}
 
 	/* SVG slot: size the inlined ruler asset and let strokes /
 	   fills resolve to currentColor (which is --accent-warm). */
-	.fleuron-glyph-svg {
+	.bt-fleuron__glyph--svg {
 		display: inline-flex;
 		align-items: center;
 		line-height: 0;
 	}
-	.fleuron-glyph-svg :global(svg) {
+	.bt-fleuron__glyph--svg :global(svg) {
 		height: 1.1em;
 		width: auto;
 	}

@@ -363,12 +363,17 @@
 	rule. Glyph resolves to --ornament-glyph (e.g. ✶ in Alteria) so
 	each world stamps its own mark. When the token is empty the
 	divider collapses to a centred hairline.
+	Only rendered when the collection has intro prose, OR when there is no
+	toolbar (no view-toggle) — in which case the fleuron provides the only
+	visual break between the header and the card grid.
 -->
-<div class="collection-fleuron" aria-hidden="true">
-	<span class="fleuron-rule"></span>
-	<span class="fleuron-glyph"></span>
-	<span class="fleuron-rule"></span>
-</div>
+{#if data.bodyHtml || !hasViewToggle}
+	<div class="bt-fleuron" aria-hidden="true">
+		<span class="bt-fleuron__rule"></span>
+		<span class="bt-fleuron__glyph"></span>
+		<span class="bt-fleuron__rule"></span>
+	</div>
+{/if}
 
 {#if data.bodyHtml}
 	<div class="collection-body">{@html data.bodyHtml}</div>
@@ -729,7 +734,7 @@
 	   in --rule. Sits in its own block, centred, with breathing
 	   room above and below so it reads as a chapter mark rather
 	   than UI chrome. */
-	.collection-fleuron {
+	.bt-fleuron {
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -739,20 +744,19 @@
 		color: var(--ink-faint);
 	}
 
-	.fleuron-rule {
+	.bt-fleuron__rule {
 		flex: 1;
 		height: 1px;
-		background: var(--rule);
 	}
 
-	.fleuron-glyph {
+	.bt-fleuron__glyph {
 		font-family: var(--font-display);
 		font-size: var(--text-base);
 		line-height: 1;
 		color: var(--accent-warm);
 	}
 
-	.fleuron-glyph::before {
+	.bt-fleuron__glyph::before {
 		content: var(--ornament-glyph, '');
 	}
 
@@ -861,9 +865,29 @@
 		gap: var(--space-3) var(--space-5);
 		margin: 0 0 var(--space-5) 0;
 		padding-bottom: var(--space-3);
-		border-bottom: 1px solid var(--rule);
+		position: relative;
 		width: var(--layout-max);
 		margin-inline: calc((100% - var(--layout-max)) / 2);
+	}
+
+	/* Gradient divider below the toolbar — fades in from both edges
+	   (transparent → var(--rule) → transparent, with the solid
+	   stretch running from 20% to 80%) so it reads as drawn-on
+	   calligraphy rather than hard UI chrome. */
+	.toolbar::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 1px;
+		background: linear-gradient(
+			to right,
+			transparent 0%,
+			var(--rule) 20%,
+			var(--rule) 80%,
+			transparent 100%
+		);
 	}
 
 	.toolbar-count {
