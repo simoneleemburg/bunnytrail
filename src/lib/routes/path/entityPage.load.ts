@@ -12,6 +12,7 @@ export async function loadEntityPage(entity: Entity) {
 	const type = entity.type;
 
 	const resolveLink = (path: string) => graph.resolveLink(path, graph.clusterOf(id));
+	const kindLookup = (eid: string) => graph.get(eid)?.meta.kind;
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();
 	const resolveCollection = makeCollectionResolver({
@@ -23,11 +24,11 @@ export async function loadEntityPage(entity: Entity) {
 	});
 
 	const html = await inlineSvgFigures(
-		renderEntityBody(entity, resolveLink, languageCodes, kindIds, resolveCollection)
+		renderEntityBody(entity, resolveLink, languageCodes, kindIds, resolveCollection, kindLookup)
 	);
 
 	const summaryHtml = (s: string | null | undefined) =>
-		s ? renderSummary(s, resolveLink, languageCodes, { kindIds }) : null;
+		s ? renderSummary(s, resolveLink, languageCodes, { kindIds, kindLookup }) : null;
 	const cardSummaryHtml = (s: string | null | undefined) =>
 		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;
 

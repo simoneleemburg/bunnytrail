@@ -11,6 +11,7 @@ import type { Chapter, Entity } from '$lib/types';
  */
 export async function loadChapterPage(entity: Entity, chapter: Chapter) {
 	const resolveLink = (path: string) => graph.resolveLink(path, graph.clusterOf(entity.id));
+	const kindLookup = (id: string) => graph.get(id)?.meta.kind;
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();
 	const resolveCollection = makeCollectionResolver({
@@ -22,11 +23,19 @@ export async function loadChapterPage(entity: Entity, chapter: Chapter) {
 	});
 
 	const html = await inlineSvgFigures(
-		renderBody(chapter.body, resolveLink, languageCodes, kindIds, resolveCollection, entity.id)
+		renderBody(
+			chapter.body,
+			resolveLink,
+			languageCodes,
+			kindIds,
+			resolveCollection,
+			entity.id,
+			kindLookup
+		)
 	);
 
 	const summaryHtml = (s: string | null | undefined) =>
-		s ? renderSummary(s, resolveLink, languageCodes, { kindIds }) : null;
+		s ? renderSummary(s, resolveLink, languageCodes, { kindIds, kindLookup }) : null;
 
 	const idx = entity.chapters.findIndex((c) => c.slug === chapter.slug);
 	const prev = idx > 0 ? entity.chapters[idx - 1] : null;

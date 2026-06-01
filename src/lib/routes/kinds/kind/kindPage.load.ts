@@ -89,6 +89,7 @@ export function loadKindPage(kindId: string, scope: ClusterScope): KindPageData 
 	// cluster's content. Resolve wikilinks globally regardless of
 	// the URL scope.
 	const resolveLink = (path: string) => graph.resolveLink(path);
+	const kindLookup = (id: string) => graph.get(id)?.meta.kind;
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();
 	const cardSummaryHtml = (s: string | null | undefined) =>
@@ -122,7 +123,9 @@ export function loadKindPage(kindId: string, scope: ClusterScope): KindPageData 
 					resolveLink,
 					languageCodes,
 					kindIds
-				})
+				}),
+				undefined,
+				kindLookup
 			)
 		: null;
 

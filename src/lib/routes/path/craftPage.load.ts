@@ -19,6 +19,7 @@ import type { Entity } from '$lib/types';
  */
 export async function loadCraftPage(entity: Entity) {
 	const resolveLink = (path: string) => graph.resolveLink(path, graph.clusterOf(entity.id));
+	const kindLookup = (id: string) => graph.get(id)?.meta.kind;
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();
 	const resolveCollection = makeCollectionResolver({
@@ -36,12 +37,13 @@ export async function loadCraftPage(entity: Entity) {
 			languageCodes,
 			kindIds,
 			resolveCollection,
-			entity.id
+			entity.id,
+			kindLookup
 		)
 	);
 
 	const summaryHtml = (s: string | null | undefined) =>
-		s ? renderSummary(s, resolveLink, languageCodes, { kindIds }) : null;
+		s ? renderSummary(s, resolveLink, languageCodes, { kindIds, kindLookup }) : null;
 
 	return {
 		entity: {

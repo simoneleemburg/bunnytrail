@@ -23,6 +23,7 @@ export async function load({ params }: { params: { slug: string } }) {
 	if (!guide) error(404, `No guide at /guides/${params.slug}`);
 
 	const resolveLink = (path: string) => graph.resolveLink(path, undefined);
+	const kindLookup = (id: string) => graph.get(id)?.meta.kind;
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();
 	const resolveCollection = makeCollectionResolver({
@@ -34,9 +35,9 @@ export async function load({ params }: { params: { slug: string } }) {
 	});
 
 	const html = await inlineSvgFigures(
-		renderBody(guide.body, resolveLink, languageCodes, kindIds, resolveCollection)
+		renderBody(guide.body, resolveLink, languageCodes, kindIds, resolveCollection, undefined, kindLookup)
 	);
-	const summaryHtml = renderSummary(guide.summary, resolveLink, languageCodes, { kindIds });
+	const summaryHtml = renderSummary(guide.summary, resolveLink, languageCodes, { kindIds, kindLookup });
 
 	return {
 		slug: guide.slug,

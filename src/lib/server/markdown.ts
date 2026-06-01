@@ -9,6 +9,16 @@ import type { Entity, EntityId } from '$lib/types';
 export type LinkResolver = (rawPath: string) => EntityId | null;
 
 /**
+ * A function that returns the kind id of an entity given its full id,
+ * or `undefined` if the entity has no kind set (or doesn't exist).
+ * Used to attach `data-bt-kind` / `bt-link--kind-<id>` hooks to
+ * resolved wikilinks so worlds can theme links by entity type
+ * (e.g. "all axioma in gold"). Optional everywhere — when omitted,
+ * links still get the slug hook but no kind hook.
+ */
+export type KindLookup = (id: EntityId) => string | undefined;
+
+/**
  * A function that resolves a `[[collection:<path>]]` directive to
  * the data needed to render an inline fold-out: the collection's
  * display title, its public href, and its body rendered to HTML.
@@ -327,7 +337,8 @@ export function renderBody(
 	languageCodes: Map<string, EntityId> = new Map(),
 	kindIds: ReadonlySet<string> = new Set(),
 	resolveCollection?: CollectionResolver,
-	imageBaseDir?: string
+	imageBaseDir?: string,
+	kindLookup?: KindLookup
 ): string {
 	const expanded = expandCollectionIncludes(body, resolveCollection);
 	const rewritten = rewriteBrackets(expanded, resolveLink, languageCodes, kindIds);
@@ -366,7 +377,8 @@ export function renderBody(
 	// `marked` renders `[text](url "title")` as `<a href="url" title="title">…</a>`.
 	// Convert our sentinel title into a data attribute the UI can style.
 	const linkified = rescued.replace(/title="broken-link"/g, 'data-broken="true"');
-	return rewriteImageSrcs(linkified, imageBaseDir);
+	const decorated = decorateEntityLinks(linkified, resolveLink, kindLookup);
+	return rewriteImageSrcs(decorated, imageBaseDir);
 }
 
 const HTML_CHROME_TAGS = ['dt', 'dd', 'figcaption', 'summary'] as const;
@@ -403,15 +415,128 @@ function rescueLinksInHtmlChrome(html: string): string {
 	return out;
 }
 
+// Match an internal anchor whose href looks like an entity id —
+// a single leading slash, then a slug-shaped path with at least
+// one segment. Captures:
+//   1. opening tag prefix (`<a href="`)
+//   2. raw href (slug path, no leading slash)
+//   3. optional anchor (`#fragment`)
+//   4. closing `>` of the open tag plus everything up through `</a>`
+// The regex deliberately rejects external URLs (no `://`), root-only
+// hrefs (`/`), and same-page anchors (`#…`). Hash-only routes inside
+// the engine (`/kinds/<id>`, `/guides/<slug>`) are also excluded —
+// those aren't entity ids and `kindLookup` would whiff on them.
+const ENTITY_LINK_RE =
+	/(<a\s+href=")\/([a-z0-9][a-z0-9/-]*?)(#[a-z0-9-]+)?("[^>]*>[\s\S]*?<\/a>)/g;
+
+// Routes the engine owns (not entity ids). Links into these still
+// get the universal `bt-link` class but no slug/kind data attrs,
+// because the path segments aren't entity slugs.
+const ENGINE_ROUTE_PREFIXES = ['kinds/', 'guides/', 'blog/', 'api/', 'authors/', 'health'];
+
+/**
+ * Walk every internal `<a href="/…">` produced by the wikilink
+ * rewriter and tack on `bt-`-prefixed CSS hooks so worlds can theme
+ * links by the entity they target. Three hooks are emitted on
+ * resolved entity links:
+ *
+ *   class="bt-link bt-link--kind-<kind>"
+ *   data-bt-slug="<slug>"      // last path segment (always)
+ *   data-bt-kind="<kind>"      // when kindLookup returns one
+ *
+ * Engine routes (`/kinds/…`, `/guides/…`, etc.) get the universal
+ * `bt-link` class but no slug/kind hooks — their path segments
+ * aren't entity ids. Same-page anchors and external links are
+ * untouched.
+ *
+ * Idempotent: if an `<a>` already has a `class="…"` attribute we
+ * append; otherwise we add one. Existing `data-broken` attrs on
+ * unresolved wikilinks survive untouched (they live on the same
+ * tag and we only rewrite the `href` portion).
+ *
+ * Pure string rewriting on the rendered HTML avoids:
+ *   - having to plumb graph access into `rewriteBrackets`
+ *     (resolver closures would need to grow), and
+ *   - mutating the markdown link syntax to carry attribute
+ *     payloads (markdown doesn't support that).
+ */
+function decorateEntityLinks(
+	html: string,
+	resolveLink: LinkResolver,
+	kindLookup: KindLookup | undefined
+): string {
+	return html.replace(
+		ENTITY_LINK_RE,
+		(whole, openPrefix: string, rawPath: string, anchor: string | undefined, tail: string) => {
+			const isEngineRoute = ENGINE_ROUTE_PREFIXES.some((p) => rawPath === p.replace(/\/$/, '') || rawPath.startsWith(p));
+			const hooks: string[] = [];
+			const classes = ['bt-link'];
+
+			if (!isEngineRoute) {
+				// `resolveLink` here is the same resolver used during
+				// rewriteBrackets, so a path that resolved before still
+				// resolves now. We re-resolve rather than parse the
+				// href because the rewriter writes the canonical id
+				// into the href, which is what resolveLink would
+				// return as a no-op.
+				const resolved = resolveLink(rawPath) ?? rawPath;
+				const slug = resolved.slice(resolved.lastIndexOf('/') + 1);
+				if (slug) hooks.push(`data-bt-slug="${slug}"`);
+				const kind = kindLookup?.(resolved);
+				if (kind) {
+					hooks.push(`data-bt-kind="${kind}"`);
+					classes.push(`bt-link--kind-${kind}`);
+				}
+			}
+
+			// The captured `tail` starts at the closing `"` of the
+			// href attribute and runs through `</a>`. Insert hooks
+			// just after that closing quote, before any other
+			// attributes (class, data-broken, title) that marked may
+			// have emitted.
+			const classAttr = ` class="${classes.join(' ')}"`;
+			const hookAttrs = hooks.length ? ` ${hooks.join(' ')}` : '';
+			// If the tag already has a `class=` (e.g. inserted by a
+			// future renderer or by hand-authored HTML), merge into
+			// it instead of duplicating. Today no upstream pass
+			// attaches classes to wikilinks, but this keeps us safe
+			// against drift.
+			const existingClassRe = / class="([^"]*)"/;
+			const existingClassMatch = tail.match(existingClassRe);
+			let newTail: string;
+			if (existingClassMatch) {
+				const merged = `${classes.join(' ')} ${existingClassMatch[1]}`;
+				newTail = tail.replace(existingClassRe, ` class="${merged}"`);
+				// hooks still need to be inserted (they're data-*, not class)
+				newTail = newTail.replace(/^"/, `"${hookAttrs}`);
+			} else {
+				newTail = tail.replace(/^"/, `"${classAttr}${hookAttrs}`);
+			}
+
+			const anchorOut = anchor ?? '';
+			return `${openPrefix}/${rawPath}${anchorOut}${newTail}`;
+		}
+	);
+}
+
 /** Convenience for entity bodies. */
 export function renderEntityBody(
 	entity: Entity,
 	resolveLink: LinkResolver,
 	languageCodes: Map<string, EntityId> = new Map(),
 	kindIds: ReadonlySet<string> = new Set(),
-	resolveCollection?: CollectionResolver
+	resolveCollection?: CollectionResolver,
+	kindLookup?: KindLookup
 ): string {
-	return renderBody(entity.body, resolveLink, languageCodes, kindIds, resolveCollection, entity.id);
+	return renderBody(
+		entity.body,
+		resolveLink,
+		languageCodes,
+		kindIds,
+		resolveCollection,
+		entity.id,
+		kindLookup
+	);
 }
 
 /**
@@ -498,9 +623,9 @@ export function renderSummary(
 	summary: string,
 	resolveLink: LinkResolver,
 	languageCodes: Map<string, EntityId> = new Map(),
-	options: { stripLinks?: boolean; kindIds?: ReadonlySet<string> } = {}
+	options: { stripLinks?: boolean; kindIds?: ReadonlySet<string>; kindLookup?: KindLookup } = {}
 ): string {
-	const { stripLinks = false, kindIds = new Set<string>() } = options;
+	const { stripLinks = false, kindIds = new Set<string>(), kindLookup } = options;
 
 	const rewritten = rewriteBrackets(summary, resolveLink, languageCodes, kindIds, stripLinks);
 
@@ -512,6 +637,8 @@ export function renderSummary(
 		// the source) with just the label. parseInline preserves these,
 		// and we can't wrap an <a> in another <a>.
 		html = html.replace(/<a\b[^>]*>([\s\S]*?)<\/a>/gi, '$1');
+	} else {
+		html = decorateEntityLinks(html, resolveLink, kindLookup);
 	}
 
 	return html;

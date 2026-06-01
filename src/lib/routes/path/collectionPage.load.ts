@@ -237,6 +237,7 @@ export async function loadCollectionPage(path: string) {
 	// resolve globally.
 	const fromCluster = graph.clusterOf(path);
 	const resolveLink = (p: string) => graph.resolveLink(p, fromCluster);
+	const kindLookup = (id: string) => graph.get(id)?.meta.kind;
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();
 	const resolveCollection = makeCollectionResolver({
@@ -253,7 +254,15 @@ export async function loadCollectionPage(path: string) {
 	// description and the filter chips on the collection page.
 	const bodyHtml = collection?.body
 		? await inlineSvgFigures(
-				renderBody(collection.body, resolveLink, languageCodes, kindIds, resolveCollection, path)
+				renderBody(
+					collection.body,
+					resolveLink,
+					languageCodes,
+					kindIds,
+					resolveCollection,
+					path,
+					kindLookup
+				)
 			)
 		: null;
 	const cardSummaryHtml = (s: string | null | undefined) =>
