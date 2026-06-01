@@ -363,7 +363,24 @@ blockquote {
 	--bt-text-cap: 2;
 }
 
-/* Fleuron rule — the flanking hairline used in the home hero,
+/* Guide prose h2 section divider — fading hairline above each
+   h2, rendered as ::before so it lives in global.css and never
+   flashes. The h2 itself carries padding-top for spacing. Worlds
+   can override by replacing the background on
+   .bt-guide-prose h2::before. */
+.bt-guide-prose h2::before {
+	content: '';
+	display: block;
+	height: 1px;
+	background: linear-gradient(
+		to right,
+		transparent 0%,
+		var(--rule) 20%,
+		var(--rule) 80%,
+		transparent 100%
+	);
+	margin-bottom: var(--space-6);
+}
    collection, and entity page fleurons. Gradient fade mirrors
    the <hr> and masthead rule: solid in the centre, transparent
    at the edges. Declared globally (not in scoped component

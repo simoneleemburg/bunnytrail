@@ -25,7 +25,13 @@
 		<p class="lede">{@html data.summaryHtml}</p>
 	</header>
 
-	<div class="prose">
+	<div class="bt-fleuron" aria-hidden="true">
+		<span class="bt-fleuron__rule"></span>
+		<span class="bt-fleuron__glyph"></span>
+		<span class="bt-fleuron__rule"></span>
+	</div>
+
+	<div class="prose bt-guide-prose">
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 		{@html data.html}
 	</div>
@@ -41,6 +47,31 @@
 		max-width: var(--prose-max);
 		margin: 0 auto var(--space-7);
 		text-align: center;
+	}
+
+	.bt-fleuron {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-2);
+		max-width: 32rem;
+		margin: 0 auto var(--space-7);
+	}
+
+	.bt-fleuron__rule {
+		flex: 1;
+		height: 1px;
+	}
+
+	.bt-fleuron__glyph {
+		font-family: var(--font-display);
+		font-size: var(--text-base);
+		line-height: 1;
+		color: var(--accent-warm);
+	}
+
+	.bt-fleuron__glyph::before {
+		content: var(--ornament-glyph, '');
 	}
 
 	.eyebrow {
@@ -99,7 +130,6 @@
 		max-width: var(--prose-max);
 		margin: var(--space-8) auto var(--space-5);
 		padding-top: var(--space-6);
-		border-top: 1px solid var(--rule);
 	}
 
 	.prose :global(h3) {
