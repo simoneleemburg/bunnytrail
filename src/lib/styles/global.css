@@ -92,7 +92,13 @@ p {
 	margin: 0 0 var(--space-4);
 }
 
-a {
+/* Default link affordances. Wrapped in :where() so a world's
+   assets/theme.css can override hover decoration with bare
+   selectors (e.g. a masthead nav that suppresses the underline
+   in favour of a custom flourish). :where() is zero-specificity,
+   so any plain `.foo a:hover { ... }` in theme.css wins
+   regardless of CSS load order. */
+:where(a) {
 	color: var(--accent);
 	text-decoration: none;
 	text-decoration-thickness: 1px;
@@ -100,7 +106,7 @@ a {
 	transition: color 120ms ease;
 }
 
-a:hover {
+:where(a:hover) {
 	color: var(--accent-warm);
 	text-decoration: underline;
 	text-decoration-color: var(--accent-warm);

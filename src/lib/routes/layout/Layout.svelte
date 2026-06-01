@@ -70,6 +70,31 @@
 		return { path: raw, section };
 	});
 
+	// Active-state for primary nav links. Returns:
+	//   'page'    — link's href matches the current path exactly
+	//   'section' — current path is under the link's href (descendant)
+	//   undefined — not active
+	//
+	// Semantics: clicking a card under /objects/freya keeps the
+	// OBJECTS nav link marked active, which matches how readers
+	// think about "where am I in the site". The /kinds link is the
+	// special-case below — it lights up under /kinds, not under
+	// /kinds/* (a kind detail page is in the kinds *section* but
+	// the readers still expect the link to feel "current"), so we
+	// fold both into the section semantics with a Boolean.
+	//
+	// Rendered as `aria-current="page"` (exact) or
+	// `aria-current="section"` (descendant) — themes select with
+	// `[aria-current]` to dress active items.
+	function navAriaCurrent(href: string): 'page' | 'section' | undefined {
+		const current = '/' + ($page.url.pathname.replace(/^\/+/, '').replace(/\/+$/, '') || '');
+		const target = '/' + (href.replace(/^\/+/, '').replace(/\/+$/, '') || '');
+		if (current === target) return 'page';
+		if (target !== '/' && (current === target || current.startsWith(target + '/')))
+			return 'section';
+		return undefined;
+	}
+
 	// In-app navigation hook: when the user is browsing in All
 	// scope, paint `?scope=all` onto outgoing internal links that
 	// would otherwise look scoped (i.e. start with a cluster prefix).
@@ -166,10 +191,10 @@
 
 			<nav class="nav-desktop" aria-label="Primary">
 				{#each data.nav as item (item.href)}
-					<a href={item.href}>{item.label}</a>
+					<a href={item.href} aria-current={navAriaCurrent(item.href)}>{item.label}</a>
 				{/each}
 				<span class="nav-sep" aria-hidden="true">·</span>
-				<a href={data.kindsHref}>Kinds</a>
+				<a href={data.kindsHref} aria-current={navAriaCurrent(data.kindsHref)}>Kinds</a>
 			</nav>
 
 			<div class="chrome-end">
@@ -225,9 +250,9 @@
 			<div class="drawer" id="mobile-drawer">
 				<nav class="nav-mobile" aria-label="Primary mobile">
 					{#each data.nav as item (item.href)}
-						<a href={item.href}>{item.label}</a>
+						<a href={item.href} aria-current={navAriaCurrent(item.href)}>{item.label}</a>
 					{/each}
-					<a href={data.kindsHref}>Kinds</a>
+					<a href={data.kindsHref} aria-current={navAriaCurrent(data.kindsHref)}>Kinds</a>
 				</nav>
 
 				{#if data.clusterOptions.length > 1}
@@ -276,7 +301,14 @@
 		flex-direction: column;
 	}
 
-	.masthead {
+	/* Themeable defaults. Wrapped in :global(:where(...)) so a
+	   world's assets/theme.css can override the masthead chrome
+	   (border, padding, background, ::before/::after ornaments)
+	   with bare class selectors. Same trick as .wordmark-mark
+	   above — :where() is zero-specificity, so any plain
+	   `.masthead { ... }` in theme.css wins regardless of CSS
+	   load order. */
+	:global(:where(.masthead)) {
 		border-bottom: var(--rule-thin);
 		padding: var(--space-5) var(--space-8);
 		position: relative;
@@ -369,7 +401,11 @@
 		gap: var(--space-5);
 	}
 
-	.nav-desktop a {
+	/* Same :where() escape hatch as .masthead — themeable
+	   typography defaults that a world can override (font-size,
+	   letter-spacing, text-transform, padding for hover ornaments)
+	   with bare `.nav-desktop a { ... }` rules in theme.css. */
+	:global(:where(.nav-desktop a)) {
 		font-family: var(--font-display);
 		font-size: var(--text-base);
 		letter-spacing: 0.01em;
@@ -377,14 +413,16 @@
 		text-decoration: none;
 	}
 
-	.nav-desktop a:hover {
+	:global(:where(.nav-desktop a:hover)) {
 		color: var(--accent);
 	}
 
 	/* Quiet bullet between the folder group and the Kinds link —
 	   signals that Kinds is a different kind of destination
-	   (taxonomy, not a folder of entities) without shouting. */
-	.nav-sep {
+	   (taxonomy, not a folder of entities) without shouting.
+	   Themeable via :where() so a world theme can re-colour or
+	   replace the glyph (e.g. with content via ::before). */
+	:global(:where(.nav-sep)) {
 		color: var(--ink-faint);
 		font-size: var(--text-base);
 	}
