@@ -123,7 +123,8 @@ a[data-broken='true'] {
    --ornament-glyph in tokens (and styling hr::before). */
 hr {
 	border: 0;
-	border-top: 1px solid var(--rule);
+	height: 1px;
+	background: var(--rule);
 	margin: var(--space-6) 0;
 }
 
