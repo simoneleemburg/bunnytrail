@@ -6,3 +6,7 @@ tags: [dwelling]
 ---
 
 [[alder]]'s home. The kettle is almost always on.
+
+A burrow under the hawthorn at the back fence belongs to
+[[clover]], who tolerates the cottage only because [[pip]]
+recommended it.

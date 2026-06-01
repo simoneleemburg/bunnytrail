@@ -7,4 +7,5 @@ tags: [keeper, mentor]
 
 Alder lives at [[willow-cottage]] on the edge of the wood.
 Most evenings, weather permitting, they walk the lamp path with
-[[briar]] and a thermos of tea.
+[[briar]] and a thermos of tea — and [[pip]], who rides along
+in their coat pocket and has never once tried to escape.

@@ -12,3 +12,7 @@ Briar is learning the wood from [[alder]], one lamp at a time.
 Their map of the [[stone-circle]] approach has been pinned to the
 wall at [[willow-cottage]] for a season now, and still gets
 amended with charcoal smudges every Wending.
+
+The latest amendment is a dotted line Briar swears was suggested
+by [[mulberry]], the lavender bunny who always seems to be
+sitting at the next fork before anyone else gets there.

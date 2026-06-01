@@ -1,0 +1,264 @@
+/**
+ * Bunny World — sample world theme.
+ *
+ * A cute, soft palette dressing the bunnytrail engine in pinks
+ * and blues so the sample world feels inviting on first run, and
+ * so the engine's themability hooks (see further down) have
+ * something to actually demonstrate. Replace this file in your
+ * own world repo to make the engine wear your aesthetic instead.
+ *
+ * Three things happen here:
+ *
+ *   1. PALETTE OVERRIDE.   Engine tokens (--ink, --parchment,
+ *      --accent, …) get overridden with pink / blue / cream
+ *      values. Any token defined in the engine's tokens.css can
+ *      be overridden the same way.
+ *
+ *   2. PER-ENTITY THEMING. The engine attaches `bt-link` /
+ *      `data-bt-slug` / `data-bt-kind` hooks to every internal
+ *      wikilink in rendered prose. The `Themed wikilinks` block
+ *      below uses those hooks to give each named bunny their own
+ *      signature colour wherever they are mentioned, without
+ *      touching the markdown.
+ *
+ *   3. PATH-SCOPED THEMING. The engine stamps `<main>` with
+ *      `data-bt-path` (full URL pathname) and `data-bt-section`
+ *      (first segment) so worlds can scope rules to a region of
+ *      the world. We use `data-bt-section="guides"` and the
+ *      bunny shelf paths to confine the bunny gilt to pages
+ *      where it tells a story.
+ *
+ * No web fonts. The system serif looks plenty cute against this
+ * palette, and a fontless theme stays fast on first load.
+ */
+
+:root {
+	/* ── Palette ──────────────────────────────────────────────── */
+	/* Ink trio. A soft warm charcoal instead of plain black —
+	   pairs gently with pink without going lavender-grey. */
+	--ink: #3a2a35;
+	--ink-soft: #6b5a64;
+	--ink-faint: #9a8b94;
+
+	/* Paper progression. Cream-cloud canvas, a wash of cherry
+	   blossom for hover surfaces, deeper rose for the rare panel.
+	   Vellum stays paper-white so callouts and book-mode pages
+	   still pop against the soft canvas. */
+	--parchment: #fff7f6;
+	--parchment-soft: #fde9ec;
+	--parchment-deep: #f7d0d8;
+	--vellum: #ffffff;
+
+	/* Rules: hair for inline separators, normal for HR, bold for
+	   sectional weight. Pink-tinted greys, not cool greys, so the
+	   rule lines stay in the warm family. */
+	--rule-hair: #f0d6db;
+	--rule: #d9a3ae;
+	--rule-bold: #b66f7e;
+
+	/* Accents. Cherry-blossom pink as the primary link colour;
+	   sky-blue as the secondary accent for hover and decorative
+	   moments; raspberry as the deep tone for ornaments and
+	   borders that need more weight. */
+	--accent: #e76b8b; /* cherry-blossom — links, accents */
+	--accent-soft: #f5a3b6; /* lighter pink — hover surfaces */
+	--accent-deep: #b03a5c; /* raspberry — ornaments, deep rule */
+	--accent-warm: #6ba9e7; /* sky-blue — secondary highlight */
+
+	/* Bunny signature pigments — used by the per-slug theming
+	   block below. Each bunny in `content/*/bunnies/` gets a
+	   distinct pigment they wear on every wikilink that points at
+	   them. Tokens (rather than literal hex in the rules) so a
+	   world author can re-tint the whole cast in one place. */
+	--bunny-rose: #e76b8b; /* Pip — cherry-rose */
+	--bunny-sky: #6ba9e7; /* Clover — forget-me-not blue */
+	--bunny-lavender: #b094e7; /* Mulberry — lavender */
+	--bunny-butter: #e7c46b; /* Saffron — soft butter */
+
+	/* Hover wash and card shadows: pink-tinted so panels and cards
+	   feel of-a-piece with the link colour. */
+	--paper-warm: rgba(231, 107, 139, 0.08);
+	--shadow-hover: 0 1px 0 var(--rule-hair),
+		0 6px 16px -10px rgba(176, 58, 92, 0.18);
+	--shadow-paper: 0 1px 0 var(--rule-hair),
+		0 12px 24px -18px rgba(176, 58, 92, 0.22);
+
+	/* ── Typography ───────────────────────────────────────────── */
+	/* No web fonts. The system serif reads as warm-editorial here
+	   and the page renders instantly on first load. Worlds that
+	   want a branded face @import it at the top of theme.css. */
+
+	/* ── Texture ──────────────────────────────────────────────── */
+	/* A cherry-blossom petal for the HR ornament — same idea as
+	   the engine's empty default, just turned on with a glyph. */
+	--ornament-glyph: '🌸';
+}
+
+/* ── Cute HR ───────────────────────────────────────────────────
+   The engine renders `<hr>` as a centred ornament over a fading
+   hairline (see global.css). Our blossom glyph rides on a
+   pink-tinted rule. The petal sits on a parchment card so the
+   line cleanly breaks behind it. */
+hr::before {
+	content: var(--ornament-glyph);
+	padding: 0 0.55em;
+	background: var(--parchment);
+	color: var(--accent);
+	font-size: 0.95em;
+	line-height: 1;
+}
+
+/* ── Themed wikilinks ──────────────────────────────────────────
+   Demo of bunnytrail's per-entity theming hooks.
+
+   The engine attaches three hooks to every resolved internal
+   wikilink in rendered prose:
+
+       <a href="/mistwood/bunnies/pip"
+          class="bt-link bt-link--kind-bunny"
+          data-bt-slug="pip"
+          data-bt-kind="bunny">Pip</a>
+
+   - `class="bt-link"` is universal — a hook for "any internal
+     wikilink".
+   - `data-bt-slug` is the entity's slug (last path segment); the
+     most specific hook, useful for one-off "this entity has its
+     own colour" rules.
+   - `data-bt-kind` / `bt-link--kind-<id>` is the entity's kind
+     id, useful for "every member of this kind shares a tint".
+
+   World rules can mix and match. Below we tint each bunny with
+   its own pigment AND give the entire `bunny` kind a faint pink
+   underline so even bunnies-without-a-named-rule get a hint of
+   bunny in them.
+
+   Scoping. Each rule is wrapped in
+   `:where([data-bt-section='guides'], [data-bt-path^='mistwood/bunnies'], [data-bt-path^='tideholm/bunnies'])`
+   so the gilt only fires inside the welcome guide and on bunny
+   pages — not on a throwaway mention from a non-bunny entity.
+   `:where()` keeps the wrapper at zero specificity, so its
+   presence doesn't fight any unscoped `.bt-link` rules.
+
+   To see the un-themed baseline: visit `/mistwood/people/alder`
+   and notice the [[pip]] link there reads in plain `--accent`
+   pink, not cherry-rose. Then visit `/guides/welcome` and watch
+   the same name pick up its bunny pigment. That difference is
+   the only thing the engine added to the markup; everything
+   else is this stylesheet. */
+
+/* The bunny kind, world-wide: a soft pink underline so any
+   wikilink that points at a bunny carries a faint bunny mark
+   regardless of where it appears. Dotted to read as a marker
+   rather than a heavy underline. */
+.bt-link--kind-bunny {
+	text-decoration: underline dotted var(--accent-soft);
+	text-underline-offset: 0.18em;
+}
+
+/* Per-bunny pigments, scoped to bunny shelves and the welcome
+   guide. The named rules win over the kind rule above where
+   they overlap. */
+:where(
+	[data-bt-section='guides'],
+	[data-bt-path^='mistwood/bunnies'],
+	[data-bt-path^='tideholm/bunnies']
+)
+	.bt-link[data-bt-slug='pip'] {
+	color: var(--bunny-rose);
+	text-shadow: 0 0 2px rgba(231, 107, 139, 0.3);
+	text-decoration-color: var(--bunny-rose);
+	transition: color 0.2s, text-shadow 0.2s;
+}
+:where(
+	[data-bt-section='guides'],
+	[data-bt-path^='mistwood/bunnies'],
+	[data-bt-path^='tideholm/bunnies']
+)
+	.bt-link[data-bt-slug='clover'] {
+	color: var(--bunny-sky);
+	text-shadow: 0 0 2px rgba(107, 169, 231, 0.3);
+	text-decoration-color: var(--bunny-sky);
+	transition: color 0.2s, text-shadow 0.2s;
+}
+:where(
+	[data-bt-section='guides'],
+	[data-bt-path^='mistwood/bunnies'],
+	[data-bt-path^='tideholm/bunnies']
+)
+	.bt-link[data-bt-slug='mulberry'] {
+	color: var(--bunny-lavender);
+	text-shadow: 0 0 2px rgba(176, 148, 231, 0.3);
+	text-decoration-color: var(--bunny-lavender);
+	transition: color 0.2s, text-shadow 0.2s;
+}
+:where(
+	[data-bt-section='guides'],
+	[data-bt-path^='mistwood/bunnies'],
+	[data-bt-path^='tideholm/bunnies']
+)
+	.bt-link[data-bt-slug='saffron'] {
+	color: var(--bunny-butter);
+	text-shadow: 0 0 2px rgba(231, 196, 107, 0.35);
+	text-decoration-color: var(--bunny-butter);
+	transition: color 0.2s, text-shadow 0.2s;
+}
+
+/* Hover: brighten the halo without shifting the hue. Same idea
+   as the SVG sigil hover in alteria_world — the visible feedback
+   is the glow strengthening, not a colour change. */
+:where(
+	[data-bt-section='guides'],
+	[data-bt-path^='mistwood/bunnies'],
+	[data-bt-path^='tideholm/bunnies']
+)
+	.bt-link[data-bt-slug='pip']:hover,
+:where(
+	[data-bt-section='guides'],
+	[data-bt-path^='mistwood/bunnies'],
+	[data-bt-path^='tideholm/bunnies']
+)
+	.bt-link[data-bt-slug='pip']:focus-visible {
+	text-shadow: 0 0 4px rgba(231, 107, 139, 0.55), 0 0 8px rgba(231, 107, 139, 0.25);
+}
+:where(
+	[data-bt-section='guides'],
+	[data-bt-path^='mistwood/bunnies'],
+	[data-bt-path^='tideholm/bunnies']
+)
+	.bt-link[data-bt-slug='clover']:hover,
+:where(
+	[data-bt-section='guides'],
+	[data-bt-path^='mistwood/bunnies'],
+	[data-bt-path^='tideholm/bunnies']
+)
+	.bt-link[data-bt-slug='clover']:focus-visible {
+	text-shadow: 0 0 4px rgba(107, 169, 231, 0.55), 0 0 8px rgba(107, 169, 231, 0.25);
+}
+:where(
+	[data-bt-section='guides'],
+	[data-bt-path^='mistwood/bunnies'],
+	[data-bt-path^='tideholm/bunnies']
+)
+	.bt-link[data-bt-slug='mulberry']:hover,
+:where(
+	[data-bt-section='guides'],
+	[data-bt-path^='mistwood/bunnies'],
+	[data-bt-path^='tideholm/bunnies']
+)
+	.bt-link[data-bt-slug='mulberry']:focus-visible {
+	text-shadow: 0 0 4px rgba(176, 148, 231, 0.55), 0 0 8px rgba(176, 148, 231, 0.25);
+}
+:where(
+	[data-bt-section='guides'],
+	[data-bt-path^='mistwood/bunnies'],
+	[data-bt-path^='tideholm/bunnies']
+)
+	.bt-link[data-bt-slug='saffron']:hover,
+:where(
+	[data-bt-section='guides'],
+	[data-bt-path^='mistwood/bunnies'],
+	[data-bt-path^='tideholm/bunnies']
+)
+	.bt-link[data-bt-slug='saffron']:focus-visible {
+	text-shadow: 0 0 4px rgba(231, 196, 107, 0.55), 0 0 8px rgba(231, 196, 107, 0.25);
+}
