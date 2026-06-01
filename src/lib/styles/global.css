@@ -582,6 +582,7 @@ blockquote {
    a modest horizontal indent so it sits inset from the prose
    column edges. Worlds can re-dress via theme.css. */
 .bt-formula {
+	position: relative;
 	font-family: var(--font-display);
 	font-style: italic;
 	font-size: var(--text-2xl);
@@ -593,4 +594,12 @@ blockquote {
 	padding: var(--space-6) var(--space-8);
 	margin: 0 auto;
 	max-width: var(--prose-max);
+}
+
+/* Transparent border default — reserves layout space so a world
+   theme adding a real border colour causes no reflow. Wrapped in
+   :where() so it is zero-specificity and any plain .bt-formula {}
+   rule in a world's theme.css wins regardless of CSS load order. */
+:where(.bt-formula) {
+	border: 1px solid transparent;
 }
