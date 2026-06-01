@@ -587,19 +587,17 @@ blockquote {
 	font-style: italic;
 	font-size: var(--text-2xl);
 	line-height: var(--leading-tight);
-	color: var(--ink);
 	text-align: center;
 	font-feature-settings: 'onum' 0; /* lining numerals — the 1 reads as numeric */
 	letter-spacing: 0.04em;
-	padding: var(--space-6) var(--space-8);
-	margin: var(--space-7) auto;
-	max-width: var(--prose-max);
 }
 
-/* Transparent border default — reserves layout space so a world
-   theme adding a real border colour causes no reflow. Wrapped in
-   :where() so it is zero-specificity and any plain .bt-formula {}
+/* Overridable defaults — all wrapped in :where() so a plain .bt-formula {}
    rule in a world's theme.css wins regardless of CSS load order. */
 :where(.bt-formula) {
 	border: 1px solid transparent;
+	color: var(--ink);
+	padding: var(--space-6) var(--space-8);
+	margin: var(--space-7) auto;
+	max-width: var(--prose-max);
 }
