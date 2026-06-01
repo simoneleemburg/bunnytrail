@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { graph } from '$lib/server/graph';
+import { graph, byRankThenName } from '$lib/server/graph';
 import { inverseLabelFor } from '$lib/server/kindLinkLabels';
 import { renderBody, renderSummary, makeCollectionResolver } from '$lib/server/markdown';
 import type { Entity } from '$lib/types';
@@ -14,6 +14,7 @@ export interface KindCard {
 	tags: string[];
 	era: string | null;
 	sigil: string | null;
+	rank: number | null;
 }
 
 /**
@@ -103,7 +104,8 @@ export function loadKindPage(kindId: string, scope: ClusterScope): KindPageData 
 		summaryHtml: cardSummaryHtml(e.meta.summary),
 		tags: e.meta.tags ?? [],
 		era: e.meta.era ?? null,
-		sigil: typeof e.meta.sigil === 'string' ? e.meta.sigil : null
+		sigil: typeof e.meta.sigil === 'string' ? e.meta.sigil : null,
+		rank: typeof e.meta.rank === 'number' ? e.meta.rank : null
 	});
 
 	// Display labels with fallbacks.
@@ -133,7 +135,7 @@ export function loadKindPage(kindId: string, scope: ClusterScope): KindPageData 
 	const direct = graph
 		.all()
 		.filter((e) => typeof e.meta.kind === 'string' && family.has(e.meta.kind) && inScope(e.id))
-		.sort((a, b) => a.meta.name.localeCompare(b.meta.name))
+		.sort(byRankThenName)
 		.map(toCard);
 
 	const slice = buildKindSlice(kindId, scope, hrefForKind, inScope);

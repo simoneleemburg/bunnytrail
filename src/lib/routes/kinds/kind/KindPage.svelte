@@ -141,10 +141,11 @@
 						type={card.typeLabel ?? data.singular}
 						kind={card.kind}
 						summaryHtml={card.summaryHtml}
-						tags={card.tags}
-						era={card.era}
-						sigil={card.sigil}
-					/>
+				tags={card.tags}
+					era={card.era}
+					sigil={card.sigil}
+					rank={card.rank}
+				/>
 				{/each}
 			</div>
 		</section>
@@ -291,13 +292,6 @@
 		font-size: var(--text-xs);
 		font-variant-caps: all-small-caps;
 		letter-spacing: 0.06em;
-	}
-
-	.lede {
-		max-width: var(--prose-max);
-		margin: 0 0 var(--space-5) 0;
-		color: var(--ink-soft);
-		font-style: italic;
 	}
 
 	.prose {

@@ -292,6 +292,12 @@ export interface EntityMeta {
 	/** "active" | "deceased" | "lost" | "ruined" | anything else. */
 	status?: string;
 	/**
+	 * Optional sort position within a collection. Lower numbers sort
+	 * first; unranked entities follow all ranked ones, sorted
+	 * alphabetically. Displayed alongside the kind chip as "AXIOM · 2".
+	 */
+	rank?: number;
+	/**
 	 * Short language code, used by entities in a `languages` folder.
 	 * The markdown renderer recognises `[[<code>]]` as an inline
 	 * language tag and renders it as a small superscript link to the

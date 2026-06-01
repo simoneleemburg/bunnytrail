@@ -1,4 +1,4 @@
-import { graph } from '$lib/server/graph';
+import { graph, byRankThenName } from '$lib/server/graph';
 import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderEntityBody, renderSummary } from '$lib/server/markdown';
 import { titleCaseSlug, type Entity } from '$lib/types';
@@ -72,7 +72,8 @@ export async function loadEntityPage(entity: Entity) {
 		? {
 				id: kindId,
 				label: kindObj?.meta.singular ?? titleCaseSlug(kindId),
-				broken: !kindObj
+				broken: !kindObj,
+				rank: typeof entity.meta.rank === 'number' ? entity.meta.rank : null
 			}
 		: null;
 
@@ -116,7 +117,14 @@ export async function loadEntityPage(entity: Entity) {
 			byKind.get(groupKey)!.entities.push(toChildCard(child, cardSummaryHtml));
 		}
 		for (const g of byKind.values()) {
-			g.entities.sort((a, b) => a.name.localeCompare(b.name));
+			g.entities.sort((a, b) => {
+				const aRank = a.rank;
+				const bRank = b.rank;
+				if (aRank !== null && bRank !== null) return aRank - bRank;
+				if (aRank !== null) return -1;
+				if (bRank !== null) return 1;
+				return a.name.localeCompare(b.name);
+			});
 		}
 		return [...byKind.values()].sort((a, b) => a.label.plural.localeCompare(b.label.plural));
 	})();
@@ -223,6 +231,7 @@ function toChildCard(e: Entity, cardSummaryHtml: (s: string | null | undefined) 
 		id: e.id,
 		name: e.meta.name,
 		summaryHtml: cardSummaryHtml(e.meta.summary),
-		kind: typeof e.meta.kind === 'string' ? e.meta.kind : null
+		kind: typeof e.meta.kind === 'string' ? e.meta.kind : null,
+		rank: typeof e.meta.rank === 'number' ? e.meta.rank : null
 	};
 }

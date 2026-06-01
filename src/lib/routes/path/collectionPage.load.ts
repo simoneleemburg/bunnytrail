@@ -1,4 +1,4 @@
-import { graph } from '$lib/server/graph';
+import { graph, byRankThenName } from '$lib/server/graph';
 import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderBody, renderSummary } from '$lib/server/markdown';
 import { world } from '$lib/server/world';
@@ -119,7 +119,7 @@ function buildSubcollectionTree(
 		const children = e.children
 			.map((cid) => graph.get(cid))
 			.filter((c): c is Entity => !!c && inSubcollection(c.id) && !seen.has(c.id))
-			.sort((a, b) => a.meta.name.localeCompare(b.meta.name))
+			.sort(byRankThenName)
 			.map(buildNode);
 		return {
 			container: toCard(e, cardSummaryHtml, undefined, pathBucket(e.id)),
@@ -143,7 +143,7 @@ function buildSubcollectionTree(
 			.filter((e) => !e.parent || !inSubcollection(e.parent));
 	}
 
-	const roots = rootEntities.sort((a, b) => a.meta.name.localeCompare(b.meta.name)).map(buildNode);
+	const roots = rootEntities.sort(byRankThenName).map(buildNode);
 
 	return {
 		path: subPath,
@@ -226,8 +226,8 @@ export async function loadCollectionPage(path: string) {
 	const collection = graph.collection(path);
 	const description = collection?.meta.description ?? null;
 
-	// Direct entities of this folder, sorted by name.
-	const entities = graph.byFolder(path).sort((a, b) => a.meta.name.localeCompare(b.meta.name));
+	// Direct entities of this folder, sorted by rank then name.
+	const entities = graph.byFolder(path).sort(byRankThenName);
 
 	// Wikilinks in a collection's prose resolve from the
 	// collection's own cluster (the first path segment, if it's a
@@ -300,7 +300,14 @@ export async function loadCollectionPage(path: string) {
 		.filter((e) => e.type !== path)
 		.map((e) => toCard(e, cardSummaryHtml, labelForFolder(e.type), pathBucket(e.id)));
 
-	const flatAll = [...cards, ...descendants].sort((a, b) => a.name.localeCompare(b.name));
+	const flatAll = [...cards, ...descendants].sort((a, b) => {
+		const aRank = a.rank;
+		const bRank = b.rank;
+		if (aRank !== null && bRank !== null) return aRank - bRank;
+		if (aRank !== null) return -1;
+		if (bRank !== null) return 1;
+		return a.name.localeCompare(b.name);
+	});
 
 	// Containers: a recursive tree of direct entities that
 	// filesystem-nest other entities of this same folder beneath
@@ -312,7 +319,7 @@ export async function loadCollectionPage(path: string) {
 		const children = e.children
 			.map((cid) => graph.get(cid))
 			.filter((c): c is Entity => !!c && c.type === path)
-			.sort((a, b) => a.meta.name.localeCompare(b.meta.name))
+			.sort(byRankThenName)
 			.map(buildNode);
 		return { container: toCard(e, cardSummaryHtml, undefined, pathBucket(e.id)), children };
 	};
@@ -384,10 +391,11 @@ export async function loadCollectionPage(path: string) {
 				summary: null,
 				summaryHtml: null,
 				tags: [],
-				era: null,
-				kind: null,
-				sigil: null,
-				typeLabel: null,
+			era: null,
+			kind: null,
+			sigil: null,
+			rank: null,
+			typeLabel: null,
 				folderPath: bucket,
 				synthetic: true,
 				crossLinkId: linked?.id ?? null
@@ -507,7 +515,7 @@ export function loadEverythingIndex() {
 
 	const allCards = graph
 		.all()
-		.sort((a, b) => a.meta.name.localeCompare(b.meta.name))
+		.sort(byRankThenName)
 		.map((e) => toCard(e, cardSummaryHtml, labelForFolder(e.type)));
 
 	return {
@@ -660,6 +668,7 @@ function toCard(
 		era: e.meta.era ?? null,
 		kind: typeof e.meta.kind === 'string' ? e.meta.kind : null,
 		sigil: typeof e.meta.sigil === 'string' ? e.meta.sigil : null,
+		rank: typeof e.meta.rank === 'number' ? e.meta.rank : null,
 		typeLabel: typeLabel ?? null,
 		folderPath,
 		synthetic: false as boolean,

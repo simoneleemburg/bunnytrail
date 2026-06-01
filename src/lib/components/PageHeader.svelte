@@ -13,6 +13,8 @@
 		label: string;
 		/** True if the kind isn't registered. Renders as a broken link. */
 		broken?: boolean;
+		/** Optional sort rank from frontmatter. Displayed as "AXIOM · 2". */
+		rank?: number | null;
 	}
 
 	interface Props {
@@ -113,7 +115,7 @@
 				href={`/kinds/${kindChip.id}`}
 				data-broken={kindChip.broken ? 'true' : undefined}
 				title={kindChip.broken ? `unregistered kind: ${kindChip.id}` : undefined}
-				>{kindChip.label}</a
+				>{kindChip.label}{#if kindChip.rank != null}<span class="rank" aria-hidden="true"> · {kindChip.rank}</span>{/if}</a
 			>
 		{/if}
 	</div>
@@ -258,6 +260,12 @@
 		color: var(--accent);
 	}
 
+	.kind-chip .rank {
+		font-weight: 400;
+		letter-spacing: 0.06em;
+		color: var(--ink-faint);
+	}
+
 	.kind-chip[data-broken='true'] {
 		color: var(--broken, var(--ink-faint));
 		text-decoration: underline dotted;
@@ -284,8 +292,8 @@
 	h1 .sigil {
 		display: inline-block;
 		margin-right: 0.35em;
-		color: var(--ink-soft);
-		font-weight: 400;
+		color: var(--accent-warm);
+		font-weight: 600;
 		/* Alchemical glyphs sit low on the baseline in most fonts.
 		   Lift the sigil to optically centre on the cap-height of
 		   the title. */

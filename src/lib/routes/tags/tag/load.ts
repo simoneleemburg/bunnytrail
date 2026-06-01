@@ -38,7 +38,14 @@ export async function load({ params }: { params: { tag: string } }) {
 		byType.get(type)!.entities.push(toCard(entity, cardSummaryHtml));
 	}
 	for (const group of byType.values()) {
-		group.entities.sort((a, b) => a.name.localeCompare(b.name));
+		group.entities.sort((a, b) => {
+			const aRank = a.rank;
+			const bRank = b.rank;
+			if (aRank !== null && bRank !== null) return aRank - bRank;
+			if (aRank !== null) return -1;
+			if (bRank !== null) return 1;
+			return a.name.localeCompare(b.name);
+		});
 	}
 
 	// Sort groups by type-name for a stable presentation.
@@ -66,6 +73,7 @@ function toCard(
 		tags: entity.meta.tags ?? [],
 		era: entity.meta.era ?? null,
 		kind: typeof entity.meta.kind === 'string' ? entity.meta.kind : null,
-		sigil: typeof entity.meta.sigil === 'string' ? entity.meta.sigil : null
+		sigil: typeof entity.meta.sigil === 'string' ? entity.meta.sigil : null,
+		rank: typeof entity.meta.rank === 'number' ? entity.meta.rank : null
 	};
 }

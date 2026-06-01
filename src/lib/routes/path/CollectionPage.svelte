@@ -497,9 +497,10 @@
 					kind={node.container.kind}
 					summaryHtml={node.container.summaryHtml}
 					tags={node.container.tags}
-					era={node.container.era}
-					sigil={node.container.sigil}
-				/>
+				era={node.container.era}
+				sigil={node.container.sigil}
+				rank={node.container.rank}
+			/>
 			{:else}
 				<p class="container-stub">
 					Within <a href={`/${node.container.id}`}>{node.container.name}</a>
@@ -535,9 +536,10 @@
 							kind={sub.headlineEntity.kind}
 							summaryHtml={sub.headlineEntity.summaryHtml}
 							tags={sub.headlineEntity.tags}
-							era={sub.headlineEntity.era}
-							sigil={sub.headlineEntity.sigil}
-						/>
+					era={sub.headlineEntity.era}
+					sigil={sub.headlineEntity.sigil}
+					rank={sub.headlineEntity.rank}
+				/>
 					{:else}
 						<header class="subcollection-tree-heading">
 							<h2>
@@ -570,11 +572,12 @@
 				kind={node.entity.kind}
 				summaryHtml={node.entity.summaryHtml}
 				tags={node.entity.tags}
-				era={node.entity.era}
-				sigil={node.entity.sigil}
-			/>
-			{#if node.children.length > 0}
-				<div class="orbit-children">
+		era={node.entity.era}
+		sigil={node.entity.sigil}
+		rank={node.entity.rank}
+		/>
+		{#if node.children.length > 0}
+			<div class="orbit-children">
 					{#each node.children as child (child.entity.id)}
 						{@render orbitTree(child)}
 					{/each}
@@ -601,13 +604,14 @@
 					kind={entity.kind}
 					summaryHtml={entity.summaryHtml}
 					tags={entity.tags}
-					era={entity.era}
-					sigil={entity.sigil}
-				/>
-			{/each}
+			era={entity.era}
+			sigil={entity.sigil}
+			rank={entity.rank}
+			/>
+		{/each}
 		</div>
 	{/if}
-		</div><!-- /.content -->
+	</div><!-- /.content -->
 
 		<!-- Filter sidebar: three sectioned groups (Kind, Folder,
 		     Tags), each with a small-caps eyebrow label and a

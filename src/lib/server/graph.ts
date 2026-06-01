@@ -13,6 +13,20 @@ import { CONTENT_DIR } from './globals';
 import { buildEdges, loadAll, resolveWikilink } from './loader';
 
 /**
+ * Compare two entities: ranked entities sort first (ascending), unranked
+ * entities fall back to locale-aware name order. Exported so load functions
+ * can reuse the same comparator without duplicating it.
+ */
+export function byRankThenName(a: Entity, b: Entity): number {
+	const aRank = a.meta.rank;
+	const bRank = b.meta.rank;
+	if (aRank !== undefined && bRank !== undefined) return aRank - bRank;
+	if (aRank !== undefined) return -1;
+	if (bRank !== undefined) return 1;
+	return a.meta.name.localeCompare(b.meta.name);
+}
+
+/**
  * In-memory worldbuilding graph, built from the `content/` directory at boot
  * and kept fresh in dev via the file watcher (see `watcher.ts`).
  *
@@ -278,7 +292,7 @@ export class Graph {
 		for (const cluster of this.clusters()) {
 			for (const e of this.byFolderRecursive(`${cluster}/${shelf}`)) out.push(e);
 		}
-		out.sort((a, b) => a.meta.name.localeCompare(b.meta.name));
+		out.sort(byRankThenName);
 		return out;
 	}
 
@@ -327,7 +341,7 @@ export class Graph {
 		for (const e of this.#entities.values()) {
 			if (e.kindLinks.includes(kindId)) out.push(e);
 		}
-		out.sort((a, b) => a.meta.name.localeCompare(b.meta.name));
+		out.sort(byRankThenName);
 		return out;
 	}
 
@@ -356,7 +370,7 @@ export class Graph {
 			}
 		}
 		for (const arr of byField.values()) {
-			arr.sort((a, b) => a.meta.name.localeCompare(b.meta.name));
+			arr.sort(byRankThenName);
 		}
 		return byField;
 	}

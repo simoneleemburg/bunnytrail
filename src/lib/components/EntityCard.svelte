@@ -18,6 +18,8 @@
 		era?: string | null;
 		/** Optional sigil glyph rendered before the name. */
 		sigil?: string | null;
+		/** Optional sort rank from frontmatter. Displayed as "AXIOM · 2". */
+		rank?: number | null;
 	}
 
 	let {
@@ -29,13 +31,14 @@
 		summaryHtml = null,
 		tags = [],
 		era = null,
-		sigil = null
+		sigil = null,
+		rank = null
 	}: Props = $props();
 </script>
 
 <article class="entity-card">
 	<div class="eyebrow">
-		<span class="type">{kind ?? type}</span>
+		<span class="type">{kind ?? type}</span>{#if rank != null}<span class="sep">·</span><span class="rank">{rank}</span>{/if}
 		{#if era}
 			<span class="sep">·</span>
 			<span class="era">{era}</span>
@@ -99,6 +102,13 @@
 
 	.sep {
 		margin: 0 var(--space-2);
+	}
+
+	/* Rank shares the eyebrow register but is lighter than the kind
+	   label — a secondary ordering signal, not an identity label. */
+	.rank {
+		color: var(--ink-faint);
+		font-weight: 400;
 	}
 
 	.name {
