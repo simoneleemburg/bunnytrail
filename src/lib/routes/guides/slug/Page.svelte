@@ -22,7 +22,7 @@
 		<p class="eyebrow">{data.eyebrow}</p>
 		<h1>{data.title}</h1>
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-		<p class="lede">{@html data.summaryHtml}</p>
+		<p class="bt-lede">{@html data.summaryHtml}</p>
 	</header>
 
 	<div class="bt-fleuron" aria-hidden="true">
@@ -64,11 +64,8 @@
 	}
 
 	.lede {
-		color: var(--ink-soft);
 		text-align: left;
 		margin: 0;
-		line-height: var(--leading-relaxed);
-		font-style: italic;
 	}
 
 	/* The body. Prose lines stay narrow and centered; inline-svg

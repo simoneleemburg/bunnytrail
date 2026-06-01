@@ -53,9 +53,9 @@
 	{/if}
 
 	{#if data.lede}
-		<div class="lede">{@html data.lede}</div>
+		<div class="bt-lede">{@html data.lede}</div>
 	{:else}
-		<div class="lede">
+		<div class="bt-lede">
 			<p>
 				Author <code>content_meta/world.md</code> to set this world&rsquo;s name, tagline, and
 				homepage intro. The body of that file is rendered here as the hero lede.
@@ -245,29 +245,26 @@
 		margin: 0 0 var(--space-6);
 	}
 
-	.lede {
-		color: var(--ink-soft);
+	.bt-lede {
 		font-size: var(--text-lg);
-		font-style: italic;
-		line-height: var(--leading-relaxed);
 		text-align: left;
 		margin: 0 auto;
 	}
 
-	.lede p {
+	.bt-lede p {
 		margin: 0 0 var(--space-4);
 	}
 
-	.lede p:last-child {
+	.bt-lede p:last-child {
 		margin-bottom: 0;
 	}
 
-	.lede :global(em) {
+	.bt-lede :global(em) {
 		font-style: italic;
 		color: var(--ink);
 	}
 
-	.lede :global(.closing) {
+	.bt-lede :global(.closing) {
 		margin-top: var(--space-5);
 		color: var(--ink);
 	}

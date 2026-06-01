@@ -413,3 +413,164 @@ blockquote {
 	width: auto;
 	height: 1.1em;
 }
+
+/* ── Notebook surface ──────────────────────────────────────────
+   Shared visual frame for all author's-room pages: blog posts,
+   craft sheets, sources index. Dashed border + tinted background
+   signals "out of world" register vs the parchment compendium. */
+.bt-notebook {
+	max-width: var(--prose-max);
+	margin: 0 auto;
+	padding: var(--space-6) var(--space-6) var(--space-7);
+	background: color-mix(in oklab, var(--ink) 4%, var(--page) 96%);
+	border: 1px dashed var(--rule);
+	border-radius: var(--radius-sm);
+	color: var(--ink);
+}
+
+@media (max-width: 40rem) {
+	.bt-notebook {
+		padding: var(--space-5) var(--space-4) var(--space-6);
+	}
+}
+
+/* Running breadcrumb / nav bar at the top of a notebook surface. */
+.bt-notebook__frame {
+	font-size: var(--text-xs);
+	font-variant-caps: all-small-caps;
+	letter-spacing: 0.08em;
+	color: var(--ink-faint);
+	padding-bottom: var(--space-3);
+	border-bottom: 1px dashed var(--rule);
+}
+
+.bt-notebook__frame a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.bt-notebook__frame a:hover {
+	color: var(--accent);
+}
+
+/* Notebook page title. Sans-serif (or serif fallback) at 2xl,
+   heavier weight than the compendium h1. */
+.bt-notebook__title {
+	margin: 0 0 var(--space-3);
+	font-family: var(--font-sans, var(--font-serif));
+	font-weight: 600;
+	font-size: var(--text-2xl);
+	line-height: var(--leading-tight);
+	color: var(--ink);
+}
+
+/* Small-caps eyebrow above the notebook title. */
+.bt-notebook__eyebrow {
+	margin: 0 0 var(--space-2);
+	font-variant-caps: all-small-caps;
+	letter-spacing: 0.14em;
+	font-size: var(--text-xs);
+	color: var(--ink-faint);
+}
+
+/* h2 inside notebook prose: dashed underline signals the
+   author's-room register (vs the compendium's centred h2). */
+.bt-notebook__prose h2 {
+	font-size: var(--text-lg);
+	font-weight: 600;
+	margin: var(--space-6) 0 var(--space-3);
+	padding-bottom: var(--space-2);
+	border-bottom: 1px dashed var(--rule);
+	color: var(--ink);
+}
+
+.bt-notebook__prose h3 {
+	font-size: var(--text-base);
+	font-weight: 600;
+	margin: var(--space-5) 0 var(--space-2);
+	color: var(--ink);
+}
+
+/* ── Shared prose reset ────────────────────────────────────────
+   Inline prose block used on entity, craft, blog, kind, and
+   guide pages. Sets base color and tightens default margins.
+   Blockquote uses --rule (not --rule-bold) for a softer register
+   matching the notebook surfaces. */
+.bt-prose {
+	color: var(--ink);
+}
+
+.bt-prose p,
+.bt-prose ul,
+.bt-prose ol {
+	margin: 0 0 var(--space-4);
+}
+
+.bt-prose ul,
+.bt-prose ol {
+	padding-left: var(--space-5);
+}
+
+.bt-prose li {
+	margin: 0 0 var(--space-2);
+}
+
+.bt-prose blockquote {
+	margin: var(--space-4) 0;
+	padding-left: var(--space-4);
+	border-left: 2px solid var(--rule);
+	color: var(--ink-soft);
+	font-style: italic;
+}
+
+.bt-prose em {
+	color: var(--ink-soft);
+}
+
+/* ── Kind tree nodes ───────────────────────────────────────────
+   Shared between KindsIndexPage and KindPage. */
+.bt-kind-link {
+	display: inline-flex;
+	align-items: baseline;
+	gap: var(--space-3);
+	text-decoration: none;
+	color: inherit;
+	width: fit-content;
+}
+
+.bt-kind-link:hover .bt-kind-name {
+	color: var(--accent);
+}
+
+.bt-kind-name {
+	font-family: var(--font-display);
+	font-size: var(--text-lg);
+	color: var(--ink);
+}
+
+.bt-kind-name.muted {
+	color: var(--ink-faint);
+	font-style: italic;
+	font-size: var(--text-base);
+}
+
+.bt-kind-label {
+	font-family: var(--font-serif);
+	font-size: var(--text-sm);
+	font-style: italic;
+	color: var(--ink-soft);
+}
+
+.bt-kind-count {
+	font-size: var(--text-xs);
+	font-variant: tabular-nums small-caps;
+	color: var(--ink-faint);
+}
+
+/* ── Lede paragraph ────────────────────────────────────────────
+   Italic intro paragraph used on the home hero and guide pages. */
+.bt-lede {
+	color: var(--ink-soft);
+	font-style: italic;
+	line-height: var(--leading-relaxed);
+}

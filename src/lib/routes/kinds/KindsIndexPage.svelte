@@ -14,15 +14,15 @@
 {#snippet branch(node: KindNode)}
 	<li class="kind" class:linked={node.href !== null}>
 		{#if node.href}
-			<a class="kind-link" href={node.href}>
-				<span class="kind-name">{node.kind}</span>
+			<a class="bt-kind-link" href={node.href}>
+				<span class="bt-kind-name">{node.kind}</span>
 				{#if node.label && node.label.toLowerCase() !== node.kind}
-					<span class="kind-label">{node.label}</span>
+					<span class="bt-kind-label">{node.label}</span>
 				{/if}
-				<span class="kind-count">{node.count}</span>
+				<span class="bt-kind-count">{node.count}</span>
 			</a>
 		{:else}
-			<span class="kind-name muted">{node.kind}</span>
+			<span class="bt-kind-name muted">{node.kind}</span>
 		{/if}
 		{#if node.children.length > 0}
 			<ul class="children">
@@ -50,8 +50,8 @@
 		<ul class="unregistered-list">
 			{#each data.unregistered as item (item.kind)}
 				<li>
-					<span class="kind-name muted">{item.kind}</span>
-					<span class="kind-count">{item.count}</span>
+					<span class="bt-kind-name muted">{item.kind}</span>
+					<span class="bt-kind-count">{item.count}</span>
 				</li>
 			{/each}
 		</ul>
@@ -89,44 +89,6 @@
 	.kind {
 		display: flex;
 		flex-direction: column;
-	}
-
-	.kind-link {
-		display: inline-flex;
-		align-items: baseline;
-		gap: var(--space-3);
-		text-decoration: none;
-		color: inherit;
-		width: fit-content;
-	}
-
-	.kind-link:hover .kind-name {
-		color: var(--accent);
-	}
-
-	.kind-name {
-		font-family: var(--font-display);
-		font-size: var(--text-lg);
-		color: var(--ink);
-	}
-
-	.kind-name.muted {
-		color: var(--ink-faint);
-		font-style: italic;
-		font-size: var(--text-base);
-	}
-
-	.kind-label {
-		font-family: var(--font-serif);
-		font-size: var(--text-sm);
-		font-style: italic;
-		color: var(--ink-soft);
-	}
-
-	.kind-count {
-		font-size: var(--text-xs);
-		font-variant: tabular-nums small-caps;
-		color: var(--ink-faint);
 	}
 
 	.unregistered {

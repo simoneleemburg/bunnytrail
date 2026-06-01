@@ -17,10 +17,10 @@
 	title — even though the content here is a list of posts
 	rather than a single prose column.
 -->
-<section class="notebook-index">
+<section class="bt-notebook">
 	<header class="head">
-		<p class="eyebrow">Working notes</p>
-		<h1 class="title">Notebook</h1>
+		<p class="bt-notebook__eyebrow">Working notes</p>
+		<h1 class="bt-notebook__title">Notebook</h1>
 		<p class="sub">
 			Author&rsquo;s-room reflections on building {page.data.world.name}. Out-of-world; not part of the
 			compendium.
@@ -54,46 +54,10 @@
 </section>
 
 <style>
-	/* Shared notebook surface — identical to .craft in
-	   CraftPage.svelte so the two pages read as the same
-	   author's-room artefact. */
-	.notebook-index {
-		max-width: var(--prose-max);
-		margin: 0 auto;
-		padding: var(--space-6) var(--space-6) var(--space-7);
-		background: color-mix(in oklab, var(--ink) 4%, var(--page) 96%);
-		border: 1px dashed var(--rule);
-		border-radius: var(--radius-sm);
-		color: var(--ink);
-	}
-
-	@media (max-width: 40rem) {
-		.notebook-index {
-			padding: var(--space-5) var(--space-4) var(--space-6);
-		}
-	}
-
 	.head {
 		margin: 0 0 var(--space-6);
 		padding-bottom: var(--space-5);
 		border-bottom: 1px dashed var(--rule);
-	}
-
-	.eyebrow {
-		margin: 0 0 var(--space-2);
-		font-variant-caps: all-small-caps;
-		letter-spacing: 0.14em;
-		font-size: var(--text-xs);
-		color: var(--ink-faint);
-	}
-
-	.title {
-		margin: 0 0 var(--space-3);
-		font-family: var(--font-sans, var(--font-serif));
-		font-weight: 600;
-		font-size: var(--text-2xl);
-		line-height: var(--leading-tight);
-		color: var(--ink);
 	}
 
 	.sub {

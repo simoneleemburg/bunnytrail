@@ -18,10 +18,10 @@
 	one feeder work; the small bar on the right is how much of
 	that project has already landed in the compendium.
 -->
-<section class="sources-index">
+<section class="bt-notebook">
 	<header class="head">
-		<p class="eyebrow">Workbench</p>
-		<h1 class="title">Source projects</h1>
+		<p class="bt-notebook__eyebrow">Workbench</p>
+		<h1 class="bt-notebook__title">Source projects</h1>
 		<p class="sub">
 			The feeder works being absorbed into {page.data.world.name}. Out-of-world; ordered newest first.
 		</p>
@@ -75,48 +75,16 @@
 </section>
 
 <style>
-	/* Shared notebook surface — mirrors .notebook-index in /blog
-	   so the two out-of-world index pages read as a paired set.
-	   Wider than prose-max because each row is a small table of
-	   year, project, and integration bar; --prose-max squeezes
-	   the title-row pills onto two lines. */
-	.sources-index {
+	/* Sources is wider than prose-max: each row is a small table
+	   of year, project, and integration bar. */
+	.bt-notebook {
 		max-width: 48rem;
-		margin: 0 auto;
-		padding: var(--space-6) var(--space-6) var(--space-7);
-		background: color-mix(in oklab, var(--ink) 4%, var(--page) 96%);
-		border: 1px dashed var(--rule);
-		border-radius: var(--radius-sm);
-		color: var(--ink);
-	}
-
-	@media (max-width: 40rem) {
-		.sources-index {
-			padding: var(--space-5) var(--space-4) var(--space-6);
-		}
 	}
 
 	.head {
 		margin: 0 0 var(--space-6);
 		padding-bottom: var(--space-5);
 		border-bottom: 1px dashed var(--rule);
-	}
-
-	.eyebrow {
-		margin: 0 0 var(--space-2);
-		font-variant-caps: all-small-caps;
-		letter-spacing: 0.14em;
-		font-size: var(--text-xs);
-		color: var(--ink-faint);
-	}
-
-	.title {
-		margin: 0 0 var(--space-3);
-		font-family: var(--font-sans, var(--font-serif));
-		font-weight: 600;
-		font-size: var(--text-2xl);
-		line-height: var(--leading-tight);
-		color: var(--ink);
 	}
 
 	.sub {
