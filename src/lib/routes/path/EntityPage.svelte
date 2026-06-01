@@ -349,9 +349,13 @@
 	}
 
 	.layout {
+		--sidebar-w: 12rem;
+		--prose-w: 48rem;
 		--layout-max: min(80rem, calc(100vw - 2 * var(--space-8)));
 		display: grid;
-		grid-template-columns: 1fr minmax(0, var(--prose-max)) 1fr 16rem;
+		/* Ghost column mirrors the sidebar so the two 1fr gutters are
+		   symmetric and the prose column sits at true visual centre. */
+		grid-template-columns: var(--sidebar-w) 1fr minmax(0, var(--prose-w)) 1fr var(--sidebar-w);
 		gap: 0 var(--space-5);
 		align-items: start;
 		width: var(--layout-max);
@@ -359,12 +363,12 @@
 	}
 
 	.prose {
-		grid-column: 2;
+		grid-column: 3;
 		min-width: 0;
 	}
 
 	.sidebar {
-		grid-column: 4;
+		grid-column: 5;
 	}
 
 	@media (max-width: 60rem) {
@@ -380,7 +384,7 @@
 	}
 
 	.prose {
-		max-width: var(--prose-max);
+		max-width: var(--prose-w);
 		color: var(--ink);
 	}
 

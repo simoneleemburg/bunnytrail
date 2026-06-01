@@ -740,7 +740,7 @@
 	.collection-body {
 		max-width: var(--prose-max);
 		color: var(--ink);
-		margin: 0 0 var(--space-6) 0;
+		margin: 0 auto var(--space-6);
 	}
 
 	.collection-body :global(h2) {
