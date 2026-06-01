@@ -55,6 +55,21 @@
 		data.clusterOptions.find((o) => o.selected)?.label ?? data.world.allScopeLabel
 	);
 
+	// Path-derived hooks for world CSS. `data-bt-path` carries the
+	// full pathname (sans leading slash); `data-bt-section` carries
+	// only the first segment. Together they let world CSS scope
+	// theming to a region of the world without the world having to
+	// touch the engine — e.g. `[data-bt-section="foundation"]
+	// .bt-link[data-bt-slug="harmonia"] { color: gold }` to gild
+	// Harmonia mentions only when the reader is reading foundation
+	// content. The empty home page (`/`) yields empty values for
+	// both, which CSS attribute selectors won't match.
+	let pathAttrs = $derived.by(() => {
+		const raw = $page.url.pathname.replace(/^\/+/, '').replace(/\/+$/, '');
+		const section = raw.split('/')[0] ?? '';
+		return { path: raw, section };
+	});
+
 	// In-app navigation hook: when the user is browsing in All
 	// scope, paint `?scope=all` onto outgoing internal links that
 	// would otherwise look scoped (i.e. start with a cluster prefix).
@@ -239,7 +254,7 @@
 		{/if}
 	</header>
 
-	<main>
+	<main data-bt-path={pathAttrs.path} data-bt-section={pathAttrs.section}>
 		{@render children()}
 	</main>
 
