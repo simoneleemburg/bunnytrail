@@ -118,13 +118,28 @@ a[data-broken='true'] {
 	cursor: help;
 }
 
-/* Section rule. Plain hairline by default; a world theme can
-   decorate this with a centred ornament glyph by setting
-   --ornament-glyph in tokens (and styling hr::before). */
+/* Section rule. Fading gradient hairline by default; a world
+   theme can add a centred ornament by styling hr::before with
+   content: var(--ornament-glyph). The flex + overflow:visible
+   setup is here so the ::before glyph sits centred over the
+   line without requiring any theme layout work. */
 hr {
 	border: 0;
-	height: 1px;
-	background: var(--rule);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 1em;
+	background-image: linear-gradient(
+		to right,
+		transparent 0%,
+		var(--rule) 20%,
+		var(--rule) 80%,
+		transparent 100%
+	);
+	background-size: 100% 1px;
+	background-position: center;
+	background-repeat: no-repeat;
+	overflow: visible;
 	margin: var(--space-6) 0;
 }
 
