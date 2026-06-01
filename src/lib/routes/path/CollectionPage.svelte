@@ -363,9 +363,12 @@
 	rule. Glyph resolves to --ornament-glyph (e.g. ✶ in Alteria) so
 	each world stamps its own mark. When the token is empty the
 	divider collapses to a centred hairline.
-	Only rendered when the collection has intro prose, OR when there is no
-	toolbar (no view-toggle) — in which case the fleuron provides the only
-	visual break between the header and the card grid.
+
+	Four cases:
+	  prose + toolbar  → fleuron, prose, toolbar (gradient rule), grid
+	  prose + no toolbar → fleuron, prose, fleuron, grid   (second fleuron added after prose below)
+	  no prose + toolbar → toolbar (gradient rule), grid
+	  no prose + no toolbar → fleuron, grid
 -->
 {#if data.bodyHtml || !hasViewToggle}
 	<div class="bt-fleuron" aria-hidden="true">
@@ -377,6 +380,13 @@
 
 {#if data.bodyHtml}
 	<div class="collection-body">{@html data.bodyHtml}</div>
+	{#if !hasViewToggle}
+		<div class="bt-fleuron" aria-hidden="true">
+			<span class="bt-fleuron__rule"></span>
+			<span class="bt-fleuron__glyph"></span>
+			<span class="bt-fleuron__rule"></span>
+		</div>
+	{/if}
 {/if}
 
 {#if data.flat.length === 0}
