@@ -348,10 +348,16 @@ blockquote {
 }
 
 /* Fleuron rule — the flanking hairline used in the home hero,
-   collection, and entity page fleurons. Declared globally so
-   theme CSS can override `background` without needing !important
-   or fighting Svelte-scoped specificity. The layout properties
-   (flex, height) are kept in each component's scoped style. */
+   collection, and entity page fleurons. Gradient fade mirrors
+   the <hr> and masthead rule: solid in the centre, transparent
+   at the edges. Declared globally (not in scoped component
+   styles) so world theme.css can override background freely. */
 .bt-fleuron__rule {
-	background: var(--rule);
+	background: linear-gradient(
+		to right,
+		transparent 0%,
+		var(--rule) 20%,
+		var(--rule) 80%,
+		transparent 100%
+	);
 }
