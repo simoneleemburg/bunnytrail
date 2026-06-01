@@ -217,36 +217,6 @@
 		font-size: var(--text-sm);
 	}
 
-	/* Kind chip. Now lifted out of the meta row and rendered beside
-	   the title as a top-aligned editorial flag — same accent-deep
-	   small-caps treatment as the kind eyebrow on EntityCard, so the
-	   "what is this thing" label reads consistently across surfaces.
-	   `data-broken` flavour visually marks unregistered kinds the
-	   same way wikilinks mark unresolved targets. */
-	h1 .kind-chip {
-		font-family: var(--font-serif);
-		font-size: var(--text-sm);
-		font-variant-caps: all-small-caps;
-		letter-spacing: 0.1em;
-		font-weight: 600;
-		color: var(--accent-deep);
-		text-decoration: none;
-		margin-left: 0.6em;
-		vertical-align: top;
-		/* Nudge baseline up to sit at the title's cap-height. */
-		position: relative;
-		top: 0.55em;
-	}
-
-	h1 .kind-chip:hover {
-		color: var(--accent);
-	}
-
-	h1 .kind-chip[data-broken='true'] {
-		color: var(--broken, var(--ink-faint));
-		text-decoration: underline dotted;
-	}
-
 	h1 {
 		font-family: var(--font-display);
 		font-size: var(--text-3xl);
