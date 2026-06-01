@@ -236,47 +236,6 @@
 		color: transparent;
 	}
 
-	.bt-fleuron {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: var(--space-3);
-		margin: var(--space-4) auto var(--space-3);
-		max-width: 14rem;
-	}
-
-	.bt-fleuron__rule {
-		flex: 1;
-		height: 1px;
-	}
-
-	.bt-fleuron__glyph {
-		font-family: var(--font-display);
-		color: var(--accent-warm);
-		font-size: var(--text-base);
-		line-height: 1;
-	}
-
-	/* Unicode-glyph slot: when no rule.svg is present, the
-	   ornament is driven by the --ornament-glyph token so worlds
-	   can swap it (and have it match the masthead wordmark and
-	   <hr>::before in their theme). */
-	.bt-fleuron__glyph:not(.bt-fleuron__glyph--svg)::before {
-		content: var(--ornament-glyph, '');
-	}
-
-	/* SVG slot: size the inlined ruler asset and let strokes /
-	   fills resolve to currentColor (which is --accent-warm). */
-	.bt-fleuron__glyph--svg {
-		display: inline-flex;
-		align-items: center;
-		line-height: 0;
-	}
-	.bt-fleuron__glyph--svg :global(svg) {
-		height: 1.1em;
-		width: auto;
-	}
-
 	.hero-tagline {
 		font-family: var(--font-serif);
 		font-size: var(--text-sm);

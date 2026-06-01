@@ -348,32 +348,6 @@
 		max-width: var(--prose-max);
 	}
 
-	.bt-fleuron {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: var(--space-2);
-		max-width: 32rem;
-		margin: 0 auto var(--space-7);
-		color: var(--ink-faint);
-	}
-
-	.bt-fleuron__rule {
-		flex: 1;
-		height: 1px;
-	}
-
-	.bt-fleuron__glyph {
-		font-family: var(--font-display);
-		font-size: var(--text-base);
-		line-height: 1;
-		color: var(--accent-warm);
-	}
-
-	.bt-fleuron__glyph::before {
-		content: var(--ornament-glyph, '');
-	}
-
 	.layout {
 		--layout-max: min(80rem, calc(100vw - 2 * var(--space-8)));
 		display: grid;

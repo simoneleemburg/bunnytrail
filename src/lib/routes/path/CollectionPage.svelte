@@ -737,39 +737,6 @@
 		max-width: 32rem;
 	}
 
-	/* Collection fleuron — mirrors the home-hero divider but at a
-	   smaller scale, marking the boundary between the editorial
-	   header and the index body. The glyph is theme-driven via
-	   --ornament-glyph; the two flanking rules are short hairlines
-	   in --rule. Sits in its own block, centred, with breathing
-	   room above and below so it reads as a chapter mark rather
-	   than UI chrome. */
-	.bt-fleuron {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: var(--space-2);
-		max-width: 32rem;
-		margin: 0 auto var(--space-7);
-		color: var(--ink-faint);
-	}
-
-	.bt-fleuron__rule {
-		flex: 1;
-		height: 1px;
-	}
-
-	.bt-fleuron__glyph {
-		font-family: var(--font-display);
-		font-size: var(--text-base);
-		line-height: 1;
-		color: var(--accent-warm);
-	}
-
-	.bt-fleuron__glyph::before {
-		content: var(--ornament-glyph, '');
-	}
-
 	.collection-body {
 		max-width: var(--prose-max);
 		color: var(--ink);
