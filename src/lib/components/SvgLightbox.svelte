@@ -78,7 +78,10 @@
 	$effect(() => {
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		page.url.href;
-		if (dialog?.open) dialog.close();
+		if (dialog?.open) {
+			dialog.close();
+			clearHeldKeys();
+		}
 	});
 
 	// Map of `<text>` element → its intrinsic font-size in px,
@@ -378,6 +381,158 @@
 		else zoomAt(event.clientX, event.clientY, 2.5);
 	}
 
+	/**
+	 * Keyboard controls run through a requestAnimationFrame loop
+	 * rather than firing one step per keydown event. The OS-level
+	 * keyboard repeat has a large initial delay (~500ms) and a
+	 * coarse repeat rate (~30Hz typical), which produces visible
+	 * steppy motion. By tracking which keys are currently held in
+	 * `heldKeys` and integrating motion per frame, we get smooth
+	 * 60fps pan/zoom for the entire duration of the keypress.
+	 *
+	 *   Arrow keys → pan (scaled to zoom level for consistent feel)
+	 *   +/= → zoom in at center
+	 *   - → zoom out at center
+	 *   0 → reset to cover-fit (one-shot)
+	 *   Hold Shift → 3× pan / 2× zoom speed
+	 *
+	 * Motion keys are tracked by `event.code` rather than
+	 * `event.key`. The latter changes when modifiers shift the
+	 * character produced — Shift+Minus on a US layout fires
+	 * `key:"_"`, so a held-key set keyed on `key` would let "-"
+	 * leak out of `heldKeys` (we'd record "-" on initial keydown
+	 * before Shift, then on the keyup-after-Shift we'd see "_" and
+	 * fail to delete). `event.code` reports the physical key
+	 * regardless of modifier state.
+	 */
+	const heldKeys = new Set<string>();
+	let shiftHeld = $state(false);
+	let rafHandle = 0;
+	let lastFrameTime = 0;
+
+	// Pan velocity at scale=1, in screen pixels per second. Tuned
+	// so a held arrow crosses ~half the viewport in a second.
+	const PAN_SPEED = 600;
+	// Zoom velocity in scale-multiplier per second. 1.8 means scale
+	// roughly doubles every second of held +/-.
+	const ZOOM_SPEED = 2.5;
+	const SHIFT_PAN_MULTIPLIER = 3;
+	const SHIFT_ZOOM_MULTIPLIER = 2;
+
+	// Physical keys we treat as motion. KeyboardEvent.code values are
+	// US-layout-stable: Minus / Equal are the physical keys that on
+	// US layouts produce -, =, _, +. NumpadAdd / NumpadSubtract cover
+	// the numeric keypad. Equal also doubles as zoom-in because + lives
+	// on Shift+Equal — pressing Shift+Equal still reports code:"Equal".
+	const MOTION_CODES = new Set([
+		'ArrowLeft',
+		'ArrowRight',
+		'ArrowUp',
+		'ArrowDown',
+		'Minus',
+		'NumpadSubtract',
+		'Equal',
+		'NumpadAdd'
+	]);
+	const ZOOM_IN_CODES = new Set(['Equal', 'NumpadAdd']);
+	const ZOOM_OUT_CODES = new Set(['Minus', 'NumpadSubtract']);
+
+	function tick(now: number) {
+		const dt = lastFrameTime ? Math.min((now - lastFrameTime) / 1000, 0.1) : 0;
+		lastFrameTime = now;
+		const panMul = shiftHeld ? SHIFT_PAN_MULTIPLIER : 1;
+		const zoomMul = shiftHeld ? SHIFT_ZOOM_MULTIPLIER : 1;
+
+		if (dt > 0) {
+			let dx = 0;
+			let dy = 0;
+			if (heldKeys.has('ArrowLeft')) dx += 1;
+			if (heldKeys.has('ArrowRight')) dx -= 1;
+			if (heldKeys.has('ArrowUp')) dy += 1;
+			if (heldKeys.has('ArrowDown')) dy -= 1;
+			if (dx !== 0 || dy !== 0) {
+				const step = PAN_SPEED * panMul * dt;
+				panBy(dx * step, dy * step);
+			}
+
+			let zoomDir = 0;
+			for (const code of ZOOM_IN_CODES) if (heldKeys.has(code)) zoomDir += 1;
+			for (const code of ZOOM_OUT_CODES) if (heldKeys.has(code)) zoomDir -= 1;
+			if (zoomDir !== 0 && stage) {
+				const rect = stage.getBoundingClientRect();
+				const factor = Math.pow(ZOOM_SPEED * zoomMul, zoomDir * dt);
+				zoomAt(rect.left + rect.width / 2, rect.top + rect.height / 2, scale * factor);
+			}
+		}
+
+		// Keep ticking only while motion keys are still down. Shift
+		// alone doesn't keep the loop alive — it's a modifier, not
+		// a motion key.
+		if (hasMotionKey()) {
+			rafHandle = requestAnimationFrame(tick);
+		} else {
+			rafHandle = 0;
+			lastFrameTime = 0;
+		}
+	}
+
+	function hasMotionKey() {
+		for (const code of heldKeys) if (MOTION_CODES.has(code)) return true;
+		return false;
+	}
+
+	function startTicking() {
+		if (rafHandle) return;
+		lastFrameTime = 0;
+		rafHandle = requestAnimationFrame(tick);
+	}
+
+	function onKeyDown(event: KeyboardEvent) {
+		if (!dialog?.open) return;
+		// Reset is a one-shot — handle by `event.key` because the
+		// physical key for "0" varies (Digit0 vs Numpad0) and we
+		// don't care which.
+		if (event.key === '0') {
+			event.preventDefault();
+			reset();
+			return;
+		}
+		if (event.key === 'Shift') {
+			shiftHeld = true;
+			return;
+		}
+		if (MOTION_CODES.has(event.code)) {
+			event.preventDefault();
+			// Browser autorepeat fires keydown over and over while a
+			// key is held. We only need the first one — the rAF loop
+			// integrates motion from there. Ignoring repeats keeps
+			// the held-key set clean and prevents spurious work.
+			if (event.repeat) return;
+			heldKeys.add(event.code);
+			startTicking();
+		}
+	}
+
+	function onKeyUp(event: KeyboardEvent) {
+		if (event.key === 'Shift') {
+			shiftHeld = false;
+			return;
+		}
+		heldKeys.delete(event.code);
+		// The loop self-terminates next frame when hasMotionKey() goes
+		// false — no need to cancelAnimationFrame here.
+	}
+
+	function clearHeldKeys() {
+		heldKeys.clear();
+		shiftHeld = false;
+		if (rafHandle) {
+			cancelAnimationFrame(rafHandle);
+			rafHandle = 0;
+		}
+		lastFrameTime = 0;
+	}
+
 	onMount(() => {
 		function onTriggerClick(event: MouseEvent) {
 			const target = event.target as Element | null;
@@ -455,6 +610,7 @@
 			const cap = figure.querySelector('figcaption');
 			captionText = cap?.textContent?.trim() ?? '';
 			dialog.showModal();
+			showHintBriefly();
 			// Stage layout settles after showModal + caption render.
 			// Wait one frame so the grid row sizing is final before
 			// we measure.
@@ -462,10 +618,19 @@
 		}
 
 		document.addEventListener('click', onTriggerClick);
+		window.addEventListener('keydown', onKeyDown);
+		window.addEventListener('keyup', onKeyUp);
+		// Clear held-key state if focus leaves the window — otherwise
+		// a key released while the tab is in the background never
+		// fires keyup and the loop would keep panning forever.
+		window.addEventListener('blur', clearHeldKeys);
 		const onResize = () => sizeWrapperToStage();
 		window.addEventListener('resize', onResize);
 		return () => {
 			document.removeEventListener('click', onTriggerClick);
+			window.removeEventListener('keydown', onKeyDown);
+			window.removeEventListener('keyup', onKeyUp);
+			window.removeEventListener('blur', clearHeldKeys);
 			window.removeEventListener('resize', onResize);
 		};
 	});
@@ -476,6 +641,13 @@
 
 	function close() {
 		dialog?.close();
+		clearHeldKeys();
+		hintVisible = false;
+		hintPinned = false;
+		if (hintTimer) {
+			clearTimeout(hintTimer);
+			hintTimer = null;
+		}
 	}
 
 	// Debug HUD: semantic level derived from the same threshold table
@@ -485,15 +657,85 @@
 			SEMANTIC_ZOOM_THRESHOLDS.findIndex((threshold: number) => scale <= threshold)
 		] || 'max'
 	);
+
+	// Keyboard-shortcut hint visibility. Shown for ~4s on every open
+	// so first-time users discover the controls; the `?` toggle in
+	// the chrome lets returning users summon it on demand. Pinned
+	// (clicked rather than auto-shown) hints stay until dismissed.
+	let hintVisible = $state(false);
+	let hintPinned = $state(false);
+	let hintTimer: ReturnType<typeof setTimeout> | null = null;
+
+	function showHintBriefly() {
+		hintVisible = true;
+		hintPinned = false;
+		if (hintTimer) clearTimeout(hintTimer);
+		hintTimer = setTimeout(() => {
+			if (!hintPinned) hintVisible = false;
+			hintTimer = null;
+		}, 4000);
+	}
+
+	function toggleHint() {
+		if (hintVisible) {
+			hintVisible = false;
+			hintPinned = false;
+			if (hintTimer) {
+				clearTimeout(hintTimer);
+				hintTimer = null;
+			}
+		} else {
+			hintVisible = true;
+			hintPinned = true;
+			if (hintTimer) {
+				clearTimeout(hintTimer);
+				hintTimer = null;
+			}
+		}
+	}
 </script>
 
 <dialog bind:this={dialog} class="bt-svg-lightbox" onclick={onDialogClick}>
 	<div class="frame">
 		<button type="button" class="close" onclick={close} aria-label="Close">✕</button>
+		<button
+			type="button"
+			class="help-toggle"
+			onclick={toggleHint}
+			aria-label="Keyboard shortcuts"
+			aria-expanded={hintVisible}
+			aria-pressed={hintPinned}
+		>?</button>
 		<div class="zoom-hud" aria-hidden="true">
 			<span class="zoom-hud__scale">{scale.toFixed(2)}×</span>
 			<span class="zoom-hud__level">{zoomLevel}</span>
 		</div>
+		{#if hintVisible}
+			<div class="hint" role="note" aria-label="Keyboard shortcuts">
+				<dl class="hint__rows">
+					<div class="hint__row">
+						<dt><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd></dt>
+						<dd>Pan</dd>
+					</div>
+					<div class="hint__row">
+						<dt><kbd>+</kbd><kbd>−</kbd></dt>
+						<dd>Zoom</dd>
+					</div>
+					<div class="hint__row">
+						<dt><kbd>Shift</kbd></dt>
+						<dd>Hold for faster pan/zoom</dd>
+					</div>
+					<div class="hint__row">
+						<dt><kbd>0</kbd></dt>
+						<dd>Reset</dd>
+					</div>
+					<div class="hint__row">
+						<dt><kbd>Esc</kbd></dt>
+						<dd>Close</dd>
+					</div>
+				</dl>
+			</div>
+		{/if}
 		<div
 			class="stage"
 			role="presentation"
@@ -664,5 +906,112 @@
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
 		color: var(--accent);
+	}
+
+	.help-toggle {
+		position: absolute;
+		top: var(--space-3);
+		/* Sits to the left of the close button: close is 2.5rem
+		   wide at right=space-3, so this lands flush against it
+		   with one space-2 gap. */
+		right: calc(var(--space-3) + 2.5rem + var(--space-2));
+		width: 2.5rem;
+		height: 2.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--vellum);
+		color: var(--ink-soft);
+		border: 1px solid var(--rule);
+		border-radius: var(--radius-md);
+		font-family: var(--font-serif, ui-serif, serif);
+		font-size: 1.2rem;
+		font-style: italic;
+		cursor: pointer;
+		z-index: 2;
+	}
+
+	.help-toggle:hover,
+	.help-toggle:focus-visible,
+	.help-toggle[aria-pressed='true'] {
+		color: var(--accent);
+		background: var(--parchment-soft);
+		outline: none;
+	}
+
+	.hint {
+		position: absolute;
+		/* Anchor below the zoom HUD on the right rail. zoom-hud sits
+		   at top = space-3 + 2.5rem (close height) + space-2; its
+		   own height is roughly 1.6rem (text-sm + padding). */
+		top: calc(var(--space-3) + 2.5rem + var(--space-2) + 2rem + var(--space-2));
+		right: var(--space-3);
+		max-width: 18rem;
+		padding: var(--space-2) var(--space-3);
+		background: var(--vellum);
+		color: var(--ink-soft);
+		border: 1px solid var(--rule);
+		border-radius: var(--radius-md);
+		font-size: var(--text-sm);
+		z-index: 2;
+		/* Fade-in: paired with the {#if} block, the panel mounts
+		   transparent and animates in. The auto-fade timer simply
+		   unmounts it; the closing transition is handled by the
+		   browser's default unmount (instant) — keeping the code
+		   simple. If we want a fade-out we'd switch to a Svelte
+		   `transition:fade`, but for a hint that's overkill. */
+		animation: hint-in 200ms ease-out;
+	}
+
+	@keyframes hint-in {
+		from {
+			opacity: 0;
+			transform: translateY(-4px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.hint__rows {
+		margin: 0;
+		display: grid;
+		gap: 0.4rem;
+	}
+
+	.hint__row {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: var(--space-3);
+		align-items: center;
+	}
+
+	.hint__row dt {
+		display: flex;
+		gap: 0.25rem;
+		flex-wrap: wrap;
+	}
+
+	.hint__row dd {
+		margin: 0;
+		color: var(--ink-soft);
+	}
+
+	.hint kbd {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 1.4rem;
+		height: 1.4rem;
+		padding: 0 0.35rem;
+		background: var(--parchment);
+		color: var(--ink);
+		border: 1px solid var(--rule);
+		border-radius: var(--radius-sm, 0.25rem);
+		font-family: var(--font-mono, ui-monospace, monospace);
+		font-size: 0.75rem;
+		line-height: 1;
+		box-shadow: inset 0 -1px 0 var(--rule);
 	}
 </style>
