@@ -574,3 +574,23 @@ blockquote {
 	font-style: italic;
 	line-height: var(--leading-relaxed);
 }
+
+/* ── Formula display block ─────────────────────────────────────
+   Rendered from ```formula fenced blocks in entity prose.
+   Treated as an inscribed display element — large, centred,
+   italic display face with generous vertical breathing room and
+   a modest horizontal indent so it sits inset from the prose
+   column edges. Worlds can re-dress via theme.css. */
+.bt-formula {
+	font-family: var(--font-display);
+	font-style: italic;
+	font-size: var(--text-2xl);
+	line-height: var(--leading-tight);
+	color: var(--ink);
+	text-align: center;
+	font-feature-settings: 'onum' 0; /* lining numerals — the 1 reads as numeric */
+	letter-spacing: 0.04em;
+	padding: var(--space-6) var(--space-8);
+	margin: 0 auto;
+	max-width: var(--prose-max);
+}

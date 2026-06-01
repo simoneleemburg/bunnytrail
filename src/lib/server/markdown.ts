@@ -362,6 +362,16 @@ export function renderBody(
 		const idAttr = id ? ` id="${id}"` : '';
 		return `<h${depth}${idAttr}>${inlineHtml}</h${depth}>\n`;
 	};
+	// `formula` fenced blocks render as a styled display element rather
+	// than a <pre><code> block. All other language tags fall through to
+	// marked's default renderer.
+	const defaultCode = renderer.code.bind(renderer);
+	renderer.code = (token) => {
+		if (token.lang === 'formula') {
+			return `<div class="bt-formula">${escapeHtml(token.text)}</div>\n`;
+		}
+		return defaultCode(token);
+	};
 
 	const html = marked.parse(rewritten, { async: false, renderer }) as string;
 	// Authors sometimes scaffold prose with raw HTML chrome (`<dl>`,
@@ -565,6 +575,13 @@ export function renderPlainBody(body: string): string {
 		}
 		const idAttr = id ? ` id="${id}"` : '';
 		return `<h${depth}${idAttr}>${inlineHtml}</h${depth}>\n`;
+	};
+	const defaultCode = renderer.code.bind(renderer);
+	renderer.code = (token) => {
+		if (token.lang === 'formula') {
+			return `<div class="bt-formula">${escapeHtml(token.text)}</div>\n`;
+		}
+		return defaultCode(token);
 	};
 	return marked.parse(body, { async: false, renderer }) as string;
 }
