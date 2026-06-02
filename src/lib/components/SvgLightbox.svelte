@@ -875,9 +875,9 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: var(--vellum);
-		color: var(--ink-soft);
-		border: 1px solid var(--rule);
+		background: var(--bt-lightbox-chrome-bg, var(--vellum));
+		color: var(--bt-lightbox-chrome-color, var(--ink-soft));
+		border: 1px solid var(--bt-lightbox-chrome-border, var(--rule));
 		border-radius: var(--radius-md);
 		font-size: 1.1rem;
 		cursor: pointer;
@@ -887,8 +887,8 @@
 
 	.close:hover,
 	.close:focus-visible {
-		color: var(--accent);
-		background: var(--parchment-soft);
+		color: var(--bt-lightbox-chrome-hover-color, var(--accent));
+		background: var(--bt-lightbox-chrome-hover-bg, var(--parchment-soft));
 		outline: none;
 	}
 
@@ -900,9 +900,9 @@
 		gap: var(--space-2);
 		align-items: baseline;
 		padding: 0.35rem 0.7rem;
-		background: var(--vellum);
-		color: var(--ink-soft);
-		border: 1px solid var(--rule);
+		background: var(--bt-lightbox-chrome-bg, var(--vellum));
+		color: var(--bt-lightbox-chrome-color, var(--ink-soft));
+		border: 1px solid var(--bt-lightbox-chrome-border, var(--rule));
 		border-radius: var(--radius-md);
 		font-family: var(--font-mono, ui-monospace, monospace);
 		font-size: var(--text-sm);
@@ -914,7 +914,7 @@
 		font-size: 0.75rem;
 		text-transform: uppercase;
 		letter-spacing: 0.08em;
-		color: var(--accent);
+		color: var(--bt-lightbox-chrome-accent, var(--accent));
 	}
 
 	.help-toggle {
@@ -929,9 +929,9 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: var(--vellum);
-		color: var(--ink-soft);
-		border: 1px solid var(--rule);
+		background: var(--bt-lightbox-chrome-bg, var(--vellum));
+		color: var(--bt-lightbox-chrome-color, var(--ink-soft));
+		border: 1px solid var(--bt-lightbox-chrome-border, var(--rule));
 		border-radius: var(--radius-md);
 		font-family: var(--font-serif, ui-serif, serif);
 		font-size: 1.2rem;
@@ -943,8 +943,8 @@
 	.help-toggle:hover,
 	.help-toggle:focus-visible,
 	.help-toggle[aria-pressed='true'] {
-		color: var(--accent);
-		background: var(--parchment-soft);
+		color: var(--bt-lightbox-chrome-hover-color, var(--accent));
+		background: var(--bt-lightbox-chrome-hover-bg, var(--parchment-soft));
 		outline: none;
 	}
 
@@ -957,18 +957,12 @@
 		right: var(--space-3);
 		max-width: 18rem;
 		padding: var(--space-2) var(--space-3);
-		background: var(--vellum);
-		color: var(--ink-soft);
-		border: 1px solid var(--rule);
+		background: var(--bt-lightbox-chrome-bg, var(--vellum));
+		color: var(--bt-lightbox-chrome-color, var(--ink-soft));
+		border: 1px solid var(--bt-lightbox-chrome-border, var(--rule));
 		border-radius: var(--radius-md);
 		font-size: var(--text-sm);
 		z-index: 2;
-		/* Fade-in: paired with the {#if} block, the panel mounts
-		   transparent and animates in. The auto-fade timer simply
-		   unmounts it; the closing transition is handled by the
-		   browser's default unmount (instant) — keeping the code
-		   simple. If we want a fade-out we'd switch to a Svelte
-		   `transition:fade`, but for a hint that's overkill. */
 		animation: hint-in 200ms ease-out;
 	}
 
@@ -1014,14 +1008,14 @@
 		min-width: 1.4rem;
 		height: 1.4rem;
 		padding: 0 0.35rem;
-		background: var(--parchment);
-		color: var(--ink);
-		border: 1px solid var(--rule);
+		background: var(--bt-lightbox-kbd-bg, var(--parchment));
+		color: var(--bt-lightbox-kbd-color, var(--ink));
+		border: 1px solid var(--bt-lightbox-chrome-border, var(--rule));
 		border-radius: var(--radius-sm, 0.25rem);
-		font-family: var(--font-mono, ui-monospace, monospace);
+		font-family: var(--bt-lightbox-kbd-font, var(--font-mono, ui-monospace, monospace));
 		font-size: 0.75rem;
 		line-height: 1;
-		box-shadow: inset 0 -1px 0 var(--rule);
+		box-shadow: inset 0 -1px 0 var(--bt-lightbox-chrome-border, var(--rule));
 	}
 
 	.hint__touch {
