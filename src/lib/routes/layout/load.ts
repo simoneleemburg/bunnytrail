@@ -72,11 +72,13 @@ export async function load({ url }: { url: URL }) {
 	});
 
 	const worldConfig = world.config();
-	// Optional bespoke wordmark SVG. When present, the masthead
-	// renders the inline SVG in place of the text wordmark + glyph
-	// pseudo-element. The link still carries an aria-label with the
-	// world name, so the SVG itself is decorative (aria-hidden).
-	const wordmark = await assets.get('wordmark.svg');
+	// Optional bespoke wordmark SVG. When `ornament.wordmark` is declared
+	// in world.md, the masthead inlines the named asset in place of the
+	// text wordmark + glyph pseudo-element. The link still carries an
+	// aria-label with the world name, so the SVG itself is decorative.
+	const wordmark = worldConfig.ornament.wordmark
+		? await assets.get(worldConfig.ornament.wordmark)
+		: null;
 
 	// Ornament SVGs: inline the declared asset files (if any) so
 	// every page can render an SVG fleuron without its own loader
@@ -98,12 +100,21 @@ export async function load({ url }: { url: URL }) {
 		}
 	};
 
-	// Pre-built CSS snippet injected into <svelte:head> by Layout.svelte.
+	// Pre-built CSS snippets injected into <svelte:head> by Layout.svelte.
 	// Built here (server side) so the Svelte template never needs a
 	// template literal containing CSS — which can confuse the Svelte parser.
 	// JSON.stringify gives us a properly quoted CSS <string> value.
 	const ornamentGlyphStyle = worldConfig.ornament.glyph
 		? `:root { --ornament-glyph: ${JSON.stringify(worldConfig.ornament.glyph)}; }`
+		: null;
+
+	// When world.md declares ornament.world_mark, inject both the
+	// --wordmark-mark token and `display: inline` for .wordmark-mark
+	// so the glyph appears without any theme.css involvement. Without
+	// world_mark the element stays hidden (display: none default in
+	// Layout.svelte), preserving the plain text wordmark baseline.
+	const worldMarkStyle = worldConfig.ornament.worldMark
+		? `:root { --wordmark-mark: ${JSON.stringify(worldConfig.ornament.worldMark)}; } .wordmark-mark { display: inline; }`
 		: null;
 
 	const clusterOptions = [
@@ -131,6 +142,7 @@ export async function load({ url }: { url: URL }) {
 		wordmark,
 		ornament,
 		ornamentGlyphStyle,
+		worldMarkStyle,
 		// Surface the scope context to the client so the navigation
 		// hook can rewrite outgoing links without re-deriving it.
 		scopeContext: { clusters, unionShelves, clusterAwarePaths } satisfies ScopeContext

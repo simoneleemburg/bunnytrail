@@ -24,6 +24,7 @@
 				guides: { glyph: string | null; svg: string | null };
 			};
 			ornamentGlyphStyle: string | null;
+			worldMarkStyle: string | null;
 			scopeContext: ScopeContext;
 		};
 		children: Snippet;
@@ -187,6 +188,13 @@
 		     The CSS string is built in load.ts to avoid template
 		     literals containing CSS inside the Svelte template. -->
 		{@html '<style>' + data.ornamentGlyphStyle + '</style>'}
+	{/if}
+	{#if data.worldMarkStyle}
+		<!-- Inject --wordmark-mark and enable .wordmark-mark visibility
+		     from ornament.world_mark in world.md. Without this the
+		     element stays display:none (engine default), so no glyph
+		     appears for worlds that haven't declared one. -->
+		{@html '<style>' + data.worldMarkStyle + '</style>'}
 	{/if}
 </svelte:head>
 
@@ -361,15 +369,12 @@
 	   regardless of load order. */
 	:global(:where(.wordmark-mark)) {
 		/* Optional glyph in front of the world name. Hidden by
-		   default so the engine ships a plain text wordmark; a
-		   world theme un-hides it and supplies the glyph via the
-		   --wordmark-mark token, e.g.:
-
-		     .wordmark-mark { display: inline; }
-		     :root { --wordmark-mark: '❦'; }
-
-		   Kept as a CSS pseudo-element rather than a template slot
-		   so it costs zero markup and zero JS for the no-mark case. */
+		   default so the engine ships a plain text wordmark; declare
+		   `ornament.world_mark` in `content_meta/world.md` and the
+		   engine injects the glyph + `display: inline` via a
+		   `<svelte:head>` style tag without requiring any theme.css.
+		   A world theme can still override display and the token
+		   directly for custom positioning if needed. */
 		display: none;
 		color: var(--accent-warm);
 		font-size: 0.85em;

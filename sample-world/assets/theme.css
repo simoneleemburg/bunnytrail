@@ -89,16 +89,19 @@
 	   want a branded face @import it at the top of theme.css. */
 
 	/* ── Texture ──────────────────────────────────────────────── */
-	/* A cherry-blossom petal for the HR ornament — same idea as
-	   the engine's empty default, just turned on with a glyph. */
-	--ornament-glyph: '🌸';
+	/* Ornament glyph and world-mark glyph are now declared in
+	   content_meta/world.md under `ornament.glyph` and
+	   `ornament.world_mark`. The engine injects them as CSS tokens
+	   at boot, so no theme.css override is needed here. */
 }
 
 /* ── Cute HR ───────────────────────────────────────────────────
    The engine renders `<hr>` as a centred ornament over a fading
-   hairline (see global.css). Our blossom glyph rides on a
-   pink-tinted rule. The petal sits on a parchment card so the
-   line cleanly breaks behind it. */
+   hairline (see global.css). The blossom glyph is declared in
+   content_meta/world.md as `ornament.glyph`; the engine injects
+   it into `--ornament-glyph` at boot. This block styles how the
+   glyph sits on the rule — pink-tinted, parchment-backed — but
+   does not need to set the glyph content itself. */
 hr::before {
 	content: var(--ornament-glyph);
 	padding: 0 0.55em;

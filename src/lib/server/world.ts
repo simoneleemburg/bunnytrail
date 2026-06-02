@@ -16,6 +16,8 @@ import { renderPlainBody } from './markdown';
  *     shortName: Alteria          # optional; defaults to name
  *     allScopeLabel: All Alteria  # optional; defaults to "All ${name}"
  *     ornament:
+ *       wordmark: logo.svg       # optional; asset filename for the masthead SVG logo
+ *       world_mark: "❦"          # optional; glyph before the world name (text wordmark only)
  *       glyph: "✶"               # optional; unicode glyph for fleurons sitewide
  *       svg: rule.svg            # optional; asset filename for SVG fleuron sitewide
  *       guides:
@@ -32,6 +34,20 @@ import { renderPlainBody } from './markdown';
  */
 
 export interface OrnamentConfig {
+	/**
+	 * Asset filename for the masthead SVG logo, e.g. "logo.svg".
+	 * When set, the engine inlines the SVG in place of the text wordmark.
+	 * The link still carries `aria-label` with the world name.
+	 * Replaces the previously hardcoded `"wordmark.svg"` lookup convention.
+	 */
+	wordmark: string | null;
+	/**
+	 * Unicode glyph shown before the world name in the text wordmark.
+	 * Only used when `wordmark` (SVG) is absent. When set, the engine
+	 * injects `--wordmark-mark` and makes the `.wordmark-mark`
+	 * pseudo-element visible via a `<style>` tag in `<svelte:head>`.
+	 */
+	worldMark: string | null;
 	/** Unicode glyph, e.g. "✶". Fed into the --ornament-glyph CSS token. */
 	glyph: string | null;
 	/** Asset filename to load as an inline SVG, e.g. "rule.svg". */
@@ -55,7 +71,7 @@ const FALLBACK_NAME = 'Bunnytrail';
 const FALLBACK_TAGLINE = '';
 
 function fallbackOrnament(): OrnamentConfig {
-	return { glyph: null, svg: null, guides: { glyph: null, svg: null } };
+	return { wordmark: null, worldMark: null, glyph: null, svg: null, guides: { glyph: null, svg: null } };
 }
 
 function fallbackConfig(): WorldConfig {
@@ -160,6 +176,8 @@ function readOrnament(
 	}
 	const o = raw as Record<string, unknown>;
 
+	const wordmark = readStringFrom(o, 'wordmark', 'ornament.wordmark', issues);
+	const worldMark = readStringFrom(o, 'world_mark', 'ornament.world_mark', issues);
 	const glyph = readStringFrom(o, 'glyph', 'ornament.glyph', issues);
 	const svg = readStringFrom(o, 'svg', 'ornament.svg', issues);
 
@@ -180,7 +198,7 @@ function readOrnament(
 		}
 	}
 
-	return { glyph, svg, guides };
+	return { wordmark, worldMark, glyph, svg, guides };
 }
 
 function readStringFrom(

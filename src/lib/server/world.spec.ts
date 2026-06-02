@@ -78,4 +78,28 @@ describe('loadWorld', () => {
 		expect(r.config.name).toBe('Bunnytrail');
 		expect(r.ledeHtml).toContain('Just some prose.');
 	});
+
+	it('reads ornament.wordmark + ornament.world_mark + ornament.glyph from frontmatter', async () => {
+		await writeFile(
+			path,
+			'---\nname: Alteria\nornament:\n  wordmark: logo.svg\n  world_mark: "❦"\n  glyph: "✶"\n---\n'
+		);
+		const r = await loadWorld(path);
+		expect(r.config.ornament.wordmark).toBe('logo.svg');
+		expect(r.config.ornament.worldMark).toBe('❦');
+		expect(r.config.ornament.glyph).toBe('✶');
+		expect(r.config.ornament.svg).toBeNull();
+		expect(r.issues).toHaveLength(0);
+	});
+
+	it('falls back ornament to all-null when ornament block is absent', async () => {
+		await writeFile(path, '---\nname: Alteria\n---\n');
+		const r = await loadWorld(path);
+		expect(r.config.ornament.wordmark).toBeNull();
+		expect(r.config.ornament.worldMark).toBeNull();
+		expect(r.config.ornament.glyph).toBeNull();
+		expect(r.config.ornament.svg).toBeNull();
+		expect(r.config.ornament.guides.glyph).toBeNull();
+		expect(r.config.ornament.guides.svg).toBeNull();
+	});
 });

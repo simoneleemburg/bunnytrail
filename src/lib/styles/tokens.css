@@ -105,6 +105,7 @@
 	   A world theme turns these on. */
 	--paper-grain: none;
 	--ornament-glyph: ''; /* HR shows a plain rule when empty */
+	--wordmark-mark: ''; /* Masthead mark; display:none by default — see Layout.svelte */
 	--gilt-sheen-opacity: 0;
 
 	/* ── Space ────────────────────────────────────────────────── */
