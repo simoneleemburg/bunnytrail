@@ -96,8 +96,10 @@
 
 {#each data.guides as guide (guide.slug)}
 	<a class="guide-callout" href={guide.href}>
-		<div class="guide-rule"></div>
 		<div class="guide-body">
+			{#if ornament.guides?.svg}
+				<div class="guide-mark" aria-hidden="true">{@html ornament.guides.svg}</div>
+			{/if}
 			<p class="guide-eyebrow">{guide.eyebrow}</p>
 			<p class="guide-title">{guide.title}</p>
 			<p class="guide-sub">{guide.summary}</p>
@@ -115,7 +117,6 @@
 		bars, entity links) lives at /sources.
 	-->
 	<a class="sources-callout" href="/sources">
-		<div class="sources-rule"></div>
 		<div class="sources-body">
 			<p class="sources-eyebrow">Workbench</p>
 			<p class="sources-title">Source projects</p>
@@ -138,7 +139,6 @@
 	is *about* the world rather than *of* it.
 -->
 <a class="notebook-callout" href="/blog">
-	<div class="notebook-rule"></div>
 	<div class="notebook-body">
 		<p class="notebook-eyebrow">Working notes</p>
 		<p class="notebook-title">Notebook</p>
@@ -155,7 +155,6 @@
 	<div class="grid">
 		{#each data.counts as c (c.type)}
 			<a class="type-card" href={`/${c.type}`}>
-				<div class="rule"></div>
 				<div class="label">{c.label}</div>
 				{#if c.description}
 					<div class="description">{c.description}</div>
@@ -171,7 +170,6 @@
 		<h2 class="section-heading">Starting threads</h2>
 		<div class="grid">
 			<a class="type-card type-card-thread" href="/everything">
-				<div class="rule"></div>
 				<div class="label">Everything</div>
 				<div class="description">
 					One grid for the whole world. Filter by kind or tag, or flatten and skim.
@@ -180,7 +178,6 @@
 			</a>
 			{#each data.threads as t (t.type)}
 				<a class="type-card type-card-thread" href={`/${t.type}`}>
-					<div class="rule"></div>
 					<div class="label">{t.label}</div>
 					{#if t.description}
 						<div class="description">{t.description}</div>
@@ -271,19 +268,22 @@
 		color: var(--ink);
 	}
 
-	/* ── Guide callout — a prominent doorway to a content-authored
+	/* ── Guide callout — a prominent featured doorway to a content-authored
 	   guide (tour, "start here", landing page). Repeated once per
-	   registered guide. */
+	   registered guide. Top accent border gives presence; optional
+	   guide-mark ornament sits to the left of the body text. */
 	.guide-callout {
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		gap: var(--space-5);
-		padding: var(--space-5) var(--space-6);
+		padding: var(--space-6);
 		margin: 0 0 var(--space-8);
 		text-decoration: none;
 		color: inherit;
 		background: var(--vellum);
 		border: 1px solid var(--rule);
+		border-top-width: 2px;
+		border-top-color: var(--accent);
 		border-radius: var(--radius-sm);
 		transition: background-color 0.2s ease;
 	}
@@ -292,15 +292,26 @@
 		background: var(--parchment-soft);
 	}
 
-	.guide-rule {
-		width: 3px;
-		align-self: stretch;
-		background: var(--accent);
-		flex-shrink: 0;
+	/* Optional ornamental mark from ornament.guides.svg. Inlined SVG
+	   colours via currentColor so --accent-warm flows through.
+	   align-self: flex-start keeps it left-anchored with the body text
+	   rather than stretching full-width. */
+	.guide-mark {
+		display: flex;
+		color: var(--accent-warm);
+		margin-bottom: var(--space-3);
+	}
+
+	.guide-mark :global(svg) {
+		height: 2rem;
+		width: auto;
+		display: block;
 	}
 
 	.guide-body {
 		flex: 1;
+		display: flex;
+		flex-direction: column;
 	}
 
 	.guide-eyebrow {
@@ -325,6 +336,7 @@
 
 	.guide-sub {
 		font-size: var(--text-sm);
+		font-style: italic;
 		color: var(--ink-soft);
 		margin: 0;
 		line-height: var(--leading-normal);
@@ -341,31 +353,24 @@
 	}
 
 	/* ── Notebook callout — quieter sibling to the guide doorway.
-	   Notebook tint (cool, dashed) so the visual register tracks the
-	   blog/craft-sheet idiom, marking this as out-of-world. */
+	   Solid border and vellum background; display-italic title for
+	   visual consistency with guide register but clearly secondary. */
 	.notebook-callout {
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		gap: var(--space-5);
 		padding: var(--space-5) var(--space-6);
 		margin: 0 0 var(--space-8);
 		text-decoration: none;
 		color: inherit;
-		background: color-mix(in oklab, var(--ink) 4%, var(--page) 96%);
-		border: 1px dashed var(--rule);
+		background: var(--vellum);
+		border: 1px solid var(--rule);
 		border-radius: var(--radius-sm);
 		transition: background-color 0.2s ease;
 	}
 
 	.notebook-callout:hover {
-		background: color-mix(in oklab, var(--ink) 7%, var(--page) 93%);
-	}
-
-	.notebook-rule {
-		width: 3px;
-		align-self: stretch;
-		background: var(--rule);
-		flex-shrink: 0;
+		background: var(--parchment-soft);
 	}
 
 	.notebook-body {
@@ -381,8 +386,8 @@
 	}
 
 	.notebook-title {
-		font-family: var(--font-sans, var(--font-serif));
-		font-weight: 600;
+		font-family: var(--font-display);
+		font-style: italic;
 		font-size: var(--text-xl);
 		color: var(--ink);
 		margin: 0 0 var(--space-2);
@@ -394,6 +399,7 @@
 
 	.notebook-sub {
 		font-size: var(--text-sm);
+		font-style: italic;
 		color: var(--ink-soft);
 		margin: 0;
 		line-height: var(--leading-normal);
@@ -410,34 +416,24 @@
 	}
 
 	/* ── Source projects callout — out-of-world workbench doorway.
-	   Mirrors the Notebook callout (notebook tint, dashed border)
-	   since both are author's-room material; the third sibling in
-	   the homepage doorway stack. The names are listed inline as a
-	   tease so the visitor sees what's on the workbench without
-	   leaving the page. */
+	   Solid border and vellum background matches notebook callout;
+	   display-italic title; italic summary for register consistency. */
 	.sources-callout {
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		gap: var(--space-5);
 		padding: var(--space-5) var(--space-6);
 		margin: 0 0 var(--space-8);
 		text-decoration: none;
 		color: inherit;
-		background: color-mix(in oklab, var(--ink) 4%, var(--page) 96%);
-		border: 1px dashed var(--rule);
+		background: var(--vellum);
+		border: 1px solid var(--rule);
 		border-radius: var(--radius-sm);
 		transition: background-color 0.2s ease;
 	}
 
 	.sources-callout:hover {
-		background: color-mix(in oklab, var(--ink) 7%, var(--page) 93%);
-	}
-
-	.sources-rule {
-		width: 3px;
-		align-self: stretch;
-		background: var(--rule);
-		flex-shrink: 0;
+		background: var(--parchment-soft);
 	}
 
 	.sources-body {
@@ -454,8 +450,8 @@
 	}
 
 	.sources-title {
-		font-family: var(--font-sans, var(--font-serif));
-		font-weight: 600;
+		font-family: var(--font-display);
+		font-style: italic;
 		font-size: var(--text-xl);
 		color: var(--ink);
 		margin: 0 0 var(--space-2);
@@ -467,6 +463,7 @@
 
 	.sources-sub {
 		font-size: var(--text-sm);
+		font-style: italic;
 		color: var(--ink-soft);
 		margin: 0;
 		line-height: var(--leading-normal);
@@ -507,22 +504,33 @@
 		gap: var(--space-5);
 	}
 
+	/* ── Type cards (Collections + Starting threads) — each card now
+	   has a vellum background, border-radius, and padding. The top
+	   border acts as the former hairline rule but in context with the
+	   card surface. Hover bumps to parchment-soft and --accent top border. */
 	.type-card {
 		display: block;
-		padding: var(--space-4) 0;
+		padding: var(--space-3) var(--space-4);
 		text-decoration: none;
 		color: inherit;
+		background: var(--vellum);
+		border-radius: var(--radius-sm);
+		border-top: 2px solid var(--rule);
+		transition:
+			background-color 0.2s ease,
+			border-top-color 0.2s ease;
 	}
 
-	.type-card .rule {
-		border-top: var(--rule-thin);
-		margin-bottom: var(--space-3);
+	.type-card:hover {
+		background: var(--parchment-soft);
+		border-top-color: var(--accent);
 	}
 
 	.label {
 		font-family: var(--font-display);
 		font-size: var(--text-lg);
 		color: var(--ink);
+		margin-top: var(--space-2);
 	}
 
 	.type-card:hover .label {
@@ -531,7 +539,7 @@
 
 	.count {
 		font-size: var(--text-sm);
-		color: var(--ink-faint);
+		color: var(--ink-soft);
 		font-variant-caps: all-small-caps;
 		letter-spacing: 0.06em;
 		margin-top: var(--space-1);

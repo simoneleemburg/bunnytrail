@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '$lib/styles/global.css';
-	import favicon from '$lib/assets/favicon.svg';
+
 	import { page } from '$app/stores';
 	import { beforeNavigate, goto } from '$app/navigation';
 	import { browser, dev } from '$app/environment';
@@ -180,7 +180,7 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+	<link rel="icon" type="image/svg+xml" href="/api/assets/favicon.svg" />
 	{#if data.ornamentGlyphStyle}
 		<!-- Inject the world's ornament glyph as a CSS custom property
 		     so the --ornament-glyph token (consumed by hr::before and
