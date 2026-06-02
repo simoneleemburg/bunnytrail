@@ -3,6 +3,11 @@
 	import type { GuideData } from './load';
 
 	let { data }: { data: GuideData } = $props();
+
+	// Guide ornament: use the guides-specific SVG/glyph override from
+	// world.md if declared, otherwise fall back to the global ornament.
+	const ornament = $derived(page.data.ornament);
+	const guideMark = $derived(ornament.guides.svg ?? ornament.svg);
 </script>
 
 <svelte:head>
@@ -25,9 +30,13 @@
 		<p class="bt-lede">{@html data.summaryHtml}</p>
 	</header>
 
-	<div class="bt-fleuron" aria-hidden="true">
+	<div class="bt-fleuron guide-fleuron" aria-hidden="true">
 		<span class="bt-fleuron__rule"></span>
-		<span class="bt-fleuron__glyph"></span>
+		{#if guideMark}
+			<span class="bt-fleuron__glyph bt-fleuron__glyph--svg">{@html guideMark}</span>
+		{:else}
+			<span class="bt-fleuron__glyph"></span>
+		{/if}
 		<span class="bt-fleuron__rule"></span>
 	</div>
 
@@ -41,6 +50,17 @@
 	.guide {
 		max-width: var(--page-max);
 		margin: 0 auto;
+	}
+
+	/* Guide-only ornament: replace the default fleuron glyph with
+	   the guide-mark SVG, so meta-guide pages read as cartographer's
+	   notes rather than in-world entity entries. */
+	.guide-fleuron :global(.bt-fleuron__glyph--svg::before) {
+		content: none;
+	}
+
+	.guide-fleuron :global(.bt-fleuron__glyph--svg svg) {
+		height: 2em;
 	}
 
 	header {

@@ -15,6 +15,12 @@ import { renderPlainBody } from './markdown';
  *     tagline: My sacred universe of imagination.
  *     shortName: Alteria          # optional; defaults to name
  *     allScopeLabel: All Alteria  # optional; defaults to "All ${name}"
+ *     ornament:
+ *       glyph: "✶"               # optional; unicode glyph for fleurons sitewide
+ *       svg: rule.svg            # optional; asset filename for SVG fleuron sitewide
+ *       guides:
+ *         glyph: "⌖"             # optional; override glyph for guide fleurons only
+ *         svg: guide-mark.svg    # optional; override SVG for guide fleurons only
  *     ---
  *
  *     Three paragraphs of homepage lede prose, rendered as the hero
@@ -24,22 +30,41 @@ import { renderPlainBody } from './markdown';
  * generic "Bunnytrail" identity so a freshly scaffolded world still
  * renders coherently — the author can fill in `world.md` at leisure.
  */
+
+export interface OrnamentConfig {
+	/** Unicode glyph, e.g. "✶". Fed into the --ornament-glyph CSS token. */
+	glyph: string | null;
+	/** Asset filename to load as an inline SVG, e.g. "rule.svg". */
+	svg: string | null;
+	/** Per-page-type overrides. Currently only guides is supported. */
+	guides: {
+		glyph: string | null;
+		svg: string | null;
+	};
+}
+
 export interface WorldConfig {
 	name: string;
 	shortName: string;
 	tagline: string;
 	allScopeLabel: string;
+	ornament: OrnamentConfig;
 }
 
 const FALLBACK_NAME = 'Bunnytrail';
 const FALLBACK_TAGLINE = '';
+
+function fallbackOrnament(): OrnamentConfig {
+	return { glyph: null, svg: null, guides: { glyph: null, svg: null } };
+}
 
 function fallbackConfig(): WorldConfig {
 	return {
 		name: FALLBACK_NAME,
 		shortName: FALLBACK_NAME,
 		tagline: FALLBACK_TAGLINE,
-		allScopeLabel: `All ${FALLBACK_NAME}`
+		allScopeLabel: `All ${FALLBACK_NAME}`,
+		ornament: fallbackOrnament()
 	};
 }
 
@@ -90,11 +115,12 @@ export async function loadWorld(
 	const tagline = readString(meta, 'tagline', issues) ?? FALLBACK_TAGLINE;
 	const shortName = readString(meta, 'shortName', issues) ?? name;
 	const allScopeLabel = readString(meta, 'allScopeLabel', issues) ?? `All ${name}`;
+	const ornament = readOrnament(meta, issues);
 
 	const ledeHtml = body.trim() === '' ? null : renderPlainBody(body);
 
 	return {
-		config: { name, shortName, tagline, allScopeLabel },
+		config: { name, shortName, tagline, allScopeLabel, ornament },
 		ledeHtml,
 		present: true,
 		issues
@@ -112,6 +138,63 @@ function readString(
 		issues.push({
 			kind: 'invalid-yaml',
 			detail: `content_meta/world.md: ${key} must be a string when present`
+		});
+		return null;
+	}
+	const trimmed = val.trim();
+	return trimmed === '' ? null : trimmed;
+}
+
+function readOrnament(
+	meta: Record<string, unknown>,
+	issues: HealthIssue[]
+): OrnamentConfig {
+	const raw = meta['ornament'];
+	if (raw === undefined || raw === null) return fallbackOrnament();
+	if (typeof raw !== 'object' || Array.isArray(raw)) {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: 'content_meta/world.md: ornament must be a mapping when present'
+		});
+		return fallbackOrnament();
+	}
+	const o = raw as Record<string, unknown>;
+
+	const glyph = readStringFrom(o, 'glyph', 'ornament.glyph', issues);
+	const svg = readStringFrom(o, 'svg', 'ornament.svg', issues);
+
+	const guidesRaw = o['guides'];
+	let guides: OrnamentConfig['guides'] = { glyph: null, svg: null };
+	if (guidesRaw !== undefined && guidesRaw !== null) {
+		if (typeof guidesRaw !== 'object' || Array.isArray(guidesRaw)) {
+			issues.push({
+				kind: 'invalid-yaml',
+				detail: 'content_meta/world.md: ornament.guides must be a mapping when present'
+			});
+		} else {
+			const g = guidesRaw as Record<string, unknown>;
+			guides = {
+				glyph: readStringFrom(g, 'glyph', 'ornament.guides.glyph', issues),
+				svg: readStringFrom(g, 'svg', 'ornament.guides.svg', issues)
+			};
+		}
+	}
+
+	return { glyph, svg, guides };
+}
+
+function readStringFrom(
+	obj: Record<string, unknown>,
+	key: string,
+	path: string,
+	issues: HealthIssue[]
+): string | null {
+	const val = obj[key];
+	if (val === undefined || val === null) return null;
+	if (typeof val !== 'string') {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: `content_meta/world.md: ${path} must be a string when present`
 		});
 		return null;
 	}

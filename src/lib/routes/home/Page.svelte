@@ -6,6 +6,7 @@
 	let { data }: { data: HomeData } = $props();
 
 	const world = $derived($page.data.world);
+	const ornament = $derived($page.data.ornament);
 </script>
 
 <svelte:head>
@@ -31,17 +32,17 @@
 		Hero divider: a thin rule with a centred ornament between
 		two short hairlines. The centrepiece resolves in three
 		tiers:
-		  1. If the world ships `assets/rule.svg`, that SVG is
-		     inlined here (recolours via currentColor).
+		  1. If the world's ornament.svg is set in world.md, that
+		     SVG is inlined here (recolours via currentColor).
 		  2. Otherwise, the CSS `::before` content resolves to
-		     --ornament-glyph (e.g. ✶ in alteria's theme).
+		     --ornament-glyph (from ornament.glyph in world.md).
 		  3. If neither is set, the divider collapses to two
 		     hairlines with an empty gap — still reads as a rule.
 	-->
 	<div class="bt-fleuron" aria-hidden="true">
 		<span class="bt-fleuron__rule"></span>
-		{#if data.ruler}
-			<span class="bt-fleuron__glyph bt-fleuron__glyph--svg">{@html data.ruler}</span>
+		{#if ornament.svg}
+			<span class="bt-fleuron__glyph bt-fleuron__glyph--svg">{@html ornament.svg}</span>
 		{:else}
 			<span class="bt-fleuron__glyph"></span>
 		{/if}

@@ -77,6 +77,27 @@ export async function load({ url }: { url: URL }) {
 	// pseudo-element. The link still carries an aria-label with the
 	// world name, so the SVG itself is decorative (aria-hidden).
 	const wordmark = await assets.get('wordmark.svg');
+
+	// Ornament SVGs: inline the declared asset files (if any) so
+	// every page can render an SVG fleuron without its own loader
+	// having to call assets.get(). Null when no svg filename was
+	// declared in world.md, or the file doesn't exist on disk.
+	const ornamentSvg = worldConfig.ornament.svg
+		? await assets.get(worldConfig.ornament.svg)
+		: null;
+	const guidesOrnamentSvg = worldConfig.ornament.guides.svg
+		? await assets.get(worldConfig.ornament.guides.svg)
+		: null;
+
+	const ornament = {
+		glyph: worldConfig.ornament.glyph,
+		svg: ornamentSvg,
+		guides: {
+			glyph: worldConfig.ornament.guides.glyph,
+			svg: guidesOrnamentSvg
+		}
+	};
+
 	const clusterOptions = [
 		{ value: '', label: worldConfig.allScopeLabel, selected: selectedCluster === null },
 		...clusters.map((c) => ({
@@ -100,6 +121,7 @@ export async function load({ url }: { url: URL }) {
 		// if the file is absent.
 		world: worldConfig,
 		wordmark,
+		ornament,
 		// Surface the scope context to the client so the navigation
 		// hook can rewrite outgoing links without re-deriving it.
 		scopeContext: { clusters, unionShelves, clusterAwarePaths } satisfies ScopeContext

@@ -8,6 +8,8 @@
 
 	let { data }: { data: CollectionPageData } = $props();
 
+	const ornamentSvg = $derived(page.data.ornament?.svg ?? null);
+
 	// Display caps for tags. Subcollection tiles get a tight cap to keep
 	// the tile compact; the page-level filter starts collapsed at
 	// FILTER_TOP_N and reveals the rest behind a "show all" toggle.
@@ -373,7 +375,11 @@
 {#if data.bodyHtml || !hasViewToggle}
 	<div class="bt-fleuron" aria-hidden="true">
 		<span class="bt-fleuron__rule"></span>
-		<span class="bt-fleuron__glyph"></span>
+		{#if ornamentSvg}
+			<span class="bt-fleuron__glyph bt-fleuron__glyph--svg">{@html ornamentSvg}</span>
+		{:else}
+			<span class="bt-fleuron__glyph"></span>
+		{/if}
 		<span class="bt-fleuron__rule"></span>
 	</div>
 {/if}
@@ -383,7 +389,11 @@
 	{#if !hasViewToggle}
 		<div class="bt-fleuron" aria-hidden="true">
 			<span class="bt-fleuron__rule"></span>
-			<span class="bt-fleuron__glyph"></span>
+			{#if ornamentSvg}
+				<span class="bt-fleuron__glyph bt-fleuron__glyph--svg">{@html ornamentSvg}</span>
+			{:else}
+				<span class="bt-fleuron__glyph"></span>
+			{/if}
 			<span class="bt-fleuron__rule"></span>
 		</div>
 	{/if}

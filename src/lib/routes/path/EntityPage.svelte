@@ -9,6 +9,8 @@
 
 	let { data }: { data: EntityPageData } = $props();
 
+	const ornamentSvg = $derived(page.data.ornament?.svg ?? null);
+
 	const COLLAPSE_AT = 8;
 	const expanded = new SvelteSet<string>();
 
@@ -196,7 +198,11 @@
 	     to follow. -->
 	<div class="bt-fleuron" aria-hidden="true">
 		<span class="bt-fleuron__rule"></span>
-		<span class="bt-fleuron__glyph"></span>
+		{#if ornamentSvg}
+			<span class="bt-fleuron__glyph bt-fleuron__glyph--svg">{@html ornamentSvg}</span>
+		{:else}
+			<span class="bt-fleuron__glyph"></span>
+		{/if}
 		<span class="bt-fleuron__rule"></span>
 	</div>
 

@@ -18,6 +18,11 @@
 			selectedCluster: string | null;
 			world: { name: string; shortName: string; tagline: string; allScopeLabel: string };
 			wordmark: string | null;
+			ornament: {
+				glyph: string | null;
+				svg: string | null;
+				guides: { glyph: string | null; svg: string | null };
+			};
 			scopeContext: ScopeContext;
 		};
 		children: Snippet;
@@ -173,6 +178,13 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	{#if data.ornament.glyph}
+		<!-- Inject the world's ornament glyph as a CSS custom property
+		     so the --ornament-glyph token (consumed by hr::before and
+		     .bt-fleuron__glyph::before in global.css) is driven by
+		     world.md rather than requiring a theme.css override. -->
+		<style>:root {'{'} --ornament-glyph: {JSON.stringify(data.ornament.glyph)}; {'}'}</style>
+	{/if}
 </svelte:head>
 
 <svelte:window on:keydown={onKeydown} />
