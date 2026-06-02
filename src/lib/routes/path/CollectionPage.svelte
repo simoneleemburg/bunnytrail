@@ -385,7 +385,7 @@
 {/if}
 
 {#if data.bodyHtml}
-	<div class="collection-body">{@html data.bodyHtml}</div>
+	<div class="collection-body prose">{@html data.bodyHtml}</div>
 	{#if !hasViewToggle}
 		<div class="bt-fleuron" aria-hidden="true">
 			<span class="bt-fleuron__rule"></span>
