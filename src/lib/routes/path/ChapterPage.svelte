@@ -42,7 +42,7 @@
 
 <article class="book" data-book-format={format}>
 	<nav class="frame frame-top" aria-label="{unitSingular} navigation">
-		<a class="back" href={data.work.href}>↩ {data.work.name}</a>
+		<a class="back" href={data.work.href}>↩&#xFE0E; {data.work.name}</a>
 		<span class="folio">{romanise(data.chapter.order)}</span>
 	</nav>
 
@@ -243,8 +243,7 @@
 		text-indent: 1.4em;
 	}
 
-	/* The first paragraph of a chapter: no indent, drop cap, small-caps
-	   on the opening line. Reads as a chapter opening in print. */
+	/* The first paragraph of a chapter: no indent, drop cap. */
 	.prose :global(p:first-of-type) {
 		text-indent: 0;
 	}
@@ -256,11 +255,6 @@
 		line-height: 0.85;
 		padding: 0.1em 0.08em 0 0;
 		color: var(--accent);
-	}
-
-	.prose :global(p:first-of-type::first-line) {
-		font-variant-caps: all-small-caps;
-		letter-spacing: 0.04em;
 	}
 
 	.prose :global(h2) {
@@ -310,8 +304,11 @@
 		   same paper. The shadow stack below uses near-black at low
 		   alpha — a brown-tinted shadow disappears into the warm
 		   site background, while a cool dark cast actually reads as
-		   depth. */
-		background: #fbf3d8;
+		   depth.
+		   Worlds can override --bt-scroll-bg to tune the base colour.
+		   Texture is applied via ::before (see below) so it doesn't
+		   interact with mask-image or the drop-shadow filter. */
+		background: var(--bt-scroll-bg, #fbf3d8);
 		border: none;
 		border-radius: 0;
 		/* Torn parchment on all four sides. The SVG mask is a
@@ -328,8 +325,41 @@
 			drop-shadow(0 24px 40px rgba(0, 0, 0, 0.22));
 		padding-top: var(--space-7);
 		padding-bottom: calc(var(--space-7) + var(--space-3));
-		padding-left: calc(var(--space-5) + var(--space-2));
-		padding-right: calc(var(--space-5) + var(--space-2));
+		padding-left: calc(var(--space-6) + var(--space-2));
+		padding-right: calc(var(--space-6) + var(--space-2));
+	}
+
+	/* Texture overlay. Worlds set --bt-scroll-texture to an SVG data URL
+	   (or any CSS image). mix-blend-mode:multiply tints rather than covers,
+	   so the base colour still shows through. pointer-events:none keeps
+	   text selection and link clicks intact.
+	   isolation:isolate creates the blending context so both the ::before
+	   texture layer and the .prose multiply blend stay scoped to the scroll
+	   sheet — not the page background. */
+	.book[data-book-format='scrolls'] {
+		isolation: isolate;
+	}
+	.book[data-book-format='scrolls']::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		mix-blend-mode: multiply;
+		background-image: var(--bt-scroll-texture, none);
+		background-size: var(--bt-scroll-texture-size, 500px 500px);
+		z-index: 0;
+	}
+	/* Blend the prose ink into the cloth texture so letterforms pick up
+	   the weave's warmth and variation. multiply here means the near-black
+	   ink composites against the amber+cloth layer beneath it — where a
+	   dark fibre crosses a glyph the glyph deepens slightly, where the
+	   cloth is open the ink stays its own warm dark. Subtle on screen;
+	   more noticeable on the dark-fibre stanza lines of verse blocks.
+	   Worlds can suppress this with --bt-scroll-ink-blend: normal. */
+	.book[data-book-format='scrolls'] .prose {
+		mix-blend-mode: var(--bt-scroll-ink-blend, multiply);
+		position: relative;
+		z-index: 1;
 	}
 
 	.book[data-book-format='scrolls'] .title,
@@ -356,7 +386,7 @@
 		line-height: 1.7;
 	}
 
-	/* No drop cap on scrolls — keep the small-caps opening line. */
+	/* No drop cap on scrolls. */
 	.book[data-book-format='scrolls'] .prose :global(p:first-of-type::first-letter) {
 		font-family: inherit;
 		float: none;
@@ -364,11 +394,6 @@
 		line-height: inherit;
 		padding: 0;
 		color: inherit;
-	}
-
-	.book[data-book-format='scrolls'] .prose :global(p:first-of-type::first-line) {
-		font-family: var(--font-archaic-sc);
-		letter-spacing: 0.06em;
 	}
 
 	.book[data-book-format='scrolls'] .prose :global(h2) {
@@ -387,5 +412,31 @@
 	.book[data-book-format='scrolls'] .prose :global(hr::after) {
 		content: '· · ·';
 		letter-spacing: 0.6em;
+	}
+
+	/* ── Verse blocks (:global so they work inside .prose in all book
+	   formats, not only scrolls) ─────────────────────────────────────
+	   ```verse fenced blocks are rendered as:
+	     <div class="bt-verse">
+	       <span class="bt-verse-line">…</span>
+	       <span class="bt-verse-break"></span>  ← blank source line
+	       …
+	     </div>
+	   display:flex + flex-direction:column gives each line its own row
+	   without any <p> margin. The break span's block-size controls the
+	   stanza gap and can be overridden by worlds via --bt-verse-gap. */
+	:global(.bt-verse) {
+		display: flex;
+		flex-direction: column;
+		margin-block: var(--space-4);
+		font-style: inherit;
+	}
+	:global(.bt-verse-line) {
+		display: block;
+		line-height: var(--bt-verse-line-height, 1.6);
+	}
+	:global(.bt-verse-break) {
+		display: block;
+		block-size: var(--bt-verse-gap, 0.9em);
 	}
 </style>

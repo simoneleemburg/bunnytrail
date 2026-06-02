@@ -18,7 +18,7 @@
 -->
 <article class="bt-notebook">
 	<nav class="bt-notebook__frame" aria-label="Subject navigation">
-		<a class="back" href={data.entity.href}>↩ {data.entity.name}</a>
+		<a class="back" href={data.entity.href}>↩&#xFE0E; {data.entity.name}</a>
 	</nav>
 
 	<header class="head">

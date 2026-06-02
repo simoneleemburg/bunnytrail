@@ -363,12 +363,37 @@ export function renderBody(
 		return `<h${depth}${idAttr}>${inlineHtml}</h${depth}>\n`;
 	};
 	// `formula` fenced blocks render as a styled display element rather
-	// than a <pre><code> block. All other language tags fall through to
+	// than a <pre><code> block.
+	// `verse` fenced blocks render as a `<div class="bt-verse">` with
+	// each source line as a `<span>` and blank lines as a
+	// `<span class="bt-verse-break">` separator. This gives authors
+	// precise spacing control without relying on `<p>` margins or
+	// trailing-double-space `<br>` hacks. Wikilinks inside verse blocks
+	// have already been rewritten to markdown link syntax by
+	// `rewriteBrackets` above, so `marked.parseInline` converts them to
+	// proper `<a>` tags here. All other language tags fall through to
 	// marked's default renderer.
 	const defaultCode = renderer.code.bind(renderer);
 	renderer.code = (token) => {
 		if (token.lang === 'formula') {
 			return `<div class="bt-formula">${escapeHtml(token.text)}</div>\n`;
+		}
+		if (token.lang === 'verse') {
+			const lines = token.text.split('\n');
+			const spans = lines.map((line) => {
+				if (line.trim() === '') {
+					return '<span class="bt-verse-break" aria-hidden="true"></span>';
+				}
+				// Preserve author-intentional leading spaces as non-breaking
+				// spaces so indentation survives the inline parser's whitespace
+				// normalisation. Each leading ASCII space → \u00a0.
+				const preserved = line.replace(/^ +/, (m) => '\u00a0'.repeat(m.length));
+				// Parse inline markdown (bold, italic, wikilinks already
+				// rewritten to [text](url) by rewriteBrackets).
+				const inlineHtml = marked.parseInline(preserved, { async: false }) as string;
+				return `<span class="bt-verse-line">${inlineHtml}</span>`;
+			});
+			return `<div class="bt-verse">${spans.join('')}</div>\n`;
 		}
 		return defaultCode(token);
 	};
@@ -580,6 +605,18 @@ export function renderPlainBody(body: string): string {
 	renderer.code = (token) => {
 		if (token.lang === 'formula') {
 			return `<div class="bt-formula">${escapeHtml(token.text)}</div>\n`;
+		}
+		if (token.lang === 'verse') {
+			const lines = token.text.split('\n');
+			const spans = lines.map((line) => {
+				if (line.trim() === '') {
+					return '<span class="bt-verse-break" aria-hidden="true"></span>';
+				}
+				const preserved = line.replace(/^ +/, (m) => '\u00a0'.repeat(m.length));
+				const inlineHtml = marked.parseInline(preserved, { async: false }) as string;
+				return `<span class="bt-verse-line">${inlineHtml}</span>`;
+			});
+			return `<div class="bt-verse">${spans.join('')}</div>\n`;
 		}
 		return defaultCode(token);
 	};
