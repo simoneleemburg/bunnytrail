@@ -143,27 +143,37 @@
 	/* Definition lists — used in the cognita guide for the
 	   legend blocks beneath each map. */
 	.prose :global(dl) {
-		padding: var(--space-6) var(--space-7);
-		background: var(--parchment-soft);
-		border: 1px solid var(--rule);
+		padding: var(--space-5) var(--space-7);
+		background: var(--vellum);
+		border: 1px solid var(--rule-hair, var(--rule));
 		border-radius: 2px;
 	}
 
 	.prose :global(dt) {
 		font-family: var(--font-display);
-		font-size: var(--text-lg);
+		font-size: var(--text-base);
 		font-style: italic;
-		color: var(--ink);
-		margin: var(--space-5) 0 var(--space-2);
+		color: var(--bt-dl-dt-color, var(--ink));
+		margin: var(--space-4) 0 0.2rem;
 	}
 
-	.prose :global(dt:first-of-type) {
+	/* First dt needs no top margin — padding on dl handles it */
+	.prose :global(dl > dt:first-child) {
 		margin-top: 0;
+	}
+
+	/* Hairline rule before each dt that follows a dd — i.e. between entries */
+	.prose :global(dd + dt) {
+		margin-top: var(--space-5);
+		padding-top: var(--space-4);
+		border-top: 1px solid var(--rule-hair, var(--rule));
 	}
 
 	.prose :global(dd) {
 		margin: 0;
 		color: var(--ink-soft);
 		line-height: var(--leading-relaxed);
+		text-align: justify;
+		hyphens: auto;
 	}
 </style>
