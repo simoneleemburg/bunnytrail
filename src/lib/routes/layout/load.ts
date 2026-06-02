@@ -98,6 +98,14 @@ export async function load({ url }: { url: URL }) {
 		}
 	};
 
+	// Pre-built CSS snippet injected into <svelte:head> by Layout.svelte.
+	// Built here (server side) so the Svelte template never needs a
+	// template literal containing CSS — which can confuse the Svelte parser.
+	// JSON.stringify gives us a properly quoted CSS <string> value.
+	const ornamentGlyphStyle = worldConfig.ornament.glyph
+		? `:root { --ornament-glyph: ${JSON.stringify(worldConfig.ornament.glyph)}; }`
+		: null;
+
 	const clusterOptions = [
 		{ value: '', label: worldConfig.allScopeLabel, selected: selectedCluster === null },
 		...clusters.map((c) => ({
@@ -122,6 +130,7 @@ export async function load({ url }: { url: URL }) {
 		world: worldConfig,
 		wordmark,
 		ornament,
+		ornamentGlyphStyle,
 		// Surface the scope context to the client so the navigation
 		// hook can rewrite outgoing links without re-deriving it.
 		scopeContext: { clusters, unionShelves, clusterAwarePaths } satisfies ScopeContext

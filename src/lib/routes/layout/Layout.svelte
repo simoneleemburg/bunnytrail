@@ -23,6 +23,7 @@
 				svg: string | null;
 				guides: { glyph: string | null; svg: string | null };
 			};
+			ornamentGlyphStyle: string | null;
 			scopeContext: ScopeContext;
 		};
 		children: Snippet;
@@ -178,12 +179,14 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	{#if data.ornament.glyph}
+	{#if data.ornamentGlyphStyle}
 		<!-- Inject the world's ornament glyph as a CSS custom property
 		     so the --ornament-glyph token (consumed by hr::before and
 		     .bt-fleuron__glyph::before in global.css) is driven by
-		     world.md rather than requiring a theme.css override. -->
-		<style>:root {'{'} --ornament-glyph: {JSON.stringify(data.ornament.glyph)}; {'}'}</style>
+		     world.md rather than requiring a theme.css override.
+		     The CSS string is built in load.ts to avoid template
+		     literals containing CSS inside the Svelte template. -->
+		{@html '<style>' + data.ornamentGlyphStyle + '</style>'}
 	{/if}
 </svelte:head>
 
