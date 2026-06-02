@@ -553,13 +553,11 @@
 				: target.closest('figure.bt-inline-svg:not(.bt-inline-svg--lightbox)');
 			if (!figure) return;
 			if (!trigger) {
-				// Background-click path: bail out if the click landed
-				// on a link or any actionable element inside the SVG,
-				// or on the figcaption (selectable text).
-				if (target.closest('a, button, [role="link"], [role="button"], figcaption')) return;
-				// Modifier-key or non-primary clicks are intentional
-				// browser gestures (open-in-new-tab, context menu) —
-				// don't hijack them.
+				// Background-click path: bail out on figcaption (selectable text)
+				// and on non-primary/modifier-key clicks (open-in-new-tab, context
+				// menu). Links inside the inline SVG no longer navigate directly —
+				// the user must open the lightbox first, where the map is readable.
+				if (target.closest('button, figcaption')) return;
 				if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey) return;
 			}
 			const svg = figure.querySelector('svg');
@@ -626,6 +624,7 @@
 		window.addEventListener('blur', clearHeldKeys);
 		const onResize = () => sizeWrapperToStage();
 		window.addEventListener('resize', onResize);
+		isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
 		return () => {
 			document.removeEventListener('click', onTriggerClick);
 			window.removeEventListener('keydown', onKeyDown);
@@ -666,6 +665,10 @@
 	let hintPinned = $state(false);
 	let hintTimer: ReturnType<typeof setTimeout> | null = null;
 
+	// Detect coarse-pointer (touch) devices so we can swap out the
+	// keyboard-shortcut hint for a gesture hint instead.
+	let isTouchDevice = $state(false);
+
 	function showHintBriefly() {
 		hintVisible = true;
 		hintPinned = false;
@@ -698,42 +701,48 @@
 <dialog bind:this={dialog} class="bt-svg-lightbox" onclick={onDialogClick}>
 	<div class="frame">
 		<button type="button" class="close" onclick={close} aria-label="Close">✕</button>
-		<button
-			type="button"
-			class="help-toggle"
-			onclick={toggleHint}
-			aria-label="Keyboard shortcuts"
-			aria-expanded={hintVisible}
-			aria-pressed={hintPinned}
-		>?</button>
+		{#if !isTouchDevice}
+			<button
+				type="button"
+				class="help-toggle"
+				onclick={toggleHint}
+				aria-label="Keyboard shortcuts"
+				aria-expanded={hintVisible}
+				aria-pressed={hintPinned}
+			>?</button>
+		{/if}
 		<div class="zoom-hud" aria-hidden="true">
 			<span class="zoom-hud__scale">{scale.toFixed(2)}×</span>
 			<span class="zoom-hud__level">{zoomLevel}</span>
 		</div>
 		{#if hintVisible}
-			<div class="hint" role="note" aria-label="Keyboard shortcuts">
-				<dl class="hint__rows">
-					<div class="hint__row">
-						<dt><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd></dt>
-						<dd>Pan</dd>
-					</div>
-					<div class="hint__row">
-						<dt><kbd>+</kbd><kbd>−</kbd></dt>
-						<dd>Zoom</dd>
-					</div>
-					<div class="hint__row">
-						<dt><kbd>Shift</kbd></dt>
-						<dd>Hold for faster pan/zoom</dd>
-					</div>
-					<div class="hint__row">
-						<dt><kbd>0</kbd></dt>
-						<dd>Reset</dd>
-					</div>
-					<div class="hint__row">
-						<dt><kbd>Esc</kbd></dt>
-						<dd>Close</dd>
-					</div>
-				</dl>
+			<div class="hint" role="note" aria-label={isTouchDevice ? 'Touch controls' : 'Keyboard shortcuts'}>
+				{#if isTouchDevice}
+					<p class="hint__touch">Pinch to zoom · Drag to pan</p>
+				{:else}
+					<dl class="hint__rows">
+						<div class="hint__row">
+							<dt><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd></dt>
+							<dd>Pan</dd>
+						</div>
+						<div class="hint__row">
+							<dt><kbd>+</kbd><kbd>−</kbd></dt>
+							<dd>Zoom</dd>
+						</div>
+						<div class="hint__row">
+							<dt><kbd>Shift</kbd></dt>
+							<dd>Hold for faster pan/zoom</dd>
+						</div>
+						<div class="hint__row">
+							<dt><kbd>0</kbd></dt>
+							<dd>Reset</dd>
+						</div>
+						<div class="hint__row">
+							<dt><kbd>Esc</kbd></dt>
+							<dd>Close</dd>
+						</div>
+					</dl>
+				{/if}
 			</div>
 		{/if}
 		<div
@@ -1013,5 +1022,12 @@
 		font-size: 0.75rem;
 		line-height: 1;
 		box-shadow: inset 0 -1px 0 var(--rule);
+	}
+
+	.hint__touch {
+		margin: 0;
+		font-size: var(--text-sm);
+		color: var(--ink-soft);
+		text-align: center;
 	}
 </style>

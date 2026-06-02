@@ -210,12 +210,9 @@ blockquote {
 	max-width: var(--figure-max-width);
 	container-type: inline-size;
 	/* The whole figure is click-to-enlarge; signal the affordance.
-	   Links inside the SVG keep `cursor: pointer` via the UA
-	   stylesheet on `<a>`, which has higher specificity than this
-	   element-level rule, so the cursor still differentiates
-	   interactive children. The `--lightbox` modifier suppresses
-	   the cursor in the expanded clone, where the gesture is
-	   pan/zoom rather than open. */
+	   The `--lightbox` modifier suppresses the cursor in the
+	   expanded clone, where the gesture is pan/zoom rather than
+	   open. */
 	cursor: zoom-in;
 }
 
@@ -223,7 +220,15 @@ blockquote {
 	cursor: inherit;
 }
 
-.bt-inline-svg a {
+/* Links inside the inline preview are not interactive — the whole
+   figure opens the lightbox instead. Disable pointer events so the
+   cursor stays zoom-in and clicks always open the lightbox. Links
+   remain fully active inside the lightbox clone. */
+.bt-inline-svg:not(.bt-inline-svg--lightbox) a {
+	pointer-events: none;
+}
+
+.bt-inline-svg.bt-inline-svg--lightbox a {
 	cursor: pointer;
 }
 
@@ -257,12 +262,12 @@ blockquote {
 	justify-content: center;
 	font-size: 1.1rem;
 	line-height: 1;
-	color: var(--ink-soft);
-	background: rgba(244, 236, 220, 0.85);
-	border: 1px solid var(--rule);
+	color: var(--bt-expand-color, var(--ink-soft));
+	background: var(--bt-expand-bg, rgba(244, 236, 220, 0.85));
+	border: 1px solid var(--bt-expand-border, var(--rule));
 	border-radius: var(--radius-md);
 	cursor: pointer;
-	opacity: 0;
+	opacity: 0.4;
 	transition:
 		opacity 160ms,
 		color 120ms,
@@ -278,14 +283,15 @@ blockquote {
 
 .bt-inline-svg__expand:hover,
 .bt-inline-svg__expand:focus-visible {
-	color: var(--accent);
-	background: var(--vellum);
+	color: var(--bt-expand-hover-color, var(--accent));
+	background: var(--bt-expand-hover-bg, var(--vellum));
+	border-color: var(--bt-expand-hover-border, var(--bt-expand-border, var(--rule)));
 	outline: none;
 }
 
 /* On touch devices the hover-to-reveal pattern doesn't fire, so
-   the expand button stays visible. Worlds can still hide it per
-   figure if they want. */
+   the expand button stays fully visible. Worlds can still hide it
+   per figure if they want. */
 @media (hover: none) {
 	.bt-inline-svg__expand {
 		opacity: 1;

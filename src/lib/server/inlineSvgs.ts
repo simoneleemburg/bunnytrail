@@ -90,10 +90,14 @@ async function buildReplacement(
 
 	const alt = extractAttr(`${pre} ${post}`, 'alt');
 	const captionHtml = alt ? `<figcaption>${escapeHtml(alt)}</figcaption>` : '';
-	const expandLabel = alt ? `View full size: ${escapeHtml(alt)}` : 'View full size';
 	const expandBtn =
 		`<button type="button" class="bt-inline-svg__expand" data-bt-svg-expand ` +
-		`aria-label="${expandLabel}"><span aria-hidden="true">⤢</span></button>`;
+		`aria-label="Open map"><span aria-hidden="true">⤢</span></button>`;
+
+	// Strip <title> elements so the browser doesn't render a native
+	// tooltip over the figure — the figcaption already carries the
+	// description and the expand button has its own aria-label.
+	const svgStripped = svg.replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi, '');
 
 	// Modifier class derived from the SVG basename. Pairs 1:1 with
 	// the world's per-figure CSS file: `<base>.css` is bundled into
@@ -102,7 +106,7 @@ async function buildReplacement(
 	// CSS no longer needs manual `svg.<map>` scoping selectors.
 	const base = svgBasename(src);
 	const cls = base ? `bt-inline-svg bt-inline-svg--${base}` : 'bt-inline-svg';
-	return `<figure class="${cls}">${expandBtn}${svg}${captionHtml}</figure>`;
+	return `<figure class="${cls}">${expandBtn}${svgStripped}${captionHtml}</figure>`;
 }
 
 /**
