@@ -48,13 +48,14 @@
 						<p class="catchline">{p.catchline}</p>
 						{#if p.entity}
 							<p class="entity-link-row">
-								In {page.data.world.name}: <EntityLink
-									id={p.entity.id}
-									name={p.entity.name}
-									summary={p.entity.summary}
-									sigil={p.entity.sigil}
-									compact
-								/>
+						In {page.data.world.name}: <EntityLink
+								id={p.entity.id}
+								name={p.entity.name}
+								summary={p.entity.summary}
+								sigil={p.entity.sigil}
+								kind={p.entity.kind}
+								compact
+							/>
 							</p>
 						{/if}
 					</div>

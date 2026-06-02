@@ -37,7 +37,8 @@ export async function load() {
 						id: entity.id,
 						name: entity.meta.name,
 						summary: entity.meta.summary ?? null,
-						sigil: entity.meta.sigil ?? null
+						sigil: entity.meta.sigil ?? null,
+						kind: entity.meta.kind ?? null
 					}
 				: null
 		};

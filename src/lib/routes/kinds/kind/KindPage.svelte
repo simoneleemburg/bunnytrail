@@ -102,12 +102,12 @@
 					<section class="ref-block">
 						<h2 class="ref-heading">{section.heading}</h2>
 						<ul class="ref-list">
-							{#each section.cards as card (card.id)}
-								<li>
-									<EntityLink id={card.id} name={card.name} summary={null} />
-									{#if card.typeLabel}<span class="ref-type">· {card.typeLabel}</span>{/if}
-								</li>
-							{/each}
+						{#each section.cards as card (card.id)}
+							<li>
+								<EntityLink id={card.id} name={card.name} summary={null} kind={card.kind} />
+								{#if card.typeLabel}<span class="ref-type">· {card.typeLabel}</span>{/if}
+							</li>
+						{/each}
 						</ul>
 					</section>
 				{/each}
@@ -116,12 +116,12 @@
 					<section class="ref-block">
 						<h2 class="ref-heading">Mentioned in</h2>
 						<ul class="ref-list">
-							{#each data.backlinks as card (card.id)}
-								<li>
-									<EntityLink id={card.id} name={card.name} summary={null} />
-									{#if card.typeLabel}<span class="ref-type">· {card.typeLabel}</span>{/if}
-								</li>
-							{/each}
+						{#each data.backlinks as card (card.id)}
+							<li>
+								<EntityLink id={card.id} name={card.name} summary={null} kind={card.kind} />
+								{#if card.typeLabel}<span class="ref-type">· {card.typeLabel}</span>{/if}
+							</li>
+						{/each}
 						</ul>
 					</section>
 				{/if}

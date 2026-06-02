@@ -222,7 +222,8 @@ function pickCard(
 		name: e.meta.name,
 		summary: e.meta.summary ?? null,
 		summaryHtml: cardSummaryHtml(e.meta.summary),
-		sigil: typeof e.meta.sigil === 'string' ? e.meta.sigil : null
+		sigil: typeof e.meta.sigil === 'string' ? e.meta.sigil : null,
+		kind: e.meta.kind ?? null
 	};
 }
 
