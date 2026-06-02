@@ -219,13 +219,14 @@
 
 	.hero-title {
 		font-family: var(--font-display);
-		font-size: var(--text-4xl);
+		font-size: clamp(2rem, 10vw, var(--text-4xl));
 		font-weight: 400;
 		letter-spacing: 0.18em;
 		text-transform: uppercase;
 		text-indent: 0.18em; /* compensate for the trailing tracking */
 		margin: 0;
 		line-height: 1.05;
+		max-width: 100%;
 		background: linear-gradient(
 			180deg,
 			var(--ink) 0%,
