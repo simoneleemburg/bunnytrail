@@ -341,7 +341,7 @@
 		   can trigger a gleam sweep on hover via @keyframes in theme.css
 		   without touching engine code — same hook as .card-link in EntityCard. */
 		background-image: linear-gradient(
-			115deg,
+			100deg,
 			currentColor 0%,
 			currentColor 25%,
 			var(--accent-warm) 50%,

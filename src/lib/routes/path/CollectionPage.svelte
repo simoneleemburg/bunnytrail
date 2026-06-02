@@ -1135,7 +1135,7 @@
 		margin: 0;
 		color: var(--ink);
 		background-image: linear-gradient(
-			115deg,
+			100deg,
 			currentColor 0%,
 			currentColor 42%,
 			var(--accent-warm) 50%,

@@ -123,7 +123,7 @@
 		color: inherit;
 		text-decoration: none;
 		background-image: linear-gradient(
-			115deg,
+			100deg,
 			currentColor 0%,
 			currentColor 42%,
 			var(--accent-warm) 50%,
