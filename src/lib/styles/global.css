@@ -228,6 +228,14 @@ blockquote {
 	pointer-events: none;
 }
 
+/* SVG links should never show a text underline — the colour change on
+   hover/focus is sufficient affordance on a map. Applies to both the
+   inline figure and the lightbox clone. */
+.bt-inline-svg a,
+.bt-inline-svg svg a {
+	text-decoration: none;
+}
+
 .bt-inline-svg.bt-inline-svg--lightbox a {
 	cursor: pointer;
 }

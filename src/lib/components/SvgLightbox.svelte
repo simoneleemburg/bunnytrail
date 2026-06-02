@@ -784,10 +784,49 @@
 		   doesn't drift out of the viewport on iOS. Our own zoom
 		   handler covers pinch via pointer events. */
 		touch-action: none;
+		/* Fade open + close. `allow-discrete` lets `display` and the
+		   [open] attribute participate in the transition so the dialog
+		   actually disappears at the end of the close fade.
+		   @starting-style below sets the from-state for the open
+		   transition (opacity 0 → 1). The close fade is the reverse:
+		   when [open] is removed the browser transitions back to the
+		   non-open style (opacity 0) before removing from the DOM. */
+		opacity: 1;
+		transition:
+			opacity 220ms ease,
+			display 220ms ease allow-discrete,
+			overlay 220ms ease allow-discrete;
+	}
+
+	/* Entry state: where the dialog starts from when it opens. */
+	@starting-style {
+		.bt-svg-lightbox[open] {
+			opacity: 0;
+		}
+	}
+
+	/* Closed state: what the dialog transitions toward when closing. */
+	.bt-svg-lightbox:not([open]) {
+		opacity: 0;
 	}
 
 	.bt-svg-lightbox::backdrop {
 		background: rgba(20, 16, 12, 0.65);
+		opacity: 1;
+		transition:
+			opacity 220ms ease,
+			display 220ms ease allow-discrete,
+			overlay 220ms ease allow-discrete;
+	}
+
+	@starting-style {
+		.bt-svg-lightbox[open]::backdrop {
+			opacity: 0;
+		}
+	}
+
+	.bt-svg-lightbox:not([open])::backdrop {
+		opacity: 0;
 	}
 
 	.frame {
