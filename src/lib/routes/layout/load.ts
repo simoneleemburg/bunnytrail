@@ -117,6 +117,10 @@ export async function load({ url }: { url: URL }) {
 		? `:root { --wordmark-mark: ${JSON.stringify(worldConfig.ornament.worldMark)}; } .wordmark-mark { display: inline; }`
 		: null;
 
+	// Separator glyph between the folder nav links and the Kinds link.
+	// Resolved here so the template never has a hardcoded glyph.
+	const navSep = worldConfig.ornament.navSep ?? '·';
+
 	const clusterOptions = [
 		{ value: '', label: worldConfig.allScopeLabel, selected: selectedCluster === null },
 		...clusters.map((c) => ({
@@ -143,6 +147,7 @@ export async function load({ url }: { url: URL }) {
 		ornament,
 		ornamentGlyphStyle,
 		worldMarkStyle,
+		navSep,
 		// Surface the scope context to the client so the navigation
 		// hook can rewrite outgoing links without re-deriving it.
 		scopeContext: { clusters, unionShelves, clusterAwarePaths } satisfies ScopeContext

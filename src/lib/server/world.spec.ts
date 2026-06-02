@@ -79,14 +79,15 @@ describe('loadWorld', () => {
 		expect(r.ledeHtml).toContain('Just some prose.');
 	});
 
-	it('reads ornament.wordmark + ornament.world_mark + ornament.glyph from frontmatter', async () => {
+	it('reads ornament.wordmark + ornament.world_mark + ornament.nav_sep + ornament.glyph from frontmatter', async () => {
 		await writeFile(
 			path,
-			'---\nname: Alteria\nornament:\n  wordmark: logo.svg\n  world_mark: "❦"\n  glyph: "✶"\n---\n'
+			'---\nname: Alteria\nornament:\n  wordmark: logo.svg\n  world_mark: "❦"\n  nav_sep: "✶"\n  glyph: "✶"\n---\n'
 		);
 		const r = await loadWorld(path);
 		expect(r.config.ornament.wordmark).toBe('logo.svg');
 		expect(r.config.ornament.worldMark).toBe('❦');
+		expect(r.config.ornament.navSep).toBe('✶');
 		expect(r.config.ornament.glyph).toBe('✶');
 		expect(r.config.ornament.svg).toBeNull();
 		expect(r.issues).toHaveLength(0);
@@ -97,6 +98,7 @@ describe('loadWorld', () => {
 		const r = await loadWorld(path);
 		expect(r.config.ornament.wordmark).toBeNull();
 		expect(r.config.ornament.worldMark).toBeNull();
+		expect(r.config.ornament.navSep).toBeNull();
 		expect(r.config.ornament.glyph).toBeNull();
 		expect(r.config.ornament.svg).toBeNull();
 		expect(r.config.ornament.guides.glyph).toBeNull();

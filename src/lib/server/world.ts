@@ -18,6 +18,7 @@ import { renderPlainBody } from './markdown';
  *     ornament:
  *       wordmark: logo.svg       # optional; asset filename for the masthead SVG logo
  *       world_mark: "❦"          # optional; glyph before the world name (text wordmark only)
+ *       nav_sep: "✶"             # optional; separator glyph between nav links and Kinds; defaults to "·"
  *       glyph: "✶"               # optional; unicode glyph for fleurons sitewide
  *       svg: rule.svg            # optional; asset filename for SVG fleuron sitewide
  *       guides:
@@ -42,7 +43,12 @@ export interface OrnamentConfig {
 	 */
 	wordmark: string | null;
 	/**
-	 * Unicode glyph shown before the world name in the text wordmark.
+	 * Separator glyph between the folder nav links and the Kinds link.
+	 * Defaults to "·" when null. Set to a custom glyph (e.g. "✶") in
+	 * world.md to theme the masthead separator without touching theme.css.
+	 */
+	navSep: string | null;
+	/** Unicode glyph shown before the world name in the text wordmark. 
 	 * Only used when `wordmark` (SVG) is absent. When set, the engine
 	 * injects `--wordmark-mark` and makes the `.wordmark-mark`
 	 * pseudo-element visible via a `<style>` tag in `<svelte:head>`.
@@ -71,7 +77,7 @@ const FALLBACK_NAME = 'Bunnytrail';
 const FALLBACK_TAGLINE = '';
 
 function fallbackOrnament(): OrnamentConfig {
-	return { wordmark: null, worldMark: null, glyph: null, svg: null, guides: { glyph: null, svg: null } };
+	return { wordmark: null, worldMark: null, navSep: null, glyph: null, svg: null, guides: { glyph: null, svg: null } };
 }
 
 function fallbackConfig(): WorldConfig {
@@ -178,6 +184,7 @@ function readOrnament(
 
 	const wordmark = readStringFrom(o, 'wordmark', 'ornament.wordmark', issues);
 	const worldMark = readStringFrom(o, 'world_mark', 'ornament.world_mark', issues);
+	const navSep = readStringFrom(o, 'nav_sep', 'ornament.nav_sep', issues);
 	const glyph = readStringFrom(o, 'glyph', 'ornament.glyph', issues);
 	const svg = readStringFrom(o, 'svg', 'ornament.svg', issues);
 
@@ -198,7 +205,7 @@ function readOrnament(
 		}
 	}
 
-	return { wordmark, worldMark, glyph, svg, guides };
+	return { wordmark, worldMark, navSep, glyph, svg, guides };
 }
 
 function readStringFrom(

@@ -25,6 +25,7 @@
 			};
 			ornamentGlyphStyle: string | null;
 			worldMarkStyle: string | null;
+			navSep: string;
 			scopeContext: ScopeContext;
 		};
 		children: Snippet;
@@ -216,7 +217,7 @@
 				{#each data.nav as item (item.href)}
 					<a href={item.href} aria-current={navAriaCurrent(item.href)}>{item.label}</a>
 				{/each}
-				<span class="nav-sep" aria-hidden="true">·</span>
+				<span class="nav-sep" aria-hidden="true">{data.navSep}</span>
 				<a href={data.kindsHref} aria-current={navAriaCurrent(data.kindsHref)}>Kinds</a>
 			</nav>
 
@@ -437,11 +438,11 @@
 		color: var(--accent);
 	}
 
-	/* Quiet bullet between the folder group and the Kinds link —
+	/* Quiet separator between the folder group and the Kinds link —
 	   signals that Kinds is a different kind of destination
 	   (taxonomy, not a folder of entities) without shouting.
-	   Themeable via :where() so a world theme can re-colour or
-	   replace the glyph (e.g. with content via ::before). */
+	   The glyph is driven by `ornament.nav_sep` in world.md (default "·").
+	   Themeable via :where() so a world can re-colour it from theme.css. */
 	:global(:where(.nav-sep)) {
 		color: var(--ink-faint);
 		font-size: var(--text-base);
