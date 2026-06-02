@@ -270,8 +270,9 @@
 
 	/* ── Guide callout — a prominent featured doorway to a content-authored
 	   guide (tour, "start here", landing page). Repeated once per
-	   registered guide. Top accent border gives presence; optional
-	   guide-mark ornament sits to the left of the body text. */
+	   registered guide. Top+left borders thicker (2px) in muted copper,
+	   right+bottom hairline — corner-bracket idiom that reads as an entrance.
+	   Optional guide-mark ornament sits above the body text. */
 	.guide-callout {
 		display: flex;
 		align-items: flex-start;
@@ -281,15 +282,23 @@
 		text-decoration: none;
 		color: inherit;
 		background: var(--vellum);
-		border: 1px solid var(--rule);
-		border-top-width: 2px;
-		border-top-color: var(--accent);
+		border-top: 2px solid color-mix(in oklab, var(--accent) 40%, var(--rule));
+		border-left: 2px solid color-mix(in oklab, var(--accent) 40%, var(--rule));
+		border-right: 1px solid color-mix(in oklab, var(--accent) 40%, var(--rule));
+		border-bottom: 1px solid color-mix(in oklab, var(--accent) 40%, var(--rule));
 		border-radius: var(--radius-sm);
-		transition: background-color 0.2s ease;
+		transition:
+			background-color 250ms ease,
+			box-shadow 250ms ease,
+			transform 250ms ease;
 	}
 
 	.guide-callout:hover {
 		background: var(--parchment-soft);
+		box-shadow:
+			0 1px 1px rgba(120, 90, 60, 0.04),
+			0 4px 14px -8px rgba(120, 90, 60, 0.10);
+		transform: translateY(-1px);
 	}
 
 	/* Optional ornamental mark from ornament.guides.svg. Inlined SVG
@@ -328,6 +337,21 @@
 		color: var(--ink);
 		margin: 0 0 var(--space-2);
 		font-style: italic;
+		/* Gradient parked off-screen; background-clip:text set so worlds
+		   can trigger a gleam sweep on hover via @keyframes in theme.css
+		   without touching engine code — same hook as .card-link in EntityCard. */
+		background-image: linear-gradient(
+			115deg,
+			currentColor 0%,
+			currentColor 25%,
+			var(--accent-warm) 50%,
+			currentColor 70%,
+			currentColor 100%
+		);
+		background-size: 250% 100%;
+		background-position: 130% 0;
+		background-clip: text;
+		-webkit-background-clip: text;
 	}
 
 	.guide-callout:hover .guide-title {
@@ -344,13 +368,10 @@
 
 	.guide-arrow {
 		font-size: var(--text-xl);
-		color: var(--ink-faint);
+		color: var(--accent);
 		flex-shrink: 0;
 	}
 
-	.guide-callout:hover .guide-arrow {
-		color: var(--accent);
-	}
 
 	/* ── Notebook callout — quieter sibling to the guide doorway.
 	   Solid border and vellum background; display-italic title for
