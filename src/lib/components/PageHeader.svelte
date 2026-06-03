@@ -86,7 +86,7 @@
 			<nav class="crumbs" aria-label="Breadcrumb">
 				{#each crumbs as crumb, i (crumb.href)}
 					{#if i > 0}<span class="crumb-sep" aria-hidden="true">›</span>{/if}
-					<a class="crumb" href={crumb.href}>{crumb.label}</a>
+					<a class="crumb" href={crumb.href}>{#if crumbs.length === 1}<span class="up-arrow" aria-hidden="true">↑</span>{/if}{crumb.label}</a>
 				{/each}
 			</nav>
 		{:else}
@@ -202,6 +202,7 @@
 	.up-arrow {
 		font-variant: normal;
 		letter-spacing: 0;
+		margin-right: 0.35em;
 	}
 
 	/* Breadcrumb chain. Each crumb borrows the up-link's small-caps
