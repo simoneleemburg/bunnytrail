@@ -48,10 +48,12 @@ function buildSubcollectionEntry(path: string, tree: KindTree) {
 		}
 	}
 
+	const col = graph.collection(path);
 	return {
 		type: path,
 		plural: labels.plural,
 		description,
+		rank: typeof col?.meta.rank === 'number' ? col.meta.rank : null,
 		count: subEntities.length,
 		kindCounts,
 		tags: rankTags(tagCounts),
@@ -286,7 +288,12 @@ export async function loadCollectionPage(path: string) {
 	const childPaths = graph.childFolders(path);
 	const subcollections = childPaths
 		.map((sub) => buildSubcollectionEntry(sub, kindTree))
-		.sort((a, b) => a.plural.localeCompare(b.plural));
+		.sort((a, b) => {
+			if (a.rank !== null && b.rank !== null) return a.rank - b.rank;
+			if (a.rank !== null) return -1;
+			if (b.rank !== null) return 1;
+			return a.plural.localeCompare(b.plural);
+		});
 
 	// Cards for direct entities, retaining their bucket for folder
 	// chips / synthetic folder containers.
@@ -495,6 +502,7 @@ export async function loadCollectionPage(path: string) {
 		description,
 		bodyHtml,
 		subcollections,
+		subcollectionRankDisplay: (collection?.meta.rankDisplay ?? 'arabic') as RankDisplay,
 		subcollectionTrees,
 		containers,
 		standalone,
@@ -574,6 +582,7 @@ export function loadEverythingIndex() {
 		standalone: [] as typeof allCards,
 		flat: allCards,
 		collectionNav: { rank: null, rankDisplay: 'arabic' as RankDisplay, prev: null, next: null },
+		subcollectionRankDisplay: 'arabic' as RankDisplay,
 		kindParents: serialiseKinds()
 	};
 }
@@ -678,6 +687,7 @@ export function loadAggregateShelfPage(shelf: string) {
 		standalone: flat,
 		flat,
 		collectionNav: { rank: null, rankDisplay: 'arabic' as RankDisplay, prev: null, next: null },
+		subcollectionRankDisplay: 'arabic' as RankDisplay,
 		kindParents: serialiseKinds()
 	};
 }

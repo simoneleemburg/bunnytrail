@@ -499,7 +499,9 @@
 								<a class="subcollection-link" href={`/${sub.type}`}>
 									<div class="subcollection-eyebrow">
 										<span class="subcollection-tag">Collection</span>
-										<span class="subcollection-count">{sub.visibleCount}</span>
+										{#if sub.rank != null && data.subcollectionRankDisplay !== 'none'}
+											<span class="subcollection-count">{data.subcollectionRankDisplay === 'roman' ? toRoman(sub.rank) : sub.rank}</span>
+										{/if}
 									</div>
 									<h3 class="subcollection-label">{sub.plural}</h3>
 						</a>
