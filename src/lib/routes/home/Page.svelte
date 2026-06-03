@@ -343,9 +343,9 @@
 		background-image: linear-gradient(
 			100deg,
 			currentColor 0%,
-			currentColor 25%,
+			currentColor 42%,
 			var(--accent-warm) 50%,
-			currentColor 70%,
+			currentColor 58%,
 			currentColor 100%
 		);
 		background-size: 250% 100%;
@@ -412,6 +412,18 @@
 		font-size: var(--text-xl);
 		color: var(--ink);
 		margin: 0 0 var(--space-2);
+		background-image: linear-gradient(
+			100deg,
+			currentColor 0%,
+			currentColor 42%,
+			var(--accent-warm) 50%,
+			currentColor 58%,
+			currentColor 100%
+		);
+		background-size: 250% 100%;
+		background-position: 130% 0;
+		background-clip: text;
+		-webkit-background-clip: text;
 	}
 
 	.notebook-callout:hover .notebook-title {
@@ -476,6 +488,18 @@
 		font-size: var(--text-xl);
 		color: var(--ink);
 		margin: 0 0 var(--space-2);
+		background-image: linear-gradient(
+			100deg,
+			currentColor 0%,
+			currentColor 42%,
+			var(--accent-warm) 50%,
+			currentColor 58%,
+			currentColor 100%
+		);
+		background-size: 250% 100%;
+		background-position: 130% 0;
+		background-clip: text;
+		-webkit-background-clip: text;
 	}
 
 	.sources-callout:hover .sources-title {
@@ -552,6 +576,18 @@
 		font-size: var(--text-lg);
 		color: var(--ink);
 		margin-top: var(--space-2);
+		background-image: linear-gradient(
+			100deg,
+			currentColor 0%,
+			currentColor 42%,
+			var(--accent-warm) 50%,
+			currentColor 58%,
+			currentColor 100%
+		);
+		background-size: 250% 100%;
+		background-position: 130% 0;
+		background-clip: text;
+		-webkit-background-clip: text;
 	}
 
 	.type-card:hover .label {
