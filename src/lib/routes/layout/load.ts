@@ -48,11 +48,18 @@ export async function load({ url }: { url: URL }) {
 	const nav = unionShelves
 		.filter((shelf) => !selectedCluster || graph.isFolder(`${selectedCluster}/${shelf}`))
 		.map((shelf) => {
+			const shelfPaths = graph.clusterShelfPaths(shelf);
 			const labelSourcePath =
-				graph.clusterShelfPaths(shelf).find((p) => graph.collection(p)) ??
-				graph.clusterShelfPaths(shelf)[0];
+				shelfPaths.find((p) => graph.collection(p)) ?? shelfPaths[0];
 			const label = graph.folderLabels(labelSourcePath ?? shelf).plural;
-			const href = selectedCluster ? `/${selectedCluster}/${shelf}` : `/${shelf}`;
+			// In All scope, if the shelf exists in exactly one cluster send
+			// the nav link directly to that cluster's shelf — no need for the
+			// aggregate route that would just show one tile anyway.
+			const href = selectedCluster
+				? `/${selectedCluster}/${shelf}`
+				: shelfPaths.length === 1
+					? `/${shelfPaths[0]}`
+					: `/${shelf}`;
 			const count = selectedCluster
 				? graph.byFolderRecursive(`${selectedCluster}/${shelf}`).length
 				: graph.entitiesByShelfAcrossClusters(shelf).length;

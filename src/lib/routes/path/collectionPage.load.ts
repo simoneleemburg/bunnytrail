@@ -623,20 +623,12 @@ export function loadAggregateShelfPage(shelf: string) {
 	const kindTree = buildLoaderKindTree();
 	const clusterPaths = graph.clusterShelfPaths(shelf);
 
-	// Subcollection tiles only earn their keep when they *narrow*
-	// the view. With a single cluster the tile would link to that
-	// cluster's shelf — i.e. exactly the content already on the page,
-	// just at a different URL. Hide the section in that case; show
-	// it only when the aggregate genuinely combines multiple clusters.
-	const showSubcollections = clusterPaths.length > 1;
-	const subcollections = showSubcollections
-		? clusterPaths
-				.map((p) => buildSubcollectionEntry(p, kindTree))
-				.sort((a, b) => a.plural.localeCompare(b.plural))
-		: [];
-	const subcollectionTrees = showSubcollections
-		? clusterPaths.map((p) => buildSubcollectionTree(p, '', cardSummaryHtml))
-		: [];
+	const subcollections = clusterPaths
+		.map((p) => buildSubcollectionEntry(p, kindTree))
+		.sort((a, b) => a.plural.localeCompare(b.plural));
+	const subcollectionTrees = clusterPaths.map((p) =>
+		buildSubcollectionTree(p, '', cardSummaryHtml)
+	);
 
 	const entities = graph.entitiesByShelfAcrossClusters(shelf);
 
