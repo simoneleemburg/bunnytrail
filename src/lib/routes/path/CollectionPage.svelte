@@ -493,10 +493,10 @@
 				<section class="subcollections" aria-label="Subcollections">
 					<ul class="subcollection-list">
 						{#each visibleSubcollections as sub (sub.type)}
-							<li class="subcollection">
-								<a class="subcollection-link" href={`/${sub.type}`}>
-									<div class="subcollection-eyebrow">
-										<span class="subcollection-tag">Collection</span>
+			<li class="subcollection">
+				<a class="subcollection-link" class:bt-meta-link={sub.isCluster} href={`/${sub.type}`}>
+					<div class="subcollection-eyebrow">
+						<span class="subcollection-tag">{sub.isCluster ? 'Cluster' : 'Collection'}</span>
 										{#if sub.rank != null && data.subcollectionRankDisplay !== 'none'}
 											<span class="subcollection-count">{data.subcollectionRankDisplay === 'roman' ? toRoman(sub.rank) : sub.rank}</span>
 										{/if}
@@ -1175,6 +1175,10 @@
 		border-left: 2px solid var(--accent-warm);
 	}
 
+	.subcollection-link.bt-meta-link {
+		border-left-color: var(--accent-meta);
+	}
+
 	/* Stretched link covers the whole tile, so the description below
 	   is clickable too. No interactive children compete here. */
 	.subcollection-link::after {
@@ -1226,6 +1230,38 @@
 	}
 
 	@keyframes subcollection-title-gleam {
+		0% {
+			background-position: 130% 0;
+			-webkit-text-fill-color: currentColor;
+		}
+		15%,
+		85% {
+			-webkit-text-fill-color: transparent;
+		}
+		100% {
+			background-position: -30% 0;
+			-webkit-text-fill-color: currentColor;
+		}
+	}
+
+	/* Cluster variant — meta-link colours instead of warm gold. */
+	.subcollection:has(.bt-meta-link) .subcollection-label {
+		background-image: linear-gradient(
+			100deg,
+			currentColor 0%,
+			currentColor 42%,
+			var(--accent-meta) 50%,
+			currentColor 58%,
+			currentColor 100%
+		);
+	}
+
+	.subcollection:has(.bt-meta-link):hover .subcollection-label {
+		animation: subcollection-title-gleam--meta 600ms ease-out;
+		color: var(--accent-meta);
+	}
+
+	@keyframes subcollection-title-gleam--meta {
 		0% {
 			background-position: 130% 0;
 			-webkit-text-fill-color: currentColor;

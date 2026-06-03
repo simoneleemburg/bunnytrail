@@ -652,7 +652,16 @@ export function loadAggregateShelfPage(shelf: string) {
 	const clusterPaths = graph.clusterShelfPaths(shelf);
 
 	const subcollections = clusterPaths
-		.map((p) => buildSubcollectionEntry(p, kindTree))
+		.map((p) => {
+			const clusterSegment = p.split('/')[0];
+			const folderLabel = graph.folderLabels(p)
+			const clusterLabels = graph.folderLabels(clusterSegment);
+			return {
+				...buildSubcollectionEntry(p, kindTree),
+				plural: folderLabel.plural + ' of '+ clusterLabels.plural,
+				isCluster: true as const
+			};
+		})
 		.sort((a, b) => a.plural.localeCompare(b.plural));
 	const subcollectionTrees = clusterPaths.map((p) =>
 		buildSubcollectionTree(p, '', cardSummaryHtml)
