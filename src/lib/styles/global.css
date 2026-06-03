@@ -621,3 +621,20 @@ blockquote {
 		padding-inline: var(--space-4);
 	}
 }
+
+/* ── Meta-link theming hook ────────────────────────────────────
+   Applied by the engine to structural / out-of-world surfaces:
+   • callout titles and arrows on the home page (guide, source
+     projects, notebook doorways)
+   • the up-link in PageHeader when it resolves to the world root
+
+   The engine ships no colour or glow here — worlds style
+   .bt-meta-link and .bt-meta-link:hover in their theme.css.
+   The transition is declared here so worlds don't have to
+   repeat it.
+
+   Worlds typically use --accent-meta / --accent-meta-glow for
+   the colour values; those tokens are defined in tokens.css. */
+.bt-meta-link {
+	transition: color 200ms ease, text-shadow 200ms ease;
+}

@@ -101,10 +101,10 @@
 				<div class="guide-mark" aria-hidden="true">{@html ornament.guides.svg}</div>
 			{/if}
 			<p class="guide-eyebrow">{guide.eyebrow}</p>
-			<p class="guide-title">{guide.title}</p>
+			<p class="guide-title bt-meta-link">{guide.title}</p>
 			<p class="guide-sub">{guide.summary}</p>
 		</div>
-		<div class="guide-arrow" aria-hidden="true">→</div>
+		<div class="guide-arrow bt-meta-link" aria-hidden="true">→</div>
 	</a>
 {/each}
 
@@ -119,7 +119,7 @@
 	<a class="sources-callout" href="/sources">
 		<div class="sources-body">
 			<p class="sources-eyebrow">Workbench</p>
-			<p class="sources-title">Source projects</p>
+			<p class="sources-title bt-meta-link">Source projects</p>
 			<p class="sources-sub">
 				The {data.sourceProjects.length} feeder works being absorbed into {world.name}:
 				<span class="sources-names">
@@ -127,7 +127,7 @@
 				</span>
 			</p>
 		</div>
-		<div class="sources-arrow" aria-hidden="true">→</div>
+		<div class="sources-arrow bt-meta-link" aria-hidden="true">→</div>
 	</a>
 {/if}
 
@@ -141,13 +141,13 @@
 <a class="notebook-callout" href="/blog">
 	<div class="notebook-body">
 		<p class="notebook-eyebrow">Working notes</p>
-		<p class="notebook-title">Notebook</p>
+		<p class="notebook-title bt-meta-link">Notebook</p>
 		<p class="notebook-sub">
 			Author&rsquo;s-room reflections on building {world.name}. Out-of-world; not part of the
 			compendium.
 		</p>
 	</div>
-	<div class="notebook-arrow" aria-hidden="true">→</div>
+	<div class="notebook-arrow bt-meta-link" aria-hidden="true">→</div>
 </a>
 
 <section class="types">
@@ -355,7 +355,7 @@
 	}
 
 	.guide-callout:hover .guide-title {
-		color: var(--accent);
+		color: var(--accent-meta);
 	}
 
 	.guide-sub {
@@ -370,6 +370,10 @@
 		font-size: var(--text-xl);
 		color: var(--accent);
 		flex-shrink: 0;
+	}
+
+	.guide-callout:hover .guide-arrow {
+		color: var(--accent-meta);
 	}
 
 
@@ -427,7 +431,7 @@
 	}
 
 	.notebook-callout:hover .notebook-title {
-		color: var(--accent);
+		color: var(--accent-meta);
 	}
 
 	.notebook-sub {
@@ -445,7 +449,7 @@
 	}
 
 	.notebook-callout:hover .notebook-arrow {
-		color: var(--accent);
+		color: var(--accent-meta);
 	}
 
 	/* ── Source projects callout — out-of-world workbench doorway.
@@ -503,7 +507,7 @@
 	}
 
 	.sources-callout:hover .sources-title {
-		color: var(--accent);
+		color: var(--accent-meta);
 	}
 
 	.sources-sub {
@@ -526,7 +530,7 @@
 	}
 
 	.sources-callout:hover .sources-arrow {
-		color: var(--accent);
+		color: var(--accent-meta);
 	}
 
 	.section-heading {

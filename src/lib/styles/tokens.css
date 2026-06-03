@@ -57,6 +57,16 @@
 	--accent-deep: #444;
 	--accent-warm: #666;
 
+	/* Meta accent — used for out-of-world / structural surfaces:
+	   guide callout titles and arrows, source-projects and notebook
+	   doorway titles and arrows, and the up-link when it resolves
+	   to the world root (/). Worlds override this to give meta
+	   navigation a distinct register (e.g. a cosmic blue or
+	   aquamarine that reads as "above the world"). Defaults to
+	   --accent so an unstyled world still looks coherent. */
+	--accent-meta: var(--accent);
+	--accent-meta-glow: transparent;
+
 	/* Hover wash and card shadow — neutral grey by default. */
 	--paper-warm: rgba(0, 0, 0, 0.04);
 	--shadow-hover: 0 6px 16px -10px rgba(0, 0, 0, 0.15);

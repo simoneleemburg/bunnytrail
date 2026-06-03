@@ -90,7 +90,13 @@
 				{/each}
 			</nav>
 		{:else}
-			<a class="up-link" href={upLink.href} aria-label={`Up to ${upLink.label}`}>
+			<a
+				class="up-link"
+				class:up-link--home={upLink.href === '/'}
+				class:bt-meta-link={upLink.href === '/'}
+				href={upLink.href}
+				aria-label={`Up to ${upLink.label}`}
+			>
 				<span class="up-arrow" aria-hidden="true">↑</span>{upLink.label}
 			</a>
 		{/if}
@@ -183,6 +189,14 @@
 
 	.up-link:hover {
 		color: var(--accent-warm);
+	}
+
+	/* When the up-link resolves to world root (/), it's a "meta"
+	   link — stepping outside the world's content hierarchy. Use
+	   --accent-meta so worlds can give it a distinct register
+	   (e.g. cosmic blue) that signals "this exits the cluster". */
+	.up-link--home:hover {
+		color: var(--accent-meta);
 	}
 
 	.up-arrow {
