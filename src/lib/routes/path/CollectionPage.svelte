@@ -363,7 +363,7 @@
 </svelte:head>
 
 <div class="collection-header">
-	<PageHeader title={data.label.plural} subtitle={data.description ?? undefined} />
+	<PageHeader title={data.label.plural} subtitle={data.description ?? undefined} breadcrumbs={data.breadcrumbs} />
 </div>
 
 <!--

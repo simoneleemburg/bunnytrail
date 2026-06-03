@@ -228,6 +228,27 @@ export async function loadCollectionPage(path: string) {
 	const collection = graph.collection(path);
 	const description = collection?.meta.description ?? null;
 
+	// Breadcrumb chain: every browseable ancestor folder above this
+	// collection, from root down. Mirrors the entity-page logic.
+	// For a top-level cluster page (single segment, e.g. "aurethia")
+	// we produce no breadcrumbs so PageHeader falls back to its
+	// built-in up-arrow pointing home — the cluster page is the
+	// natural top of its own tree and "home" is the right parent.
+	const breadcrumbs: { label: string; href: string }[] = [];
+	const segs = path.split('/');
+	if (segs.length > 1) {
+		// Walk ancestor segments (all but the last, which is this page).
+		for (let i = 1; i < segs.length; i++) {
+			const prefix = segs.slice(0, i).join('/');
+			if (graph.isFolder(prefix)) {
+				breadcrumbs.push({
+					label: graph.folderLabels(prefix).plural,
+					href: `/${prefix}`
+				});
+			}
+		}
+	}
+
 	// Direct entities of this folder, sorted by rank then name.
 	const entities = graph.byFolder(path).sort(byRankThenName);
 
@@ -499,6 +520,7 @@ export async function loadCollectionPage(path: string) {
 		kind: 'collection' as const,
 		type: path,
 		label,
+		breadcrumbs,
 		description,
 		bodyHtml,
 		subcollections,
@@ -572,6 +594,7 @@ export function loadEverythingIndex() {
 		kind: 'collection' as const,
 		type: '',
 		label: { singular: 'Entry', plural: 'Everything' },
+		breadcrumbs: [],
 		description: `Every entry in ${world.config().name}, in one place. Filter or flatten to taste.`,
 		bodyHtml: null,
 		subcollections,
@@ -665,6 +688,7 @@ export function loadAggregateShelfPage(shelf: string) {
 		kind: 'collection' as const,
 		type: shelf,
 		label,
+		breadcrumbs: [],
 		description,
 		bodyHtml: null,
 		subcollections,
