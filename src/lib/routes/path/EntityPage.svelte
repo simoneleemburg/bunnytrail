@@ -154,9 +154,28 @@
 		for (const e of all) {
 			if (e.kind !== 'wikilink' && e.entity) typedPartners.add(e.entity.id);
 		}
-		const deduped = all.filter(
-			(e) => e.kind !== 'wikilink' || !e.entity || !typedPartners.has(e.entity.id)
-		);
+
+		// Collect all entity ids that appear under outgoing wikilinks
+		// ("Mentions"). Any entity that is already listed there does
+		// not need to appear again under incoming wikilinks
+		// ("Mentioned by"), so we track them and filter below.
+		const mentionedOutIds = new Set<string>();
+		for (const e of all) {
+			if (e.kind === 'wikilink' && e.direction === 'out' && e.entity) {
+				mentionedOutIds.add(e.entity.id);
+			}
+		}
+
+		const deduped = all.filter((e) => {
+			if (!e.entity) return true;
+			// Drop self-links (entity mentions or links to itself).
+			if (e.entity.id === data.entity.id) return false;
+			// Drop wikilinks to entities that already have a typed relation.
+			if (e.kind === 'wikilink' && typedPartners.has(e.entity.id)) return false;
+			// Drop "Mentioned by" entries that are already under "Mentions".
+			if (e.kind === 'wikilink' && e.direction === 'in' && mentionedOutIds.has(e.entity.id)) return false;
+			return true;
+		});
 
 		type Group = { key: string; label: string; kind: string; items: EdgeWithEntity[] };
 		const groups = new Map<string, Group>();

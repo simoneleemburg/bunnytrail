@@ -241,6 +241,7 @@ export async function loadEntityPage(entity: Entity) {
 		breadcrumbs,
 		kindChip,
 		entity: {
+			id: entity.id,
 			name: entity.meta.name,
 			summaryHtml: summaryHtml(entity.meta.summary),
 			aliases: entity.meta.aliases ?? [],
