@@ -143,6 +143,47 @@ scripts/
 - **New CLI subcommand** → drop a `bin/<name>.ts` exporting
   `run(argv): Promise<number>`, wire a case in `bin/bunnytrail.ts`.
 
+## Rank system
+
+Collections and entities support optional rank ordering. The two
+fields live on separate meta types but work together.
+
+**`CollectionMeta` fields** (set in `_collection.md` frontmatter):
+
+- `rank: <number>` — explicit sort position among sibling collections.
+  Ranked siblings sort before unranked ones; unranked fall back to
+  alphabetical. Drives prev/next navigation between sibling collections
+  and the rank glyph in the opening fleuron.
+- `rankDisplay: 'arabic' | 'roman' | 'none'` — controls how the rank
+  integer is rendered **for that collection's children**. Defaults to
+  `'arabic'`. `'none'` suppresses rank glyphs entirely (sorting still
+  applies). Set this on the *parent* collection to govern how all child
+  ranks are displayed — both on subcollection tiles and on entity cards
+  within the collection.
+
+**`EntityMeta` field** (set in entity frontmatter):
+
+- `rank: <number>` — sort position within the containing collection.
+  Ranked entities sort before unranked ones; unranked fall back to
+  alphabetical. Displayed in the entity card eyebrow as
+  `KIND · <glyph>`. The glyph format is inherited from the containing
+  collection's `rankDisplay`.
+
+**Engine behaviour:**
+
+- `byRankThenName` (`src/lib/server/graph.ts`) is the canonical sort
+  comparator used everywhere rank ordering is needed.
+- Subcollection tiles on a collection page show the child's `rank`
+  formatted per the current page's `rankDisplay`
+  (`collectionPage.load.ts` → `buildSubcollectionEntry` +
+  `subcollectionRankDisplay`).
+- The opening fleuron on a collection page shows the rank glyph when
+  `rank` is set and `rankDisplay !== 'none'`. The *second* fleuron
+  (the separator between prose and the entity grid) always shows the
+  plain ornament — it is structural, not a rank marker.
+- `toRoman(n)` in `src/lib/types.ts` converts an integer to a Roman
+  numeral string; use it wherever `rankDisplay === 'roman'`.
+
 ## Wikilinks
 
 The wikilink resolver lives in `src/lib/server/markdown.ts`. The
