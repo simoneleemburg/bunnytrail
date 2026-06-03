@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Tag from './Tag.svelte';
+	import { toRoman, type RankDisplay } from '$lib/types';
 
 	interface Props {
 		id: string;
@@ -20,6 +21,11 @@
 		sigil?: string | null;
 		/** Optional sort rank from frontmatter. Displayed as "AXIOM · 2". */
 		rank?: number | null;
+		/**
+		 * Controls how rank is rendered. Defaults to 'arabic' (raw number).
+		 * 'roman' converts to roman numeral. 'none' suppresses the rank glyph.
+		 */
+		rankDisplay?: RankDisplay | null;
 	}
 
 	let {
@@ -32,13 +38,14 @@
 		tags = [],
 		era = null,
 		sigil = null,
-		rank = null
+		rank = null,
+		rankDisplay = null
 	}: Props = $props();
 </script>
 
 <article class="entity-card">
 	<div class="eyebrow">
-		<span class="type">{kind ?? type}</span>{#if rank != null}<span class="sep">·</span><span class="rank">{rank}</span>{/if}
+		<span class="type">{kind ?? type}</span>{#if rank != null && rankDisplay !== 'none'}<span class="sep">·</span><span class="rank">{rankDisplay === 'roman' ? toRoman(rank) : rank}</span>{/if}
 		{#if era}
 			<span class="sep">·</span>
 			<span class="era">{era}</span>

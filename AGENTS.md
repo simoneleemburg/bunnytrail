@@ -168,6 +168,24 @@ fields live on separate meta types but work together.
   alphabetical. Displayed in the entity card eyebrow as
   `KIND · <glyph>`. The glyph format is inherited from the containing
   collection's `rankDisplay`.
+- `rankDisplay: 'arabic' | 'roman' | 'none'` — when set on an entity
+  that is *also a folder parent* (i.e. it has an `index.md` and
+  child entities live inside its folder), governs how those children's
+  rank glyphs are rendered. This is the alternative authoring style to
+  `_collection.yaml` — put `rankDisplay` directly on the parent entity
+  rather than in a sidecar collection file.
+
+**`rankDisplay` resolution order** (for an entity's own rank glyph):
+
+1. The containing folder's `_collection.yaml` / `_collection.md`
+   `rankDisplay` field.
+2. The containing folder's entity `index.md`, if that folder is itself
+   an entity with `rankDisplay` in its frontmatter.
+3. Default: `'arabic'`.
+
+This means `rankDisplay: none` on e.g. "The Aureth System" entity
+governs how its child planets render their rank glyphs, without
+requiring a separate `_collection.yaml` file.
 
 **Engine behaviour:**
 

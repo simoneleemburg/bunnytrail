@@ -69,11 +69,25 @@ export async function loadEntityPage(entity: Entity) {
 	const kindId = typeof entity.meta.kind === 'string' ? entity.meta.kind : null;
 	const kindObj = kindId ? graph.kind(kindId) : undefined;
 
-	// rankDisplay is declared on the containing folder's _collection and
-	// applies to all ranked entities in that folder.
-	const folderRankDisplay: RankDisplay = type
-		? (graph.collection(type)?.meta.rankDisplay ?? 'arabic')
-		: 'arabic';
+	// rankDisplay for this entity's own rank glyph and prev/next nav.
+	// Resolution order (first match wins):
+	//   1. The containing folder's _collection.yaml / _collection.md
+	//   2. The containing folder's entity (index.md), if that folder is
+	//      itself an entity that carries rankDisplay in its frontmatter.
+	//      This lets an entity like "The Aureth System" declare
+	//      `rankDisplay: none` directly on itself and have it govern
+	//      how its child planets' rank glyphs are rendered.
+	//   3. Default: 'arabic'
+	const folderRankDisplay: RankDisplay = (() => {
+		if (!type) return 'arabic';
+		const fromCollection = graph.collection(type)?.meta.rankDisplay;
+		if (fromCollection) return fromCollection;
+		const parentEntityRankDisplay = graph.get(type)?.meta.rankDisplay;
+		if (parentEntityRankDisplay === 'none' || parentEntityRankDisplay === 'roman' || parentEntityRankDisplay === 'arabic') {
+			return parentEntityRankDisplay;
+		}
+		return 'arabic';
+	})();
 
 	const kindChip = kindId
 		? {
@@ -151,7 +165,12 @@ export async function loadEntityPage(entity: Entity) {
 		// chapter-list rendering, not as a sidebar property.
 		'book',
 		// `rank` is surfaced as prev/next navigation, not a raw property.
-		'rank'
+		'rank',
+		// `rankDisplay` is a collection-level rendering hint; on entities it
+		// is either ignored (the containing _collection governs display) or
+		// set on the entity's own _collection.  Either way it should not
+		// appear as a raw sidebar property.
+		'rankDisplay'
 	]);
 	const extra: { key: string; value: unknown }[] = [];
 	for (const [key, value] of Object.entries(entity.meta)) {

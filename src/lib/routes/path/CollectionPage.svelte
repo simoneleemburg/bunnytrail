@@ -541,6 +541,7 @@
 				era={node.container.era}
 				sigil={node.container.sigil}
 				rank={node.container.rank}
+				rankDisplay={data.entityRankDisplay}
 			/>
 			{:else}
 				<p class="container-stub">
@@ -570,16 +571,17 @@
 			{#each visibleSubcollectionTrees as sub (sub.path)}
 				<section class="subcollection-tree" aria-label={sub.headlineEntity?.name ?? sub.plural}>
 					{#if sub.headlineEntity}
-						<EntityCard
-							id={sub.headlineEntity.id}
-							name={sub.headlineEntity.name}
-							type={data.label.singular}
-							kind={sub.headlineEntity.kind}
-							summaryHtml={sub.headlineEntity.summaryHtml}
-							tags={sub.headlineEntity.tags}
+					<EntityCard
+						id={sub.headlineEntity.id}
+						name={sub.headlineEntity.name}
+						type={data.label.singular}
+						kind={sub.headlineEntity.kind}
+						summaryHtml={sub.headlineEntity.summaryHtml}
+						tags={sub.headlineEntity.tags}
 					era={sub.headlineEntity.era}
 					sigil={sub.headlineEntity.sigil}
 					rank={sub.headlineEntity.rank}
+					rankDisplay={data.entityRankDisplay}
 				/>
 					{:else}
 						<header class="subcollection-tree-heading">
@@ -606,16 +608,17 @@
 	{#snippet orbitTree(node: OrbitNode)}
 		{@const dimmed = (activeKind !== null || activeTags.size > 0) && !matchesFilters(node.entity)}
 		<div class="orbit-group" class:dimmed>
-			<EntityCard
-				id={node.entity.id}
-				name={node.entity.name}
-				type={node.entity.typeLabel ?? data.label.singular}
-				kind={node.entity.kind}
-				summaryHtml={node.entity.summaryHtml}
-				tags={node.entity.tags}
+		<EntityCard
+			id={node.entity.id}
+			name={node.entity.name}
+			type={node.entity.typeLabel ?? data.label.singular}
+			kind={node.entity.kind}
+			summaryHtml={node.entity.summaryHtml}
+			tags={node.entity.tags}
 		era={node.entity.era}
 		sigil={node.entity.sigil}
 		rank={node.entity.rank}
+		rankDisplay={data.entityRankDisplay}
 		/>
 		{#if node.children.length > 0}
 			<div class="orbit-children">
@@ -638,16 +641,17 @@
 	{#if visibleGrid.length > 0}
 		<div class="grid">
 			{#each visibleGrid as entity (entity.id)}
-				<EntityCard
-					id={entity.id}
-					name={entity.name}
-					type={entity.typeLabel ?? data.label.singular}
-					kind={entity.kind}
-					summaryHtml={entity.summaryHtml}
-					tags={entity.tags}
+			<EntityCard
+				id={entity.id}
+				name={entity.name}
+				type={entity.typeLabel ?? data.label.singular}
+				kind={entity.kind}
+				summaryHtml={entity.summaryHtml}
+				tags={entity.tags}
 			era={entity.era}
 			sigil={entity.sigil}
 			rank={entity.rank}
+			rankDisplay={data.entityRankDisplay}
 			/>
 		{/each}
 		</div>

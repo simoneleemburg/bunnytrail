@@ -502,6 +502,10 @@ export async function loadCollectionPage(path: string) {
 		description,
 		bodyHtml,
 		subcollections,
+		// rankDisplay for entity *cards* on this page — inherited from this
+		// collection's own _collection.yaml/md, the same field that drives
+		// subcollection tile glyphs.
+		entityRankDisplay: (collection?.meta.rankDisplay ?? 'arabic') as RankDisplay,
 		subcollectionRankDisplay: (collection?.meta.rankDisplay ?? 'arabic') as RankDisplay,
 		subcollectionTrees,
 		containers,
@@ -582,6 +586,7 @@ export function loadEverythingIndex() {
 		standalone: [] as typeof allCards,
 		flat: allCards,
 		collectionNav: { rank: null, rankDisplay: 'arabic' as RankDisplay, prev: null, next: null },
+		entityRankDisplay: 'arabic' as RankDisplay,
 		subcollectionRankDisplay: 'arabic' as RankDisplay,
 		kindParents: serialiseKinds()
 	};
@@ -679,6 +684,7 @@ export function loadAggregateShelfPage(shelf: string) {
 		standalone: flat,
 		flat,
 		collectionNav: { rank: null, rankDisplay: 'arabic' as RankDisplay, prev: null, next: null },
+		entityRankDisplay: 'arabic' as RankDisplay,
 		subcollectionRankDisplay: 'arabic' as RankDisplay,
 		kindParents: serialiseKinds()
 	};
