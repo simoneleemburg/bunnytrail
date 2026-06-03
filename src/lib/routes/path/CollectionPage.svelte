@@ -4,11 +4,18 @@
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import Tag from '$lib/components/Tag.svelte';
-	import { buildKindTree } from '$lib/types';
+	import { buildKindTree, toRoman } from '$lib/types';
 
 	let { data }: { data: CollectionPageData } = $props();
 
 	const ornamentSvg = $derived(page.data.ornament?.svg ?? null);
+	const collectionNav = $derived(data.collectionNav);
+
+	const rankGlyph = $derived(
+		collectionNav.rank != null && collectionNav.rankDisplay !== 'none'
+			? (collectionNav.rankDisplay === 'roman' ? toRoman(collectionNav.rank) : String(collectionNav.rank))
+			: null
+	);
 
 	// Display caps for tags. Subcollection tiles get a tight cap to keep
 	// the tile compact; the page-level filter starts collapsed at
@@ -375,13 +382,35 @@
 {#if data.bodyHtml || !hasViewToggle}
 	<div class="bt-fleuron" aria-hidden="true">
 		<span class="bt-fleuron__rule"></span>
-		{#if ornamentSvg}
+		{#if rankGlyph != null}
+			<span class="bt-fleuron__glyph bt-fleuron__glyph--rank">{rankGlyph}</span>
+		{:else if ornamentSvg}
 			<span class="bt-fleuron__glyph bt-fleuron__glyph--svg">{@html ornamentSvg}</span>
 		{:else}
 			<span class="bt-fleuron__glyph"></span>
 		{/if}
 		<span class="bt-fleuron__rule"></span>
 	</div>
+	{#if collectionNav.prev || collectionNav.next}
+		<nav class="rank-nav" aria-label="Collection navigation">
+			{#if collectionNav.prev}
+				<a class="rank-nav__item rank-nav__item--prev" href="/{collectionNav.prev.path}" aria-label="Previous: {collectionNav.prev.title}">
+					<span class="rank-nav__arrow" aria-hidden="true">←</span>
+					<span>back</span>
+				</a>
+			{:else}
+				<span class="rank-nav__item rank-nav__item--prev rank-nav__item--empty"></span>
+			{/if}
+			{#if collectionNav.next}
+				<a class="rank-nav__item rank-nav__item--next" href="/{collectionNav.next.path}" aria-label="Next: {collectionNav.next.title}">
+					<span>next</span>
+					<span class="rank-nav__arrow" aria-hidden="true">→</span>
+				</a>
+			{:else}
+				<span class="rank-nav__item rank-nav__item--next rank-nav__item--empty"></span>
+			{/if}
+		</nav>
+	{/if}
 {/if}
 
 {#if data.bodyHtml}
@@ -389,7 +418,9 @@
 	{#if !hasViewToggle}
 		<div class="bt-fleuron" aria-hidden="true">
 			<span class="bt-fleuron__rule"></span>
-			{#if ornamentSvg}
+			{#if rankGlyph != null}
+				<span class="bt-fleuron__glyph bt-fleuron__glyph--rank">{rankGlyph}</span>
+			{:else if ornamentSvg}
 				<span class="bt-fleuron__glyph bt-fleuron__glyph--svg">{@html ornamentSvg}</span>
 			{:else}
 				<span class="bt-fleuron__glyph"></span>
@@ -731,6 +762,43 @@
 {/if}
 
 <style>
+	.rank-nav {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		max-width: var(--prose-max);
+		margin: 0 auto var(--space-6);
+		gap: var(--space-4);
+	}
+
+	.rank-nav__item {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.4em;
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.1em;
+		color: var(--ink-faint);
+		text-decoration: none;
+	}
+
+	a.rank-nav__item:hover {
+		color: var(--accent-warm);
+	}
+
+	.rank-nav__item--empty {
+		pointer-events: none;
+	}
+
+	.rank-nav__arrow {
+		font-variant: normal;
+		letter-spacing: 0;
+	}
+
+	.rank-nav__item--prev { text-align: left; }
+	.rank-nav__item--next { text-align: right; margin-left: auto; }
+
 	.grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));

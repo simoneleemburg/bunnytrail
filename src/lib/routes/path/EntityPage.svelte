@@ -6,10 +6,17 @@
 	import EntityLink from '$lib/components/EntityLink.svelte';
 	import Tag from '$lib/components/Tag.svelte';
 	import { SvelteSet } from 'svelte/reactivity';
+	import { toRoman } from '$lib/types';
 
 	let { data }: { data: EntityPageData } = $props();
 
 	const ornamentSvg = $derived(page.data.ornament?.svg ?? null);
+
+	const rankGlyph = $derived(
+		data.kindChip?.rank != null && data.kindChip.rankDisplay !== 'none'
+			? (data.kindChip.rankDisplay === 'roman' ? toRoman(data.kindChip.rank) : String(data.kindChip.rank))
+			: null
+	);
 
 	const COLLAPSE_AT = 8;
 	const expanded = new SvelteSet<string>();
@@ -199,8 +206,8 @@
 	     replaces the ornament glyph in the centre of the rule. -->
 	<div class="bt-fleuron" aria-hidden="true">
 		<span class="bt-fleuron__rule"></span>
-		{#if data.kindChip?.rank != null}
-			<span class="bt-fleuron__glyph bt-fleuron__glyph--rank">{data.kindChip.rank}</span>
+		{#if rankGlyph != null}
+			<span class="bt-fleuron__glyph bt-fleuron__glyph--rank">{rankGlyph}</span>
 		{:else if ornamentSvg}
 			<span class="bt-fleuron__glyph bt-fleuron__glyph--svg">{@html ornamentSvg}</span>
 		{:else}

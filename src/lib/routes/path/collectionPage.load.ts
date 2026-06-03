@@ -2,7 +2,7 @@ import { graph, byRankThenName } from '$lib/server/graph';
 import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderBody, renderSummary } from '$lib/server/markdown';
 import { world } from '$lib/server/world';
-import { buildKindTree, type Entity, type EntityId, type KindTree } from '$lib/types';
+import { buildKindTree, type Entity, type EntityId, type KindTree, type RankDisplay } from '$lib/types';
 
 /**
  * Per-subcollection kind/tag counts, rolled up so that every supertype
@@ -451,6 +451,43 @@ export async function loadCollectionPage(path: string) {
 		buildSubcollectionTree(sub, path, cardSummaryHtml)
 	);
 
+	// Prev/next navigation between sibling collections that have an
+	// explicit `rank` in their `_collection` frontmatter. Siblings
+	// are the other child folders of the same parent folder.
+	// rankDisplay is inherited from the *parent* folder's _collection,
+	// mirroring how entity pages inherit it from their containing folder.
+	const myRank = typeof collection?.meta.rank === 'number' ? collection.meta.rank : null;
+	const parentPath = path.includes('/') ? path.slice(0, path.lastIndexOf('/')) : '';
+	const rankDisplay: RankDisplay = graph.collection(parentPath)?.meta.rankDisplay ?? 'arabic';
+	const collectionNav: {
+		rank: number | null;
+		rankDisplay: RankDisplay;
+		prev: { path: string; title: string; rank: number } | null;
+		next: { path: string; title: string; rank: number } | null;
+	} = (() => {
+		if (myRank === null) return { rank: null, rankDisplay, prev: null, next: null };
+		const siblings = graph
+			.childFolders(parentPath)
+			.map((p) => ({ path: p, col: graph.collection(p) }))
+			.filter(
+				(s): s is { path: string; col: NonNullable<ReturnType<typeof graph.collection>> } =>
+					!!s.col && typeof s.col.meta.rank === 'number'
+			)
+			.map((s) => ({
+				path: s.path,
+				title: s.col.meta.title ?? graph.folderLabels(s.path).plural,
+				rank: s.col.meta.rank as number
+			}))
+			.sort((a, b) => a.rank - b.rank);
+		const idx = siblings.findIndex((s) => s.path === path);
+		return {
+			rank: myRank,
+			rankDisplay,
+			prev: idx > 0 ? siblings[idx - 1] : null,
+			next: idx < siblings.length - 1 ? siblings[idx + 1] : null
+		};
+	})();
+
 	return {
 		kind: 'collection' as const,
 		type: path,
@@ -464,6 +501,7 @@ export async function loadCollectionPage(path: string) {
 		orbits,
 		folders,
 		flat: flatAll,
+		collectionNav,
 		// Kind hierarchy from the central registry: a plain
 		// `kind -> parentKind | null` map. The client rebuilds it
 		// with `buildKindTree`.
@@ -535,6 +573,7 @@ export function loadEverythingIndex() {
 		}>,
 		standalone: [] as typeof allCards,
 		flat: allCards,
+		collectionNav: { rank: null, rankDisplay: 'arabic' as RankDisplay, prev: null, next: null },
 		kindParents: serialiseKinds()
 	};
 }
@@ -638,6 +677,7 @@ export function loadAggregateShelfPage(shelf: string) {
 		// here, so the two are identical).
 		standalone: flat,
 		flat,
+		collectionNav: { rank: null, rankDisplay: 'arabic' as RankDisplay, prev: null, next: null },
 		kindParents: serialiseKinds()
 	};
 }

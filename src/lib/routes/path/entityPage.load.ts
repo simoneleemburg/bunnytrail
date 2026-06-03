@@ -1,7 +1,7 @@
 import { graph, byRankThenName } from '$lib/server/graph';
 import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderEntityBody, renderSummary } from '$lib/server/markdown';
-import { titleCaseSlug, type Entity } from '$lib/types';
+import { titleCaseSlug, toRoman, type Entity, type RankDisplay } from '$lib/types';
 
 /**
  * Build the view-model for an entity page. Returned shape is consumed
@@ -68,12 +68,20 @@ export async function loadEntityPage(entity: Entity) {
 	// chips are useful health signals, just like broken wikilinks.
 	const kindId = typeof entity.meta.kind === 'string' ? entity.meta.kind : null;
 	const kindObj = kindId ? graph.kind(kindId) : undefined;
+
+	// rankDisplay is declared on the containing folder's _collection and
+	// applies to all ranked entities in that folder.
+	const folderRankDisplay: RankDisplay = type
+		? (graph.collection(type)?.meta.rankDisplay ?? 'arabic')
+		: 'arabic';
+
 	const kindChip = kindId
 		? {
 				id: kindId,
 				label: kindObj?.meta.singular ?? titleCaseSlug(kindId),
 				broken: !kindObj,
-				rank: typeof entity.meta.rank === 'number' ? entity.meta.rank : null
+				rank: typeof entity.meta.rank === 'number' ? entity.meta.rank : null,
+				rankDisplay: folderRankDisplay
 			}
 		: null;
 
@@ -181,9 +189,11 @@ export async function loadEntityPage(entity: Entity) {
 	// Rank-based prev/next navigation. When this entity has a numeric
 	// rank, find all folder-siblings (same containing folder) that also
 	// have a rank, sort them, and pick the immediate neighbours.
+	// rankDisplay is inherited from the containing folder's _collection.
 	const rankNav: {
 		prev: { id: string; name: string; rank: number } | null;
 		next: { id: string; name: string; rank: number } | null;
+		rankDisplay: RankDisplay;
 	} | null = (() => {
 		const myRank = typeof entity.meta.rank === 'number' ? entity.meta.rank : null;
 		if (myRank === null || !type) return null;
@@ -203,7 +213,8 @@ export async function loadEntityPage(entity: Entity) {
 
 		return {
 			prev: prev ? { id: prev.id, name: prev.meta.name, rank: prev.meta.rank } : null,
-			next: next ? { id: next.id, name: next.meta.name, rank: next.meta.rank } : null
+			next: next ? { id: next.id, name: next.meta.name, rank: next.meta.rank } : null,
+			rankDisplay: folderRankDisplay
 		};
 	})();
 

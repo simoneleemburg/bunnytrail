@@ -85,11 +85,50 @@ export interface Kind {
  * collection might be retitled "The Sky" or split into "Inner System"
  * and "Outer System" without disturbing the kind tree.
  */
+/**
+ * How a rank integer is rendered in the fleuron and kind chip.
+ *   'arabic' — show the raw number (default)
+ *   'roman'  — convert to uppercase roman numeral (I, II, III …)
+ *   'none'   — show the normal ornament glyph; rank still drives nav
+ */
+export type RankDisplay = 'arabic' | 'roman' | 'none';
+
+/**
+ * Convert a positive integer to an uppercase roman numeral string.
+ * Returns the arabic string for values outside the roman range (< 1 or > 3999).
+ */
+export function toRoman(n: number): string {
+	if (n < 1 || n > 3999) return String(n);
+	const vals: [number, string][] = [
+		[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'],
+		[100, 'C'],  [90, 'XC'],  [50, 'L'],  [40, 'XL'],
+		[10, 'X'],   [9, 'IX'],   [5, 'V'],   [4, 'IV'], [1, 'I']
+	];
+	let result = '';
+	for (const [val, sym] of vals) {
+		while (n >= val) { result += sym; n -= val; }
+	}
+	return result;
+}
+
 export interface CollectionMeta {
 	/** The collection's display title. Defaults to a title-cased folder name. */
 	title?: string;
 	/** A short editorial description shown at the top of the collection page. */
 	description?: string;
+	/**
+	 * Explicit sort order for sibling collections. Lower numbers appear
+	 * first. When set, the collection page shows a rank glyph in the
+	 * fleuron and prev/next navigation to ranked siblings.
+	 */
+	rank?: number;
+	/**
+	 * Controls how the rank integer is rendered in the fleuron for this
+	 * collection *and* for ranked entities inside it. Defaults to 'arabic'.
+	 * 'none' suppresses the rank glyph entirely (ornament shows instead)
+	 * but still enables prev/next navigation.
+	 */
+	rankDisplay?: RankDisplay;
 	/**
 	 * When set on a *top-level* collection (a folder directly under
 	 * `content/`), marks that folder as a **universal substrate**
