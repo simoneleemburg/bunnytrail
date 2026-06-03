@@ -15,6 +15,10 @@
 	// Show a "focus on <cluster>" hint when the page's content
 	// clearly belongs to one cluster but we're in All scope
 	// (e.g. /earth/history?scope=all, /aurethia/places?scope=all).
+	// BUT: when the path is a cluster-scoped sub-shelf page that has
+	// an aggregate equivalent (e.g. /aurethia/people/characters →
+	// /people/characters), show a "← View all characters" back-link
+	// instead.
 	const focusCluster = $derived.by(() => {
 		if (page.data.selectedCluster !== null) return null;
 		const seg0 = data.type.split('/')[0];
@@ -22,6 +26,28 @@
 		if (!ctx?.clusters.includes(seg0)) return null;
 		return seg0;
 	});
+
+	// Detect the aggregate sub-shelf case: cluster-prefixed URL with a
+	// 2-segment tail whose first segment is a union shelf.
+	// e.g. /aurethia/people/characters → tail = ['people','characters']
+	const viewAllHref = $derived.by(() => {
+		if (!focusCluster) return null;
+		const urlSegs = page.url.pathname.split('/').filter(Boolean);
+		// Need at least 3 segments: [cluster, shelf, subShelf]
+		if (urlSegs.length < 3) return null;
+		const tail = urlSegs.slice(1); // e.g. ['people','characters']
+		if (tail.length !== 2) return null;
+		const ctx = page.data.scopeContext;
+		if (!ctx?.unionShelves.includes(tail[0])) return null;
+		return `/${tail.join('/')}`;
+	});
+	const viewAllLabel = $derived.by(() => {
+		if (!viewAllHref) return null;
+		// Use the page's plural label (e.g. "Characters") from the data.
+		return data.label?.plural ?? null;
+	});
+
+	// Only show the cluster focus hint when there's no aggregate sub-shelf link.
 	const focusHref = $derived.by(() => {
 		if (!focusCluster) return null;
 		return translateUrl(page.url, focusCluster, page.data.scopeContext);
@@ -393,6 +419,8 @@
 		breadcrumbs={data.breadcrumbs}
 		focusHref={focusHref ?? undefined}
 		focusClusterLabel={focusClusterLabel ?? undefined}
+		viewAllHref={viewAllHref ?? undefined}
+		viewAllLabel={viewAllLabel ?? undefined}
 	/>
 </div>
 

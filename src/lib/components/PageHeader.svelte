@@ -64,9 +64,17 @@
 		 */
 		focusHref?: string;
 		focusClusterLabel?: string;
+		/**
+		 * When set, renders a "← View all <label>" back-link instead of
+		 * the cluster focus hint. Used on cluster-scoped sub-shelf pages
+		 * viewed in all-clusters scope (e.g. /aurethia/people/characters
+		 * ?scope=all) where the canonical aggregate view is /people/characters.
+		 */
+		viewAllHref?: string;
+		viewAllLabel?: string;
 	}
 
-	let { title, eyebrow, subtitle, subtitleHtml, language, sigil, breadcrumbs, kindChip, focusHref, focusClusterLabel }: Props =
+	let { title, eyebrow, subtitle, subtitleHtml, language, sigil, breadcrumbs, kindChip, focusHref, focusClusterLabel, viewAllHref, viewAllLabel }: Props =
 		$props();
 
 	// When the focus link is clicked, tell the layout's beforeNavigate
@@ -149,9 +157,9 @@
 	{:else if subtitle}
 		<p class="subtitle">{subtitle}</p>
 	{/if}
-	{#if focusHref && focusClusterLabel}
+	{#if viewAllHref && viewAllLabel || focusHref && focusClusterLabel}
 		<p class="focus-hint">
-			Viewing all clusters — <a class="focus-link" href={focusHref} onclick={onFocusClick}>focus on {focusClusterLabel} →</a>
+			{#if viewAllHref && viewAllLabel}<a class="focus-link focus-link--back" href={viewAllHref}>← View all {viewAllLabel}</a>{/if}{#if viewAllHref && viewAllLabel && focusHref && focusClusterLabel}<span class="focus-sep">—</span>{/if}{#if focusHref && focusClusterLabel}<a class="focus-link" href={focusHref} onclick={onFocusClick}>Focus on {focusClusterLabel} →</a>{/if}
 		</p>
 	{/if}
 </header>
@@ -325,14 +333,25 @@
 	}
 
 	.focus-link {
-		color: var(--accent-meta);
+		color: var(--ink-faint);
 		text-decoration: none;
 	}
 
 	.focus-link:hover {
+		color: var(--accent-meta);
 		text-decoration: underline;
 	}
 
+	/* Back-link variant: no colour change on hover needed beyond the
+	   base hover treatment above. */
+	.focus-link--back {
+		/* inherits .focus-link rest/hover */
+	}
+
+	.focus-sep {
+		color: var(--ink-faint);
+		margin: 0 0.5em;
+	}
 	/* Local override of the global .lang-tag sizing so the title's
 	   tag is proportional to the larger h1, not the base font size. */
 	h1 .lang-tag {
