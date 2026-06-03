@@ -503,9 +503,9 @@
 									</div>
 									<h3 class="subcollection-label">{sub.plural}</h3>
 						</a>
-						{#if sub.description}
-							<p class="subcollection-description">{sub.description}</p>
-						{/if}
+					{#if sub.description && !sub.isCluster}
+						<p class="subcollection-description">{sub.description}</p>
+					{/if}
 						{#if sub.displayTags.length > 0}
 							<ul class="subcollection-tags">
 								{#each sub.displayTags as tag (tag.label)}
