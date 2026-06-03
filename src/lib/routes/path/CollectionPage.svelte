@@ -1218,6 +1218,7 @@
 
 	.subcollection:hover .subcollection-label {
 		animation: subcollection-title-gleam 600ms ease-out;
+		color: var(--accent);
 	}
 
 	@keyframes subcollection-title-gleam {
