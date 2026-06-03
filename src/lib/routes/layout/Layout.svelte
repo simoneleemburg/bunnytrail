@@ -4,7 +4,7 @@
 	import { page } from '$app/stores';
 	import { beforeNavigate, goto } from '$app/navigation';
 	import { browser, dev } from '$app/environment';
-	import { onMount } from 'svelte';
+	import { onMount, setContext } from 'svelte';
 	import { injectAnalytics } from '@vercel/analytics/sveltekit';
 	import { paintAllScope, translateUrl, type ScopeContext } from '$lib/cluster';
 	import SvgLightbox from '$lib/components/SvgLightbox.svelte';
@@ -49,6 +49,15 @@
 	// just chosen from the selector, effectively reverting the
 	// switch.
 	let bypassScopePaint = false;
+
+	// Expose a setter so deeply nested components (e.g. PageHeader's
+	// "focus on <cluster>" link) can trigger a cluster-switch
+	// navigation without going through the masthead selector. The
+	// caller sets the flag, then navigates; beforeNavigate sees it
+	// and bows out of scope-painting for that one navigation.
+	setContext('bypassNextScopePaint', () => {
+		bypassScopePaint = true;
+	});
 
 	// Mobile nav drawer open state + cluster picker open state.
 	// Both are auto-closed on route change and on Escape; the

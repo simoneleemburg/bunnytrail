@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { getContext } from 'svelte';
 
 	interface Crumb {
 		href: string;
@@ -53,10 +54,28 @@
 		 * `eyebrow` when provided.
 		 */
 		kindChip?: KindChip | null;
+		/**
+		 * When set, renders a quiet "focus on <cluster>" hint below the
+		 * subtitle. Used on cluster-scoped collection pages viewed in
+		 * the all-clusters scope (e.g. /earth/history?scope=all).
+		 * `focusHref` is the URL to navigate to (the same page without
+		 * ?scope=all, with the cluster prefix). `focusClusterLabel` is
+		 * the display name (e.g. "Earth").
+		 */
+		focusHref?: string;
+		focusClusterLabel?: string;
 	}
 
-	let { title, eyebrow, subtitle, subtitleHtml, language, sigil, breadcrumbs, kindChip }: Props =
+	let { title, eyebrow, subtitle, subtitleHtml, language, sigil, breadcrumbs, kindChip, focusHref, focusClusterLabel }: Props =
 		$props();
+
+	// When the focus link is clicked, tell the layout's beforeNavigate
+	// hook to skip scope-painting for that one navigation — otherwise
+	// it would intercept the cluster-scoped URL and re-add ?scope=all.
+	const bypassNextScopePaint = getContext<(() => void) | undefined>('bypassNextScopePaint');
+	function onFocusClick() {
+		bypassNextScopePaint?.();
+	}
 
 	// Fallback one-level-up navigation link, used when no explicit
 	// breadcrumbs were supplied. Strips the last URL segment from the
@@ -129,6 +148,11 @@
 		<p class="subtitle">{@html subtitleHtml}</p>
 	{:else if subtitle}
 		<p class="subtitle">{subtitle}</p>
+	{/if}
+	{#if focusHref && focusClusterLabel}
+		<p class="focus-hint">
+			Viewing all clusters — <a class="focus-link" href={focusHref} onclick={onFocusClick}>focus on {focusClusterLabel} →</a>
+		</p>
 	{/if}
 </header>
 
@@ -288,6 +312,25 @@
 		margin: 0 auto;
 		max-width: var(--prose-max);
 		text-align: left;
+	}
+
+	.focus-hint {
+		margin: var(--space-4) auto 0;
+		font-size: var(--text-sm);
+		font-family: var(--font-serif);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.1em;
+		color: var(--ink-faint);
+		text-align: center;
+	}
+
+	.focus-link {
+		color: var(--accent-meta);
+		text-decoration: none;
+	}
+
+	.focus-link:hover {
+		text-decoration: underline;
 	}
 
 	/* Local override of the global .lang-tag sizing so the title's

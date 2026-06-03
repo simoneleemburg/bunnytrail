@@ -5,11 +5,35 @@
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import Tag from '$lib/components/Tag.svelte';
 	import { buildKindTree, toRoman } from '$lib/types';
+	import { translateUrl } from '$lib/cluster';
 
 	let { data }: { data: CollectionPageData } = $props();
 
 	const ornamentSvg = $derived(page.data.ornament?.svg ?? null);
 	const collectionNav = $derived(data.collectionNav);
+
+	// Show a "focus on <cluster>" hint when the page's content
+	// clearly belongs to one cluster but we're in All scope
+	// (e.g. /earth/history?scope=all, /aurethia/places?scope=all).
+	const focusCluster = $derived.by(() => {
+		if (page.data.selectedCluster !== null) return null;
+		const seg0 = data.type.split('/')[0];
+		const ctx = page.data.scopeContext;
+		if (!ctx?.clusters.includes(seg0)) return null;
+		return seg0;
+	});
+	const focusHref = $derived.by(() => {
+		if (!focusCluster) return null;
+		return translateUrl(page.url, focusCluster, page.data.scopeContext);
+	});
+	const focusClusterLabel = $derived.by(() => {
+		if (!focusCluster) return null;
+		return (
+			page.data.clusterOptions?.find(
+				(o: { value: string; label: string }) => o.value === focusCluster
+			)?.label ?? focusCluster
+		);
+	});
 
 	const rankGlyph = $derived(
 		collectionNav.rank != null && collectionNav.rankDisplay !== 'none'
@@ -363,7 +387,13 @@
 </svelte:head>
 
 <div class="collection-header">
-	<PageHeader title={data.label.plural} subtitle={data.description ?? undefined} breadcrumbs={data.breadcrumbs} />
+	<PageHeader
+		title={data.label.plural}
+		subtitle={data.description ?? undefined}
+		breadcrumbs={data.breadcrumbs}
+		focusHref={focusHref ?? undefined}
+		focusClusterLabel={focusClusterLabel ?? undefined}
+	/>
 </div>
 
 <!--
