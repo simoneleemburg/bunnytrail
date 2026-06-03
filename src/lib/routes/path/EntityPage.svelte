@@ -262,7 +262,7 @@
 			{/if}
 		</div>
 
-		<aside class="sidebar">
+		<aside class="sidebar sidebar--top">
 			{#if data.craftHref}
 				<!-- Sub-page link to the author's-room companion
 				     document. Lives in the sidebar (alongside the
@@ -297,7 +297,9 @@
 					</dl>
 				</section>
 			{/if}
+		</aside>
 
+		<aside class="sidebar sidebar--bottom">
 			{#if relationGroups.length > 0}
 				<section class="relations">
 					{#each relationGroups as group (group.key)}
@@ -374,7 +376,8 @@
 		min-width: 0;
 	}
 
-	.sidebar {
+	.sidebar--top,
+	.sidebar--bottom {
 		grid-column: 5;
 	}
 
@@ -385,8 +388,21 @@
 		}
 
 		.prose,
-		.sidebar {
+		.sidebar--top,
+		.sidebar--bottom {
 			grid-column: 1;
+		}
+
+		.sidebar--top {
+			order: -1;
+		}
+
+		.prose {
+			order: 0;
+		}
+
+		.sidebar--bottom {
+			order: 1;
 		}
 	}
 
@@ -480,7 +496,8 @@
 		margin-bottom: 0;
 	}
 
-	.sidebar {
+	.sidebar--top,
+	.sidebar--bottom {
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-6);

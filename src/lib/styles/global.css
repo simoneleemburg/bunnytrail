@@ -615,3 +615,9 @@ blockquote {
 	margin: var(--space-7) auto;
 	max-width: var(--prose-max);
 }
+
+@media (max-width: 600px) {
+	:where(.bt-formula) {
+		padding-inline: var(--space-4);
+	}
+}
