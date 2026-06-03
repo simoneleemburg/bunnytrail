@@ -27,17 +27,19 @@
 		return seg0;
 	});
 
-	// Detect the aggregate sub-shelf case: cluster-prefixed URL with a
-	// 2-segment tail whose first segment is a union shelf.
-	// e.g. /aurethia/people/characters → tail = ['people','characters']
+	// Detect the aggregate equivalent: cluster-prefixed URL with a tail
+	// whose first segment is a union shelf. Fires in both scopes:
+	// - all-clusters scope (?scope=all): e.g. /aurethia/people?scope=all → /people
+	// - focused scope: e.g. /aurethia/people → /people
 	const viewAllHref = $derived.by(() => {
-		if (!focusCluster) return null;
 		const urlSegs = page.url.pathname.split('/').filter(Boolean);
-		// Need at least 3 segments: [cluster, shelf, subShelf]
-		if (urlSegs.length < 3) return null;
-		const tail = urlSegs.slice(1); // e.g. ['people','characters']
-		if (tail.length !== 2) return null;
+		// Need at least 2 segments: [cluster, shelf] or [cluster, shelf, subShelf]
+		if (urlSegs.length < 2) return null;
 		const ctx = page.data.scopeContext;
+		// First segment must be a cluster
+		if (!ctx?.clusters.includes(urlSegs[0])) return null;
+		const tail = urlSegs.slice(1); // e.g. ['people'] or ['people','characters']
+		if (tail.length > 2) return null;
 		if (!ctx?.unionShelves.includes(tail[0])) return null;
 		return `/${tail.join('/')}`;
 	});

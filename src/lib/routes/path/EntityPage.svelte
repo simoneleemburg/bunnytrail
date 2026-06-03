@@ -459,13 +459,22 @@
 
 	.prose {
 		grid-column: 3;
+		grid-row: 1 / span 99; /* span all sidebar rows so prose always fills the left column */
 		min-width: 0;
 	}
 
 	.sidebar--top,
 	.sidebar--bottom {
 		grid-column: 5;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+		font-size: var(--text-sm);
+		align-self: start;
 	}
+
+	.sidebar--top  { grid-row: 1; }
+	.sidebar--bottom { grid-row: 2; }
 
 	@media (max-width: 60rem) {
 		.layout {
@@ -477,6 +486,7 @@
 		.sidebar--top,
 		.sidebar--bottom {
 			grid-column: 1;
+			grid-row: auto;
 		}
 
 		.sidebar--top {
@@ -580,14 +590,6 @@
 
 	.prose :global(.collection-include-body > *:last-child) {
 		margin-bottom: 0;
-	}
-
-	.sidebar--top,
-	.sidebar--bottom {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-6);
-		font-size: var(--text-sm);
 	}
 
 	/* Structured kind references (e.g. nativeBeings → [kinds/human])
