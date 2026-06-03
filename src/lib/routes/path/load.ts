@@ -1,4 +1,4 @@
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import { graph } from '$lib/server/graph';
 import { loadEntityPage } from './entityPage.load';
 import { loadAggregateShelfPage, loadAggregateSubShelfPage, loadCollectionPage } from './collectionPage.load';
@@ -109,6 +109,17 @@ export async function load({ params }: { params: { path: string } }) {
 		) {
 			return loadAggregateSubShelfPage(seg0, seg1);
 		}
+	}
+
+	// If the path has a cluster prefix but nothing was found, redirect
+	// to the cluster root rather than showing a bare 404. This covers
+	// cluster-switch navigations where the equivalent page doesn't
+	// exist in the target cluster (e.g. switching to "earth" while on
+	// /aurethia/places/bayurinda). Guard path !== seg0 to avoid
+	// redirecting a bare cluster root to itself if it has no content.
+	const seg0 = path.split('/')[0];
+	if (path !== seg0 && graph.clusters().includes(seg0)) {
+		redirect(302, `/${seg0}`);
 	}
 
 	error(404, `Not found: ${path}`);
