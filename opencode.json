@@ -18,6 +18,13 @@
 		}
 	},
 
+	"permission": {
+		"external_directory": {
+			"/var/folders/**": "allow",
+			"*": "ask"
+		}
+	},
+
 	"provider": {
 		"openrouter": {
 			"models": {

@@ -26,4 +26,13 @@ Engine-vs-world boundary:
 - Engine route changes need both `node scripts/generate-shims.mjs`
   (dogfood) and a note that consumers must run `npx bunnytrail sync`.
 
+Browser / screenshot rules:
+
+- Always pass `filePath: ".opencode/screenshots/shot.png"` to
+  `take_screenshot`. Never omit filePath — omitting it writes to a
+  random /var/folders temp path that triggers a macOS permission
+  prompt on every call.
+- The `.opencode/screenshots/` directory is gitignored and reused;
+  overwriting `shot.png` each time is intentional.
+
 When uncertain, ask for clarification instead of expanding scope.
