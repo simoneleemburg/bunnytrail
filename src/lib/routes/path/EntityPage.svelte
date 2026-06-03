@@ -195,16 +195,40 @@
 	<!-- Fleuron: same ornamental chapter-mark used on collection pages,
 	     marking the boundary between the editorial header zone and the
 	     content body. Unconditional — every entity page has a layout
-	     to follow. -->
+	     to follow. When the entity has a rank, the rank numeral
+	     replaces the ornament glyph in the centre of the rule. -->
 	<div class="bt-fleuron" aria-hidden="true">
 		<span class="bt-fleuron__rule"></span>
-		{#if ornamentSvg}
+		{#if data.kindChip?.rank != null}
+			<span class="bt-fleuron__glyph bt-fleuron__glyph--rank">{data.kindChip.rank}</span>
+		{:else if ornamentSvg}
 			<span class="bt-fleuron__glyph bt-fleuron__glyph--svg">{@html ornamentSvg}</span>
 		{:else}
 			<span class="bt-fleuron__glyph"></span>
 		{/if}
 		<span class="bt-fleuron__rule"></span>
 	</div>
+
+	{#if data.rankNav}
+		<nav class="rank-nav" aria-label="Ranked navigation">
+			{#if data.rankNav.prev}
+				<a class="rank-nav__item rank-nav__item--prev" href="/{data.rankNav.prev.id}" aria-label="Previous: {data.rankNav.prev.name}">
+					<span class="rank-nav__arrow" aria-hidden="true">←</span>
+					<span>back</span>
+				</a>
+			{:else}
+				<span class="rank-nav__item rank-nav__item--prev rank-nav__item--empty"></span>
+			{/if}
+			{#if data.rankNav.next}
+				<a class="rank-nav__item rank-nav__item--next" href="/{data.rankNav.next.id}" aria-label="Next: {data.rankNav.next.name}">
+					<span>next</span>
+					<span class="rank-nav__arrow" aria-hidden="true">→</span>
+				</a>
+			{:else}
+				<span class="rank-nav__item rank-nav__item--next rank-nav__item--empty"></span>
+			{/if}
+		</nav>
+	{/if}
 
 	<div class="layout">
 		<div class="prose">
@@ -355,6 +379,61 @@
 		color: var(--ink-soft);
 		margin: calc(-1 * var(--space-4)) 0 var(--space-5);
 		max-width: var(--prose-max);
+	}
+
+	.rank-nav {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		max-width: var(--prose-max);
+		margin: 0 auto var(--space-6);
+		gap: var(--space-4);
+	}
+
+	.rank-nav__item {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.4em;
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.1em;
+		color: var(--ink-faint);
+		text-decoration: none;
+	}
+
+	a.rank-nav__item:hover {
+		color: var(--accent-warm);
+	}
+
+	.rank-nav__item--empty {
+		pointer-events: none;
+	}
+
+	.rank-nav__arrow {
+		font-variant: normal;
+		letter-spacing: 0;
+	}
+
+	.rank-nav__item--prev { text-align: left; }
+	.rank-nav__item--next { text-align: right; margin-left: auto; }
+
+	:global(.bt-fleuron__glyph--rank) {
+		font-family: var(--font-serif);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.1em;
+		font-size: var(--text-4xl);
+		color: var(--accent-warm);
+		line-height: 1;
+		display: inline;
+		/* Serif numerals sit low in the em square; nudge up so the
+		   visual midpoint of the glyph aligns with the rule line. */
+		position: relative;
+		top: -0.15em;
+	}
+
+	:global(.bt-fleuron .bt-fleuron__glyph--rank::before) {
+		content: none;
 	}
 
 	.layout {

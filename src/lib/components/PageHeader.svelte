@@ -115,8 +115,8 @@
 				href={`/kinds/${kindChip.id}`}
 				data-broken={kindChip.broken ? 'true' : undefined}
 				title={kindChip.broken ? `unregistered kind: ${kindChip.id}` : undefined}
-				>{kindChip.label}{#if kindChip.rank != null}<span class="rank" aria-hidden="true"> · {kindChip.rank}</span>{/if}</a
-			>
+				>{kindChip.label}</a
+		>
 		{/if}
 	</div>
 	{#if subtitleHtml}
@@ -258,12 +258,6 @@
 
 	.kind-chip:hover {
 		color: var(--accent);
-	}
-
-	.kind-chip .rank {
-		font-weight: 400;
-		letter-spacing: 0.06em;
-		color: var(--ink-faint);
 	}
 
 	.kind-chip[data-broken='true'] {

@@ -141,7 +141,9 @@ export async function loadEntityPage(entity: Entity) {
 		'sigil',
 		// `book` is a structured config block surfaced via the
 		// chapter-list rendering, not as a sidebar property.
-		'book'
+		'book',
+		// `rank` is surfaced as prev/next navigation, not a raw property.
+		'rank'
 	]);
 	const extra: { key: string; value: unknown }[] = [];
 	for (const [key, value] of Object.entries(entity.meta)) {
@@ -176,6 +178,35 @@ export async function loadEntityPage(entity: Entity) {
 		}))
 		.sort((a, b) => a.field.localeCompare(b.field));
 
+	// Rank-based prev/next navigation. When this entity has a numeric
+	// rank, find all folder-siblings (same containing folder) that also
+	// have a rank, sort them, and pick the immediate neighbours.
+	const rankNav: {
+		prev: { id: string; name: string; rank: number } | null;
+		next: { id: string; name: string; rank: number } | null;
+	} | null = (() => {
+		const myRank = typeof entity.meta.rank === 'number' ? entity.meta.rank : null;
+		if (myRank === null || !type) return null;
+
+		const ranked = graph
+			.byFolder(type)
+			.filter((e): e is Entity & { meta: { rank: number } } => typeof e.meta.rank === 'number')
+			.sort(byRankThenName);
+
+		const idx = ranked.findIndex((e) => e.id === id);
+		if (idx === -1) return null;
+
+		const prev = idx > 0 ? ranked[idx - 1] : null;
+		const next = idx < ranked.length - 1 ? ranked[idx + 1] : null;
+
+		if (!prev && !next) return null;
+
+		return {
+			prev: prev ? { id: prev.id, name: prev.meta.name, rank: prev.meta.rank } : null,
+			next: next ? { id: next.id, name: next.meta.name, rank: next.meta.rank } : null
+		};
+	})();
+
 	return {
 		breadcrumbs,
 		kindChip,
@@ -204,7 +235,8 @@ export async function loadEntityPage(entity: Entity) {
 		// when one exists. The entity page surfaces it as a small
 		// link at the foot of the prose; absent when the entity has
 		// no `craft.md`.
-		craftHref: entity.craft !== null ? `/${entity.id}/craft` : null
+		craftHref: entity.craft !== null ? `/${entity.id}/craft` : null,
+		rankNav
 	};
 }
 
