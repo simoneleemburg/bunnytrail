@@ -311,6 +311,55 @@ export class Graph {
 	}
 
 	/**
+	 * Distinct second-level sub-folder names that exist under
+	 * `<cluster>/<shelf>/` across all clusters. E.g. for `people`
+	 * may return `['characters', 'cultures', 'languages']`. Only
+	 * includes names that are genuine folders (have descendants or a
+	 * _collection.yaml). Sorted alphabetically.
+	 */
+	subShelvesAcrossClusters(shelf: string): string[] {
+		const seen = new Set<string>();
+		for (const cluster of this.clusters()) {
+			const shelfPath = `${cluster}/${shelf}`;
+			for (const childPath of this.childFolders(shelfPath)) {
+				const sub = childPath.slice(shelfPath.length + 1);
+				if (sub && !sub.includes('/')) seen.add(sub);
+			}
+		}
+		return [...seen].sort();
+	}
+
+	/**
+	 * Per-cluster paths for a given shelf + sub-shelf pair — e.g.
+	 * `clusterSubShelfPaths('people', 'characters')` returns
+	 * `['aurethia/people/characters', 'earth/people/characters']`
+	 * for every cluster that actually has that sub-shelf folder.
+	 */
+	clusterSubShelfPaths(shelf: string, subShelf: string): string[] {
+		const out: string[] = [];
+		for (const cluster of this.clusters()) {
+			const candidate = `${cluster}/${shelf}/${subShelf}`;
+			if (this.isFolder(candidate)) out.push(candidate);
+		}
+		return out;
+	}
+
+	/**
+	 * Every entity living under a sub-shelf across all clusters.
+	 * E.g. `entitiesBySubShelfAcrossClusters('people', 'characters')`
+	 * returns the union of `aurethia/people/characters/*` etc.
+	 */
+	entitiesBySubShelfAcrossClusters(shelf: string, subShelf: string): Entity[] {
+		const out: Entity[] = [];
+		for (const cluster of this.clusters()) {
+			for (const e of this.byFolderRecursive(`${cluster}/${shelf}/${subShelf}`))
+				out.push(e);
+		}
+		out.sort(byRankThenName);
+		return out;
+	}
+
+	/**
 	 * Entities whose `meta.kind` is `kind` or any descendant of `kind`
 	 * in the kind hierarchy (computed from the registry's folder
 	 * nesting). Useful for supertype filters and pages that want

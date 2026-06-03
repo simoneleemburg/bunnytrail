@@ -519,6 +519,26 @@
 		</section>
 	{/if}
 
+	{#if viewMode === 'index' && data.subShelves.length > 0}
+		<section class="subcollections sub-shelves" aria-label="Sub-shelves">
+			<ul class="subcollection-list">
+				{#each data.subShelves as sub (sub.type)}
+					<li class="subcollection">
+						<a class="subcollection-link" href={`/${sub.type}`}>
+							<div class="subcollection-eyebrow">
+								<span class="subcollection-tag">Collection</span>
+							</div>
+							<h3 class="subcollection-label">{sub.plural}</h3>
+						</a>
+						{#if sub.description}
+							<p class="subcollection-description">{sub.description}</p>
+						{/if}
+					</li>
+				{/each}
+			</ul>
+		</section>
+	{/if}
+
 	{#snippet containerTree(node: RenderNode)}
 		<div class="container-group" class:synthetic={node.container.synthetic}>
 			{#if node.container.synthetic}

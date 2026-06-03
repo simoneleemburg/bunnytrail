@@ -524,6 +524,18 @@ export async function loadCollectionPage(path: string) {
 		description,
 		bodyHtml,
 		subcollections,
+		subShelves: [] as Array<{
+			type: string;
+			plural: string;
+			description: string | null;
+			rank: number | null;
+			count: number;
+			kindCounts: Record<string, number>;
+			tags: Array<{ label: string; count: number }>;
+			tagsByKind: Record<string, Array<{ label: string; count: number }>>;
+			isCluster: false;
+			isSubShelf: true;
+		}>,
 		// rankDisplay for entity *cards* on this page — inherited from this
 		// collection's own _collection.yaml/md, the same field that drives
 		// subcollection tile glyphs.
@@ -598,6 +610,18 @@ export function loadEverythingIndex() {
 		description: `Every entry in ${world.config().name}, in one place. Filter or flatten to taste.`,
 		bodyHtml: null,
 		subcollections,
+		subShelves: [] as Array<{
+			type: string;
+			plural: string;
+			description: string | null;
+			rank: number | null;
+			count: number;
+			kindCounts: Record<string, number>;
+			tags: Array<{ label: string; count: number }>;
+			tagsByKind: Record<string, Array<{ label: string; count: number }>>;
+			isCluster: false;
+			isSubShelf: true;
+		}>,
 		subcollectionTrees,
 		containers: [] as ContainerNode[],
 		orbits: [] as OrbitNode[],
@@ -669,9 +693,7 @@ export function loadAggregateShelfPage(shelf: string) {
 
 	const entities = graph.entitiesByShelfAcrossClusters(shelf);
 
-	// Cluster label as the type-label on each card. With one cluster
-	// this just reads "Aurethia" everywhere; with several it lets a
-	// reader see at a glance which cluster each entry belongs to.
+	// Cluster label as the type-label on each card for the Flat view.
 	const clusterLabel = (id: EntityId): string => {
 		const cluster = id.includes('/') ? id.slice(0, id.indexOf('/')) : id;
 		return graph.folderLabels(cluster).singular;
@@ -679,18 +701,54 @@ export function loadAggregateShelfPage(shelf: string) {
 
 	const flat = entities.map((e) => toCard(e, cardSummaryHtml, clusterLabel(e.id)));
 
-	// Use the shelf's display label as if it lived at the content
-	// root. We borrow `_collection.yaml` titles from the *first*
-	// cluster that defines the shelf, on the grounds that the same
-	// shelf name across clusters should mean the same kind of thing.
+	// Sub-shelf tiles — one per distinct second-level folder across all
+	// clusters (e.g. 'characters', 'cultures', 'languages' for 'people').
+	// Each tile links to /<shelf>/<subShelf> which resolves via the new
+	// aggregate sub-shelf dispatch branch.
+	const subShelfNames = graph.subShelvesAcrossClusters(shelf);
+	const subShelves = subShelfNames.map((subShelf) => {
+		const subShelfPaths = graph.clusterSubShelfPaths(shelf, subShelf);
+		// Aggregate counts/tags across all cluster instances of this sub-shelf.
+		const combined = subShelfPaths.reduce(
+			(acc, p) => {
+				const entry = buildSubcollectionEntry(p, kindTree);
+				acc.count += entry.count;
+				for (const [k, v] of Object.entries(entry.kindCounts))
+					acc.kindCounts[k] = (acc.kindCounts[k] ?? 0) + v;
+				for (const t of entry.tags)
+					acc.tagCounts.set(t.label, (acc.tagCounts.get(t.label) ?? 0) + t.count);
+				return acc;
+			},
+			{
+				count: 0,
+				kindCounts: {} as Record<string, number>,
+				tagCounts: new Map<string, number>()
+			}
+		);
+		// Borrow display labels from first cluster that has this sub-shelf.
+		const labelSourcePath = subShelfPaths[0] ?? `${shelf}/${subShelf}`;
+		const subLabels = graph.folderLabels(labelSourcePath);
+		const subDescription = graph.collection(labelSourcePath)?.meta.description ?? null;
+		const tags = [...combined.tagCounts.entries()]
+			.map(([label, count]) => ({ label, count }))
+			.sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+		return {
+			type: `${shelf}/${subShelf}`,
+			plural: subLabels.plural,
+			description: subDescription,
+			rank: null as number | null,
+			count: combined.count,
+			kindCounts: combined.kindCounts,
+			tags,
+			tagsByKind: {} as Record<string, Array<{ label: string; count: number }>>,
+			isCluster: false as const,
+			isSubShelf: true as const
+		};
+	});
+
+	// Use the shelf's display label as if it lived at the content root.
 	const labelSourcePath = clusterPaths.find((p) => graph.collection(p)) ?? clusterPaths[0];
 	const label = graph.folderLabels(labelSourcePath ?? shelf);
-	// For the cross-cluster aggregate we deliberately *don't* reuse
-	// any one cluster's `_collection.yaml` description — that text
-	// is written for its own cluster's page and tends to drift
-	// cluster-specific. Generate a neutral subtitle from the
-	// shelf's display label instead, so the framing reads as a true
-	// universe-wide view.
 	const description = `${label.plural} across ${world.config().name}`;
 
 	return {
@@ -701,6 +759,7 @@ export function loadAggregateShelfPage(shelf: string) {
 		description,
 		bodyHtml: null,
 		subcollections,
+		subShelves,
 		subcollectionTrees,
 		containers: [] as ContainerNode[],
 		orbits: [] as OrbitNode[],
@@ -709,12 +768,107 @@ export function loadAggregateShelfPage(shelf: string) {
 			name: string;
 			count: number;
 		}>,
-		// Index mode shows `standalone` as cards; we put the union
-		// there so the default view of an aggregate page renders
-		// the entities directly. Flat view uses `flat` (same data,
-		// minus any container-tree adjustments — which we don't have
-		// here, so the two are identical).
-		standalone: flat,
+		// Index mode shows sub-shelf tiles rather than a flat entity grid.
+		// standalone is empty so no entity cards render in Index view.
+		// Flat view uses `flat` for full entity browsing.
+		standalone: [] as ReturnType<typeof toCard>[],
+		flat,
+		collectionNav: { rank: null, rankDisplay: 'arabic' as RankDisplay, prev: null, next: null },
+		entityRankDisplay: 'arabic' as RankDisplay,
+		subcollectionRankDisplay: 'arabic' as RankDisplay,
+		kindParents: serialiseKinds()
+	};
+}
+
+/**
+ * Aggregate view for a sub-shelf across all clusters.
+ * E.g. `/people/characters` — shows cluster tiles for
+ * "Characters of Aurethia", "Characters of Earth", etc.
+ * plus a flat entity grid of all entities across clusters.
+ *
+ * `shelf` is the first segment (e.g. `people`), `subShelf` is the
+ * second (e.g. `characters`). Caller has verified both are valid via
+ * `graph.subShelvesAcrossClusters(shelf)`.
+ */
+export function loadAggregateSubShelfPage(shelf: string, subShelf: string) {
+	const resolveLink = (p: string) => graph.resolveLink(p);
+	const languageCodes = graph.languageCodes();
+	const kindIds = graph.kindIds();
+	const cardSummaryHtml = (s: string | null | undefined) =>
+		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;
+
+	const kindTree = buildLoaderKindTree();
+	const clusterPaths = graph.clusterSubShelfPaths(shelf, subShelf);
+
+	// Cluster tiles — one per cluster that has this sub-shelf.
+	const subcollections = clusterPaths
+		.map((p) => {
+			const clusterSegment = p.split('/')[0];
+			const folderLabel = graph.folderLabels(p);
+			const clusterLabels = graph.folderLabels(clusterSegment);
+			return {
+				...buildSubcollectionEntry(p, kindTree),
+				plural: folderLabel.plural + ' of ' + clusterLabels.plural,
+				isCluster: true as const
+			};
+		})
+		.sort((a, b) => a.plural.localeCompare(b.plural));
+
+	const subcollectionTrees = clusterPaths.map((p) =>
+		buildSubcollectionTree(p, '', cardSummaryHtml)
+	);
+
+	const entities = graph.entitiesBySubShelfAcrossClusters(shelf, subShelf);
+
+	const clusterLabel = (id: EntityId): string => {
+		const cluster = id.includes('/') ? id.slice(0, id.indexOf('/')) : id;
+		return graph.folderLabels(cluster).singular;
+	};
+
+	const flat = entities.map((e) => toCard(e, cardSummaryHtml, clusterLabel(e.id)));
+
+	// Borrow display labels from first cluster that defines the sub-shelf.
+	const labelSourcePath = clusterPaths.find((p) => graph.collection(p)) ?? clusterPaths[0];
+	const label = graph.folderLabels(labelSourcePath ?? `${shelf}/${subShelf}`);
+	const description = `${label.plural} across ${world.config().name}`;
+
+	// Shelf label for the breadcrumb back-link.
+	const shelfClusterPaths = graph.clusterShelfPaths(shelf);
+	const shelfLabelSourcePath =
+		shelfClusterPaths.find((p) => graph.collection(p)) ?? shelfClusterPaths[0];
+	const shelfLabel = graph.folderLabels(shelfLabelSourcePath ?? shelf);
+
+	return {
+		kind: 'collection' as const,
+		type: `${shelf}/${subShelf}`,
+		label,
+		breadcrumbs: [{ label: shelfLabel.plural, href: `/${shelf}` }],
+		description,
+		bodyHtml: null,
+		subcollections,
+		subShelves: [] as Array<{
+			type: string;
+			plural: string;
+			description: string | null;
+			rank: number | null;
+			count: number;
+			kindCounts: Record<string, number>;
+			tags: Array<{ label: string; count: number }>;
+			tagsByKind: Record<string, Array<{ label: string; count: number }>>;
+			isCluster: false;
+			isSubShelf: true;
+		}>,
+		subcollectionTrees,
+		containers: [] as ContainerNode[],
+		orbits: [] as OrbitNode[],
+		folders: [] as Array<{
+			path: string;
+			name: string;
+			count: number;
+		}>,
+		// Index mode: no entity grid — cluster tiles serve as the entry points.
+		// Flat view: full entity list across all clusters.
+		standalone: [] as ReturnType<typeof toCard>[],
 		flat,
 		collectionNav: { rank: null, rankDisplay: 'arabic' as RankDisplay, prev: null, next: null },
 		entityRankDisplay: 'arabic' as RankDisplay,
