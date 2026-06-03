@@ -418,9 +418,7 @@
 	{#if !hasViewToggle}
 		<div class="bt-fleuron" aria-hidden="true">
 			<span class="bt-fleuron__rule"></span>
-			{#if rankGlyph != null}
-				<span class="bt-fleuron__glyph bt-fleuron__glyph--rank">{rankGlyph}</span>
-			{:else if ornamentSvg}
+			{#if ornamentSvg}
 				<span class="bt-fleuron__glyph bt-fleuron__glyph--svg">{@html ornamentSvg}</span>
 			{:else}
 				<span class="bt-fleuron__glyph"></span>
