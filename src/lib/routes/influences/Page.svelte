@@ -23,6 +23,9 @@
 	so tiles of varying heights flow naturally.
 -->
 <section class="bt-notebook influences-notebook">
+	<nav class="bt-notebook__frame" aria-label="Influences navigation">
+		<a href="/">↑ {page.data.world.shortName}</a>
+	</nav>
 	<header class="head">
 		<p class="bt-notebook__eyebrow">Out of world</p>
 		<h1 class="bt-notebook__title">Influences</h1>
@@ -203,7 +206,7 @@
 
 	.tile-body {
 		padding: var(--space-3) var(--space-4);
-		background: color-mix(in oklab, var(--ink) 3%, var(--page) 97%);
+		background: color-mix(in oklab, var(--parchment-soft) 30%, white);
 		border: 1px solid var(--rule-hair);
 		border-top: none;
 		border-radius: 0 0 var(--radius-sm) var(--radius-sm);
@@ -236,7 +239,7 @@
 	.tile-creator {
 		margin: 0 0 var(--space-2);
 		font-size: var(--text-sm);
-		font-family: var(--font-sans, var(--font-serif));
+		font-family: var(--font-serif);
 		color: var(--ink-soft);
 	}
 

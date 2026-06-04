@@ -82,12 +82,14 @@
 	--font-display: var(--font-serif);
 	--font-mono: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, monospace;
 
-	/* Cooler / contemporary register: used by out-of-world surfaces
-	   (notebook / blog, craft sheet, sources workbench) where the
-	   body serif would feel falsely in-character. */
-	--font-sans:
-		-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, system-ui,
-		sans-serif;
+	/* Author voice register: used by out-of-world surfaces
+	   (notebook / blog body prose, illustration comments, craft
+	   sheet, sources workbench) where a distinct handwritten /
+	   manuscript face marks the author's own voice. No-op by
+	   default (falls through to the body serif) — worlds wanting
+	   a distinct face override this token and @import the font
+	   in their theme.css. */
+	--font-author: var(--font-serif);
 
 	/* Archaic / manuscript register: used by book-mode entities
 	   declared as `format: scrolls`. No-op by default (falls

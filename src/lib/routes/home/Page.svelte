@@ -160,19 +160,18 @@
 					{:else}
 						<div class="influence-card__image influence-card__image--empty" aria-hidden="true"></div>
 					{/if}
-					<div class="influence-card__body">
-						<p class="influence-card__eyebrow">{data.influenceCard.imageComment ?? 'From the shelf'}</p>
-						<p class="influence-card__title bt-meta-link">{data.influenceCard.title}</p>
-						{#if data.influenceCard.creator}
-							<p class="influence-card__creator">{data.influenceCard.creator}</p>
-						{/if}
-						{#if data.influenceCard.epigraph}
-							<p class="influence-card__epigraph">"{data.influenceCard.epigraph}"</p>
-						{/if}
-						<p class="influence-card__cta bt-meta-link" aria-hidden="true">
-							Browse influences →
-						</p>
-					</div>
+				<div class="influence-card__body">
+					<p class="influence-card__section">My influences</p>
+					{#if data.influenceCard.imageComment}
+						<p class="influence-card__eyebrow">{data.influenceCard.imageComment}</p>
+					{/if}
+					<p class="influence-card__title bt-meta-link">
+						{data.influenceCard.title}{#if data.influenceCard.creator}&ensp;&middot;&ensp;<span class="influence-card__creator">{data.influenceCard.creator}</span>{/if}
+					</p>
+					<p class="influence-card__cta bt-meta-link" aria-hidden="true">
+						Browse influences →
+					</p>
+				</div>
 				</a>
 			</div>
 		{/if}
@@ -352,7 +351,7 @@
 	}
 
 	.guide-callout:hover {
-		background: var(--parchment-soft);
+		background: color-mix(in oklab, var(--accent-meta) 5%, var(--parchment));
 		box-shadow:
 			0 1px 1px rgba(120, 90, 60, 0.04),
 			0 4px 14px -8px rgba(120, 90, 60, 0.10);
@@ -452,7 +451,7 @@
 	}
 
 	.notebook-callout:hover {
-		background: var(--parchment-soft);
+		background: color-mix(in oklab, var(--accent-meta) 5%, var(--parchment));
 	}
 
 	.notebook-body {
@@ -526,7 +525,7 @@
 	}
 
 	.sources-callout:hover {
-		background: var(--parchment-soft);
+		background: color-mix(in oklab, var(--accent-meta) 5%, var(--parchment));
 	}
 
 	.sources-body {
@@ -598,7 +597,7 @@
 		height: 100%;
 		text-decoration: none;
 		color: inherit;
-		background: var(--vellum);
+		background: color-mix(in oklab, var(--parchment-soft) 30%, white);
 		border: 1px solid color-mix(in oklab, var(--accent) 25%, var(--rule));
 		border-radius: var(--radius-sm);
 		overflow: hidden;
@@ -608,6 +607,7 @@
 	}
 
 	.influence-card:hover {
+		background: color-mix(in oklab, var(--accent-meta) 5%, var(--parchment));
 		border-color: var(--accent);
 		box-shadow:
 			0 2px 4px rgba(120, 90, 60, 0.06),
@@ -646,12 +646,45 @@
 		background: color-mix(in oklab, var(--accent) 8%, var(--parchment-soft));
 	}
 
+	.influence-card__section {
+		font-size: var(--text-xs);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.14em;
+		color: var(--ink-faint);
+		margin: 0 0 var(--space-1);
+	}
+
 	.influence-card__eyebrow {
 		font-size: var(--text-sm);
-		font-style: italic;
+		font-family: var(--font-author);
 		color: var(--ink-soft);
-		margin: 0;
+		margin: 0 0 var(--space-2);
 		line-height: var(--leading-normal);
+	}
+
+	.influence-card__title {
+		font-family: var(--font-display);
+		font-style: italic;
+		font-size: var(--text-lg);
+		color: var(--ink);
+		margin: 0;
+		background-image: linear-gradient(
+			100deg,
+			currentColor 0%,
+			currentColor 42%,
+			var(--accent-warm) 50%,
+			currentColor 58%,
+			currentColor 100%
+		);
+		background-size: 250% 100%;
+		background-position: 130% 0;
+		background-clip: text;
+		-webkit-background-clip: text;
+	}
+
+	.influence-card__creator {
+		font-style: normal;
+		font-size: var(--text-sm);
 	}
 
 	.influence-card__title {

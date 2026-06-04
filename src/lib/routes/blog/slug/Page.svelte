@@ -18,7 +18,9 @@
 -->
 <article class="bt-notebook">
 	<nav class="bt-notebook__frame" aria-label="Notebook navigation">
-		<a class="back" href="/blog">↩ Notebook</a>
+		<a href="/">↑ {page.data.world.shortName}</a>
+		<span aria-hidden="true"> · </span>
+		<a href="/blog">↩ Notebook</a>
 	</nav>
 
 	<header class="head">
@@ -57,5 +59,15 @@
 		flex-wrap: wrap;
 		gap: var(--space-2);
 		margin-top: var(--space-3);
+	}
+
+	/* Author voice: prose body uses the handwritten-feeling manuscript
+	   face so blog entries read as personal field-notes rather than
+	   world compendium entries. Headings stay in --font-display for
+	   hierarchy; only prose text nodes get the author register. */
+	.bt-notebook__prose :global(p),
+	.bt-notebook__prose :global(li),
+	.bt-notebook__prose :global(blockquote) {
+		font-family: var(--font-author);
 	}
 </style>

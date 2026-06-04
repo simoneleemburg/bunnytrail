@@ -19,7 +19,9 @@
 -->
 <article class="bt-notebook">
 	<nav class="bt-notebook__frame" aria-label="Influences navigation">
-		<a class="back-link" href="/influences">← Influences</a>
+		<a href="/">↑ {page.data.world.shortName}</a>
+		<span aria-hidden="true"> · </span>
+		<a href="/influences">← Influences</a>
 	</nav>
 
 	<header class="head">
@@ -109,7 +111,7 @@
 	.influence-comment {
 		margin: var(--space-2) 0 0;
 		font-size: var(--text-sm);
-		font-style: italic;
+		font-family: var(--font-author);
 		color: var(--ink-soft);
 		line-height: var(--leading-normal);
 		padding-left: var(--space-1);

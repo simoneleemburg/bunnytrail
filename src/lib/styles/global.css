@@ -436,7 +436,7 @@ blockquote {
 	max-width: var(--prose-max);
 	margin: 0 auto;
 	padding: var(--space-6) var(--space-6) var(--space-7);
-	background: color-mix(in oklab, var(--ink) 4%, var(--page) 96%);
+	background: color-mix(in oklab, var(--parchment-soft) 30%, white);
 	border: 1px solid var(--rule-hair);
 	border-radius: var(--radius-sm);
 	color: var(--ink);
@@ -467,11 +467,10 @@ blockquote {
 	color: var(--accent);
 }
 
-/* Notebook page title. Sans-serif (or serif fallback) at 2xl,
-   heavier weight than the compendium h1. */
+/* Notebook page title. Display serif at 2xl. */
 .bt-notebook__title {
 	margin: 0 0 var(--space-3);
-	font-family: var(--font-sans, var(--font-serif));
+	font-family: var(--font-display, var(--font-serif));
 	font-weight: 600;
 	font-size: var(--text-2xl);
 	line-height: var(--leading-tight);

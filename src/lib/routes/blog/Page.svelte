@@ -18,6 +18,9 @@
 	rather than a single prose column.
 -->
 <section class="bt-notebook">
+	<nav class="bt-notebook__frame" aria-label="Notebook navigation">
+		<a href="/">↑ {page.data.world.shortName}</a>
+	</nav>
 	<header class="head">
 		<p class="bt-notebook__eyebrow">Working notes</p>
 		<h1 class="bt-notebook__title">Notebook</h1>
@@ -101,7 +104,7 @@
 
 	.post-title {
 		margin: 0;
-		font-family: var(--font-sans, var(--font-serif));
+		font-family: var(--font-serif);
 		font-weight: 600;
 		font-size: var(--text-lg);
 		line-height: var(--leading-tight);
