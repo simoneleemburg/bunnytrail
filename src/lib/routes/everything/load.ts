@@ -1,5 +1,5 @@
 import { graph } from '$lib/server/graph';
-import { loadEverythingIndex } from '../path/collectionPage.load';
+import { loadEverythingIndex } from '../path/everythingIndex.load';
 
 /**
  * Global all-content index. Reuses the same loader + view-model

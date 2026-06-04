@@ -1,7 +1,9 @@
 import { error, redirect } from '@sveltejs/kit';
 import { graph } from '$lib/server/graph';
 import { loadEntityPage } from './entityPage.load';
-import { loadAggregateShelfPage, loadAggregateSubShelfPage, loadCollectionPage } from './collectionPage.load';
+import { loadCollectionPage } from './collectionPage.load';
+import { loadAggregateShelfPage } from './aggregateShelfPage.load';
+import { loadAggregateSubShelfPage } from './aggregateSubShelfPage.load';
 import { loadChapterPage } from './chapterPage.load';
 import { loadCraftPage } from './craftPage.load';
 import { loadKindsIndexPage } from '../kinds/kindsIndexPage.load';
