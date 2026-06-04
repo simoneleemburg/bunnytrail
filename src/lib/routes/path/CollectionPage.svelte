@@ -434,13 +434,14 @@
 	each world stamps its own mark. When the token is empty the
 	divider collapses to a centred hairline.
 
-	Four cases:
-	  prose + toolbar  → fleuron, prose, toolbar (gradient rule), grid
-	  prose + no toolbar → fleuron, prose, fleuron, grid   (second fleuron added after prose below)
-	  no prose + toolbar → toolbar (gradient rule), grid
-	  no prose + no toolbar → fleuron, grid
+	Five cases:
+	  prose + toolbar        → fleuron, rank nav, prose, toolbar (gradient rule), grid
+	  prose + no toolbar     → fleuron, rank nav, prose, fleuron, grid   (second fleuron added after prose below)
+	  no prose + toolbar     → toolbar (gradient rule), grid
+	  no prose + no toolbar  → fleuron, rank nav, grid
+	  no prose + toolbar + rank nav → fleuron, rank nav, toolbar (gradient rule), grid
 -->
-{#if data.bodyHtml || !hasViewToggle}
+{#if data.bodyHtml || !hasViewToggle || collectionNav.prev || collectionNav.next}
 	<div class="bt-fleuron" aria-hidden="true">
 		<span class="bt-fleuron__rule"></span>
 		{#if rankGlyph != null}
