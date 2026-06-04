@@ -746,10 +746,10 @@ export function loadAggregateShelfPage(shelf: string) {
 		};
 	});
 
-	// Use the shelf's display label as if it lived at the content root.
+    // Borrow display labels from first cluster that has this shelf.
 	const labelSourcePath = clusterPaths.find((p) => graph.collection(p)) ?? clusterPaths[0];
 	const label = graph.folderLabels(labelSourcePath ?? shelf);
-	const description = `${label.plural} across ${world.config().name}`;
+	const description = graph.collection(labelSourcePath)?.meta.description ?? null;
 
 	return {
 		kind: 'collection' as const,
@@ -827,6 +827,62 @@ export function loadAggregateSubShelfPage(shelf: string, subShelf: string) {
 
 	const flat = entities.map((e) => toCard(e, cardSummaryHtml, clusterLabel(e.id)));
 
+	// Child-folder tiles: collect distinct child folder names across all
+	// cluster sub-shelf paths (e.g. `aurethia/people/characters/nobles` and
+	// `earth/people/characters/nobles` → one "Nobles" tile linking to
+	// `/people/characters/nobles`). These are regular (non-cluster) collection
+	// tiles rendered below the cluster tiles in Index mode.
+	const childFolderNames = new Set<string>();
+	for (const clusterPath of clusterPaths) {
+		for (const childPath of graph.childFolders(clusterPath)) {
+			const name = childPath.slice(childPath.lastIndexOf('/') + 1);
+			childFolderNames.add(name);
+		}
+	}
+	const childSubcollections = [...childFolderNames]
+		.map((name) => {
+			// Aggregate across all cluster instances of this child folder.
+			const childClusterPaths = clusterPaths
+				.map((cp) => `${cp}/${name}`)
+				.filter((p) => graph.isFolder(p));
+			if (childClusterPaths.length === 0) return null;
+			const combined = childClusterPaths.reduce(
+				(acc, p) => {
+					const entry = buildSubcollectionEntry(p, kindTree);
+					acc.count += entry.count;
+					for (const [k, v] of Object.entries(entry.kindCounts))
+						acc.kindCounts[k] = (acc.kindCounts[k] ?? 0) + v;
+					for (const t of entry.tags)
+						acc.tagCounts.set(t.label, (acc.tagCounts.get(t.label) ?? 0) + t.count);
+					return acc;
+				},
+				{
+					count: 0,
+					kindCounts: {} as Record<string, number>,
+					tagCounts: new Map<string, number>()
+				}
+			);
+			const labelSourcePath = childClusterPaths[0];
+			const childLabels = graph.folderLabels(labelSourcePath);
+			const childDescription = graph.collection(labelSourcePath)?.meta.description ?? null;
+			const tags = [...combined.tagCounts.entries()]
+				.map(([label, count]) => ({ label, count }))
+				.sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+			return {
+				type: `${shelf}/${subShelf}/${name}`,
+				plural: childLabels.plural,
+				description: childDescription,
+				rank: null as number | null,
+				count: combined.count,
+				kindCounts: combined.kindCounts,
+				tags,
+				tagsByKind: {} as Record<string, Array<{ label: string; count: number }>>,
+				isCluster: false as const
+			};
+		})
+		.filter((e): e is NonNullable<typeof e> => e !== null)
+		.sort((a, b) => a.plural.localeCompare(b.plural));
+
 	// Borrow display labels from first cluster that defines the sub-shelf.
 	const labelSourcePath = clusterPaths.find((p) => graph.collection(p)) ?? clusterPaths[0];
 	const label = graph.folderLabels(labelSourcePath ?? `${shelf}/${subShelf}`);
@@ -845,7 +901,8 @@ export function loadAggregateSubShelfPage(shelf: string, subShelf: string) {
 		breadcrumbs: [{ label: shelfLabel.plural, href: `/${shelf}` }],
 		description,
 		bodyHtml: null,
-		subcollections,
+		// Cluster tiles first, then child-folder tiles.
+		subcollections: [...subcollections, ...childSubcollections],
 		subShelves: [] as Array<{
 			type: string;
 			plural: string;
@@ -866,9 +923,9 @@ export function loadAggregateSubShelfPage(shelf: string, subShelf: string) {
 			name: string;
 			count: number;
 		}>,
-		// Index mode: no entity grid — cluster tiles serve as the entry points.
-		// Flat view: full entity list across all clusters.
-		standalone: [] as ReturnType<typeof toCard>[],
+		// Index mode shows cluster tiles + child-folder tiles, then the full
+		// entity grid (union across all clusters) below them.
+		standalone: flat,
 		flat,
 		collectionNav: { rank: null, rankDisplay: 'arabic' as RankDisplay, prev: null, next: null },
 		entityRankDisplay: 'arabic' as RankDisplay,
