@@ -598,19 +598,16 @@
 		text-decoration: none;
 		color: inherit;
 		background: color-mix(in oklab, var(--parchment-soft) 30%, white);
-		border: 1px solid color-mix(in oklab, var(--accent) 25%, var(--rule));
 		border-radius: var(--radius-sm);
 		overflow: hidden;
-		transition:
-			border-color 0.2s ease,
-			box-shadow 0.2s ease;
+		box-shadow: 0 0 0 1px color-mix(in oklab, var(--rule-hair) 60%, transparent);
+		transition: box-shadow 0.2s ease;
 	}
 
 	.influence-card:hover {
 		background: color-mix(in oklab, var(--accent-meta) 5%, var(--parchment));
-		border-color: var(--accent);
 		box-shadow:
-			0 2px 4px rgba(120, 90, 60, 0.06),
+			0 0 0 1px color-mix(in oklab, var(--accent) 40%, transparent),
 			0 8px 24px -12px rgba(120, 90, 60, 0.14);
 	}
 

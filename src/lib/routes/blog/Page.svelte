@@ -7,28 +7,31 @@
 </script>
 
 <svelte:head>
-	<title>Notebook · {page.data.world.shortName}</title>
+	<title>Journal · {page.data.world.shortName}</title>
 </svelte:head>
 
 <!--
-	Notebook index. Visually mirrors the craft sheet so the
+	Journal index. Visually mirrors the craft sheet so the
 	author's-room register is recognisable at a glance — same
 	cool-tinted surface, same dashed frame, same sans-serif
 	title — even though the content here is a list of posts
 	rather than a single prose column.
 -->
 <section class="bt-notebook">
-	<nav class="bt-notebook__frame" aria-label="Notebook navigation">
+	<nav class="bt-notebook__frame" aria-label="Journal navigation">
 		<a href="/">↑ {page.data.world.shortName}</a>
 	</nav>
 	<header class="head">
-		<p class="bt-notebook__eyebrow">Working notes</p>
-		<h1 class="bt-notebook__title">Notebook</h1>
+		<h1 class="bt-notebook__title">Journal</h1>
 		<p class="sub">
-			Author&rsquo;s-room reflections on building {page.data.world.name}. Out-of-world; not part of the
-			compendium.
+			My reflections on building {page.data.world.name}.
 		</p>
 	</header>
+	<div class="bt-fleuron" aria-hidden="true">
+		<span class="bt-fleuron__rule"></span>
+		<span class="bt-fleuron__glyph"></span>
+		<span class="bt-fleuron__rule"></span>
+	</div>
 
 	{#if data.posts.length === 0}
 		<p class="empty">No posts yet.</p>
@@ -58,9 +61,7 @@
 
 <style>
 	.head {
-		margin: 0 0 var(--space-6);
-		padding-bottom: var(--space-5);
-		border-bottom: 1px solid var(--rule-hair);
+		margin: 0 0 var(--space-4);
 	}
 
 	.sub {

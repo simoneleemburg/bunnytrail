@@ -16,44 +16,48 @@
 </svelte:head>
 
 <!--
-	Influences gallery. Shares the notebook surface with /blog and
-	/sources (cool tint, dashed frame) so the author's-room register
-	is recognisable at a glance — this page is *about* what shaped
-	the world, not *of* it. Laid out as a CSS-column masonry grid
-	so tiles of varying heights flow naturally.
+	Influences gallery. No notebook frame — the header floats bare,
+	centred, with the blue fleuron as the sole separator before the
+	full-width masonry board.
 -->
-<section class="bt-notebook influences-notebook">
-	<nav class="bt-notebook__frame" aria-label="Influences navigation">
-		<a href="/">↑ {page.data.world.shortName}</a>
-	</nav>
-	<header class="head">
-		<p class="bt-notebook__eyebrow">Out of world</p>
-		<h1 class="bt-notebook__title">Influences</h1>
-		<p class="sub">Works, ideas, and creators that shaped this world.</p>
-	</header>
+<div class="influences-page">
+	<div class="influences-header">
+		<nav class="bt-notebook__frame" aria-label="Influences navigation">
+			<a href="/">↑ {page.data.world.shortName}</a>
+		</nav>
+		<header class="head">
+			<h1 class="bt-notebook__title">Influences</h1>
+			<p class="sub">Works, ideas, and creators that shaped this world.</p>
+		</header>
+		<div class="bt-fleuron" aria-hidden="true">
+			<span class="bt-fleuron__rule"></span>
+			<span class="bt-fleuron__glyph"></span>
+			<span class="bt-fleuron__rule"></span>
+		</div>
 
-	{#if data.kinds.length > 1}
-		<div class="filter-group" role="group" aria-label="Filter by kind">
-			<button
-				type="button"
-				class="filter"
-				class:active={activeKind === null}
-				onclick={() => (activeKind = null)}
-			>
-				All
-			</button>
-			{#each data.kinds as kind (kind)}
+		{#if data.kinds.length > 1}
+			<div class="filter-group" role="group" aria-label="Filter by kind">
 				<button
 					type="button"
 					class="filter"
-					class:active={activeKind === kind}
-					onclick={() => (activeKind = kind)}
+					class:active={activeKind === null}
+					onclick={() => (activeKind = null)}
 				>
-					{kind}
+					All
 				</button>
-			{/each}
-		</div>
-	{/if}
+				{#each data.kinds as kind (kind)}
+					<button
+						type="button"
+						class="filter"
+						class:active={activeKind === kind}
+						onclick={() => (activeKind = kind)}
+					>
+						{kind}
+					</button>
+				{/each}
+			</div>
+		{/if}
+	</div>
 
 	{#if data.items.length === 0}
 		<p class="empty"><em>No influences recorded yet.</em></p>
@@ -68,34 +72,18 @@
 							<img src={item.thumbSrc} alt={item.title} loading="lazy" />
 						</div>
 						<div class="tile-body">
-							{#if item.year !== null || item.kind !== null}
-								<p class="tile-meta">
-									{[item.year, item.kind].filter(Boolean).join(' · ')}
-								</p>
-							{/if}
 							<h3 class="tile-title">{item.title}</h3>
 							{#if item.creator !== null}
 								<p class="tile-creator">{item.creator}</p>
-							{/if}
-							{#if item.epigraph !== null}
-								<p class="tile-epigraph">"{item.epigraph}"</p>
 							{/if}
 						</div>
 					</a>
 				{:else}
 					<a class="influence-tile influence-tile--text" href="/influences/{item.slug}">
 						<div class="tile-body">
-							{#if item.year !== null || item.kind !== null}
-								<p class="tile-meta">
-									{[item.year, item.kind].filter(Boolean).join(' · ')}
-								</p>
-							{/if}
 							<h3 class="tile-title">{item.title}</h3>
 							{#if item.creator !== null}
 								<p class="tile-creator">{item.creator}</p>
-							{/if}
-							{#if item.epigraph !== null}
-								<p class="tile-epigraph">"{item.epigraph}"</p>
 							{/if}
 						</div>
 					</a>
@@ -103,19 +91,25 @@
 			{/each}
 		</div>
 	{/if}
-</section>
+</div>
 
 <style>
-	/* Override the default prose-max width — the gallery needs
-	   more room to show two masonry columns comfortably. */
-	.influences-notebook {
-		max-width: 52rem;
+	/* Full-width page shell — no prose-max constraint. */
+	.influences-page {
+		width: 100%;
+		--fleuron-glyph-color: var(--accent-meta);
+	}
+
+	/* Bare centred header — no card, no background, no shadow.
+	   The blue fleuron does the talking. */
+	.influences-header {
+		max-width: 42rem;
+		margin: 0 auto var(--space-7);
+		text-align: center;
 	}
 
 	.head {
-		margin: 0 0 var(--space-6);
-		padding-bottom: var(--space-5);
-		border-bottom: 1px solid var(--rule-hair);
+		margin: 0 0 var(--space-4);
 	}
 
 	.sub {
@@ -171,14 +165,26 @@
 		background-color: var(--accent-soft);
 	}
 
-	/* CSS-column masonry layout. Two columns on wider viewports;
-	   collapses to one on mobile. */
+	/* Pinterest-style CSS-column masonry layout.
+	   4 columns at wide, 3 at medium, 2 at narrow, 1 on mobile. */
 	.gallery {
-		column-count: 2;
-		column-gap: 1.5rem;
+		column-count: 4;
+		column-gap: 1.25rem;
 	}
 
-	@media (max-width: 600px) {
+	@media (max-width: 1199px) {
+		.gallery {
+			column-count: 3;
+		}
+	}
+
+	@media (max-width: 799px) {
+		.gallery {
+			column-count: 2;
+		}
+	}
+
+	@media (max-width: 499px) {
 		.gallery {
 			column-count: 1;
 		}
@@ -188,68 +194,63 @@
 	.influence-tile {
 		display: block;
 		break-inside: avoid;
-		margin-bottom: 1.5rem;
+		margin-bottom: 1.25rem;
 		text-decoration: none;
 		color: inherit;
-		transition: opacity 120ms ease;
+		background: color-mix(in oklab, var(--parchment-soft) 30%, white);
+		border-radius: var(--radius-sm);
+		overflow: hidden;
+		box-shadow: 0 0 0 1px color-mix(in oklab, var(--rule-hair) 60%, transparent);
+		transition:
+			box-shadow 0.2s ease;
 	}
 
 	.influence-tile:hover {
-		opacity: 0.85;
+		background: color-mix(in oklab, var(--accent-meta) 5%, var(--parchment));
+		box-shadow:
+			0 0 0 1px color-mix(in oklab, var(--accent) 40%, transparent),
+			0 8px 24px -12px rgba(120, 90, 60, 0.14);
 	}
 
 	.tile-image img {
 		width: 100%;
 		display: block;
-		border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+		transition: transform 0.4s ease;
+	}
+
+	.influence-tile:hover .tile-image img {
+		transform: scale(1.03);
 	}
 
 	.tile-body {
 		padding: var(--space-3) var(--space-4);
-		background: color-mix(in oklab, var(--parchment-soft) 30%, white);
-		border: 1px solid var(--rule-hair);
-		border-top: none;
-		border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-	}
-
-	/* Text-only tile: slightly dimmer border to distinguish from image tiles. */
-	.influence-tile--text .tile-body {
-		border: 1px solid var(--rule-hair);
-		border-radius: var(--radius-sm);
-		padding: var(--space-4);
-	}
-
-	.tile-meta {
-		margin: 0 0 var(--space-1);
-		font-size: var(--text-xs);
-		font-variant-caps: all-small-caps;
-		letter-spacing: 0.1em;
-		color: var(--ink-faint);
 	}
 
 	.tile-title {
-		margin: 0 0 var(--space-2);
+		margin: 0;
 		font-family: var(--font-display);
+		font-style: italic;
 		font-size: var(--text-base);
-		font-weight: 600;
+		font-weight: normal;
 		line-height: var(--leading-tight);
 		color: var(--ink);
+		transition: color 0.15s ease;
+	}
+
+	.influence-tile:hover .tile-title {
+		color: var(--accent-meta);
 	}
 
 	.tile-creator {
-		margin: 0 0 var(--space-2);
+		margin: var(--space-1) 0 0;
 		font-size: var(--text-sm);
+		font-style: italic;
 		font-family: var(--font-serif);
 		color: var(--ink-soft);
 	}
 
-	.tile-epigraph {
-		margin: 0;
-		font-size: var(--text-sm);
-		font-style: italic;
-		color: var(--ink-soft);
-		padding-left: var(--space-3);
-		border-left: 1px solid var(--rule);
-		line-height: var(--leading-normal);
+	/* text-only tile: full border radius (no image above) */
+	.influence-tile--text .tile-body {
+		padding: var(--space-4);
 	}
 </style>

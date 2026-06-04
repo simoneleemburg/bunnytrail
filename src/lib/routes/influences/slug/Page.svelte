@@ -13,26 +13,33 @@
 	<title>{data.title} · {page.data.world.shortName}</title>
 </svelte:head>
 
-<!--
-	Single influence detail page. Notebook register — cool tinted
-	surface, dashed frame — matching the gallery index at /influences.
--->
-<article class="bt-notebook">
-	<nav class="bt-notebook__frame" aria-label="Influences navigation">
-		<a href="/">↑ {page.data.world.shortName}</a>
-		<span aria-hidden="true"> · </span>
-		<a href="/influences">← Influences</a>
-	</nav>
+<article class="influence-detail">
+	<div class="influence-nav" role="navigation" aria-label="Influences navigation">
+		<a class="influence-nav__back" href="/influences">← Influences</a>
+		<a class="influence-nav__home" href="/">
+			<span class="influence-nav__arrow" aria-hidden="true">↑</span>{page.data.world.shortName}
+		</a>
+	</div>
 
-	<header class="head">
-		<p class="bt-notebook__eyebrow">{data.kind ?? 'Influence'}</p>
-		<h1 class="bt-notebook__title">{data.title}</h1>
+	<header class="influence-head">
+		<div class="title-row">
+			<h1 class="influence-title">{data.title}</h1>
+			{#if data.kind !== null}
+				<span class="kind-chip">{data.kind}</span>
+			{/if}
+		</div>
 		{#if data.creator !== null || data.year !== null}
 			<p class="influence-meta">
 				{[data.creator, data.year].filter(Boolean).join(' · ')}
 			</p>
 		{/if}
 	</header>
+
+	<div class="bt-fleuron influence-fleuron" aria-hidden="true">
+		<span class="bt-fleuron__rule"></span>
+		<span class="bt-fleuron__glyph"></span>
+		<span class="bt-fleuron__rule"></span>
+	</div>
 
 	{#if hasContent}
 		{#if data.epigraph !== null}
@@ -55,7 +62,7 @@
 		{/each}
 
 		{#if data.bodyHtml !== null}
-			<div class="bt-prose bt-notebook__prose">
+			<div class="bt-prose influence-prose">
 				<!-- Trusted: html is rendered server-side from in-repo markdown. -->
 				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 				{@html data.bodyHtml}
@@ -67,8 +74,90 @@
 </article>
 
 <style>
-	.head {
-		margin: var(--space-6) 0;
+	.influence-detail {
+		max-width: 44rem;
+		margin: 0 auto;
+		padding: var(--space-8) var(--space-4);
+		--fleuron-glyph-color: var(--accent-meta);
+	}
+
+	/* Nav row: ↑ Home centred, ← Back left-anchored.
+	   Uses position:relative + absolute for the back link so it
+	   doesn't disturb the centred home link's flow. */
+	.influence-nav {
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: baseline;
+		margin-bottom: var(--space-4);
+	}
+
+	.influence-nav__home {
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.14em;
+		color: var(--ink-faint);
+		text-decoration: none;
+	}
+
+	.influence-nav__home:hover {
+		color: var(--accent-meta);
+	}
+
+	.influence-nav__arrow {
+		font-variant: normal;
+		letter-spacing: 0;
+		margin-right: 0.35em;
+	}
+
+	.influence-nav__back {
+		position: absolute;
+		left: 0;
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.12em;
+		color: var(--ink-faint);
+		text-decoration: none;
+	}
+
+	.influence-nav__back:hover {
+		color: var(--accent-meta);
+	}
+
+	.influence-head {
+		text-align: center;
+		margin-bottom: var(--space-6);
+	}
+
+	.title-row {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: flex-start;
+		gap: 0 0.7em;
+		margin: 0 0 var(--space-3);
+	}
+
+	.influence-title {
+		margin: 0;
+		font-size: var(--text-3xl);
+		color: var(--ink);
+	}
+
+	.kind-chip {
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.1em;
+		font-weight: 600;
+		color: var(--accent-deep);
+		margin-top: 0.85em;
+	}
+
+	.influence-fleuron {
+		margin: var(--space-6) auto;
 	}
 
 	.influence-meta {

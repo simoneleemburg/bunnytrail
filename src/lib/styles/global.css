@@ -408,7 +408,7 @@ blockquote {
 	font-family: var(--font-display);
 	font-size: var(--text-base);
 	line-height: 1;
-	color: var(--accent-warm);
+	color: var(--fleuron-glyph-color, var(--accent-warm));
 }
 
 .bt-fleuron__glyph::before {
@@ -437,9 +437,15 @@ blockquote {
 	margin: 0 auto;
 	padding: var(--space-6) var(--space-6) var(--space-7);
 	background: color-mix(in oklab, var(--parchment-soft) 30%, white);
-	border: 1px solid var(--rule-hair);
 	border-radius: var(--radius-sm);
+	box-shadow:
+		0 0 0 1px color-mix(in oklab, var(--rule-hair) 40%, transparent),
+		0 2px 12px -4px rgba(80, 60, 40, 0.08);
 	color: var(--ink);
+
+	/* Fleurons inside the notebook register use the meta accent
+	   rather than the warm gold used in world pages. */
+	--fleuron-glyph-color: var(--accent-meta);
 }
 
 @media (max-width: 40rem) {
@@ -448,14 +454,18 @@ blockquote {
 	}
 }
 
-/* Running breadcrumb / nav bar at the top of a notebook surface. */
+/* Running breadcrumb / nav bar at the top of a notebook surface.
+   Flex row: back-link left, eyebrow label right. No rule —
+   spacing alone separates it from the title block. */
 .bt-notebook__frame {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
 	font-size: var(--text-xs);
 	font-variant-caps: all-small-caps;
 	letter-spacing: 0.08em;
 	color: var(--ink-faint);
-	padding-bottom: var(--space-3);
-	border-bottom: 1px solid var(--rule-hair);
+	margin-bottom: var(--space-5);
 }
 
 .bt-notebook__frame a {
@@ -475,6 +485,12 @@ blockquote {
 	font-size: var(--text-2xl);
 	line-height: var(--leading-tight);
 	color: var(--ink);
+}
+
+/* Centre the header block (title + eyebrow + subtitle) so it
+   sits symmetrically above the fleuron separator. */
+.bt-notebook .head {
+	text-align: center;
 }
 
 /* Small-caps eyebrow above the notebook title. */
