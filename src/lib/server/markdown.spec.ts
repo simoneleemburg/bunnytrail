@@ -427,6 +427,38 @@ describe('renderBody', () => {
 			expect(html).toContain('src="some/../secret.png"');
 			expect(html).not.toContain('/api/entity-assets');
 		});
+
+		it('rewrites a bare filename to /api/guide-assets when imageBaseEndpoint is guide-assets', () => {
+			const html = renderBody(
+				'![map](clusters-map.svg)',
+				resolve,
+				langs,
+				new Set(),
+				undefined,
+				'cognita',
+				undefined,
+				'guide-assets'
+			);
+			expect(html).toContain('src="/api/guide-assets/cognita/clusters-map.svg"');
+		});
+
+		it('still rewrites multi-segment paths to /api/entity-assets regardless of endpoint', () => {
+			// Rule 2.5 (multi-segment) always uses entity-assets; guide-assets
+			// endpoint only affects bare filenames (Rule 3).
+			const html = renderBody(
+				'![m](foundation/fabric/primitives/mundus/map.svg)',
+				resolve,
+				langs,
+				new Set(),
+				undefined,
+				'cognita',
+				undefined,
+				'guide-assets'
+			);
+			expect(html).toContain(
+				'src="/api/entity-assets/foundation/fabric/primitives/mundus/map.svg"'
+			);
+		});
 	});
 
 	describe('wikilinks inside raw HTML chrome', () => {

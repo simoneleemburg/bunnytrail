@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { assets } from './assets';
-import { CONTENT_DIR } from './globals';
+import { CONTENT_DIR, GUIDES_DIR } from './globals';
 import { graph } from './graph';
 
 /**
@@ -49,7 +49,7 @@ import { graph } from './graph';
  * standard broken-image rather than vanishing silently.
  */
 export async function inlineSvgFigures(html: string): Promise<string> {
-	const pattern = /<img\b([^>]*?)\ssrc="(\/api\/(?:assets|entity-assets)\/[^"]+\.svg)"([^>]*)>/gi;
+	const pattern = /<img\b([^>]*?)\ssrc="(\/api\/(?:assets|entity-assets|guide-assets)\/[^"]+\.svg)"([^>]*)>/gi;
 	const matches: Array<{ whole: string; pre: string; src: string; post: string; index: number }> =
 		[];
 	for (const m of html.matchAll(pattern)) {
@@ -110,18 +110,49 @@ async function buildReplacement(
 }
 
 /**
- * Strip `/api/(assets|entity-assets)/.../<base>.svg` → `<base>`.
- * Returns null if the segment doesn't look like a CSS-safe
- * identifier (only ASCII letters, digits, dash, underscore).
+ * Derive the CSS modifier identifier from an SVG `src` URL.
+ *
+ * For `/api/assets/<base>.svg`          → `<base>`
+ *   (flat assets dir, no collision risk)
+ *
+ * For `/api/entity-assets/<path>/<base>.svg`
+ *   → `<path-with-slashes-as-hyphens>-<base>`
+ *   e.g. `/api/entity-assets/foundation/fabric/primitives/mundus/map.svg`
+ *        → `foundation-fabric-primitives-mundus-map`
+ *   Multiple entity folders can each have a `map.svg`; this keeps
+ *   their CSS classes distinct.
+ *
+ * For `/api/guide-assets/<slug>/<base>.svg`
+ *   → `<slug>-<base>`
+ *   e.g. `/api/guide-assets/cognita/clusters-map.svg`
+ *        → `cognita-clusters-map`
+ *
+ * Returns null if the resulting identifier isn't CSS-class-safe
+ * (`[A-Za-z0-9_-]+`).
  */
 function svgBasename(src: string): string | null {
-	const slash = src.lastIndexOf('/');
-	if (slash < 0) return null;
-	const file = src.slice(slash + 1);
-	const dot = file.lastIndexOf('.');
+	let pathPart: string;
+
+	if (src.startsWith('/api/assets/')) {
+		// Flat asset: just the filename minus extension.
+		pathPart = src.slice('/api/assets/'.length);
+	} else if (src.startsWith('/api/entity-assets/')) {
+		pathPart = src.slice('/api/entity-assets/'.length);
+	} else if (src.startsWith('/api/guide-assets/')) {
+		pathPart = src.slice('/api/guide-assets/'.length);
+	} else {
+		return null;
+	}
+
+	// Drop the extension.
+	const dot = pathPart.lastIndexOf('.');
 	if (dot < 0) return null;
-	const base = file.slice(0, dot);
-	return /^[A-Za-z0-9_-]+$/.test(base) ? base : null;
+	const withoutExt = pathPart.slice(0, dot);
+
+	// Replace path separators with hyphens.
+	const identifier = withoutExt.replace(/\//g, '-');
+
+	return /^[A-Za-z0-9_-]+$/.test(identifier) ? identifier : null;
 }
 
 async function loadSvg(src: string): Promise<string | null> {
@@ -143,6 +174,22 @@ async function loadSvg(src: string): Promise<string | null> {
 		const filePath = resolve(CONTENT_DIR, folder, filename);
 		const root = resolve(CONTENT_DIR);
 		if (!filePath.startsWith(root + '/')) return null;
+		try {
+			return await readFile(filePath, 'utf-8');
+		} catch {
+			return null;
+		}
+	}
+	if (src.startsWith('/api/guide-assets/')) {
+		const rest = src.slice('/api/guide-assets/'.length);
+		const segments = rest.split('/').filter(Boolean);
+		// Exactly two segments: <slug>/<filename>
+		if (segments.length !== 2) return null;
+		if (segments.some((s) => s === '..' || s === '.')) return null;
+		const [slug, filename] = segments;
+		const guidesRoot = resolve(GUIDES_DIR);
+		const filePath = resolve(GUIDES_DIR, slug, filename);
+		if (!filePath.startsWith(guidesRoot + '/')) return null;
 		try {
 			return await readFile(filePath, 'utf-8');
 		} catch {

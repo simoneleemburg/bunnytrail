@@ -12,10 +12,10 @@ import { makeCollectionResolver, renderBody, renderSummary } from '$lib/server/m
  * inline-SVG post-pass too, so map references render as styled
  * figures.
  *
- * Sibling images (`![alt](foo.png)` next to the guide's index.md)
- * aren't currently supported — the entity-assets endpoint expects
- * a folder known to the graph. Use `![alt](assets/foo.svg)` for
- * map references, which routes through the global assets endpoint.
+ * Sibling images (`![alt](foo.svg)` next to the guide's `index.md`)
+ * are served through `/api/guide-assets/<slug>/<filename>`. The guide
+ * slug is passed as `imageBaseDir` and `'guide-assets'` as the
+ * endpoint so bare filenames resolve to the right URL.
  */
 export async function load({ params }: { params: { slug: string } }) {
 	await guides.ready();
@@ -35,7 +35,16 @@ export async function load({ params }: { params: { slug: string } }) {
 	});
 
 	const html = await inlineSvgFigures(
-		renderBody(guide.body, resolveLink, languageCodes, kindIds, resolveCollection, undefined, kindLookup)
+		renderBody(
+			guide.body,
+			resolveLink,
+			languageCodes,
+			kindIds,
+			resolveCollection,
+			guide.slug,
+			kindLookup,
+			'guide-assets'
+		)
 	);
 	const summaryHtml = renderSummary(guide.summary, resolveLink, languageCodes, { kindIds, kindLookup });
 

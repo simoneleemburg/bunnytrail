@@ -116,6 +116,10 @@ export function planShims(mode: ShimMode): Shim[] {
 			file: 'api/entity-assets/[...path]/+server.ts',
 			contents: server(mode, 'api/entityAssets', { extraExports: ['prerender', 'entries'] })
 		},
+		{
+			file: 'api/guide-assets/[slug]/[filename]/+server.ts',
+			contents: server(mode, 'api/guideAssets', { extraExports: ['prerender', 'entries'] })
+		},
 
 		// Blog
 		{

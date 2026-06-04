@@ -106,22 +106,32 @@ function isImageExt(name: string): boolean {
  *      `foundation/fabric/primitives/mundus/mundus-map.svg`).
  *   3. Source is a flat filename with an image extension and
  *      `imageBaseDir` is set → rewrite to
- *      `/api/entity-assets/<imageBaseDir>/<filename>`.
+ *      `/api/<imageBaseEndpoint>/<imageBaseDir>/<filename>`.
+ *      `imageBaseEndpoint` defaults to `'entity-assets'`; pass
+ *      `'guide-assets'` for guide sibling images.
  *   4. Anything else → leave alone (will 404 visibly, surfacing the
  *      typo).
  *
  * Only the `src` attribute is touched. Other attributes (alt, title,
  * width) round-trip unchanged.
  */
-function rewriteImageSrcs(html: string, imageBaseDir?: string): string {
+function rewriteImageSrcs(
+	html: string,
+	imageBaseDir?: string,
+	imageBaseEndpoint: 'entity-assets' | 'guide-assets' = 'entity-assets'
+): string {
 	return html.replace(/<img\b([^>]*?)\ssrc="([^"]+)"([^>]*)>/gi, (whole, pre, src, post) => {
-		const rewritten = rewriteImageSrc(src, imageBaseDir);
+		const rewritten = rewriteImageSrc(src, imageBaseDir, imageBaseEndpoint);
 		if (rewritten === src) return whole;
 		return `<img${pre} src="${rewritten}"${post}>`;
 	});
 }
 
-function rewriteImageSrc(src: string, imageBaseDir?: string): string {
+function rewriteImageSrc(
+	src: string,
+	imageBaseDir?: string,
+	imageBaseEndpoint: 'entity-assets' | 'guide-assets' = 'entity-assets'
+): string {
 	// Strip a leading `./` — authors may use it to signal "this folder".
 	const trimmed = src.startsWith('./') ? src.slice(2) : src;
 
@@ -151,9 +161,9 @@ function rewriteImageSrc(src: string, imageBaseDir?: string): string {
 		return `/api/entity-assets/${trimmed}`;
 	}
 
-	// (3) Bare filename, sibling of the rendering entity/collection.
+	// (3) Bare filename, sibling of the rendering entity/collection or guide.
 	if (!trimmed.includes('/') && isImageExt(trimmed) && imageBaseDir) {
-		return `/api/entity-assets/${imageBaseDir}/${trimmed}`;
+		return `/api/${imageBaseEndpoint}/${imageBaseDir}/${trimmed}`;
 	}
 
 	return src;
@@ -353,7 +363,8 @@ export function renderBody(
 	kindIds: ReadonlySet<string> = new Set(),
 	resolveCollection?: CollectionResolver,
 	imageBaseDir?: string,
-	kindLookup?: KindLookup
+	kindLookup?: KindLookup,
+	imageBaseEndpoint: 'entity-assets' | 'guide-assets' = 'entity-assets'
 ): string {
 	const expanded = expandCollectionIncludes(body, resolveCollection);
 	const rewritten = rewriteBrackets(expanded, resolveLink, languageCodes, kindIds);
@@ -428,7 +439,7 @@ export function renderBody(
 	// Convert our sentinel title into a data attribute the UI can style.
 	const linkified = rescued.replace(/title="broken-link"/g, 'data-broken="true"');
 	const decorated = decorateEntityLinks(linkified, resolveLink, kindLookup);
-	return rewriteImageSrcs(decorated, imageBaseDir);
+	return rewriteImageSrcs(decorated, imageBaseDir, imageBaseEndpoint);
 }
 
 const HTML_CHROME_TAGS = ['dt', 'dd', 'figcaption', 'summary'] as const;

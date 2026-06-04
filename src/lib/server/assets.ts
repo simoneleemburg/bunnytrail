@@ -1,6 +1,6 @@
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
-import { ASSETS_DIR, CONTENT_DIR } from './globals';
+import { ASSETS_DIR, CONTENT_DIR, GUIDES_DIR } from './globals';
 
 /**
  * Bundled fallback: src/lib/assets/ inside the SvelteKit project.
@@ -198,14 +198,14 @@ class AssetCache {
 		}
 
 		// Also include SVG+CSS pairs co-located in the content tree.
-		// These are authored as siblings of entity index files (e.g.
-		// content/foundation/fabric/primitives/mundus/mundus-map.svg +
-		// mundus-map.css). We walk CONTENT_DIR recursively, collecting
-		// pairs whose basename is CSS-class-safe and hasn't already been
-		// provided by the assets/ dir above.
-		const pairedBases = new Set(paired.map((n) => n.slice(0, -4)));
-		const contentPairs = await collectContentSvgCssPairs(CONTENT_DIR, pairedBases);
-		for (const { base, cssPath } of contentPairs) {
+		// Each pair's CSS class identifier is path-qualified:
+		//   content/foundation/fabric/primitives/mundus/map.svg
+		//   → .bt-inline-svg--foundation-fabric-primitives-mundus-map
+		// This prevents collisions when multiple entity folders each
+		// have a file named map.svg + map.css. The identifier matches
+		// what inlineSvgs.ts derives from the /api/entity-assets/ URL.
+		const contentPairs = await collectSvgCssPairs(CONTENT_DIR);
+		for (const { identifier, cssPath } of contentPairs) {
 			let css: string;
 			try {
 				css = await readFile(cssPath, 'utf-8');
@@ -213,8 +213,27 @@ class AssetCache {
 				continue;
 			}
 			parts.push(
-				`/* === ${base}.css (content/) === */`,
-				`.bt-inline-svg--${base} {`,
+				`/* === ${identifier}.css (content/) === */`,
+				`.bt-inline-svg--${identifier} {`,
+				css.trimEnd(),
+				'}',
+				''
+			);
+		}
+
+		// Same for guide sibling SVG+CSS pairs in GUIDES_DIR.
+		// Identifier: <slug>-<base>, matching /api/guide-assets/<slug>/<base>.svg.
+		const guidePairs = await collectSvgCssPairs(GUIDES_DIR);
+		for (const { identifier, cssPath } of guidePairs) {
+			let css: string;
+			try {
+				css = await readFile(cssPath, 'utf-8');
+			} catch {
+				continue;
+			}
+			parts.push(
+				`/* === ${identifier}.css (guides/) === */`,
+				`.bt-inline-svg--${identifier} {`,
 				css.trimEnd(),
 				'}',
 				''
@@ -228,34 +247,37 @@ class AssetCache {
 export const assets = new AssetCache();
 
 /**
- * Recursively walk `dir`, collecting `{ base, cssPath }` entries for
- * every `<base>.css` that has a sibling `<base>.svg` in the same
- * folder and whose `base` is a CSS-class-safe identifier
- * (`[A-Za-z0-9_-]+`).
+ * Recursively walk `rootDir`, collecting `{ identifier, cssPath }` entries
+ * for every `<base>.css` that has a sibling `<base>.svg` in the same folder.
  *
- * `alreadyCovered` is the set of basenames already included from the
- * assets/ directory — those are skipped to avoid duplicate rules in
- * the bundle (assets/ takes priority over content/).
+ * The `identifier` is the path relative to `rootDir`, with slashes replaced
+ * by hyphens and the `.css` extension dropped:
  *
- * This is intentionally a best-effort scan: directory read errors are
- * silently swallowed so a missing or unreadable folder never breaks
- * the bundle build for the rest of the world.
+ *   rootDir = CONTENT_DIR
+ *   file    = foundation/fabric/primitives/mundus/map.css
+ *   → identifier = "foundation-fabric-primitives-mundus-map"
+ *
+ *   rootDir = GUIDES_DIR
+ *   file    = cognita/clusters-map.css
+ *   → identifier = "cognita-clusters-map"
+ *
+ * Only identifiers that are CSS-class-safe (`[A-Za-z0-9_-]+`) are included.
+ * Results are sorted by identifier for deterministic bundle output.
+ * Directory read errors are silently swallowed.
  */
-async function collectContentSvgCssPairs(
-	dir: string,
-	alreadyCovered: ReadonlySet<string>
-): Promise<Array<{ base: string; cssPath: string }>> {
-	const results: Array<{ base: string; cssPath: string }> = [];
-	await walkDir(dir, alreadyCovered, results);
-	// Stable sort by base name so the bundle output is deterministic.
-	results.sort((a, b) => a.base.localeCompare(b.base));
+async function collectSvgCssPairs(
+	rootDir: string
+): Promise<Array<{ identifier: string; cssPath: string }>> {
+	const results: Array<{ identifier: string; cssPath: string }> = [];
+	await walkForPairs(rootDir, rootDir, results);
+	results.sort((a, b) => a.identifier.localeCompare(b.identifier));
 	return results;
 }
 
-async function walkDir(
+async function walkForPairs(
+	rootDir: string,
 	dir: string,
-	alreadyCovered: ReadonlySet<string>,
-	results: Array<{ base: string; cssPath: string }>
+	results: Array<{ identifier: string; cssPath: string }>
 ): Promise<void> {
 	let entries;
 	try {
@@ -264,26 +286,25 @@ async function walkDir(
 		return;
 	}
 
-	// Collect filenames in this directory.
 	const fileNames = new Set(entries.filter((e) => e.isFile()).map((e) => e.name));
 
 	for (const name of fileNames) {
 		if (!name.toLowerCase().endsWith('.css')) continue;
 		const base = name.slice(0, -4);
 		if (!base) continue;
-		// Skip if already provided by assets/ dir.
-		if (alreadyCovered.has(base)) continue;
-		// Only CSS-class-safe basenames.
-		if (!/^[A-Za-z0-9_-]+$/.test(base)) continue;
 		// Must have a sibling SVG.
 		if (!fileNames.has(`${base}.svg`) && !fileNames.has(`${base}.SVG`)) continue;
-		results.push({ base, cssPath: join(dir, name) });
+		// Build path-qualified identifier: relDir/base with slashes → hyphens.
+		const relDir = dir.slice(rootDir.length).replace(/^\//, '');
+		const identifier = (relDir ? `${relDir}/${base}` : base).replace(/\//g, '-');
+		// Only CSS-class-safe identifiers.
+		if (!/^[A-Za-z0-9_-]+$/.test(identifier)) continue;
+		results.push({ identifier, cssPath: join(dir, name) });
 	}
 
-	// Recurse into subdirectories.
 	for (const entry of entries) {
 		if (entry.isDirectory()) {
-			await walkDir(join(dir, entry.name), alreadyCovered, results);
+			await walkForPairs(rootDir, join(dir, entry.name), results);
 		}
 	}
 }
