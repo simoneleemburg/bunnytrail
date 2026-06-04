@@ -1,5 +1,6 @@
 import { graph } from '$lib/server/graph';
 import { guides, validateGuideLinks } from '$lib/server/guides';
+import { influences } from '$lib/server/influences';
 import type { HealthIssue } from '$lib/types';
 
 /**
@@ -20,11 +21,13 @@ import type { HealthIssue } from '$lib/types';
 export async function load() {
 	await graph.ready();
 	await guides.ready();
+	await influences.ready();
 
 	const issues: HealthIssue[] = [
 		...graph.issues(),
 		...guides.issues(),
-		...validateGuideLinks(guides.all(), (p) => graph.resolveLink(p), graph.kindIds())
+		...validateGuideLinks(guides.all(), (p) => graph.resolveLink(p), graph.kindIds()),
+		...influences.issues()
 	];
 
 	type Group = {
@@ -114,5 +117,6 @@ export type HealthData = Awaited<ReturnType<typeof load>>;
 function hrefForIssueSource(entity: string | undefined): string | null {
 	if (!entity) return null;
 	if (entity.startsWith('guides/')) return `/${entity}`;
+	if (entity.startsWith('influences/')) return `/${entity}`;
 	return graph.get(entity) ? `/${entity}` : null;
 }

@@ -57,7 +57,7 @@
 	.head {
 		margin: 0 0 var(--space-6);
 		padding-bottom: var(--space-5);
-		border-bottom: 1px dashed var(--rule);
+		border-bottom: 1px solid var(--rule-hair);
 	}
 
 	.sub {
@@ -79,10 +79,9 @@
 		margin: 0;
 	}
 
-	/* Dashed separator between entries, but not above the first —
-	   keeps the top of the list flush with the header rule. */
+	/* Separator between entries, not above the first. */
 	.post + .post {
-		border-top: 1px dashed var(--rule);
+		border-top: 1px solid var(--rule-hair);
 	}
 
 	.post-link {

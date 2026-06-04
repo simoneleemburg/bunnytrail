@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { assets } from './assets';
-import { CONTENT_DIR, GUIDES_DIR } from './globals';
+import { CONTENT_DIR, GUIDES_DIR, INFLUENCES_DIR } from './globals';
 import { graph } from './graph';
 
 /**
@@ -49,7 +49,7 @@ import { graph } from './graph';
  * standard broken-image rather than vanishing silently.
  */
 export async function inlineSvgFigures(html: string): Promise<string> {
-	const pattern = /<img\b([^>]*?)\ssrc="(\/api\/(?:assets|entity-assets|guide-assets)\/[^"]+\.svg)"([^>]*)>/gi;
+	const pattern = /<img\b([^>]*?)\ssrc="(\/api\/(?:assets|entity-assets|guide-assets|influence-assets)\/[^"]+\.svg)"([^>]*)>/gi;
 	const matches: Array<{ whole: string; pre: string; src: string; post: string; index: number }> =
 		[];
 	for (const m of html.matchAll(pattern)) {
@@ -140,6 +140,8 @@ function svgBasename(src: string): string | null {
 		pathPart = src.slice('/api/entity-assets/'.length);
 	} else if (src.startsWith('/api/guide-assets/')) {
 		pathPart = src.slice('/api/guide-assets/'.length);
+	} else if (src.startsWith('/api/influence-assets/')) {
+		pathPart = src.slice('/api/influence-assets/'.length);
 	} else {
 		return null;
 	}
@@ -190,6 +192,22 @@ async function loadSvg(src: string): Promise<string | null> {
 		const guidesRoot = resolve(GUIDES_DIR);
 		const filePath = resolve(GUIDES_DIR, slug, filename);
 		if (!filePath.startsWith(guidesRoot + '/')) return null;
+		try {
+			return await readFile(filePath, 'utf-8');
+		} catch {
+			return null;
+		}
+	}
+	if (src.startsWith('/api/influence-assets/')) {
+		const rest = src.slice('/api/influence-assets/'.length);
+		const segments = rest.split('/').filter(Boolean);
+		// Exactly two segments: <slug>/<filename>
+		if (segments.length !== 2) return null;
+		if (segments.some((s) => s === '..' || s === '.')) return null;
+		const [slug, filename] = segments;
+		const influencesRoot = resolve(INFLUENCES_DIR);
+		const filePath = resolve(INFLUENCES_DIR, slug, filename);
+		if (!filePath.startsWith(influencesRoot + '/')) return null;
 		try {
 			return await readFile(filePath, 'utf-8');
 		} catch {

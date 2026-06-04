@@ -85,7 +85,7 @@
 	.head {
 		margin: 0 0 var(--space-6);
 		padding-bottom: var(--space-5);
-		border-bottom: 1px dashed var(--rule);
+		border-bottom: 1px solid var(--rule-hair);
 	}
 
 	.sub {
@@ -115,10 +115,9 @@
 		padding: var(--space-4) 0;
 	}
 
-	/* Dashed separator above every project except the first —
-	   keeps the top flush with the header rule, matches /blog. */
+	/* Separator above every project except the first. */
 	.project + .project {
-		border-top: 1px dashed var(--rule);
+		border-top: 1px solid var(--rule-hair);
 	}
 
 	.year {

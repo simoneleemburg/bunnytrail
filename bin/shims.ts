@@ -120,6 +120,10 @@ export function planShims(mode: ShimMode): Shim[] {
 			file: 'api/guide-assets/[slug]/[filename]/+server.ts',
 			contents: server(mode, 'api/guideAssets', { extraExports: ['prerender', 'entries'] })
 		},
+		{
+			file: 'api/influence-assets/[slug]/[filename]/+server.ts',
+			contents: server(mode, 'api/influenceAssets', { extraExports: ['prerender', 'entries'] })
+		},
 
 		// Blog
 		{
@@ -137,6 +141,12 @@ export function planShims(mode: ShimMode): Shim[] {
 		// Guides
 		{ file: 'guides/[slug]/+page.server.ts', contents: pageServer(mode, 'guides/slug') },
 		{ file: 'guides/[slug]/+page.svelte', contents: pageSvelte(mode, 'guides/slug') },
+
+		// Influences
+		{ file: 'influences/+page.server.ts', contents: pageServer(mode, 'influences') },
+		{ file: 'influences/+page.svelte', contents: pageSvelte(mode, 'influences') },
+		{ file: 'influences/[slug]/+page.server.ts', contents: pageServer(mode, 'influences/slug') },
+		{ file: 'influences/[slug]/+page.svelte', contents: pageSvelte(mode, 'influences/slug') },
 
 		// Kinds taxonomy
 		{ file: 'kinds/+page.server.ts', contents: pageServer(mode, 'kinds') },

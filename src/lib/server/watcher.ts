@@ -3,6 +3,7 @@ import chokidar from 'chokidar';
 import { blog } from './blog';
 import { guides } from './guides';
 import { sources } from './sources';
+import { influences } from './influences';
 import { graph } from './graph';
 import { assets } from './assets';
 import { world } from './world';
@@ -10,6 +11,7 @@ import {
 	CONTENT_DIR,
 	BLOG_DIR,
 	GUIDES_DIR,
+	INFLUENCES_DIR,
 	KINDS_DIR,
 	SOURCES_DIR,
 	ASSETS_DIR,
@@ -57,6 +59,9 @@ export function startWatcher(): void {
 			void sources.load().catch((err) => {
 				console.error('[bunnytrail] sources reload failed:', err);
 			});
+			void influences.load().catch((err) => {
+				console.error('[bunnytrail] influences reload failed:', err);
+			});
 			void world.load().catch((err) => {
 				console.error('[bunnytrail] world reload failed:', err);
 			});
@@ -75,7 +80,7 @@ export function startWatcher(): void {
 	};
 
 	const watcher = chokidar.watch(
-		[CONTENT_DIR, KINDS_DIR, BLOG_DIR, GUIDES_DIR, SOURCES_DIR, WORLD_CONFIG_PATH],
+		[CONTENT_DIR, KINDS_DIR, BLOG_DIR, GUIDES_DIR, INFLUENCES_DIR, SOURCES_DIR, WORLD_CONFIG_PATH],
 		{
 			ignoreInitial: true,
 			ignored: (path) => path.endsWith('.DS_Store')
@@ -85,7 +90,7 @@ export function startWatcher(): void {
 	watcher.on('add', trigger).on('change', trigger).on('unlink', trigger);
 	watcher.on('add', contentAssetTrigger).on('change', contentAssetTrigger).on('unlink', contentAssetTrigger);
 	console.log(
-		`[bunnytrail] watching ${CONTENT_DIR}, ${KINDS_DIR}, ${BLOG_DIR}, ${GUIDES_DIR}, and ${SOURCES_DIR}`
+		`[bunnytrail] watching ${CONTENT_DIR}, ${KINDS_DIR}, ${BLOG_DIR}, ${GUIDES_DIR}, ${INFLUENCES_DIR}, and ${SOURCES_DIR}`
 	);
 
 	// Watch the assets directory separately — changes only invalidate

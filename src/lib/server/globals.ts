@@ -155,6 +155,27 @@ export function defaultSourcesDir(): string {
 export const SOURCES_DIR = defaultSourcesDir();
 
 /**
+ * Where personal/cultural influence entries live. Each entry is a
+ * directory under `content_meta/influences/<slug>/` carrying:
+ *
+ *   - `index.md` (with YAML frontmatter) or `index.yaml` sidecar —
+ *     required. Only `title` is a required field; creator, year,
+ *     kind, epigraph, image, and body are all optional.
+ *   - Sibling image files (book covers, portraits, paintings …)
+ *     served via `/api/influence-assets/[slug]/[filename]`.
+ *
+ * Override with `BUNNYTRAIL_INFLUENCES_DIR` for testing.
+ */
+export function defaultInfluencesDir(): string {
+	return (
+		process.env.BUNNYTRAIL_INFLUENCES_DIR ??
+		resolve(WORLD_DIR, 'content_meta/influences')
+	);
+}
+
+export const INFLUENCES_DIR = defaultInfluencesDir();
+
+/**
  * Where pre-baked SVG assets (e.g. mundus-map.svg) live.
  *
  * Resolution order, mirroring `defaultWorldDir`:

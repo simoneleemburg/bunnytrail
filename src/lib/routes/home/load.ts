@@ -1,6 +1,7 @@
 import { graph } from '$lib/server/graph';
 import { guides } from '$lib/server/guides';
 import { sources } from '$lib/server/sources';
+import { influences } from '$lib/server/influences';
 import { world } from '$lib/server/world';
 import { assets } from '$lib/server/assets';
 
@@ -26,6 +27,7 @@ export async function load() {
 	await graph.ready();
 	await guides.ready();
 	await sources.ready();
+	await influences.ready();
 	await world.ready();
 
 	// Guide callouts — content-authored tours of the world that live
@@ -125,6 +127,35 @@ export async function load() {
 	// CSS variables / currentColor for theming.
 	const crest = await assets.get('crest.svg');
 
+	// Rotating influence card: pick one influence per request using
+	// a time-based index so returning visitors see a different entry
+	// without any client-side JS. Null when there are no influences.
+	const allInfluences = influences.all();
+	const influenceCard = (() => {
+		if (allInfluences.length === 0) return null;
+		const idx = Math.floor(Date.now() / 60_000) % allInfluences.length;
+		const inf = allInfluences[idx];
+		// Use the first illustration's image as the thumbnail.
+		const firstIll = inf.illustrations[0] ?? null;
+		let imageSrc: string | null = null;
+		if (firstIll) {
+			const img = firstIll.image;
+			if (/^https?:\/\//.test(img) || img.startsWith('//')) {
+				imageSrc = img;
+			} else if (!img.includes('/') && !img.includes('..')) {
+				imageSrc = `/api/influence-assets/${inf.slug}/${img}`;
+			}
+		}
+		return {
+			slug: inf.slug,
+			title: inf.title,
+			creator: inf.creator,
+			epigraph: inf.epigraph,
+			imageSrc,
+			imageComment: firstIll?.comment ?? null
+		};
+	})();
+
 	return {
 		counts,
 		threads,
@@ -139,6 +170,7 @@ export async function load() {
 		issues: graph.issues().length,
 		sourceProjects,
 		guides: guideCallouts,
+		influenceCard,
 		// Homepage hero lede, rendered from the body of
 		// `content_meta/world.md`. `null` when the file is missing or
 		// its body is empty — the page renders a placeholder in that

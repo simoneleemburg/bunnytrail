@@ -118,7 +118,7 @@ function isImageExt(name: string): boolean {
 function rewriteImageSrcs(
 	html: string,
 	imageBaseDir?: string,
-	imageBaseEndpoint: 'entity-assets' | 'guide-assets' = 'entity-assets'
+	imageBaseEndpoint: 'entity-assets' | 'guide-assets' | 'influence-assets' = 'entity-assets'
 ): string {
 	return html.replace(/<img\b([^>]*?)\ssrc="([^"]+)"([^>]*)>/gi, (whole, pre, src, post) => {
 		const rewritten = rewriteImageSrc(src, imageBaseDir, imageBaseEndpoint);
@@ -130,7 +130,7 @@ function rewriteImageSrcs(
 function rewriteImageSrc(
 	src: string,
 	imageBaseDir?: string,
-	imageBaseEndpoint: 'entity-assets' | 'guide-assets' = 'entity-assets'
+	imageBaseEndpoint: 'entity-assets' | 'guide-assets' | 'influence-assets' = 'entity-assets'
 ): string {
 	// Strip a leading `./` — authors may use it to signal "this folder".
 	const trimmed = src.startsWith('./') ? src.slice(2) : src;
@@ -364,7 +364,7 @@ export function renderBody(
 	resolveCollection?: CollectionResolver,
 	imageBaseDir?: string,
 	kindLookup?: KindLookup,
-	imageBaseEndpoint: 'entity-assets' | 'guide-assets' = 'entity-assets'
+	imageBaseEndpoint: 'entity-assets' | 'guide-assets' | 'influence-assets' = 'entity-assets'
 ): string {
 	const expanded = expandCollectionIncludes(body, resolveCollection);
 	const rewritten = rewriteBrackets(expanded, resolveLink, languageCodes, kindIds);
