@@ -63,6 +63,17 @@ export function startWatcher(): void {
 		}, 75);
 	};
 
+	// When a .svg or .css file changes under CONTENT_DIR the inline-svg
+	// bundle must be rebuilt too (it now includes CSS from the content
+	// tree). We do this eagerly on the path event rather than waiting
+	// for the debounced trigger so the next request gets fresh CSS.
+	const contentAssetTrigger = (path: string) => {
+		const lower = path.toLowerCase();
+		if (lower.endsWith('.css') || lower.endsWith('.svg')) {
+			assets.invalidate('inline-svg.css');
+		}
+	};
+
 	const watcher = chokidar.watch(
 		[CONTENT_DIR, KINDS_DIR, BLOG_DIR, GUIDES_DIR, SOURCES_DIR, WORLD_CONFIG_PATH],
 		{
@@ -72,6 +83,7 @@ export function startWatcher(): void {
 	);
 
 	watcher.on('add', trigger).on('change', trigger).on('unlink', trigger);
+	watcher.on('add', contentAssetTrigger).on('change', contentAssetTrigger).on('unlink', contentAssetTrigger);
 	console.log(
 		`[bunnytrail] watching ${CONTENT_DIR}, ${KINDS_DIR}, ${BLOG_DIR}, ${GUIDES_DIR}, and ${SOURCES_DIR}`
 	);

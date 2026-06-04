@@ -395,6 +395,38 @@ describe('renderBody', () => {
 			expect(html).toContain('src="../secret.png"');
 			expect(html).not.toContain('/api/entity-assets');
 		});
+
+		it('rewrites a multi-segment content-relative path to /api/entity-assets', () => {
+			const html = renderBody(
+				'![map](foundation/fabric/primitives/mundus/mundus-map.svg)',
+				resolve,
+				langs
+			);
+			expect(html).toContain(
+				'src="/api/entity-assets/foundation/fabric/primitives/mundus/mundus-map.svg"'
+			);
+		});
+
+		it('rewrites a multi-segment content-relative path even without imageBaseDir', () => {
+			// Guides call renderBody with no imageBaseDir; multi-segment paths
+			// must still resolve.
+			const html = renderBody(
+				'![m](some/nested/path/image.png)',
+				resolve,
+				langs,
+				new Set(),
+				undefined,
+				undefined
+			);
+			expect(html).toContain('src="/api/entity-assets/some/nested/path/image.png"');
+		});
+
+		it('does not rewrite multi-segment paths with path-traversal', () => {
+			const html = renderBody('![x](some/../secret.png)', resolve, langs);
+			// The `..` guard fires before Rule 2.5; src is left as-is.
+			expect(html).toContain('src="some/../secret.png"');
+			expect(html).not.toContain('/api/entity-assets');
+		});
 	});
 
 	describe('wikilinks inside raw HTML chrome', () => {

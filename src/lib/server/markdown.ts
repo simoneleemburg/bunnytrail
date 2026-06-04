@@ -98,6 +98,12 @@ function isImageExt(name: string): boolean {
  *   2. Source starts with `assets/` and the remainder is a flat
  *      filename with an image extension → rewrite to
  *      `/api/assets/<filename>`.
+ *   2.5. Source is a multi-segment relative path (contains `/`) with
+ *      an image extension → rewrite to
+ *      `/api/entity-assets/<path>`. The entity-assets endpoint
+ *      enforces graph-membership on the folder portion. This is the
+ *      preferred form for files co-located in the content tree (e.g.
+ *      `foundation/fabric/primitives/mundus/mundus-map.svg`).
  *   3. Source is a flat filename with an image extension and
  *      `imageBaseDir` is set → rewrite to
  *      `/api/entity-assets/<imageBaseDir>/<filename>`.
@@ -134,6 +140,15 @@ function rewriteImageSrc(src: string, imageBaseDir?: string): string {
 			return `/api/assets/${rest}`;
 		}
 		return src;
+	}
+
+	// (2.5) Multi-segment content-relative path (e.g.
+	//   `foundation/fabric/primitives/mundus/mundus-map.svg`).
+	// Routes directly to the entity-assets endpoint, which enforces
+	// graph membership on the folder portion and rejects unknown paths.
+	// No `imageBaseDir` needed — the path is self-contained.
+	if (trimmed.includes('/') && isImageExt(trimmed)) {
+		return `/api/entity-assets/${trimmed}`;
 	}
 
 	// (3) Bare filename, sibling of the rendering entity/collection.
