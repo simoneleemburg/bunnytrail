@@ -26,7 +26,7 @@ import {
  *     describe local structure inside a single folder, not the
  *     cross-cluster union.
  *   • Cards carry their `typeLabel` showing which cluster they live
- *     in, mirroring how the `/everything` index labels by folder.
+ *     in, mirroring how the everything index labels by folder.
  *
  * `shelf` is a single-segment shelf name like `characters` or `places`.
  * Caller has already verified it exists under at least one cluster (via

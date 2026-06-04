@@ -97,7 +97,7 @@ export async function discoverTypes(contentDir: string = CONTENT_DIR): Promise<E
  * (one segment shorter than its `id`). Each entity's `id` is its
  * full path under `contentDir`. The `type` field no longer carries
  * kind semantics — it is just a folder-grouping convenience for
- * consumers like `/everything` and the language-detection heuristic.
+ * consumers and the language-detection heuristic.
  */
 export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadResult> {
 	const entities = new Map<EntityId, Entity>();

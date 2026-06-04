@@ -169,13 +169,6 @@
 	<section class="threads">
 		<h2 class="section-heading">Starting threads</h2>
 		<div class="grid">
-			<a class="type-card type-card-thread" href="/everything">
-				<div class="label">Everything</div>
-				<div class="description">
-					One grid for the whole world. Filter by kind or tag, or flatten and skim.
-				</div>
-				<div class="count">{data.totalEntities}</div>
-			</a>
 			{#each data.threads as t (t.type)}
 				<a class="type-card type-card-thread" href={`/${t.type}`}>
 					<div class="label">{t.label}</div>

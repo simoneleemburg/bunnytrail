@@ -130,10 +130,6 @@ export function planShims(mode: ShimMode): Shim[] {
 		},
 		{ file: 'blog/[slug]/+page.svelte', contents: pageSvelte(mode, 'blog/slug') },
 
-		// Everything index
-		{ file: 'everything/+page.server.ts', contents: pageServer(mode, 'everything') },
-		{ file: 'everything/+page.svelte', contents: pageSvelte(mode, 'everything') },
-
 		// Guides
 		{ file: 'guides/[slug]/+page.server.ts', contents: pageServer(mode, 'guides/slug') },
 		{ file: 'guides/[slug]/+page.svelte', contents: pageSvelte(mode, 'guides/slug') },
