@@ -1,7 +1,12 @@
 /* Styles for CollectionPage.svelte.
    Extracted from inline <style> to keep the component file manageable.
-   Svelte scopes these selectors with the component hash at build time,
-   identical to inline styles. */
+
+   Imported as a side effect from CollectionPage.svelte, so these styles
+   are treated as a plain global stylesheet — Svelte's component-hash
+   scoping only applies inside <style> blocks in .svelte files. Use
+   plain descendant selectors here, not :global(...); the wrapper has
+   no meaning in a standalone .css file and lightningcss flags it as
+   an invalid pseudo-class. */
 
 .rank-nav {
 	display: flex;
@@ -55,7 +60,7 @@ a.rank-nav__item:hover {
    descriptions are typically short taglines, not multi-line
    prose, so centring reads as editorial chapter copy rather
    than an awkwardly-floated paragraph. */
-.collection-header :global(.subtitle) {
+.collection-header .subtitle {
 	text-align: center;
 	max-width: 32rem;
 }
@@ -66,39 +71,39 @@ a.rank-nav__item:hover {
 	margin: 0 auto var(--space-6);
 }
 
-.collection-body :global(h2) {
+.collection-body h2 {
 	font-size: var(--text-xl);
 	margin-top: var(--space-6);
 }
 
-.collection-body :global(h3) {
+.collection-body h3 {
 	font-size: var(--text-lg);
 	margin-top: var(--space-5);
 }
 
-.collection-body :global(p),
-.collection-body :global(ul),
-.collection-body :global(ol) {
+.collection-body p,
+.collection-body ul,
+.collection-body ol {
 	margin: 0 0 var(--space-4);
 }
 
-.collection-body :global(ul),
-.collection-body :global(ol) {
+.collection-body ul,
+.collection-body ol {
 	padding-left: var(--space-5);
 }
 
-.collection-body :global(blockquote) {
+.collection-body blockquote {
 	margin: var(--space-5) 0;
 }
 
-.collection-body :global(details.collection-include) {
+.collection-body details.collection-include {
 	margin: var(--space-5) 0;
 	border-left: 2px solid var(--ink-faint, var(--ink-soft));
 	padding: var(--space-2) var(--space-4);
 	background: var(--surface-soft, transparent);
 }
 
-.collection-body :global(details.collection-include > summary) {
+.collection-body details.collection-include > summary {
 	cursor: pointer;
 	font-style: italic;
 	color: var(--ink-soft);
@@ -109,45 +114,45 @@ a.rank-nav__item:hover {
 	user-select: none;
 }
 
-.collection-body :global(details.collection-include > summary::-webkit-details-marker) {
+.collection-body details.collection-include > summary::-webkit-details-marker {
 	display: none;
 }
 
-.collection-body :global(.collection-include-marker) {
+.collection-body .collection-include-marker {
 	display: inline-block;
 	font-size: 0.85em;
 	color: var(--ink-soft);
 	transition: transform 120ms ease-out;
 }
 
-.collection-body :global(details.collection-include[open] > summary .collection-include-marker) {
+.collection-body details.collection-include[open] > summary .collection-include-marker {
 	transform: rotate(90deg);
 }
 
-.collection-body :global(details.collection-include > summary:hover .collection-include-title),
-.collection-body :global(details.collection-include > summary:hover .collection-include-marker) {
+.collection-body details.collection-include > summary:hover .collection-include-title,
+.collection-body details.collection-include > summary:hover .collection-include-marker {
 	color: var(--ink);
 }
 
-.collection-body :global(.collection-include-title) {
+.collection-body .collection-include-title {
 	font-style: italic;
 }
 
-.collection-body :global(details.collection-include > summary:hover .collection-include-title) {
+.collection-body details.collection-include > summary:hover .collection-include-title {
 	text-decoration: underline;
 	text-underline-offset: 3px;
 }
 
-.collection-body :global(.collection-include-link) {
+.collection-body .collection-include-link {
 	font-size: var(--text-sm);
 	font-style: normal;
 }
 
-.collection-body :global(.collection-include-body) {
+.collection-body .collection-include-body {
 	margin-top: var(--space-3);
 }
 
-.collection-body :global(.collection-include-body > *:last-child) {
+.collection-body .collection-include-body > *:last-child {
 	margin-bottom: 0;
 }
 
@@ -544,11 +549,11 @@ a.rank-nav__item:hover {
 
 /* Match EntityCard: drop the per-tag hairline on tile cards;
    the tile itself has its own hover affordance. */
-.subcollection-tags :global(.tag) {
+.subcollection-tags .tag {
 	border-bottom-color: transparent;
 }
 
-.subcollection-tags :global(a.tag:hover) {
+.subcollection-tags a.tag:hover {
 	border-bottom-color: var(--accent-warm);
 }
 
@@ -812,11 +817,11 @@ a.rank-nav__item:hover {
    dims; descendant cards are still rendered at full strength
    so a matching child under a non-matching parent stays
    visible. */
-.orbit-group.dimmed > :global(article) {
+.orbit-group.dimmed > article {
 	opacity: 0.35;
 	transition: opacity 120ms ease-out;
 }
-.orbit-group.dimmed > :global(article:hover),
-.orbit-group.dimmed > :global(article:focus-within) {
+.orbit-group.dimmed > article:hover,
+.orbit-group.dimmed > article:focus-within {
 	opacity: 1;
 }

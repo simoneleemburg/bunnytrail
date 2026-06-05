@@ -1,6 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { guides } from '$lib/server/guides';
 import { graph } from '$lib/server/graph';
+import { influences } from '$lib/server/influences';
 import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderBody, renderSummary } from '$lib/server/markdown';
 
@@ -19,10 +20,11 @@ import { makeCollectionResolver, renderBody, renderSummary } from '$lib/server/m
  */
 export async function load({ params }: { params: { slug: string } }) {
 	await guides.ready();
+	await influences.ready();
 	const guide = guides.get(params.slug);
 	if (!guide) error(404, `No guide at /guides/${params.slug}`);
 
-	const resolveLink = (path: string) => graph.resolveLink(path, undefined);
+	const resolveLink = influences.wrapResolver((path) => graph.resolveLink(path, undefined));
 	const kindLookup = (id: string) => graph.get(id)?.meta.kind;
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();

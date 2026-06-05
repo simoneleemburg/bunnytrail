@@ -165,10 +165,13 @@
 					{#if data.influenceCard.imageComment}
 						<p class="influence-card__eyebrow">{data.influenceCard.imageComment}</p>
 					{/if}
-					<p class="influence-card__title bt-meta-link">
-						{data.influenceCard.title}{#if data.influenceCard.creator}&ensp;&middot;&ensp;<span class="influence-card__creator">{data.influenceCard.creator}</span>{/if}
-					</p>
-					<p class="influence-card__cta bt-meta-link" aria-hidden="true">
+				<p class="influence-card__title bt-meta-link">
+					{data.influenceCard.title}{#if data.influenceCard.creator}&ensp;&middot;&ensp;<span class="influence-card__creator">{data.influenceCard.creator}</span>{/if}
+				</p>
+				{#if data.influenceCard.epigraph}
+					<p class="influence-card__epigraph">{data.influenceCard.epigraph}</p>
+				{/if}
+				<p class="influence-card__cta bt-meta-link" aria-hidden="true">
 						Browse influences →
 					</p>
 				</div>

@@ -5,6 +5,7 @@ import { parse as parseYaml } from 'yaml';
 import type { HealthIssue } from '$lib/types';
 import { defaultInfluencesDir, INFLUENCES_DIR } from './globals';
 import { splitFrontmatter } from './frontmatter';
+import type { LinkResolver } from './markdown';
 
 const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
 
@@ -352,6 +353,25 @@ class Influences {
 
 	get(slug: string): Influence | undefined {
 		return this.#bySlug.get(slug);
+	}
+
+	/**
+	 * Wrap a base LinkResolver so that `influences/<slug>` paths are
+	 * resolved to their canonical route before the base resolver is
+	 * tried. Unknown influence slugs return null (broken-link), while
+	 * all other paths fall through to `base` unchanged.
+	 *
+	 * Call this after `ready()` — the lookup uses the in-memory map
+	 * that is populated at load time.
+	 */
+	wrapResolver(base: LinkResolver): LinkResolver {
+		return (path: string) => {
+			if (path.startsWith('influences/')) {
+				const slug = path.slice('influences/'.length);
+				return this.#bySlug.has(slug) ? path : null;
+			}
+			return base(path);
+		};
 	}
 
 	issues(): HealthIssue[] {

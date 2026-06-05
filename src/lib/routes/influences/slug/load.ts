@@ -23,7 +23,7 @@ export async function load({ params }: { params: { slug: string } }) {
 	const influence = influences.get(params.slug);
 	if (!influence) error(404, `No influence at /influences/${params.slug}`);
 
-	const resolveLink = (path: string) => graph.resolveLink(path, undefined);
+	const resolveLink = influences.wrapResolver((path) => graph.resolveLink(path, undefined));
 	const kindLookup = (id: string) => graph.get(id)?.meta.kind;
 	const languageCodes = graph.languageCodes();
 	const kindIds = graph.kindIds();

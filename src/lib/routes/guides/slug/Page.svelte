@@ -83,7 +83,7 @@
 		margin: 0 0 var(--space-5);
 	}
 
-	.lede {
+	.bt-lede {
 		text-align: left;
 		margin: 0;
 	}
