@@ -365,12 +365,6 @@
 		text-decoration: underline;
 	}
 
-	/* Back-link variant: no colour change on hover needed beyond the
-	   base hover treatment above. */
-	.focus-link--back {
-		/* inherits .focus-link rest/hover */
-	}
-
 	.focus-sep {
 		color: var(--ink-faint);
 		margin: 0 0.5em;

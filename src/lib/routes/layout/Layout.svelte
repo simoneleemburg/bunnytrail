@@ -88,8 +88,8 @@
 	});
 
 	// Active-state for primary nav links. Returns:
-	//   'page'    — link's href matches the current path exactly
-	//   'section' — current path is under the link's href (descendant)
+	//   'page'  — link's href matches the current path exactly
+	//   true    — current path is under the link's href (descendant)
 	//   undefined — not active
 	//
 	// Semantics: clicking a card under /objects/freya keeps the
@@ -100,15 +100,15 @@
 	// the readers still expect the link to feel "current"), so we
 	// fold both into the section semantics with a Boolean.
 	//
-	// Rendered as `aria-current="page"` (exact) or
-	// `aria-current="section"` (descendant) — themes select with
+	// Rendered as `aria-current="page"` (exact) or `aria-current="true"`
+	// (descendant) — valid ARIA 1.1 tokens. Themes select with
 	// `[aria-current]` to dress active items.
-	function navAriaCurrent(href: string): 'page' | 'section' | undefined {
+	function navAriaCurrent(href: string): 'page' | true | undefined {
 		const current = '/' + ($page.url.pathname.replace(/^\/+/, '').replace(/\/+$/, '') || '');
 		const target = '/' + (href.replace(/^\/+/, '').replace(/\/+$/, '') || '');
 		if (current === target) return 'page';
 		if (target !== '/' && (current === target || current.startsWith(target + '/')))
-			return 'section';
+			return true;
 		return undefined;
 	}
 

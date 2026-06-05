@@ -32,7 +32,6 @@
 	 */
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
-	import type { N } from 'vitest/dist/chunks/environment.LoooBwUu.js';
 
 	// Max zoom level, clamped on fast trackpad pinch or wheel gestures.
 	const MAX_SCALE = 12;
