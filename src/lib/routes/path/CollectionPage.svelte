@@ -2,9 +2,9 @@
 	import './CollectionPage.css';
 	import { page } from '$app/state';
 	import type { CollectionPageData, ContainerNode, OrbitNode } from './collectionPage.load';
+	import CollectionCard from '$lib/components/CollectionCard.svelte';
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
-	import Tag from '$lib/components/Tag.svelte';
 	import { buildKindTree, toRoman } from '$lib/types';
 	import { translateUrl } from '$lib/cluster';
 
@@ -561,64 +561,38 @@
 
 	<div class="layout">
 		<div class="content">
-			{#if visibleSubcollections.length > 0}
-				<section class="subcollections" aria-label="Subcollections">
-					<ul class="subcollection-list">
-						{#each visibleSubcollections as sub (sub.type)}
-							<li class="subcollection">
-								<a
-									class="subcollection-link"
-									class:bt-meta-link={sub.isCluster}
-									href={`/${sub.type}`}
-								>
-									<div class="subcollection-eyebrow">
-										<span class="subcollection-tag">{sub.isCluster ? 'Cluster' : 'Collection'}</span
-										>
-										{#if sub.rank != null && data.subcollectionRankDisplay !== 'none'}
-											<span class="subcollection-count"
-												>{data.subcollectionRankDisplay === 'roman'
-													? toRoman(sub.rank)
-													: sub.rank}</span
-											>
-										{/if}
-									</div>
-									<h3 class="subcollection-label">{sub.plural}</h3>
-								</a>
-								{#if sub.description && !sub.isCluster}
-									<p class="subcollection-description">{sub.description}</p>
-								{/if}
-								{#if sub.displayTags.length > 0}
-									<ul class="subcollection-tags">
-										{#each sub.displayTags as tag (tag.label)}
-											<li><Tag label={tag.label} href={`/tags/${tag.label}`} /></li>
-										{/each}
-									</ul>
-								{/if}
-							</li>
-						{/each}
-					</ul>
-				</section>
-			{/if}
+		{#if visibleSubcollections.length > 0}
+			<section class="subcollections" aria-label="Subcollections">
+				<ul class="subcollection-list">
+					{#each visibleSubcollections as sub (sub.type)}
+						<CollectionCard
+							href={`/${sub.type}`}
+							label={sub.plural}
+							eyebrow={sub.isCluster ? 'Cluster' : 'Collection'}
+							description={sub.description}
+							rank={sub.rank}
+							rankDisplay={data.subcollectionRankDisplay}
+							tags={sub.displayTags}
+							isCluster={sub.isCluster}
+						/>
+					{/each}
+				</ul>
+			</section>
+		{/if}
 
-			{#if viewMode === 'index' && data.subShelves.length > 0}
-				<section class="subcollections sub-shelves" aria-label="Sub-shelves">
-					<ul class="subcollection-list">
-						{#each data.subShelves as sub (sub.type)}
-							<li class="subcollection">
-								<a class="subcollection-link" href={`/${sub.type}`}>
-									<div class="subcollection-eyebrow">
-										<span class="subcollection-tag">Collection</span>
-									</div>
-									<h3 class="subcollection-label">{sub.plural}</h3>
-								</a>
-								{#if sub.description}
-									<p class="subcollection-description">{sub.description}</p>
-								{/if}
-							</li>
-						{/each}
-					</ul>
-				</section>
-			{/if}
+		{#if viewMode === 'index' && data.subShelves.length > 0}
+			<section class="subcollections sub-shelves" aria-label="Sub-shelves">
+				<ul class="subcollection-list">
+					{#each data.subShelves as sub (sub.type)}
+						<CollectionCard
+							href={`/${sub.type}`}
+							label={sub.plural}
+							description={sub.description}
+						/>
+					{/each}
+				</ul>
+			</section>
+		{/if}
 
 			{#snippet containerTree(node: RenderNode)}
 				<div class="container-group" class:synthetic={node.container.synthetic}>

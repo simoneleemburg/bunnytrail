@@ -2,6 +2,7 @@
 	import type { HomeData } from './load';
 	import { page } from '$app/stores';
 	import Tag from '$lib/components/Tag.svelte';
+	import CollectionCard from '$lib/components/CollectionCard.svelte';
 
 	let { data }: { data: HomeData } = $props();
 
@@ -187,33 +188,21 @@
 
 	<section class="types">
 		<h2 class="section-heading">Collections</h2>
-		<div class="grid">
+		<ul class="collection-list">
 			{#each data.counts as c (c.type)}
-				<a class="type-card" href={`/${c.type}`}>
-					<div class="label">{c.label}</div>
-					{#if c.description}
-						<div class="description">{c.description}</div>
-					{/if}
-					<div class="count">{c.count}</div>
-				</a>
+				<CollectionCard href={`/${c.type}`} label={c.label} description={c.description} />
 			{/each}
-		</div>
+		</ul>
 	</section>
 
 	{#if data.threads.length > 0}
 		<section class="threads">
 			<h2 class="section-heading">Starting threads</h2>
-			<div class="grid">
+			<ul class="collection-list">
 				{#each data.threads as t (t.type)}
-					<a class="type-card type-card-thread" href={`/${t.type}`}>
-						<div class="label">{t.label}</div>
-						{#if t.description}
-							<div class="description">{t.description}</div>
-						{/if}
-						<div class="count">{t.count}</div>
-					</a>
+					<CollectionCard href={`/${t.type}`} label={t.label} description={t.description} />
 				{/each}
-			</div>
+			</ul>
 		</section>
 	{/if}
 
@@ -762,74 +751,13 @@
 		margin-bottom: var(--space-8);
 	}
 
-	.grid {
+	.collection-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
-		gap: var(--space-5);
-	}
-
-	/* ── Type cards (Collections + Starting threads) — each card now
-	   has a vellum background, border-radius, and padding. The top
-	   border acts as the former hairline rule but in context with the
-	   card surface. Hover bumps to parchment-soft and --accent top border. */
-	.type-card {
-		display: block;
-		padding: var(--space-3) var(--space-4);
-		text-decoration: none;
-		color: inherit;
-		background: var(--vellum);
-		border-radius: var(--radius-sm);
-		border-top: 2px solid var(--rule);
-		transition:
-			background-color 0.2s ease,
-			border-top-color 0.2s ease;
-	}
-
-	.type-card:hover {
-		background: var(--parchment-soft);
-		border-top-color: var(--accent);
-	}
-
-	.label {
-		font-family: var(--font-display);
-		font-size: var(--text-lg);
-		color: var(--ink);
-		margin-top: var(--space-2);
-		background-image: linear-gradient(
-			100deg,
-			currentColor 0%,
-			currentColor 42%,
-			var(--accent-warm) 50%,
-			currentColor 58%,
-			currentColor 100%
-		);
-		background-size: 250% 100%;
-		background-position: 130% 0;
-		background-clip: text;
-		-webkit-background-clip: text;
-	}
-
-	.type-card:hover .label {
-		color: var(--accent);
-	}
-
-	.count {
-		font-size: var(--text-sm);
-		color: var(--ink-soft);
-		font-variant-caps: all-small-caps;
-		letter-spacing: 0.06em;
-		margin-top: var(--space-1);
-	}
-
-	.description {
-		margin-top: var(--space-2);
-		font-size: var(--text-sm);
-		color: var(--ink-soft);
-		font-style: italic;
-	}
-
-	.type-card-thread .label {
-		font-style: italic;
+		grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+		gap: var(--space-4) var(--space-6);
 	}
 
 	.threads {
