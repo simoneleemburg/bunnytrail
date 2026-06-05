@@ -16,17 +16,17 @@
 </svelte:head>
 
 <!--
-	Influences gallery. No notebook frame — the header floats bare,
+	Influences gallery. No journal frame — the header floats bare,
 	centred, with the blue fleuron as the sole separator before the
 	full-width masonry board.
 -->
 <div class="influences-page">
 	<div class="influences-header">
-		<nav class="bt-notebook__frame" aria-label="Influences navigation">
+		<nav class="bt-journal__frame" aria-label="Influences navigation">
 			<a href="/">↑ {page.data.world.shortName}</a>
 		</nav>
 		<header class="head">
-			<h1 class="bt-notebook__title">Influences</h1>
+			<h1 class="bt-journal__title">Influences</h1>
 			<p class="sub">Works, ideas, and creators that shaped this world.</p>
 		</header>
 		<div class="bt-fleuron" aria-hidden="true">

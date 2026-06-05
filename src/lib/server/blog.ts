@@ -39,10 +39,10 @@ export function formatPostDate(iso: string): string {
 
 /**
  * Pull a short plain-text excerpt from a post body, for use in the
- * notebook index. Takes the first non-empty paragraph (markdown
+ * journal index. Takes the first non-empty paragraph (markdown
  * paragraphs are separated by blank lines), collapses single
  * newlines into spaces, strips the small set of inline markdown
- * markers a notebook post is likely to contain (`*em*`, `_em_`,
+ * markers a journal post is likely to contain (`*em*`, `_em_`,
  * `**strong**`, backtick code, link syntax), and truncates at a
  * word boundary near `maxChars` with an ellipsis.
  *
@@ -107,7 +107,7 @@ export interface BlogLoadResult {
  * problem surfaces in the health dashboard.
  *
  * If the directory does not exist at all, returns an empty result
- * with no issues — an empty notebook is a valid state.
+ * with no issues — an empty journal is a valid state.
  */
 export async function loadBlog(blogDir: string = defaultBlogDir()): Promise<BlogLoadResult> {
 	const posts: BlogPost[] = [];

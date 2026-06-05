@@ -11,17 +11,17 @@
 </svelte:head>
 
 <!--
-	Source-projects index. Shares the notebook surface with /blog
+	Source-projects index. Shares the journal surface with /blog
 	(cool tint, dashed frame, sans-serif title) so the
 	author's-room register is recognisable at a glance — this page
 	is *about* the worldbuilding rather than *of* it. Each row is
 	one feeder work; the small bar on the right is how much of
 	that project has already landed in the compendium.
 -->
-<section class="bt-notebook">
+<section class="bt-journal">
 	<header class="head">
-		<p class="bt-notebook__eyebrow">Workbench</p>
-		<h1 class="bt-notebook__title">Source projects</h1>
+		<p class="bt-journal__eyebrow">Workbench</p>
+		<h1 class="bt-journal__title">Source projects</h1>
 		<p class="sub">
 			The feeder works being absorbed into {page.data.world.name}. Out-of-world; ordered newest
 			first.
@@ -79,7 +79,7 @@
 <style>
 	/* Sources is wider than prose-max: each row is a small table
 	   of year, project, and integration bar. */
-	.bt-notebook {
+	.bt-journal {
 		max-width: 48rem;
 	}
 

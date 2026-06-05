@@ -25,7 +25,7 @@ import {
  *
  * We watch `content/` (entities + collections),
  * `content_meta/kinds/` (the kind registry),
- * `content_meta/blog/` (the author's notebook), and
+ * `content_meta/blog/` (the author's journal), and
  * `content_meta/guides/` (tours / landing pages) so edits to any of
  * them show up in the running dev server without a manual restart.
  * Blog and guides each have their own singleton; `graph.load()`,

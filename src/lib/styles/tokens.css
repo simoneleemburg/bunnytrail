@@ -58,7 +58,7 @@
 	--accent-warm: #666;
 
 	/* Meta accent — used for out-of-world / structural surfaces:
-	   guide callout titles and arrows, source-projects and notebook
+	   guide callout titles and arrows, source-projects and journal
 	   doorway titles and arrows, and the up-link when it resolves
 	   to the world root (/). Worlds override this to give meta
 	   navigation a distinct register (e.g. a cosmic blue or
@@ -81,7 +81,7 @@
 	--font-mono: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, monospace;
 
 	/* Author voice register: used by out-of-world surfaces
-	   (notebook / blog body prose, illustration comments, craft
+	   (journal / blog body prose, illustration comments, craft
 	   sheet, sources workbench) where a distinct handwritten /
 	   manuscript face marks the author's own voice. No-op by
 	   default (falls through to the body serif) — worlds wanting

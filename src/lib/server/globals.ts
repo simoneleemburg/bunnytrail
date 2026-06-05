@@ -64,7 +64,7 @@ export function defaultKindsDir(): string {
 export const KINDS_DIR = defaultKindsDir();
 
 /**
- * Where the author's notebook lives. Each post is a directory under
+ * Where the author's journal lives. Each post is a directory under
  * `content_meta/blog/<slug>/` carrying:
  *
  *   - `index.yaml` — required. Frontmatter with `title`, `date`

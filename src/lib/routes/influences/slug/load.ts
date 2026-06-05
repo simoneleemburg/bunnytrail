@@ -12,7 +12,7 @@ function resolveImageSrc(slug: string, image: string): string | null {
 }
 
 /**
- * Single influence detail page — notebook register, full prose,
+ * Single influence detail page — journal register, full prose,
  * illustrations with personal comments, and wikilinks resolving
  * into the world.
  */

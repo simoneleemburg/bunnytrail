@@ -432,7 +432,7 @@ blockquote {
    Shared visual frame for all author's-room pages: blog posts,
    craft sheets, sources index. Dashed border + tinted background
    signals "out of world" register vs the parchment compendium. */
-.bt-notebook {
+.bt-journal {
 	max-width: var(--prose-max);
 	margin: 0 auto;
 	padding: var(--space-6) var(--space-6) var(--space-7);
@@ -443,21 +443,21 @@ blockquote {
 		0 2px 12px -4px rgba(80, 60, 40, 0.08);
 	color: var(--ink);
 
-	/* Fleurons inside the notebook register use the meta accent
+	/* Fleurons inside the journal register use the meta accent
 	   rather than the warm gold used in world pages. */
 	--fleuron-glyph-color: var(--accent-meta);
 }
 
 @media (max-width: 40rem) {
-	.bt-notebook {
+	.bt-journal {
 		padding: var(--space-5) var(--space-4) var(--space-6);
 	}
 }
 
-/* Running breadcrumb / nav bar at the top of a notebook surface.
+/* Running breadcrumb / nav bar at the top of a journal surface.
    Flex row: back-link left, eyebrow label right. No rule —
    spacing alone separates it from the title block. */
-.bt-notebook__frame {
+.bt-journal__frame {
 	display: flex;
 	align-items: baseline;
 	justify-content: space-between;
@@ -468,17 +468,17 @@ blockquote {
 	margin-bottom: var(--space-5);
 }
 
-.bt-notebook__frame a {
+.bt-journal__frame a {
 	color: inherit;
 	text-decoration: none;
 }
 
-.bt-notebook__frame a:hover {
+.bt-journal__frame a:hover {
 	color: var(--accent);
 }
 
 /* Notebook page title. Display serif at 2xl. */
-.bt-notebook__title {
+.bt-journal__title {
 	margin: 0 0 var(--space-3);
 	font-family: var(--font-display, var(--font-serif));
 	font-weight: 600;
@@ -489,12 +489,12 @@ blockquote {
 
 /* Centre the header block (title + eyebrow + subtitle) so it
    sits symmetrically above the fleuron separator. */
-.bt-notebook .head {
+.bt-journal .head {
 	text-align: center;
 }
 
-/* Small-caps eyebrow above the notebook title. */
-.bt-notebook__eyebrow {
+/* Small-caps eyebrow above the journal title. */
+.bt-journal__eyebrow {
 	margin: 0 0 var(--space-2);
 	font-variant-caps: all-small-caps;
 	letter-spacing: 0.14em;
@@ -502,8 +502,8 @@ blockquote {
 	color: var(--ink-faint);
 }
 
-/* h2 inside notebook prose: ruled underline in the author's-room register. */
-.bt-notebook__prose h2 {
+/* h2 inside journal prose: ruled underline in the author's-room register. */
+.bt-journal__prose h2 {
 	font-size: var(--text-lg);
 	font-weight: 600;
 	margin: var(--space-6) 0 var(--space-3);
@@ -512,7 +512,7 @@ blockquote {
 	color: var(--ink);
 }
 
-.bt-notebook__prose h3 {
+.bt-journal__prose h3 {
 	font-size: var(--text-base);
 	font-weight: 600;
 	margin: var(--space-5) 0 var(--space-2);
@@ -523,7 +523,7 @@ blockquote {
    Inline prose block used on entity, craft, blog, kind, and
    guide pages. Sets base color and tightens default margins.
    Blockquote uses --rule (not --rule-bold) for a softer register
-   matching the notebook surfaces. */
+   matching the journal surfaces. */
 .bt-prose {
 	color: var(--ink);
 }
@@ -636,10 +636,32 @@ blockquote {
 	}
 }
 
+/* ── Verse blocks ──────────────────────────────────────────────
+   Rendered from ```verse fenced blocks in prose. Each source line
+   becomes a <span class="bt-verse-line">; blank lines become
+   <span class="bt-verse-break">. display:flex + flex-direction:column
+   gives each line its own row without <p> margin. Worlds can override
+   the line-height and stanza gap via --bt-verse-line-height and
+   --bt-verse-gap. */
+.bt-verse {
+	display: flex;
+	flex-direction: column;
+	margin-block: var(--space-4);
+	font-style: inherit;
+}
+.bt-verse-line {
+	display: block;
+	line-height: var(--bt-verse-line-height, 1.6);
+}
+.bt-verse-break {
+	display: block;
+	block-size: var(--bt-verse-gap, 0.9em);
+}
+
 /* ── Meta-link theming hook ────────────────────────────────────
    Applied by the engine to structural / out-of-world surfaces:
    • callout titles and arrows on the home page (guide, source
-     projects, notebook doorways)
+     projects, journal doorways)
    • the up-link in PageHeader when it resolves to the world root
 
    The engine ships no colour or glow here — worlds style

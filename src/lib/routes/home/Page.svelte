@@ -80,7 +80,7 @@
 	</p>
 </section>
 
-<!-- ── Dashboard: two-column layout. Left = guide/sources/notebook callouts;
+<!-- ── Dashboard: two-column layout. Left = guide/sources/journal callouts;
      Right = tall influence card. Stacks vertically on mobile (influence
      card rendered last in DOM but hoisted to top via order on mobile). -->
 <div class="page-wide">
@@ -132,19 +132,19 @@
 				Notebook callout: a sibling doorway to the author's-room blog,
 				in a cooler register than the world's chrome. Same shape as the
 				guide callout so the two read as a paired set, but the rule is
-				faint and the surface is the notebook tint to signal that this
+				faint and the surface is the journal tint to signal that this
 				is *about* the world rather than *of* it.
 			-->
-			<a class="notebook-callout" href="/blog">
-				<div class="notebook-body">
-					<p class="notebook-eyebrow">Working notes</p>
-					<p class="notebook-title bt-meta-link">Notebook</p>
-					<p class="notebook-sub">
+			<a class="journal-callout" href="/blog">
+				<div class="journal-body">
+					<p class="journal-eyebrow">Working notes</p>
+					<p class="journal-title bt-meta-link">Notebook</p>
+					<p class="journal-sub">
 						Author&rsquo;s-room reflections on building {world.name}. Out-of-world; not part of the
 						compendium.
 					</p>
 				</div>
-				<div class="notebook-arrow bt-meta-link" aria-hidden="true">→</div>
+				<div class="journal-arrow bt-meta-link" aria-hidden="true">→</div>
 			</a>
 		</div>
 
@@ -294,7 +294,7 @@
 	}
 
 	/* ── Dashboard: two-column grid.
-	   Left column (~1fr): stacked guide/sources/notebook callouts.
+	   Left column (~1fr): stacked guide/sources/journal callouts.
 	   Right column (~1.5fr): tall influence card.
 	   Collapses to single column on mobile; influence card comes first
 	   visually on mobile via `order`. */
@@ -433,7 +433,7 @@
 	/* ── Notebook callout — quieter sibling to the guide doorway.
 	   Solid border and vellum background; display-italic title for
 	   visual consistency with guide register but clearly secondary. */
-	.notebook-callout {
+	.journal-callout {
 		display: flex;
 		align-items: flex-start;
 		gap: var(--space-5);
@@ -446,15 +446,15 @@
 		transition: background-color 0.2s ease;
 	}
 
-	.notebook-callout:hover {
+	.journal-callout:hover {
 		background: color-mix(in oklab, var(--accent-meta) 5%, var(--parchment));
 	}
 
-	.notebook-body {
+	.journal-body {
 		flex: 1;
 	}
 
-	.notebook-eyebrow {
+	.journal-eyebrow {
 		font-size: var(--text-xs);
 		font-variant-caps: all-small-caps;
 		letter-spacing: 0.14em;
@@ -462,7 +462,7 @@
 		margin: 0 0 var(--space-1);
 	}
 
-	.notebook-title {
+	.journal-title {
 		font-family: var(--font-display);
 		font-style: italic;
 		font-size: var(--text-xl);
@@ -482,11 +482,11 @@
 		-webkit-background-clip: text;
 	}
 
-	.notebook-callout:hover .notebook-title {
+	.journal-callout:hover .journal-title {
 		color: var(--accent-meta);
 	}
 
-	.notebook-sub {
+	.journal-sub {
 		font-size: var(--text-sm);
 		font-style: italic;
 		color: var(--ink-soft);
@@ -494,18 +494,18 @@
 		line-height: var(--leading-normal);
 	}
 
-	.notebook-arrow {
+	.journal-arrow {
 		font-size: var(--text-xl);
 		color: var(--ink-faint);
 		flex-shrink: 0;
 	}
 
-	.notebook-callout:hover .notebook-arrow {
+	.journal-callout:hover .journal-arrow {
 		color: var(--accent-meta);
 	}
 
 	/* ── Source projects callout — out-of-world workbench doorway.
-	   Solid border and vellum background matches notebook callout;
+	   Solid border and vellum background matches journal callout;
 	   display-italic title; italic summary for register consistency. */
 	.sources-callout {
 		display: flex;

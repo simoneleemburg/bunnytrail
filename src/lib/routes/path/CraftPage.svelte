@@ -11,24 +11,24 @@
 
 <!--
 	Author's-room companion document for an entity. Visually set
-	apart from the field-notebook chrome — cooler tinted surface,
+	apart from the field-journal chrome — cooler tinted surface,
 	dashed border, sans-serif title — so a reader can see at a
 	glance that this is a different register from the in-world
 	prose, without needing it spelled out.
 -->
-<article class="bt-notebook">
-	<nav class="bt-notebook__frame" aria-label="Subject navigation">
+<article class="bt-journal">
+	<nav class="bt-journal__frame" aria-label="Subject navigation">
 		<a class="back" href={data.entity.href}>↩&#xFE0E; {data.entity.name}</a>
 	</nav>
 
 	<header class="head">
-		<h1 class="bt-notebook__title">Craft sheet</h1>
+		<h1 class="bt-journal__title">Craft sheet</h1>
 		<p class="subject">
 			Companion notes for <a href={data.entity.href}>{data.entity.name}</a>.
 		</p>
 	</header>
 
-	<div class="bt-prose bt-notebook__prose">
+	<div class="bt-prose bt-journal__prose">
 		{@html data.html}
 	</div>
 </article>

@@ -414,29 +414,4 @@
 		letter-spacing: 0.6em;
 	}
 
-	/* ── Verse blocks (:global so they work inside .prose in all book
-	   formats, not only scrolls) ─────────────────────────────────────
-	   ```verse fenced blocks are rendered as:
-	     <div class="bt-verse">
-	       <span class="bt-verse-line">…</span>
-	       <span class="bt-verse-break"></span>  ← blank source line
-	       …
-	     </div>
-	   display:flex + flex-direction:column gives each line its own row
-	   without any <p> margin. The break span's block-size controls the
-	   stanza gap and can be overridden by worlds via --bt-verse-gap. */
-	:global(.bt-verse) {
-		display: flex;
-		flex-direction: column;
-		margin-block: var(--space-4);
-		font-style: inherit;
-	}
-	:global(.bt-verse-line) {
-		display: block;
-		line-height: var(--bt-verse-line-height, 1.6);
-	}
-	:global(.bt-verse-break) {
-		display: block;
-		block-size: var(--bt-verse-gap, 0.9em);
-	}
 </style>

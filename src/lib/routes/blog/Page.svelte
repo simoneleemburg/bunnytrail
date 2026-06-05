@@ -17,12 +17,12 @@
 	title — even though the content here is a list of posts
 	rather than a single prose column.
 -->
-<section class="bt-notebook">
-	<nav class="bt-notebook__frame" aria-label="Journal navigation">
+<section class="bt-journal">
+	<nav class="bt-journal__frame" aria-label="Journal navigation">
 		<a href="/">↑ {page.data.world.shortName}</a>
 	</nav>
 	<header class="head">
-		<h1 class="bt-notebook__title">Journal</h1>
+		<h1 class="bt-journal__title">Journal</h1>
 		<p class="sub">
 			My reflections on building {page.data.world.name}.
 		</p>
@@ -34,7 +34,7 @@
 	</div>
 
 	{#if data.posts.length === 0}
-		<p class="empty">No posts yet.</p>
+		<p class="empty">No entries yet.</p>
 	{:else}
 		<ul class="posts">
 			{#each data.posts as post (post.slug)}

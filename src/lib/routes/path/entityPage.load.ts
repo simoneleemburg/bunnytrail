@@ -47,7 +47,7 @@ export async function loadEntityPage(entity: Entity) {
 	// folder. We render plural folder labels because parent folders
 	// are narrative collections (topology), not taxonomic kinds —
 	// `Places › Celestial › Aureth System` reads as "where in the
-	// field-notebook you are", not "this is a planet which is a
+	// field-journal you are", not "this is a planet which is a
 	// celestial body".
 	const breadcrumbs: { label: string; href: string }[] = [];
 	if (type) {

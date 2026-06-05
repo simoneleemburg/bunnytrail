@@ -1,7 +1,7 @@
 import { blog, excerpt, formatPostDate } from '$lib/server/blog';
 
 /**
- * Index of all notebook posts, newest first. Only the fields the
+ * Index of all journal posts, newest first. Only the fields the
  * list view needs — the full body is omitted (it ships per-post
  * via the single-post route), but a short plain-text excerpt is
  * computed so readers can preview each entry from the index.
