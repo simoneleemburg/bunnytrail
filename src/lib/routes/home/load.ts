@@ -180,5 +180,4 @@ export async function load() {
 	};
 }
 
-
 export type HomeData = Awaited<ReturnType<typeof load>>;

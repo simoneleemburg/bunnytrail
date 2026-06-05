@@ -23,7 +23,8 @@
 		<p class="bt-notebook__eyebrow">Workbench</p>
 		<h1 class="bt-notebook__title">Source projects</h1>
 		<p class="sub">
-			The feeder works being absorbed into {page.data.world.name}. Out-of-world; ordered newest first.
+			The feeder works being absorbed into {page.data.world.name}. Out-of-world; ordered newest
+			first.
 		</p>
 	</header>
 
@@ -48,14 +49,14 @@
 						<p class="catchline">{p.catchline}</p>
 						{#if p.entity}
 							<p class="entity-link-row">
-						In {page.data.world.name}: <EntityLink
-								id={p.entity.id}
-								name={p.entity.name}
-								summary={p.entity.summary}
-								sigil={p.entity.sigil}
-								kind={p.entity.kind}
-								compact
-							/>
+								In {page.data.world.name}: <EntityLink
+									id={p.entity.id}
+									name={p.entity.name}
+									summary={p.entity.summary}
+									sigil={p.entity.sigil}
+									kind={p.entity.kind}
+									compact
+								/>
 							</p>
 						{/if}
 					</div>

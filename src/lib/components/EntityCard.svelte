@@ -45,7 +45,9 @@
 
 <article class="entity-card">
 	<div class="eyebrow">
-		<span class="type">{kind ?? type}</span>{#if rank != null && rankDisplay !== 'none'}<span class="sep">·</span><span class="rank">{rankDisplay === 'roman' ? toRoman(rank) : rank}</span>{/if}
+		<span class="type">{kind ?? type}</span>{#if rank != null && rankDisplay !== 'none'}<span
+				class="sep">·</span
+			><span class="rank">{rankDisplay === 'roman' ? toRoman(rank) : rank}</span>{/if}
 		{#if era}
 			<span class="sep">·</span>
 			<span class="era">{era}</span>
@@ -86,7 +88,7 @@
 		background-color: var(--paper-warm);
 		box-shadow:
 			0 1px 1px rgba(120, 90, 60, 0.04),
-			0 4px 14px -8px rgba(120, 90, 60, 0.10);
+			0 4px 14px -8px rgba(120, 90, 60, 0.1);
 		transform: translateY(-1px);
 	}
 

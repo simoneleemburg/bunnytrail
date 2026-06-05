@@ -58,8 +58,8 @@
 	{:else}
 		<div class="bt-lede">
 			<p>
-				Author <code>content_meta/world.md</code> to set this world&rsquo;s name, tagline, and
-				homepage intro. The body of that file is rendered here as the hero lede.
+				Author <code>content_meta/world.md</code> to set this world&rsquo;s name, tagline, and homepage
+				intro. The body of that file is rendered here as the hero lede.
 			</p>
 		</div>
 	{/if}
@@ -113,12 +113,14 @@
 						<p class="sources-title bt-meta-link">Source projects</p>
 						<p class="sources-sub">
 							{data.sourceProjects.length} feeder works:
-							<span class="sources-names">{(() => {
-								const titles = data.sourceProjects.map((p) => p.title);
-								const shown = titles.slice(0, 3);
-								const rest = titles.length - shown.length;
-								return shown.join(', ') + (rest > 0 ? `, and ${rest} more` : '');
-							})()}.</span>
+							<span class="sources-names"
+								>{(() => {
+									const titles = data.sourceProjects.map((p) => p.title);
+									const shown = titles.slice(0, 3);
+									const rest = titles.length - shown.length;
+									return shown.join(', ') + (rest > 0 ? `, and ${rest} more` : '');
+								})()}.</span
+							>
 						</p>
 					</div>
 					<div class="sources-arrow bt-meta-link" aria-hidden="true">→</div>
@@ -158,23 +160,26 @@
 							<img src={data.influenceCard.imageSrc} alt={data.influenceCard.title} />
 						</div>
 					{:else}
-						<div class="influence-card__image influence-card__image--empty" aria-hidden="true"></div>
+						<div
+							class="influence-card__image influence-card__image--empty"
+							aria-hidden="true"
+						></div>
 					{/if}
-				<div class="influence-card__body">
-					<p class="influence-card__section">My influences</p>
-					{#if data.influenceCard.imageComment}
-						<p class="influence-card__eyebrow">{data.influenceCard.imageComment}</p>
-					{/if}
-				<p class="influence-card__title bt-meta-link">
-					{data.influenceCard.title}{#if data.influenceCard.creator}&ensp;&middot;&ensp;<span class="influence-card__creator">{data.influenceCard.creator}</span>{/if}
-				</p>
-				{#if data.influenceCard.epigraph}
-					<p class="influence-card__epigraph">{data.influenceCard.epigraph}</p>
-				{/if}
-				<p class="influence-card__cta bt-meta-link" aria-hidden="true">
-						Browse influences →
-					</p>
-				</div>
+					<div class="influence-card__body">
+						<p class="influence-card__section">My influences</p>
+						{#if data.influenceCard.imageComment}
+							<p class="influence-card__eyebrow">{data.influenceCard.imageComment}</p>
+						{/if}
+						<p class="influence-card__title bt-meta-link">
+							{data.influenceCard.title}{#if data.influenceCard.creator}&ensp;&middot;&ensp;<span
+									class="influence-card__creator">{data.influenceCard.creator}</span
+								>{/if}
+						</p>
+						{#if data.influenceCard.epigraph}
+							<p class="influence-card__epigraph">{data.influenceCard.epigraph}</p>
+						{/if}
+						<p class="influence-card__cta bt-meta-link" aria-hidden="true">Browse influences →</p>
+					</div>
 				</a>
 			</div>
 		{/if}
@@ -357,7 +362,7 @@
 		background: color-mix(in oklab, var(--accent-meta) 5%, var(--parchment));
 		box-shadow:
 			0 1px 1px rgba(120, 90, 60, 0.04),
-			0 4px 14px -8px rgba(120, 90, 60, 0.10);
+			0 4px 14px -8px rgba(120, 90, 60, 0.1);
 		transform: translateY(-1px);
 	}
 
@@ -435,7 +440,6 @@
 	.guide-callout:hover .guide-arrow {
 		color: var(--accent-meta);
 	}
-
 
 	/* ── Notebook callout — quieter sibling to the guide doorway.
 	   Solid border and vellum background; display-italic title for

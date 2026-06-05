@@ -76,9 +76,7 @@
 	/* All-system stacks by default — no web fonts loaded. A world
 	   theme can swap any of these for branded faces (and is
 	   expected to @import the font file from its theme.css). */
-	--font-serif:
-		'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman',
-		serif;
+	--font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
 	--font-display: var(--font-serif);
 	--font-mono: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, monospace;
 

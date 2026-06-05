@@ -45,7 +45,9 @@ export async function load() {
 	});
 
 	// Collect all distinct kinds for gallery filter chips.
-	const kinds = [...new Set(items.map((i) => i.kind).filter((k): k is string => k !== null))].sort();
+	const kinds = [
+		...new Set(items.map((i) => i.kind).filter((k): k is string => k !== null))
+	].sort();
 
 	return { items, kinds };
 }

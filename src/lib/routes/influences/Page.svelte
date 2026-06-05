@@ -201,8 +201,7 @@
 		border-radius: var(--radius-sm);
 		overflow: hidden;
 		box-shadow: 0 0 0 1px color-mix(in oklab, var(--rule-hair) 60%, transparent);
-		transition:
-			box-shadow 0.2s ease;
+		transition: box-shadow 0.2s ease;
 	}
 
 	.influence-tile:hover {

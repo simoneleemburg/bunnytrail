@@ -150,11 +150,7 @@ describe('renderBody', () => {
 		const resolveBare = (path: string) =>
 			path === 'bayurinda' ? 'places/celestial/aureth-system/bayurinda' : null;
 		const html = renderBody('See [[bayurinda#peoples-of-bayurinda|deep]].', resolveBare, langs);
-		expectLink(
-			html,
-			'/places/celestial/aureth-system/bayurinda#peoples-of-bayurinda',
-			'deep'
-		);
+		expectLink(html, '/places/celestial/aureth-system/bayurinda#peoples-of-bayurinda', 'deep');
 	});
 
 	it('renders a same-page anchor wikilink as a relative anchor link', () => {
@@ -487,9 +483,7 @@ describe('renderBody', () => {
 				resolve,
 				langs
 			);
-			expect(html).toMatch(
-				/<a href="\/characters\/nobody"[^>]*data-broken="true"[^>]*>Ghost<\/a>/
-			);
+			expect(html).toMatch(/<a href="\/characters\/nobody"[^>]*data-broken="true"[^>]*>Ghost<\/a>/);
 		});
 
 		it('rescues a plain markdown link inside chrome (no wikilink required)', () => {

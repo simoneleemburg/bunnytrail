@@ -74,8 +74,20 @@
 		viewAllLabel?: string;
 	}
 
-	let { title, eyebrow, subtitle, subtitleHtml, language, sigil, breadcrumbs, kindChip, focusHref, focusClusterLabel, viewAllHref, viewAllLabel }: Props =
-		$props();
+	let {
+		title,
+		eyebrow,
+		subtitle,
+		subtitleHtml,
+		language,
+		sigil,
+		breadcrumbs,
+		kindChip,
+		focusHref,
+		focusClusterLabel,
+		viewAllHref,
+		viewAllLabel
+	}: Props = $props();
 
 	// When the focus link is clicked, tell the layout's beforeNavigate
 	// hook to skip scope-painting for that one navigation — otherwise
@@ -113,7 +125,10 @@
 			<nav class="crumbs" aria-label="Breadcrumb">
 				{#each crumbs as crumb, i (crumb.href)}
 					{#if i > 0}<span class="crumb-sep" aria-hidden="true">›</span>{/if}
-					<a class="crumb" href={crumb.href}>{#if crumbs.length === 1}<span class="up-arrow" aria-hidden="true">↑</span>{/if}{crumb.label}</a>
+					<a class="crumb" href={crumb.href}
+						>{#if crumbs.length === 1}<span class="up-arrow" aria-hidden="true">↑</span
+							>{/if}{crumb.label}</a
+					>
 				{/each}
 			</nav>
 		{:else}
@@ -149,7 +164,7 @@
 				data-broken={kindChip.broken ? 'true' : undefined}
 				title={kindChip.broken ? `unregistered kind: ${kindChip.id}` : undefined}
 				>{kindChip.label}</a
-		>
+			>
 		{/if}
 	</div>
 	{#if subtitleHtml}
@@ -157,9 +172,17 @@
 	{:else if subtitle}
 		<p class="subtitle">{subtitle}</p>
 	{/if}
-	{#if viewAllHref && viewAllLabel || focusHref && focusClusterLabel}
+	{#if (viewAllHref && viewAllLabel) || (focusHref && focusClusterLabel)}
 		<p class="focus-hint">
-			{#if viewAllHref && viewAllLabel}<a class="focus-link focus-link--back" href={viewAllHref}>← View all {viewAllLabel}</a>{/if}{#if viewAllHref && viewAllLabel && focusHref && focusClusterLabel}<span class="focus-sep">—</span>{/if}{#if focusHref && focusClusterLabel}<a class="focus-link" href={focusHref} onclick={onFocusClick}>Focus on {focusClusterLabel} →</a>{/if}
+			{#if viewAllHref && viewAllLabel}<a class="focus-link focus-link--back" href={viewAllHref}
+					>← View all {viewAllLabel}</a
+				>{/if}{#if viewAllHref && viewAllLabel && focusHref && focusClusterLabel}<span
+					class="focus-sep">—</span
+				>{/if}{#if focusHref && focusClusterLabel}<a
+					class="focus-link"
+					href={focusHref}
+					onclick={onFocusClick}>Focus on {focusClusterLabel} →</a
+				>{/if}
 		</p>
 	{/if}
 </header>

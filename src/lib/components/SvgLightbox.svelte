@@ -239,9 +239,7 @@
 		// pinch out far enough to see every corner of the SVG,
 		// including the axis that was clipped at cover-fit.
 		minScale =
-			coverW > 0 && coverH > 0
-				? Math.min(stageRect.width / coverW, stageRect.height / coverH)
-				: 1;
+			coverW > 0 && coverH > 0 ? Math.min(stageRect.width / coverW, stageRect.height / coverH) : 1;
 		// On resize, if the user is already zoomed below the new
 		// floor (e.g. they rotated to landscape), clamp upward.
 		if (scale < minScale) scale = minScale;
@@ -573,7 +571,10 @@
 			// back to width/height (in user units) if absent, which
 			// covers SVGs authored without an explicit viewBox.
 			const vbAttr = svg.getAttribute('viewBox');
-			let parsedVb = vbAttr?.trim().split(/[\s,]+/).map(Number);
+			let parsedVb = vbAttr
+				?.trim()
+				.split(/[\s,]+/)
+				.map(Number);
 			if (!parsedVb || parsedVb.length !== 4 || parsedVb.some((n) => Number.isNaN(n))) {
 				const w = svg.viewBox.baseVal.width || (svg as SVGSVGElement).width.baseVal.value || 0;
 				const h = svg.viewBox.baseVal.height || (svg as SVGSVGElement).height.baseVal.value || 0;
@@ -592,9 +593,7 @@
 			// keeps the same per-figure styles applied, then add
 			// `--lightbox` for rules scoped to the expanded view.
 			const ctx = document.createElement('div');
-			const sourceClasses = [...figure.classList].filter((c) =>
-				c.startsWith('bt-inline-svg--')
-			);
+			const sourceClasses = [...figure.classList].filter((c) => c.startsWith('bt-inline-svg--'));
 			ctx.className = ['bt-inline-svg', ...sourceClasses, 'bt-inline-svg--lightbox'].join(' ');
 			ctx.dataset.btZoomLevel = 'min';
 			ctx.setAttribute('data-bt-zoom-min', '');
@@ -708,15 +707,19 @@
 				onclick={toggleHint}
 				aria-label="Keyboard shortcuts"
 				aria-expanded={hintVisible}
-				aria-pressed={hintPinned}
-			>?</button>
+				aria-pressed={hintPinned}>?</button
+			>
 		{/if}
 		<div class="zoom-hud" aria-hidden="true">
 			<span class="zoom-hud__scale">{scale.toFixed(2)}×</span>
 			<span class="zoom-hud__level">{zoomLevel}</span>
 		</div>
 		{#if hintVisible}
-			<div class="hint" role="note" aria-label={isTouchDevice ? 'Touch controls' : 'Keyboard shortcuts'}>
+			<div
+				class="hint"
+				role="note"
+				aria-label={isTouchDevice ? 'Touch controls' : 'Keyboard shortcuts'}
+			>
 				{#if isTouchDevice}
 					<p class="hint__touch">Pinch to zoom · Drag to pan</p>
 				{:else}

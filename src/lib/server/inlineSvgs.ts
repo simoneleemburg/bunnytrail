@@ -49,7 +49,8 @@ import { graph } from './graph';
  * standard broken-image rather than vanishing silently.
  */
 export async function inlineSvgFigures(html: string): Promise<string> {
-	const pattern = /<img\b([^>]*?)\ssrc="(\/api\/(?:assets|entity-assets|guide-assets|influence-assets)\/[^"]+\.svg)"([^>]*)>/gi;
+	const pattern =
+		/<img\b([^>]*?)\ssrc="(\/api\/(?:assets|entity-assets|guide-assets|influence-assets)\/[^"]+\.svg)"([^>]*)>/gi;
 	const matches: Array<{ whole: string; pre: string; src: string; post: string; index: number }> =
 		[];
 	for (const m of html.matchAll(pattern)) {

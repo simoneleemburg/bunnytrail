@@ -19,5 +19,4 @@ export async function load() {
 	return loadKindsIndexPage(null);
 }
 
-
 export type KindsIndexData = Awaited<ReturnType<typeof load>>;

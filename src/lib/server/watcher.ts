@@ -88,7 +88,10 @@ export function startWatcher(): void {
 	);
 
 	watcher.on('add', trigger).on('change', trigger).on('unlink', trigger);
-	watcher.on('add', contentAssetTrigger).on('change', contentAssetTrigger).on('unlink', contentAssetTrigger);
+	watcher
+		.on('add', contentAssetTrigger)
+		.on('change', contentAssetTrigger)
+		.on('unlink', contentAssetTrigger);
 	console.log(
 		`[bunnytrail] watching ${CONTENT_DIR}, ${KINDS_DIR}, ${BLOG_DIR}, ${GUIDES_DIR}, ${INFLUENCES_DIR}, and ${SOURCES_DIR}`
 	);

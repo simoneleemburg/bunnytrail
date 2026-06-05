@@ -66,7 +66,9 @@
 
 	const rankGlyph = $derived(
 		collectionNav.rank != null && collectionNav.rankDisplay !== 'none'
-			? (collectionNav.rankDisplay === 'roman' ? toRoman(collectionNav.rank) : String(collectionNav.rank))
+			? collectionNav.rankDisplay === 'roman'
+				? toRoman(collectionNav.rank)
+				: String(collectionNav.rank)
 			: null
 	);
 
@@ -456,7 +458,11 @@
 	{#if collectionNav.prev || collectionNav.next}
 		<nav class="rank-nav" aria-label="Collection navigation">
 			{#if collectionNav.prev}
-				<a class="rank-nav__item rank-nav__item--prev" href="/{collectionNav.prev.path}" aria-label="Previous: {collectionNav.prev.title}">
+				<a
+					class="rank-nav__item rank-nav__item--prev"
+					href="/{collectionNav.prev.path}"
+					aria-label="Previous: {collectionNav.prev.title}"
+				>
 					<span class="rank-nav__arrow" aria-hidden="true">←</span>
 					<span>back</span>
 				</a>
@@ -464,7 +470,11 @@
 				<span class="rank-nav__item rank-nav__item--prev rank-nav__item--empty"></span>
 			{/if}
 			{#if collectionNav.next}
-				<a class="rank-nav__item rank-nav__item--next" href="/{collectionNav.next.path}" aria-label="Next: {collectionNav.next.title}">
+				<a
+					class="rank-nav__item rank-nav__item--next"
+					href="/{collectionNav.next.path}"
+					aria-label="Next: {collectionNav.next.title}"
+				>
 					<span>next</span>
 					<span class="rank-nav__arrow" aria-hidden="true">→</span>
 				</a>
@@ -555,190 +565,201 @@
 				<section class="subcollections" aria-label="Subcollections">
 					<ul class="subcollection-list">
 						{#each visibleSubcollections as sub (sub.type)}
-			<li class="subcollection">
-				<a class="subcollection-link" class:bt-meta-link={sub.isCluster} href={`/${sub.type}`}>
-					<div class="subcollection-eyebrow">
-						<span class="subcollection-tag">{sub.isCluster ? 'Cluster' : 'Collection'}</span>
+							<li class="subcollection">
+								<a
+									class="subcollection-link"
+									class:bt-meta-link={sub.isCluster}
+									href={`/${sub.type}`}
+								>
+									<div class="subcollection-eyebrow">
+										<span class="subcollection-tag">{sub.isCluster ? 'Cluster' : 'Collection'}</span
+										>
 										{#if sub.rank != null && data.subcollectionRankDisplay !== 'none'}
-											<span class="subcollection-count">{data.subcollectionRankDisplay === 'roman' ? toRoman(sub.rank) : sub.rank}</span>
+											<span class="subcollection-count"
+												>{data.subcollectionRankDisplay === 'roman'
+													? toRoman(sub.rank)
+													: sub.rank}</span
+											>
 										{/if}
 									</div>
 									<h3 class="subcollection-label">{sub.plural}</h3>
-						</a>
-					{#if sub.description && !sub.isCluster}
-						<p class="subcollection-description">{sub.description}</p>
-					{/if}
-						{#if sub.displayTags.length > 0}
-							<ul class="subcollection-tags">
-								{#each sub.displayTags as tag (tag.label)}
-									<li><Tag label={tag.label} href={`/tags/${tag.label}`} /></li>
-								{/each}
-							</ul>
-						{/if}
-					</li>
-				{/each}
-			</ul>
-		</section>
-	{/if}
-
-	{#if viewMode === 'index' && data.subShelves.length > 0}
-		<section class="subcollections sub-shelves" aria-label="Sub-shelves">
-			<ul class="subcollection-list">
-				{#each data.subShelves as sub (sub.type)}
-					<li class="subcollection">
-						<a class="subcollection-link" href={`/${sub.type}`}>
-							<div class="subcollection-eyebrow">
-								<span class="subcollection-tag">Collection</span>
-							</div>
-							<h3 class="subcollection-label">{sub.plural}</h3>
-						</a>
-						{#if sub.description}
-							<p class="subcollection-description">{sub.description}</p>
-						{/if}
-					</li>
-				{/each}
-			</ul>
-		</section>
-	{/if}
-
-	{#snippet containerTree(node: RenderNode)}
-		<div class="container-group" class:synthetic={node.container.synthetic}>
-			{#if node.container.synthetic}
-				<div class="folder-heading">
-					<h2>
-						<a href={`/${node.container.id}`}>{node.container.name}</a>
-					</h2>
-					{#if node.container.crossLinkId}
-						<a class="cross-link" href={`/${node.container.crossLinkId}`}> see entity → </a>
-					{/if}
-				</div>
-			{:else if node.containerMatches}
-				<EntityCard
-					id={node.container.id}
-					name={node.container.name}
-					type={data.label.singular}
-					kind={node.container.kind}
-					summaryHtml={node.container.summaryHtml}
-					tags={node.container.tags}
-				era={node.container.era}
-				sigil={node.container.sigil}
-				rank={node.container.rank}
-				rankDisplay={data.entityRankDisplay}
-			/>
-			{:else}
-				<p class="container-stub">
-					Within <a href={`/${node.container.id}`}>{node.container.name}</a>
-				</p>
+								</a>
+								{#if sub.description && !sub.isCluster}
+									<p class="subcollection-description">{sub.description}</p>
+								{/if}
+								{#if sub.displayTags.length > 0}
+									<ul class="subcollection-tags">
+										{#each sub.displayTags as tag (tag.label)}
+											<li><Tag label={tag.label} href={`/tags/${tag.label}`} /></li>
+										{/each}
+									</ul>
+								{/if}
+							</li>
+						{/each}
+					</ul>
+				</section>
 			{/if}
-			{#if node.children.length > 0}
-				<div class="child-list">
-					{#each node.children as child (child.container.id)}
-						{@render containerTree(child)}
-					{/each}
-				</div>
+
+			{#if viewMode === 'index' && data.subShelves.length > 0}
+				<section class="subcollections sub-shelves" aria-label="Sub-shelves">
+					<ul class="subcollection-list">
+						{#each data.subShelves as sub (sub.type)}
+							<li class="subcollection">
+								<a class="subcollection-link" href={`/${sub.type}`}>
+									<div class="subcollection-eyebrow">
+										<span class="subcollection-tag">Collection</span>
+									</div>
+									<h3 class="subcollection-label">{sub.plural}</h3>
+								</a>
+								{#if sub.description}
+									<p class="subcollection-description">{sub.description}</p>
+								{/if}
+							</li>
+						{/each}
+					</ul>
+				</section>
 			{/if}
-		</div>
-	{/snippet}
 
-	{#if visibleContainers.length > 0}
-		<section class="containers" aria-label="Container entities">
-			{#each visibleContainers as group (group.container.id)}
-				{@render containerTree(group)}
-			{/each}
-		</section>
-	{/if}
-
-	{#if visibleSubcollectionTrees.length > 0}
-		<section class="subcollection-trees" aria-label="Subcollection trees">
-			{#each visibleSubcollectionTrees as sub (sub.path)}
-				<section class="subcollection-tree" aria-label={sub.headlineEntity?.name ?? sub.plural}>
-					{#if sub.headlineEntity}
-					<EntityCard
-						id={sub.headlineEntity.id}
-						name={sub.headlineEntity.name}
-						type={data.label.singular}
-						kind={sub.headlineEntity.kind}
-						summaryHtml={sub.headlineEntity.summaryHtml}
-						tags={sub.headlineEntity.tags}
-					era={sub.headlineEntity.era}
-					sigil={sub.headlineEntity.sigil}
-					rank={sub.headlineEntity.rank}
-					rankDisplay={data.entityRankDisplay}
-				/>
-					{:else}
-						<header class="subcollection-tree-heading">
+			{#snippet containerTree(node: RenderNode)}
+				<div class="container-group" class:synthetic={node.container.synthetic}>
+					{#if node.container.synthetic}
+						<div class="folder-heading">
 							<h2>
-								<a href={`/${sub.path}`}>{sub.plural}</a>
+								<a href={`/${node.container.id}`}>{node.container.name}</a>
 							</h2>
-							{#if sub.description}
-								<p class="subcollection-tree-description">{sub.description}</p>
+							{#if node.container.crossLinkId}
+								<a class="cross-link" href={`/${node.container.crossLinkId}`}> see entity → </a>
 							{/if}
-						</header>
+						</div>
+					{:else if node.containerMatches}
+						<EntityCard
+							id={node.container.id}
+							name={node.container.name}
+							type={data.label.singular}
+							kind={node.container.kind}
+							summaryHtml={node.container.summaryHtml}
+							tags={node.container.tags}
+							era={node.container.era}
+							sigil={node.container.sigil}
+							rank={node.container.rank}
+							rankDisplay={data.entityRankDisplay}
+						/>
+					{:else}
+						<p class="container-stub">
+							Within <a href={`/${node.container.id}`}>{node.container.name}</a>
+						</p>
 					{/if}
-					{#if sub.roots.length > 0}
-						<div class="subcollection-tree-children">
-							{#each sub.roots as root (root.container.id)}
-								{@render containerTree(root)}
+					{#if node.children.length > 0}
+						<div class="child-list">
+							{#each node.children as child (child.container.id)}
+								{@render containerTree(child)}
 							{/each}
 						</div>
 					{/if}
-				</section>
-			{/each}
-		</section>
-	{/if}
+				</div>
+			{/snippet}
 
-	{#snippet orbitTree(node: OrbitNode)}
-		{@const dimmed = (activeKind !== null || activeTags.size > 0) && !matchesFilters(node.entity)}
-		<div class="orbit-group" class:dimmed>
-		<EntityCard
-			id={node.entity.id}
-			name={node.entity.name}
-			type={node.entity.typeLabel ?? data.label.singular}
-			kind={node.entity.kind}
-			summaryHtml={node.entity.summaryHtml}
-			tags={node.entity.tags}
-		era={node.entity.era}
-		sigil={node.entity.sigil}
-		rank={node.entity.rank}
-		rankDisplay={data.entityRankDisplay}
-		/>
-		{#if node.children.length > 0}
-			<div class="orbit-children">
-					{#each node.children as child (child.entity.id)}
-						{@render orbitTree(child)}
+			{#if visibleContainers.length > 0}
+				<section class="containers" aria-label="Container entities">
+					{#each visibleContainers as group (group.container.id)}
+						{@render containerTree(group)}
+					{/each}
+				</section>
+			{/if}
+
+			{#if visibleSubcollectionTrees.length > 0}
+				<section class="subcollection-trees" aria-label="Subcollection trees">
+					{#each visibleSubcollectionTrees as sub (sub.path)}
+						<section class="subcollection-tree" aria-label={sub.headlineEntity?.name ?? sub.plural}>
+							{#if sub.headlineEntity}
+								<EntityCard
+									id={sub.headlineEntity.id}
+									name={sub.headlineEntity.name}
+									type={data.label.singular}
+									kind={sub.headlineEntity.kind}
+									summaryHtml={sub.headlineEntity.summaryHtml}
+									tags={sub.headlineEntity.tags}
+									era={sub.headlineEntity.era}
+									sigil={sub.headlineEntity.sigil}
+									rank={sub.headlineEntity.rank}
+									rankDisplay={data.entityRankDisplay}
+								/>
+							{:else}
+								<header class="subcollection-tree-heading">
+									<h2>
+										<a href={`/${sub.path}`}>{sub.plural}</a>
+									</h2>
+									{#if sub.description}
+										<p class="subcollection-tree-description">{sub.description}</p>
+									{/if}
+								</header>
+							{/if}
+							{#if sub.roots.length > 0}
+								<div class="subcollection-tree-children">
+									{#each sub.roots as root (root.container.id)}
+										{@render containerTree(root)}
+									{/each}
+								</div>
+							{/if}
+						</section>
+					{/each}
+				</section>
+			{/if}
+
+			{#snippet orbitTree(node: OrbitNode)}
+				{@const dimmed =
+					(activeKind !== null || activeTags.size > 0) && !matchesFilters(node.entity)}
+				<div class="orbit-group" class:dimmed>
+					<EntityCard
+						id={node.entity.id}
+						name={node.entity.name}
+						type={node.entity.typeLabel ?? data.label.singular}
+						kind={node.entity.kind}
+						summaryHtml={node.entity.summaryHtml}
+						tags={node.entity.tags}
+						era={node.entity.era}
+						sigil={node.entity.sigil}
+						rank={node.entity.rank}
+						rankDisplay={data.entityRankDisplay}
+					/>
+					{#if node.children.length > 0}
+						<div class="orbit-children">
+							{#each node.children as child (child.entity.id)}
+								{@render orbitTree(child)}
+							{/each}
+						</div>
+					{/if}
+				</div>
+			{/snippet}
+
+			{#if visibleOrbits.length > 0}
+				<section class="orbits" aria-label="Orbital hierarchy">
+					{#each visibleOrbits as root (root.entity.id)}
+						{@render orbitTree(root)}
+					{/each}
+				</section>
+			{/if}
+
+			{#if visibleGrid.length > 0}
+				<div class="grid">
+					{#each visibleGrid as entity (entity.id)}
+						<EntityCard
+							id={entity.id}
+							name={entity.name}
+							type={entity.typeLabel ?? data.label.singular}
+							kind={entity.kind}
+							summaryHtml={entity.summaryHtml}
+							tags={entity.tags}
+							era={entity.era}
+							sigil={entity.sigil}
+							rank={entity.rank}
+							rankDisplay={data.entityRankDisplay}
+						/>
 					{/each}
 				</div>
 			{/if}
 		</div>
-	{/snippet}
-
-	{#if visibleOrbits.length > 0}
-		<section class="orbits" aria-label="Orbital hierarchy">
-			{#each visibleOrbits as root (root.entity.id)}
-				{@render orbitTree(root)}
-			{/each}
-		</section>
-	{/if}
-
-	{#if visibleGrid.length > 0}
-		<div class="grid">
-			{#each visibleGrid as entity (entity.id)}
-			<EntityCard
-				id={entity.id}
-				name={entity.name}
-				type={entity.typeLabel ?? data.label.singular}
-				kind={entity.kind}
-				summaryHtml={entity.summaryHtml}
-				tags={entity.tags}
-			era={entity.era}
-			sigil={entity.sigil}
-			rank={entity.rank}
-			rankDisplay={data.entityRankDisplay}
-			/>
-		{/each}
-		</div>
-	{/if}
-	</div><!-- /.content -->
+		<!-- /.content -->
 
 		<!-- Filter sidebar: three sectioned groups (Kind, Folder,
 		     Tags), each with a small-caps eyebrow label and a
@@ -844,5 +865,6 @@
 				{/if}
 			</aside>
 		{/if}
-	</div><!-- /.layout -->
+	</div>
+	<!-- /.layout -->
 {/if}

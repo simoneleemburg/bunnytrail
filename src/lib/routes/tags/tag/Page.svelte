@@ -29,10 +29,10 @@
 					kind={entity.kind}
 					summaryHtml={entity.summaryHtml}
 					tags={entity.tags}
-				era={entity.era}
-				sigil={entity.sigil}
-				rank={entity.rank}
-			/>
+					era={entity.era}
+					sigil={entity.sigil}
+					rank={entity.rank}
+				/>
 			{/each}
 		</div>
 	</section>

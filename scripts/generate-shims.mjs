@@ -10,7 +10,11 @@ const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
 const result = spawnSync(
 	'npx',
-	['tsx', '-e', "import('./bin/shims').then(m => m.generateShims({ targetDir: '.', mode: 'engine' }))"],
+	[
+		'tsx',
+		'-e',
+		"import('./bin/shims').then(m => m.generateShims({ targetDir: '.', mode: 'engine' }))"
+	],
 	{ cwd: root, stdio: 'inherit' }
 );
 process.exit(result.status ?? 1);

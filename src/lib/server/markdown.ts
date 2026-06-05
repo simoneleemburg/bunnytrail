@@ -487,8 +487,7 @@ function rescueLinksInHtmlChrome(html: string): string {
 // hrefs (`/`), and same-page anchors (`#…`). Hash-only routes inside
 // the engine (`/kinds/<id>`, `/guides/<slug>`) are also excluded —
 // those aren't entity ids and `kindLookup` would whiff on them.
-const ENTITY_LINK_RE =
-	/(<a\s+href=")\/([a-z0-9][a-z0-9/-]*?)(#[a-z0-9-]+)?("[^>]*>[\s\S]*?<\/a>)/g;
+const ENTITY_LINK_RE = /(<a\s+href=")\/([a-z0-9][a-z0-9/-]*?)(#[a-z0-9-]+)?("[^>]*>[\s\S]*?<\/a>)/g;
 
 // Routes the engine owns (not entity ids). Links into these still
 // get the universal `bt-link` class but no slug/kind data attrs,
@@ -529,7 +528,9 @@ function decorateEntityLinks(
 	return html.replace(
 		ENTITY_LINK_RE,
 		(whole, openPrefix: string, rawPath: string, anchor: string | undefined, tail: string) => {
-			const isEngineRoute = ENGINE_ROUTE_PREFIXES.some((p) => rawPath === p.replace(/\/$/, '') || rawPath.startsWith(p));
+			const isEngineRoute = ENGINE_ROUTE_PREFIXES.some(
+				(p) => rawPath === p.replace(/\/$/, '') || rawPath.startsWith(p)
+			);
 			const hooks: string[] = [];
 			const classes = ['bt-link'];
 

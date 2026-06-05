@@ -193,7 +193,9 @@ export async function generateShims(opts: GenerateShimsOptions): Promise<string[
  */
 async function reconcile(root: string, planned: Set<string>): Promise<void> {
 	const isShim = (name: string) =>
-		name === '+server.ts' || /^\+layout\.(server\.ts|svelte)$/.test(name) || /^\+page\.(server\.ts|svelte)$/.test(name);
+		name === '+server.ts' ||
+		/^\+layout\.(server\.ts|svelte)$/.test(name) ||
+		/^\+page\.(server\.ts|svelte)$/.test(name);
 
 	async function walk(dir: string): Promise<void> {
 		let entries;

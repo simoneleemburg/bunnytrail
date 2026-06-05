@@ -352,8 +352,7 @@ export class Graph {
 	entitiesBySubShelfAcrossClusters(shelf: string, subShelf: string): Entity[] {
 		const out: Entity[] = [];
 		for (const cluster of this.clusters()) {
-			for (const e of this.byFolderRecursive(`${cluster}/${shelf}/${subShelf}`))
-				out.push(e);
+			for (const e of this.byFolderRecursive(`${cluster}/${shelf}/${subShelf}`)) out.push(e);
 		}
 		out.sort(byRankThenName);
 		return out;

@@ -48,7 +48,7 @@ export interface OrnamentConfig {
 	 * world.md to theme the masthead separator without touching theme.css.
 	 */
 	navSep: string | null;
-	/** Unicode glyph shown before the world name in the text wordmark. 
+	/** Unicode glyph shown before the world name in the text wordmark.
 	 * Only used when `wordmark` (SVG) is absent. When set, the engine
 	 * injects `--wordmark-mark` and makes the `.wordmark-mark`
 	 * pseudo-element visible via a `<style>` tag in `<svelte:head>`.
@@ -77,7 +77,14 @@ const FALLBACK_NAME = 'Bunnytrail';
 const FALLBACK_TAGLINE = '';
 
 function fallbackOrnament(): OrnamentConfig {
-	return { wordmark: null, worldMark: null, navSep: null, glyph: null, svg: null, guides: { glyph: null, svg: null } };
+	return {
+		wordmark: null,
+		worldMark: null,
+		navSep: null,
+		glyph: null,
+		svg: null,
+		guides: { glyph: null, svg: null }
+	};
 }
 
 function fallbackConfig(): WorldConfig {
@@ -167,10 +174,7 @@ function readString(
 	return trimmed === '' ? null : trimmed;
 }
 
-function readOrnament(
-	meta: Record<string, unknown>,
-	issues: HealthIssue[]
-): OrnamentConfig {
+function readOrnament(meta: Record<string, unknown>, issues: HealthIssue[]): OrnamentConfig {
 	const raw = meta['ornament'];
 	if (raw === undefined || raw === null) return fallbackOrnament();
 	if (typeof raw !== 'object' || Array.isArray(raw)) {

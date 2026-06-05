@@ -650,5 +650,7 @@ blockquote {
    Worlds typically use --accent-meta / --accent-meta-glow for
    the colour values; those tokens are defined in tokens.css. */
 .bt-meta-link {
-	transition: color 200ms ease, text-shadow 200ms ease;
+	transition:
+		color 200ms ease,
+		text-shadow 200ms ease;
 }

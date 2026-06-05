@@ -86,13 +86,20 @@ export const GET = async ({ params }: { params: { slug: string; filename: string
 
 function contentTypeFor(ext: string): string {
 	switch (ext) {
-		case 'svg': return 'image/svg+xml';
-		case 'png': return 'image/png';
+		case 'svg':
+			return 'image/svg+xml';
+		case 'png':
+			return 'image/png';
 		case 'jpg':
-		case 'jpeg': return 'image/jpeg';
-		case 'gif': return 'image/gif';
-		case 'webp': return 'image/webp';
-		case 'avif': return 'image/avif';
-		default: return 'application/octet-stream';
+		case 'jpeg':
+			return 'image/jpeg';
+		case 'gif':
+			return 'image/gif';
+		case 'webp':
+			return 'image/webp';
+		case 'avif':
+			return 'image/avif';
+		default:
+			return 'application/octet-stream';
 	}
 }

@@ -83,7 +83,11 @@ export async function loadEntityPage(entity: Entity) {
 		const fromCollection = graph.collection(type)?.meta.rankDisplay;
 		if (fromCollection) return fromCollection;
 		const parentEntityRankDisplay = graph.get(type)?.meta.rankDisplay;
-		if (parentEntityRankDisplay === 'none' || parentEntityRankDisplay === 'roman' || parentEntityRankDisplay === 'arabic') {
+		if (
+			parentEntityRankDisplay === 'none' ||
+			parentEntityRankDisplay === 'roman' ||
+			parentEntityRankDisplay === 'arabic'
+		) {
 			return parentEntityRankDisplay;
 		}
 		return 'arabic';

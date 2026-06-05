@@ -31,7 +31,7 @@ That's not magic. The engine attaches a `bt-link` class and a
 `data-bt-slug="<name>"` attribute to every wikilink in rendered
 prose, and the world's `assets/theme.css` matches on those to
 give each bunny their signature colour. The same hooks let a
-world theme by entity *kind* (`data-bt-kind`) — try it out by
+world theme by entity _kind_ (`data-bt-kind`) — try it out by
 opening `sample-world/assets/theme.css` and adjusting the
 palette.
 

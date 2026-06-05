@@ -128,10 +128,10 @@ scripts/
 ## Where to put new things
 
 - **New engine route** → `src/lib/routes/<route>/` with `load.ts`
-  + `Page.svelte` (or `handler.ts` for endpoints). Then add an entry
-  to the `planShims` table in `bin/shims.ts`, run
-  `node scripts/generate-shims.mjs`, and bump consumers via
-  `npx bunnytrail sync`.
+  - `Page.svelte` (or `handler.ts` for endpoints). Then add an entry
+    to the `planShims` table in `bin/shims.ts`, run
+    `node scripts/generate-shims.mjs`, and bump consumers via
+    `npx bunnytrail sync`.
 - **New UI primitive** → `src/lib/components/`. Existing primitives:
   `EntityCard`, `EntityLink`, `PageHeader`, `PropertyList`, `Tag`.
 - **New loader feature / graph method** → `src/lib/server/`. Anything
@@ -157,7 +157,7 @@ fields live on separate meta types but work together.
 - `rankDisplay: 'arabic' | 'roman' | 'none'` — controls how the rank
   integer is rendered **for that collection's children**. Defaults to
   `'arabic'`. `'none'` suppresses rank glyphs entirely (sorting still
-  applies). Set this on the *parent* collection to govern how all child
+  applies). Set this on the _parent_ collection to govern how all child
   ranks are displayed — both on subcollection tiles and on entity cards
   within the collection.
 
@@ -169,7 +169,7 @@ fields live on separate meta types but work together.
   `KIND · <glyph>`. The glyph format is inherited from the containing
   collection's `rankDisplay`.
 - `rankDisplay: 'arabic' | 'roman' | 'none'` — when set on an entity
-  that is *also a folder parent* (i.e. it has an `index.md` and
+  that is _also a folder parent_ (i.e. it has an `index.md` and
   child entities live inside its folder), governs how those children's
   rank glyphs are rendered. This is the alternative authoring style to
   `_collection.yaml` — put `rankDisplay` directly on the parent entity
@@ -196,7 +196,7 @@ requiring a separate `_collection.yaml` file.
   (`collectionPage.load.ts` → `buildSubcollectionEntry` +
   `subcollectionRankDisplay`).
 - The opening fleuron on a collection page shows the rank glyph when
-  `rank` is set and `rankDisplay !== 'none'`. The *second* fleuron
+  `rank` is set and `rankDisplay !== 'none'`. The _second_ fleuron
   (the separator between prose and the entity grid) always shows the
   plain ornament — it is structural, not a rank marker.
 - `toRoman(n)` in `src/lib/types.ts` converts an integer to a Roman
@@ -224,10 +224,13 @@ engine code. The same naming convention as the SVG-figure hooks
 wikilink in rendered prose:
 
 ```html
-<a href="/foundation/fabric/geometry/harmonia"
-   class="bt-link bt-link--kind-axioma"
-   data-bt-slug="harmonia"
-   data-bt-kind="axioma">Harmonia</a>
+<a
+	href="/foundation/fabric/geometry/harmonia"
+	class="bt-link bt-link--kind-axioma"
+	data-bt-slug="harmonia"
+	data-bt-kind="axioma"
+	>Harmonia</a
+>
 ```
 
 - `class="bt-link"` — universal hook on every internal wikilink.

@@ -48,7 +48,10 @@ export async function load({ params }: { params: { slug: string } }) {
 			'guide-assets'
 		)
 	);
-	const summaryHtml = renderSummary(guide.summary, resolveLink, languageCodes, { kindIds, kindLookup });
+	const summaryHtml = renderSummary(guide.summary, resolveLink, languageCodes, {
+		kindIds,
+		kindLookup
+	});
 
 	return {
 		slug: guide.slug,

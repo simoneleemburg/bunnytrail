@@ -42,8 +42,13 @@ a.rank-nav__item:hover {
 	letter-spacing: 0;
 }
 
-.rank-nav__item--prev { text-align: left; }
-.rank-nav__item--next { text-align: right; margin-left: auto; }
+.rank-nav__item--prev {
+	text-align: left;
+}
+.rank-nav__item--next {
+	text-align: right;
+	margin-left: auto;
+}
 
 .grid {
 	display: grid;

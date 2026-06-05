@@ -3,6 +3,7 @@ engine. The reference world (Alteria) is a separate repo that consumes
 this one as a dependency.
 
 This repo ships:
+
 - the engine library in `src/lib/`
 - a SvelteKit shell that dogfoods the engine in `src/routes/` (shims)
 - a CLI in `bin/` (`bunnytrail init`, `bunnytrail sync`)

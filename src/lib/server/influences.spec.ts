@@ -62,20 +62,21 @@ describe('loadInfluences', () => {
 	it('loads a fully-specified entry with illustrations', async () => {
 		const dir = await seedInfluencesDir({
 			borges: {
-				md: [
-					'---',
-					'title: Ficciones',
-					'creator: Jorge Luis Borges',
-					'kind: book',
-					'year: 1944',
-					'epigraph: The library will endure; it is the universe.',
-					'illustrations:',
-					'  - image: library-of-babel.jpg',
-					'    comment: The image that started it all.',
-					'  - image: portrait.jpg',
-					'---',
-					'My commentary prose here.'
-				].join('\n') + '\n'
+				md:
+					[
+						'---',
+						'title: Ficciones',
+						'creator: Jorge Luis Borges',
+						'kind: book',
+						'year: 1944',
+						'epigraph: The library will endure; it is the universe.',
+						'illustrations:',
+						'  - image: library-of-babel.jpg',
+						'    comment: The image that started it all.',
+						'  - image: portrait.jpg',
+						'---',
+						'My commentary prose here.'
+					].join('\n') + '\n'
 			}
 		});
 		const result = await loadInfluences(dir);
@@ -91,7 +92,10 @@ describe('loadInfluences', () => {
 			body: 'My commentary prose here.\n'
 		});
 		expect(inf.illustrations).toHaveLength(2);
-		expect(inf.illustrations[0]).toEqual({ image: 'library-of-babel.jpg', comment: 'The image that started it all.' });
+		expect(inf.illustrations[0]).toEqual({
+			image: 'library-of-babel.jpg',
+			comment: 'The image that started it all.'
+		});
 		expect(inf.illustrations[1]).toEqual({ image: 'portrait.jpg', comment: null });
 	});
 
@@ -192,8 +196,8 @@ describe('loadInfluences', () => {
 	it('ignores hidden and underscore-prefixed folders', async () => {
 		const dir = await seedInfluencesDir({
 			'.hidden': { md: '---\ntitle: Hidden\n---\n' },
-			'_draft': { md: '---\ntitle: Draft\n---\n' },
-			'real': { md: '---\ntitle: Real\n---\n' }
+			_draft: { md: '---\ntitle: Draft\n---\n' },
+			real: { md: '---\ntitle: Real\n---\n' }
 		});
 		const result = await loadInfluences(dir);
 		expect(result.influences).toHaveLength(1);

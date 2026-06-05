@@ -14,7 +14,9 @@
 
 	const rankGlyph = $derived(
 		data.kindChip?.rank != null && data.kindChip.rankDisplay !== 'none'
-			? (data.kindChip.rankDisplay === 'roman' ? toRoman(data.kindChip.rank) : String(data.kindChip.rank))
+			? data.kindChip.rankDisplay === 'roman'
+				? toRoman(data.kindChip.rank)
+				: String(data.kindChip.rank)
 			: null
 	);
 
@@ -30,7 +32,13 @@
 		kind: string;
 		direction: 'out' | 'in';
 		note?: string;
-		entity: { id: string; name: string; summary: string | null; sigil: string | null; kind: string | null } | null;
+		entity: {
+			id: string;
+			name: string;
+			summary: string | null;
+			sigil: string | null;
+			kind: string | null;
+		} | null;
 	};
 
 	function labelForKind(kind: string, direction: 'out' | 'in'): string {
@@ -173,7 +181,8 @@
 			// Drop wikilinks to entities that already have a typed relation.
 			if (e.kind === 'wikilink' && typedPartners.has(e.entity.id)) return false;
 			// Drop "Mentioned by" entries that are already under "Mentions".
-			if (e.kind === 'wikilink' && e.direction === 'in' && mentionedOutIds.has(e.entity.id)) return false;
+			if (e.kind === 'wikilink' && e.direction === 'in' && mentionedOutIds.has(e.entity.id))
+				return false;
 			return true;
 		});
 
@@ -238,7 +247,11 @@
 	{#if data.rankNav}
 		<nav class="rank-nav" aria-label="Ranked navigation">
 			{#if data.rankNav.prev}
-				<a class="rank-nav__item rank-nav__item--prev" href="/{data.rankNav.prev.id}" aria-label="Previous: {data.rankNav.prev.name}">
+				<a
+					class="rank-nav__item rank-nav__item--prev"
+					href="/{data.rankNav.prev.id}"
+					aria-label="Previous: {data.rankNav.prev.name}"
+				>
 					<span class="rank-nav__arrow" aria-hidden="true">←</span>
 					<span>back</span>
 				</a>
@@ -246,7 +259,11 @@
 				<span class="rank-nav__item rank-nav__item--prev rank-nav__item--empty"></span>
 			{/if}
 			{#if data.rankNav.next}
-				<a class="rank-nav__item rank-nav__item--next" href="/{data.rankNav.next.id}" aria-label="Next: {data.rankNav.next.name}">
+				<a
+					class="rank-nav__item rank-nav__item--next"
+					href="/{data.rankNav.next.id}"
+					aria-label="Next: {data.rankNav.next.name}"
+				>
 					<span>next</span>
 					<span class="rank-nav__arrow" aria-hidden="true">→</span>
 				</a>
@@ -441,8 +458,13 @@
 		letter-spacing: 0;
 	}
 
-	.rank-nav__item--prev { text-align: left; }
-	.rank-nav__item--next { text-align: right; margin-left: auto; }
+	.rank-nav__item--prev {
+		text-align: left;
+	}
+	.rank-nav__item--next {
+		text-align: right;
+		margin-left: auto;
+	}
 
 	:global(.bt-fleuron__glyph--rank) {
 		font-family: var(--font-serif);
@@ -492,8 +514,12 @@
 		align-self: start;
 	}
 
-	.sidebar--top  { grid-row: 1; }
-	.sidebar--bottom { grid-row: 2; }
+	.sidebar--top {
+		grid-row: 1;
+	}
+	.sidebar--bottom {
+		grid-row: 2;
+	}
 
 	@media (max-width: 60rem) {
 		.layout {

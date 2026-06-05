@@ -35,8 +35,7 @@ const WORLD_DIR = defaultWorldDir();
  * Where the canonical worldbuilding data lives, relative to the project root.
  * Override with BUNNYTRAIL_CONTENT_DIR for testing.
  */
-export const CONTENT_DIR =
-	process.env.BUNNYTRAIL_CONTENT_DIR ?? resolve(WORLD_DIR, 'content');
+export const CONTENT_DIR = process.env.BUNNYTRAIL_CONTENT_DIR ?? resolve(WORLD_DIR, 'content');
 
 /**
  * Where the central kind registry lives. The directory mirrors the
@@ -54,10 +53,7 @@ export const CONTENT_DIR =
  * own page.
  */
 export function defaultKindsDir(): string {
-	return (
-		process.env.BUNNYTRAIL_KINDS_DIR ??
-		resolve(WORLD_DIR, 'content_meta/kinds')
-	);
+	return process.env.BUNNYTRAIL_KINDS_DIR ?? resolve(WORLD_DIR, 'content_meta/kinds');
 }
 
 /**
@@ -90,10 +86,7 @@ export const KINDS_DIR = defaultKindsDir();
  * cross-cluster aggregates.
  */
 export function defaultBlogDir(): string {
-	return (
-		process.env.BUNNYTRAIL_BLOG_DIR ??
-		resolve(WORLD_DIR, 'content_meta/blog')
-	);
+	return process.env.BUNNYTRAIL_BLOG_DIR ?? resolve(WORLD_DIR, 'content_meta/blog');
 }
 
 export const BLOG_DIR = defaultBlogDir();
@@ -121,10 +114,7 @@ export const BLOG_DIR = defaultBlogDir();
  * entity counts or aggregates.
  */
 export function defaultGuidesDir(): string {
-	return (
-		process.env.BUNNYTRAIL_GUIDES_DIR ??
-		resolve(WORLD_DIR, 'content_meta/guides')
-	);
+	return process.env.BUNNYTRAIL_GUIDES_DIR ?? resolve(WORLD_DIR, 'content_meta/guides');
 }
 
 export const GUIDES_DIR = defaultGuidesDir();
@@ -146,10 +136,7 @@ export const GUIDES_DIR = defaultGuidesDir();
  * Override the directory with `BUNNYTRAIL_SOURCES_DIR` for testing.
  */
 export function defaultSourcesDir(): string {
-	return (
-		process.env.BUNNYTRAIL_SOURCES_DIR ??
-		resolve(WORLD_DIR, 'content_meta/sources')
-	);
+	return process.env.BUNNYTRAIL_SOURCES_DIR ?? resolve(WORLD_DIR, 'content_meta/sources');
 }
 
 export const SOURCES_DIR = defaultSourcesDir();
@@ -167,10 +154,7 @@ export const SOURCES_DIR = defaultSourcesDir();
  * Override with `BUNNYTRAIL_INFLUENCES_DIR` for testing.
  */
 export function defaultInfluencesDir(): string {
-	return (
-		process.env.BUNNYTRAIL_INFLUENCES_DIR ??
-		resolve(WORLD_DIR, 'content_meta/influences')
-	);
+	return process.env.BUNNYTRAIL_INFLUENCES_DIR ?? resolve(WORLD_DIR, 'content_meta/influences');
 }
 
 export const INFLUENCES_DIR = defaultInfluencesDir();
@@ -209,10 +193,7 @@ export const ASSETS_DIR = defaultAssetsDir();
  * renders. See `src/lib/server/world.ts`.
  */
 export function defaultWorldConfigPath(): string {
-	return (
-		process.env.BUNNYTRAIL_WORLD_CONFIG ??
-		resolve(WORLD_DIR, 'content_meta/world.md')
-	);
+	return process.env.BUNNYTRAIL_WORLD_CONFIG ?? resolve(WORLD_DIR, 'content_meta/world.md');
 }
 
 export const WORLD_CONFIG_PATH = defaultWorldConfigPath();

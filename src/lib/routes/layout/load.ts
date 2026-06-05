@@ -49,8 +49,7 @@ export async function load({ url }: { url: URL }) {
 		.filter((shelf) => !selectedCluster || graph.isFolder(`${selectedCluster}/${shelf}`))
 		.map((shelf) => {
 			const shelfPaths = graph.clusterShelfPaths(shelf);
-			const labelSourcePath =
-				shelfPaths.find((p) => graph.collection(p)) ?? shelfPaths[0];
+			const labelSourcePath = shelfPaths.find((p) => graph.collection(p)) ?? shelfPaths[0];
 			const label = graph.folderLabels(labelSourcePath ?? shelf).plural;
 			// In All scope, if the shelf exists in exactly one cluster send
 			// the nav link directly to that cluster's shelf — no need for the
@@ -91,9 +90,7 @@ export async function load({ url }: { url: URL }) {
 	// every page can render an SVG fleuron without its own loader
 	// having to call assets.get(). Null when no svg filename was
 	// declared in world.md, or the file doesn't exist on disk.
-	const ornamentSvg = worldConfig.ornament.svg
-		? await assets.get(worldConfig.ornament.svg)
-		: null;
+	const ornamentSvg = worldConfig.ornament.svg ? await assets.get(worldConfig.ornament.svg) : null;
 	const guidesOrnamentSvg = worldConfig.ornament.guides.svg
 		? await assets.get(worldConfig.ornament.guides.svg)
 		: null;
