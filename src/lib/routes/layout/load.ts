@@ -46,20 +46,32 @@ export async function load({ url }: { url: URL }) {
 	// and we filter the nav to only those shelves the cluster
 	// actually has on disk, so we never link to a 404.
 	const nav = unionShelves
-		.filter((shelf) => !selectedCluster || graph.isFolder(`${selectedCluster}/${shelf}`))
+		.filter((shelf) => {
+			if (!selectedCluster) return true;
+			// Keep if the selected cluster has the shelf directly.
+			if (graph.isFolder(`${selectedCluster}/${shelf}`)) return true;
+			// Also keep if the shelf only exists under universal folders —
+			// those are always visible regardless of cluster scope.
+			return graph.clusterShelfPaths(shelf).length === 0;
+		})
 		.map((shelf) => {
 			const shelfPaths = graph.allShelfPaths(shelf);
 			const labelSourcePath = shelfPaths.find((p) => graph.collection(p)) ?? shelfPaths[0];
 			const label = graph.folderLabels(labelSourcePath ?? shelf).plural;
-			// In All scope, if the shelf exists in exactly one root send
+			// In cluster scope: link to the cluster's own shelf when it
+			// exists there; otherwise fall through to the aggregate/direct
+			// path (universal-only shelves like `fabric` link directly to
+			// their real folder).
+			// In All scope: if the shelf exists in exactly one root send
 			// the nav link directly to that root's shelf — no need for the
 			// aggregate route that would just show one tile anyway.
-			const href = selectedCluster
+			const clusterHasShelf = selectedCluster && graph.isFolder(`${selectedCluster}/${shelf}`);
+			const href = clusterHasShelf
 				? `/${selectedCluster}/${shelf}`
 				: shelfPaths.length === 1
 					? `/${shelfPaths[0]}`
 					: `/${shelf}`;
-			const count = selectedCluster
+			const count = clusterHasShelf
 				? graph.byFolderRecursive(`${selectedCluster}/${shelf}`).length
 				: graph.entitiesByShelfAll(shelf).length;
 			return { href, label, count };
