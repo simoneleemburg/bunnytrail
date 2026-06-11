@@ -293,6 +293,96 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 		}
 	}
 
+	// Validate wikilinks in entity summary fields. Summaries are
+	// rendered on cards and entity pages — broken links there are
+	// just as confusing as broken links in prose, but they were
+	// previously invisible to the health page.
+	for (const entity of entities.values()) {
+		const summary = entity.meta.summary;
+		if (!summary) continue;
+		const fromCluster = clusterSet.has(entity.id.split('/')[0]) ? entity.id.split('/')[0] : null;
+		for (const raw of extractWikilinks(summary)) {
+			if (langCodes.has(raw)) continue;
+			const r = resolveWikilink(raw, entities, fromCluster, clusterSet, universalSet);
+			if (r.id !== null) continue;
+			if (r.reason === 'ambiguous' || r.reason === 'ambiguous-in-cluster') {
+				const scope =
+					r.reason === 'ambiguous-in-cluster' && fromCluster ? ` in cluster ${fromCluster}` : '';
+				issues.push({
+					kind: 'broken-link',
+					entity: entity.id,
+					detail: `summary wikilink → ${raw} (ambiguous${scope}: matches ${r.matches.join(', ')})`
+				});
+			} else if (r.reason === 'missing-in-cluster' && fromCluster) {
+				issues.push({
+					kind: 'broken-link',
+					entity: entity.id,
+					detail: `summary wikilink → ${raw} (not found in cluster ${fromCluster}; for cross-cluster references write the full path starting with a cluster name)`
+				});
+			} else {
+				issues.push({
+					kind: 'broken-link',
+					entity: entity.id,
+					detail: `summary wikilink → ${raw} (not found)`
+				});
+			}
+		}
+	}
+
+	// Validate wikilinks in collection bodies (_collection.md prose).
+	// These are rendered on collection/shelf pages and broken links
+	// there were previously invisible to the health page.
+	for (const [collPath, collection] of collections) {
+		if (!collection.body) continue;
+		const topLevel = collPath.split('/')[0];
+		const fromCluster = clusterSet.has(topLevel) ? topLevel : null;
+		for (const raw of extractWikilinks(collection.body)) {
+			if (langCodes.has(raw)) continue;
+			const r = resolveWikilink(raw, entities, fromCluster, clusterSet, universalSet);
+			if (r.id !== null) continue;
+			if (r.reason === 'ambiguous' || r.reason === 'ambiguous-in-cluster') {
+				const scope =
+					r.reason === 'ambiguous-in-cluster' && fromCluster ? ` in cluster ${fromCluster}` : '';
+				issues.push({
+					kind: 'broken-link',
+					detail: `${collPath}/_collection.md: wikilink → ${raw} (ambiguous${scope}: matches ${r.matches.join(', ')})`
+				});
+			} else if (r.reason === 'missing-in-cluster' && fromCluster) {
+				issues.push({
+					kind: 'broken-link',
+					detail: `${collPath}/_collection.md: wikilink → ${raw} (not found in cluster ${fromCluster}; for cross-cluster references write the full path starting with a cluster name)`
+				});
+			} else {
+				issues.push({
+					kind: 'broken-link',
+					detail: `${collPath}/_collection.md: wikilink → ${raw} (not found)`
+				});
+			}
+		}
+	}
+
+	// Validate wikilinks in kind bodies (_kind.md prose). Kind pages
+	// are global (no cluster scope), so resolution is fully global.
+	for (const [kindId, kind] of registryResult.kinds) {
+		if (!kind.body) continue;
+		for (const raw of extractWikilinks(kind.body)) {
+			if (langCodes.has(raw)) continue;
+			const r = resolveWikilink(raw, entities, null, clusterSet, universalSet);
+			if (r.id !== null) continue;
+			if (r.reason === 'ambiguous' || r.reason === 'ambiguous-in-cluster') {
+				issues.push({
+					kind: 'broken-link',
+					detail: `kinds/${kindId}/_kind.md: wikilink → ${raw} (ambiguous: matches ${r.matches.join(', ')})`
+				});
+			} else {
+				issues.push({
+					kind: 'broken-link',
+					detail: `kinds/${kindId}/_kind.md: wikilink → ${raw} (not found)`
+				});
+			}
+		}
+	}
+
 	return {
 		entities,
 		issues,
