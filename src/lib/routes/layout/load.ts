@@ -48,11 +48,11 @@ export async function load({ url }: { url: URL }) {
 	const nav = unionShelves
 		.filter((shelf) => !selectedCluster || graph.isFolder(`${selectedCluster}/${shelf}`))
 		.map((shelf) => {
-			const shelfPaths = graph.clusterShelfPaths(shelf);
+			const shelfPaths = graph.allShelfPaths(shelf);
 			const labelSourcePath = shelfPaths.find((p) => graph.collection(p)) ?? shelfPaths[0];
 			const label = graph.folderLabels(labelSourcePath ?? shelf).plural;
-			// In All scope, if the shelf exists in exactly one cluster send
-			// the nav link directly to that cluster's shelf — no need for the
+			// In All scope, if the shelf exists in exactly one root send
+			// the nav link directly to that root's shelf — no need for the
 			// aggregate route that would just show one tile anyway.
 			const href = selectedCluster
 				? `/${selectedCluster}/${shelf}`
@@ -61,21 +61,26 @@ export async function load({ url }: { url: URL }) {
 					: `/${shelf}`;
 			const count = selectedCluster
 				? graph.byFolderRecursive(`${selectedCluster}/${shelf}`).length
-				: graph.entitiesByShelfAcrossClusters(shelf).length;
+				: graph.entitiesByShelfAll(shelf).length;
 			return { href, label, count };
 		});
 
-	// Universal-substrate shelves (e.g. `foundation/fabric`) are
-	// shared across clusters: same href, same count, always visible.
-	// Appended after cluster shelves, inline.
-	const universalNav = graph.universalShelves().map(({ root, shelf }) => {
-		const path = `${root}/${shelf}`;
-		return {
-			href: `/${path}`,
-			label: graph.folderLabels(path).plural,
-			count: graph.byFolderRecursive(path).length
-		};
-	});
+	// Universal-substrate shelves (e.g. `foundation/fabric`) that do NOT
+	// already appear in the union-shelf set above are shown as direct links
+	// to their real folder path. Any universal shelf whose name also
+	// appears under a cluster is already represented by the aggregate nav
+	// entry above and doesn't need a second link.
+	const universalNav = graph
+		.universalShelves()
+		.filter(({ shelf }) => !unionShelves.includes(shelf))
+		.map(({ root, shelf }) => {
+			const path = `${root}/${shelf}`;
+			return {
+				href: `/${path}`,
+				label: graph.folderLabels(path).plural,
+				count: graph.byFolderRecursive(path).length
+			};
+		});
 
 	const worldConfig = world.config();
 	// Optional bespoke wordmark SVG. When `ornament.wordmark` is declared

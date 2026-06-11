@@ -239,18 +239,22 @@ export class Graph {
 	}
 
 	/**
-	 * Union of immediate sub-shelves found across all clusters. A
-	 * "shelf" is a single-segment folder name like `characters`,
-	 * `places`, `history`. The same name appearing under multiple
-	 * clusters collapses to one entry.
+	 * Union of immediate sub-shelves found across all clusters AND
+	 * universal-substrate folders. A "shelf" is a single-segment
+	 * folder name like `characters`, `places`, `history`, `nature`.
+	 * The same name appearing under multiple roots collapses to one
+	 * entry. Universal substrates (e.g. `foundation/`) participate so
+	 * that a shelf like `nature` — present under both `aurethia/` and
+	 * `foundation/` — is surfaced as a single aggregate page at
+	 * `/nature` rather than only through `foundation/nature`.
 	 *
-	 * Returned sorted by display label, lower-case shelf id.
+	 * Returned sorted alphabetically by shelf id.
 	 */
 	unionShelves(): string[] {
 		const seen = new Set<string>();
-		for (const cluster of this.clusters()) {
-			for (const childPath of this.childFolders(cluster)) {
-				const shelf = childPath.slice(cluster.length + 1);
+		for (const root of [...this.clusters(), ...this.universalFolders()]) {
+			for (const childPath of this.childFolders(root)) {
+				const shelf = childPath.slice(root.length + 1);
 				if (shelf && !shelf.includes('/')) seen.add(shelf);
 			}
 		}
@@ -353,6 +357,80 @@ export class Graph {
 		const out: Entity[] = [];
 		for (const cluster of this.clusters()) {
 			for (const e of this.byFolderRecursive(`${cluster}/${shelf}/${subShelf}`)) out.push(e);
+		}
+		out.sort(byRankThenName);
+		return out;
+	}
+
+	/**
+	 * Every concrete folder path for a shelf across **all roots** —
+	 * both cluster folders and universal-substrate folders. E.g. for
+	 * `nature` may return `['aurethia/nature', 'foundation/nature']`.
+	 * Only roots that actually have the shelf are included.
+	 */
+	allShelfPaths(shelf: string): string[] {
+		const out: string[] = [];
+		for (const root of [...this.clusters(), ...this.universalFolders()]) {
+			const candidate = `${root}/${shelf}`;
+			if (this.isFolder(candidate)) out.push(candidate);
+		}
+		return out;
+	}
+
+	/**
+	 * Every entity living under a shelf across all clusters AND
+	 * universal-substrate folders. Sorted by rank then name.
+	 */
+	entitiesByShelfAll(shelf: string): Entity[] {
+		const out: Entity[] = [];
+		for (const root of [...this.clusters(), ...this.universalFolders()]) {
+			for (const e of this.byFolderRecursive(`${root}/${shelf}`)) out.push(e);
+		}
+		out.sort(byRankThenName);
+		return out;
+	}
+
+	/**
+	 * Distinct second-level sub-folder names under `<root>/<shelf>/`
+	 * across all clusters AND universal-substrate folders. Sorted
+	 * alphabetically.
+	 */
+	subShelvesAll(shelf: string): string[] {
+		const seen = new Set<string>();
+		for (const root of [...this.clusters(), ...this.universalFolders()]) {
+			const shelfPath = `${root}/${shelf}`;
+			for (const childPath of this.childFolders(shelfPath)) {
+				const sub = childPath.slice(shelfPath.length + 1);
+				if (sub && !sub.includes('/')) seen.add(sub);
+			}
+		}
+		return [...seen].sort();
+	}
+
+	/**
+	 * Every concrete folder path for a shelf + sub-shelf pair across
+	 * all roots (clusters + universals). E.g.
+	 * `allSubShelfPaths('nature', 'mortals')` returns
+	 * `['aurethia/nature/mortals', 'foundation/nature/mortals']` for
+	 * every root that actually has that sub-shelf.
+	 */
+	allSubShelfPaths(shelf: string, subShelf: string): string[] {
+		const out: string[] = [];
+		for (const root of [...this.clusters(), ...this.universalFolders()]) {
+			const candidate = `${root}/${shelf}/${subShelf}`;
+			if (this.isFolder(candidate)) out.push(candidate);
+		}
+		return out;
+	}
+
+	/**
+	 * Every entity living under a sub-shelf across all clusters AND
+	 * universal-substrate folders. Sorted by rank then name.
+	 */
+	entitiesBySubShelfAll(shelf: string, subShelf: string): Entity[] {
+		const out: Entity[] = [];
+		for (const root of [...this.clusters(), ...this.universalFolders()]) {
+			for (const e of this.byFolderRecursive(`${root}/${shelf}/${subShelf}`)) out.push(e);
 		}
 		out.sort(byRankThenName);
 		return out;

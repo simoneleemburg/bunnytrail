@@ -98,17 +98,15 @@ export async function load({ params }: { params: { path: string } }) {
 
 	// Cross-cluster aggregate sub-shelf: two-segment path where the
 	// first segment is a union shelf and the second is a sub-shelf
-	// found under it across clusters (e.g. `people/characters`).
+	// found under it across clusters or universal folders (e.g.
+	// `people/characters`, `nature/mortals`).
 	// Must come after the real-folder check so genuine content paths
 	// take precedence, but before the final 404.
 	const slashIdx = path.indexOf('/');
 	if (slashIdx !== -1 && !path.includes('/', slashIdx + 1)) {
 		const seg0 = path.slice(0, slashIdx);
 		const seg1 = path.slice(slashIdx + 1);
-		if (
-			graph.unionShelves().includes(seg0) &&
-			graph.subShelvesAcrossClusters(seg0).includes(seg1)
-		) {
+		if (graph.unionShelves().includes(seg0) && graph.subShelvesAll(seg0).includes(seg1)) {
 			return loadAggregateSubShelfPage(seg0, seg1);
 		}
 	}

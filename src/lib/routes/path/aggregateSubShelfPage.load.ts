@@ -31,17 +31,17 @@ export function loadAggregateSubShelfPage(shelf: string, subShelf: string) {
 		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;
 
 	const kindTree = buildLoaderKindTree();
-	const clusterPaths = graph.clusterSubShelfPaths(shelf, subShelf);
+	const clusterPaths = graph.allSubShelfPaths(shelf, subShelf);
 
-	// Cluster tiles — one per cluster that has this sub-shelf.
+	// Cluster/root tiles — one per root (cluster or universal) that has this sub-shelf.
 	const clusterSubcollections = clusterPaths
 		.map((p) => {
-			const clusterSegment = p.split('/')[0];
+			const rootSegment = p.split('/')[0];
 			const folderLabel = graph.folderLabels(p);
-			const clusterLabels = graph.folderLabels(clusterSegment);
+			const rootLabels = graph.folderLabels(rootSegment);
 			return {
 				...buildSubcollectionEntry(p, kindTree),
-				plural: folderLabel.plural + ' of ' + clusterLabels.plural,
+				plural: folderLabel.plural + ' of ' + rootLabels.plural,
 				isCluster: true as const
 			};
 		})
@@ -51,7 +51,7 @@ export function loadAggregateSubShelfPage(shelf: string, subShelf: string) {
 		buildSubcollectionTree(p, '', cardSummaryHtml)
 	);
 
-	const entities = graph.entitiesBySubShelfAcrossClusters(shelf, subShelf);
+	const entities = graph.entitiesBySubShelfAll(shelf, subShelf);
 
 	const clusterLabel = (id: EntityId): string => {
 		const cluster = id.includes('/') ? id.slice(0, id.indexOf('/')) : id;
@@ -122,7 +122,7 @@ export function loadAggregateSubShelfPage(shelf: string, subShelf: string) {
 	const description = `${label.plural} across ${world.config().name}`;
 
 	// Shelf label for the breadcrumb back-link.
-	const shelfClusterPaths = graph.clusterShelfPaths(shelf);
+	const shelfClusterPaths = graph.allShelfPaths(shelf);
 	const shelfLabelSourcePath =
 		shelfClusterPaths.find((p) => graph.collection(p)) ?? shelfClusterPaths[0];
 	const shelfLabel = graph.folderLabels(shelfLabelSourcePath ?? shelf);

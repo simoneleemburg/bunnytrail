@@ -40,16 +40,16 @@ export function loadAggregateShelfPage(shelf: string) {
 		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;
 
 	const kindTree = buildLoaderKindTree();
-	const clusterPaths = graph.clusterShelfPaths(shelf);
+	const clusterPaths = graph.allShelfPaths(shelf);
 
 	const subcollections = clusterPaths
 		.map((p) => {
-			const clusterSegment = p.split('/')[0];
+			const rootSegment = p.split('/')[0];
 			const folderLabel = graph.folderLabels(p);
-			const clusterLabels = graph.folderLabels(clusterSegment);
+			const rootLabels = graph.folderLabels(rootSegment);
 			return {
 				...buildSubcollectionEntry(p, kindTree),
-				plural: folderLabel.plural + ' of ' + clusterLabels.plural,
+				plural: folderLabel.plural + ' of ' + rootLabels.plural,
 				isCluster: true as const
 			};
 		})
@@ -59,9 +59,9 @@ export function loadAggregateShelfPage(shelf: string) {
 		buildSubcollectionTree(p, '', cardSummaryHtml)
 	);
 
-	const entities = graph.entitiesByShelfAcrossClusters(shelf);
+	const entities = graph.entitiesByShelfAll(shelf);
 
-	// Cluster label as the type-label on each card for the Flat view.
+	// Root (cluster or universal-folder) label as the type-label on each card.
 	const clusterLabel = (id: EntityId): string => {
 		const cluster = id.includes('/') ? id.slice(0, id.indexOf('/')) : id;
 		return graph.folderLabels(cluster).singular;
@@ -70,12 +70,12 @@ export function loadAggregateShelfPage(shelf: string) {
 	const flat = entities.map((e) => toCard(e, cardSummaryHtml, clusterLabel(e.id)));
 
 	// Sub-shelf tiles — one per distinct second-level folder across all
-	// clusters (e.g. 'characters', 'cultures', 'languages' for 'people').
+	// roots (e.g. 'mortals', 'primordials' for 'nature').
 	// Each tile links to /<shelf>/<subShelf> which resolves via the
 	// aggregate sub-shelf dispatch branch.
-	const subShelfNames = graph.subShelvesAcrossClusters(shelf);
+	const subShelfNames = graph.subShelvesAll(shelf);
 	const subShelves = subShelfNames.map((subShelf) => {
-		const subShelfPaths = graph.clusterSubShelfPaths(shelf, subShelf);
+		const subShelfPaths = graph.allSubShelfPaths(shelf, subShelf);
 		// Aggregate counts/tags across all cluster instances of this sub-shelf.
 		const combined = subShelfPaths.reduce(
 			(acc, p) => {
@@ -114,7 +114,7 @@ export function loadAggregateShelfPage(shelf: string) {
 		};
 	});
 
-	// Borrow display labels from first cluster that has this shelf.
+	// Borrow display labels from first root (cluster or universal) that has this shelf.
 	const labelSourcePath = clusterPaths.find((p) => graph.collection(p)) ?? clusterPaths[0];
 	const label = graph.folderLabels(labelSourcePath ?? shelf);
 	const description = graph.collection(labelSourcePath)?.meta.description ?? null;
