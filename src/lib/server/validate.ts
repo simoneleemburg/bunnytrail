@@ -1,0 +1,305 @@
+import type { Collection, Entity, EntityId, HealthIssue, Kind } from '$lib/types';
+import { extractWikilinks, resolveWikilink } from './wikilinks';
+
+/**
+ * Everything needed to run post-walk validation. Passed as a single
+ * object so callers don't need to thread many individual arguments.
+ */
+export interface ValidateArgs {
+	entities: Map<EntityId, Entity>;
+	collections: Map<string, Collection>;
+	kindRegistry: Map<string, Kind>;
+	clusterSet: Set<string>;
+	universalSet: Set<string>;
+	langCodes: Set<string>;
+	issues: HealthIssue[];
+}
+
+/**
+ * Derive the cluster and universal-substrate sets from the already-
+ * loaded entity and collection maps.
+ *
+ * A *cluster* is a top-level folder under `content/` that is not
+ * itself marked `universal: true` and that does not itself act as an
+ * entity. Clusters are the editorial neighbourhoods of the world
+ * (e.g. `mistwood`, `tideholm` in the sample world).
+ *
+ * A *universal substrate* is a top-level folder explicitly marked
+ * with `universal: true` in its `_collection.{yaml,md}`. It is
+ * reachable as a fallback from any cluster's bare-slug links and
+ * never participates in cluster-scoping itself.
+ */
+export function deriveClusterSets(
+	entities: Map<EntityId, Entity>,
+	collections: Map<string, Collection>
+): { clusterSet: Set<string>; universalSet: Set<string> } {
+	const clusterSet = new Set<string>();
+	const universalSet = new Set<string>();
+	for (const id of entities.keys()) {
+		const first = id.split('/')[0];
+		if (!first) continue;
+		if (entities.has(first)) continue;
+		clusterSet.add(first);
+	}
+	for (const [p, collection] of collections) {
+		if (p.includes('/')) continue; // top-level only
+		if (collection.meta.universal === true) {
+			universalSet.add(p);
+			clusterSet.delete(p);
+		}
+	}
+	return { clusterSet, universalSet };
+}
+
+/**
+ * Build the language-code set used to suppress spurious broken-link
+ * warnings for `[[ot]]`-style inline language tags. A code is only
+ * honoured if it sits on an entity in a `languages` folder and is
+ * 2–8 lowercase letters.
+ */
+export function buildLangCodes(entities: Map<EntityId, Entity>): Set<string> {
+	const langCodes = new Set<string>();
+	for (const e of entities.values()) {
+		const isLang = e.type === 'languages' || e.type.endsWith('/languages');
+		if (!isLang) continue;
+		const code = (e.meta as { code?: unknown }).code;
+		if (typeof code === 'string' && /^[a-z]{2,8}$/.test(code)) {
+			langCodes.add(code);
+		}
+	}
+	return langCodes;
+}
+
+/**
+ * Resolve entity body wikilinks to canonical ids and emit broken-link
+ * issues for any that cannot be resolved. Mutates `entity.wikilinks`
+ * in place, replacing raw paths with resolved ids.
+ */
+export function validateEntityWikilinks(args: ValidateArgs): void {
+	const { entities, clusterSet, universalSet, langCodes, issues } = args;
+	for (const entity of entities.values()) {
+		const resolved = new Set<EntityId>();
+		const fromCluster = clusterOf(entity.id, clusterSet);
+		for (const raw of entity.wikilinks) {
+			if (langCodes.has(raw)) continue;
+			const r = resolveWikilink(raw, entities, fromCluster, clusterSet, universalSet);
+			if (r.id !== null) {
+				resolved.add(r.id);
+				continue;
+			}
+			issues.push(brokenWikilinkIssue(entity.id, raw, r, fromCluster, 'wikilink'));
+		}
+		entity.wikilinks = [...resolved];
+	}
+}
+
+/** Detect broken relation targets and emit broken-link issues. */
+export function validateRelations(args: ValidateArgs): void {
+	const { entities, issues } = args;
+	for (const entity of entities.values()) {
+		for (const rel of entity.meta.relations ?? []) {
+			if (!entities.has(rel.target)) {
+				issues.push({
+					kind: 'broken-link',
+					entity: entity.id,
+					detail: `relation ${rel.kind} → ${rel.target} (not found)`
+				});
+			}
+		}
+	}
+}
+
+/**
+ * Validate `[[kinds/<id>]]` wikilinks against the registry.
+ * Unregistered kind targets get the same broken-link treatment as
+ * broken entity wikilinks. Mutates `entity.kindLinks` in place,
+ * replacing raw ids with validated ones.
+ */
+export function validateKindLinks(args: ValidateArgs): void {
+	const { entities, kindRegistry, issues } = args;
+	for (const entity of entities.values()) {
+		const resolved: string[] = [];
+		for (const raw of entity.kindLinks) {
+			if (kindRegistry.has(raw)) {
+				resolved.push(raw);
+			} else {
+				issues.push({
+					kind: 'broken-link',
+					entity: entity.id,
+					detail: `wikilink → kinds/${raw} (not found)`
+				});
+			}
+		}
+		entity.kindLinks = resolved;
+	}
+}
+
+/**
+ * Validate structured kind-references declared in YAML (e.g.
+ * `nativeBeings: [kinds/human]`). Unregistered ids emit a broken-link
+ * issue and are dropped from `entity.kindRefs`, so the graph only
+ * indexes resolved references.
+ */
+export function validateKindRefs(args: ValidateArgs): void {
+	const { entities, kindRegistry, issues } = args;
+	for (const entity of entities.values()) {
+		const resolvedRefs: Record<string, string[]> = {};
+		for (const [field, ids] of Object.entries(entity.kindRefs)) {
+			const keep: string[] = [];
+			for (const id of ids) {
+				if (kindRegistry.has(id)) {
+					keep.push(id);
+				} else {
+					issues.push({
+						kind: 'broken-link',
+						entity: entity.id,
+						detail: `${field} → kinds/${id} (not found)`
+					});
+				}
+			}
+			if (keep.length > 0) resolvedRefs[field] = keep;
+		}
+		entity.kindRefs = resolvedRefs;
+	}
+}
+
+/**
+ * Validate entity kinds against the registry. Lenient: every entity
+ * must declare a non-empty `kind`, and unregistered kinds emit a
+ * health-page warning but still load.
+ */
+export function validateEntityKinds(args: ValidateArgs): void {
+	const { entities, kindRegistry, issues } = args;
+	for (const entity of entities.values()) {
+		const k = (entity.meta as { kind?: unknown }).kind;
+		if (typeof k !== 'string' || k.length === 0) {
+			issues.push({
+				kind: 'invalid-yaml',
+				entity: entity.id,
+				detail: `entity has no 'kind' field`
+			});
+			continue;
+		}
+		if (!kindRegistry.has(k)) {
+			issues.push({
+				kind: 'invalid-yaml',
+				entity: entity.id,
+				detail: `kind '${k}' is not registered in content_meta/kinds/`
+			});
+		}
+	}
+}
+
+/**
+ * Validate wikilinks in entity summary fields. Summaries are rendered
+ * on cards and entity pages — broken links there are just as
+ * confusing as broken links in prose.
+ */
+export function validateSummaryWikilinks(args: ValidateArgs): void {
+	const { entities, clusterSet, universalSet, langCodes, issues } = args;
+	for (const entity of entities.values()) {
+		const summary = entity.meta.summary;
+		if (!summary) continue;
+		const fromCluster = clusterOf(entity.id, clusterSet);
+		for (const raw of extractWikilinks(summary)) {
+			if (langCodes.has(raw)) continue;
+			const r = resolveWikilink(raw, entities, fromCluster, clusterSet, universalSet);
+			if (r.id !== null) continue;
+			issues.push(brokenWikilinkIssue(entity.id, raw, r, fromCluster, 'summary wikilink'));
+		}
+	}
+}
+
+/**
+ * Validate wikilinks in collection bodies (_collection.md prose).
+ * These are rendered on collection/shelf pages. Issues carry the
+ * collection path in `detail` since collections have no entity id.
+ */
+export function validateCollectionWikilinks(args: ValidateArgs): void {
+	const { entities, collections, clusterSet, universalSet, langCodes, issues } = args;
+	for (const [collPath, collection] of collections) {
+		if (!collection.body) continue;
+		const topLevel = collPath.split('/')[0];
+		const fromCluster = clusterSet.has(topLevel) ? topLevel : null;
+		for (const raw of extractWikilinks(collection.body)) {
+			if (langCodes.has(raw)) continue;
+			const r = resolveWikilink(raw, entities, fromCluster, clusterSet, universalSet);
+			if (r.id !== null) continue;
+			issues.push(
+				brokenWikilinkIssue(undefined, raw, r, fromCluster, `${collPath}/_collection.md: wikilink`)
+			);
+		}
+	}
+}
+
+/**
+ * Validate wikilinks in kind bodies (_kind.md prose). Kind pages are
+ * global (no cluster scope), so resolution is fully global. Issues
+ * carry the kind path in `detail`.
+ */
+export function validateKindBodyWikilinks(args: ValidateArgs): void {
+	const { entities, kindRegistry, clusterSet, universalSet, langCodes, issues } = args;
+	for (const [kindId, kind] of kindRegistry) {
+		if (!kind.body) continue;
+		for (const raw of extractWikilinks(kind.body)) {
+			if (langCodes.has(raw)) continue;
+			const r = resolveWikilink(raw, entities, null, clusterSet, universalSet);
+			if (r.id !== null) continue;
+			if (r.reason === 'ambiguous' || r.reason === 'ambiguous-in-cluster') {
+				issues.push({
+					kind: 'broken-link',
+					detail: `kinds/${kindId}/_kind.md: wikilink → ${raw} (ambiguous: matches ${r.matches.join(', ')})`
+				});
+			} else {
+				issues.push({
+					kind: 'broken-link',
+					detail: `kinds/${kindId}/_kind.md: wikilink → ${raw} (not found)`
+				});
+			}
+		}
+	}
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function clusterOf(id: EntityId, clusterSet: Set<string>): string | null {
+	const first = id.split('/')[0];
+	return clusterSet.has(first) ? first : null;
+}
+
+type ResolveFailure = Extract<
+	ReturnType<typeof resolveWikilink>,
+	{ id: null }
+>;
+
+function brokenWikilinkIssue(
+	entityId: EntityId | undefined,
+	raw: string,
+	r: ResolveFailure,
+	fromCluster: string | null,
+	label: string
+): HealthIssue {
+	if (r.reason === 'ambiguous' || r.reason === 'ambiguous-in-cluster') {
+		const scope =
+			r.reason === 'ambiguous-in-cluster' && fromCluster ? ` in cluster ${fromCluster}` : '';
+		return {
+			kind: 'broken-link',
+			...(entityId !== undefined && { entity: entityId }),
+			detail: `${label} → ${raw} (ambiguous${scope}: matches ${r.matches.join(', ')})`
+		};
+	}
+	if (r.reason === 'missing-in-cluster' && fromCluster) {
+		return {
+			kind: 'broken-link',
+			...(entityId !== undefined && { entity: entityId }),
+			detail: `${label} → ${raw} (not found in cluster ${fromCluster}; for cross-cluster references write the full path starting with a cluster name)`
+		};
+	}
+	return {
+		kind: 'broken-link',
+		...(entityId !== undefined && { entity: entityId }),
+		detail: `${label} → ${raw} (not found)`
+	};
+}
