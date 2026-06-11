@@ -8,7 +8,7 @@
 	}
 
 	interface KindChip {
-		/** Kind id, used in the link `/kinds/<id>`. */
+		/** Kind id, used in the link `/kinds/<id>` (or overridden by `href`). */
 		id: string;
 		/** Display label — usually the kind's singular form. */
 		label: string;
@@ -16,6 +16,12 @@
 		broken?: boolean;
 		/** Optional sort rank from frontmatter. Displayed as "AXIOM · 2". */
 		rank?: number | null;
+		/**
+		 * Optional explicit href that overrides the default `/kinds/<id>` link.
+		 * Used when the chip should point at an entity (e.g. a class target)
+		 * rather than a kind page.
+		 */
+		href?: string;
 	}
 
 	interface Props {
@@ -160,7 +166,7 @@
 		{#if kindChip}
 			<a
 				class="kind-chip"
-				href={`/kinds/${kindChip.id}`}
+				href={kindChip.href ?? `/kinds/${kindChip.id}`}
 				data-broken={kindChip.broken ? 'true' : undefined}
 				title={kindChip.broken ? `unregistered kind: ${kindChip.id}` : undefined}
 				>{kindChip.label}</a

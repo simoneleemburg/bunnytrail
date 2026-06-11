@@ -67,6 +67,13 @@ export function toCard(
 	typeLabel?: string,
 	folderPath: string = ''
 ) {
+	// Resolve the class field to a name and href for display.
+	// class replaces kind as the primary filter discriminator when set.
+	const classId = typeof e.meta.class === 'string' ? e.meta.class : null;
+	const classEntity = classId ? graph.get(classId) : null;
+	const className = classEntity?.meta.name ?? null;
+	const classHref = classId ? `/${classId}` : null;
+
 	return {
 		id: e.id,
 		slug: e.slug,
@@ -76,6 +83,9 @@ export function toCard(
 		tags: e.meta.tags ?? [],
 		era: e.meta.era ?? null,
 		kind: typeof e.meta.kind === 'string' ? e.meta.kind : null,
+		classId,
+		className,
+		classHref,
 		sigil: typeof e.meta.sigil === 'string' ? e.meta.sigil : null,
 		rank: typeof e.meta.rank === 'number' ? e.meta.rank : null,
 		typeLabel: typeLabel ?? null,
@@ -171,11 +181,18 @@ export function buildSubcollectionEntry(path: string, tree: KindTree) {
 
 	for (const e of subEntities) {
 		const direct = typeof e.meta.kind === 'string' ? e.meta.kind : '—';
+		// When the entity has a class, use the class entity's id as an
+		// additional filter key (below kind in the hierarchy). This makes
+		// "Human", "Nguwari" etc. appear as filter chips alongside their
+		// parent kind chips.
+		const classId = typeof e.meta.class === 'string' ? e.meta.class : null;
 		// Keys this entity contributes to: the direct kind plus every
 		// ancestor in the kind tree. Free-form kinds (not registered)
 		// contribute to themselves only.
 		const kindKeys = tree.has(direct) ? [direct, ...tree.ancestors(direct)] : [direct];
-		for (const k of kindKeys) {
+		// Class key is prepended so it acts as the leaf discriminator.
+		const allKeys = classId ? [classId, ...kindKeys] : kindKeys;
+		for (const k of allKeys) {
 			kindCounts[k] = (kindCounts[k] ?? 0) + 1;
 			const kindTagMap = (tagsByKind[k] ??= new Map<string, number>());
 			for (const t of e.meta.tags ?? []) {

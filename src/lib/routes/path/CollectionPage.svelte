@@ -128,6 +128,17 @@
 		buildKindTree(new Map(Object.entries(data.kindParents ?? {})))
 	);
 
+	// Map from classId → class entity name, built from data.flat.
+	// Used so filter chips show "Human" instead of
+	// "foundation/nature/mortals/human".
+	const classLabels = $derived.by(() => {
+		const m = new Map<string, string>();
+		for (const e of data.flat) {
+			if (e.classId && e.className) m.set(e.classId, e.className);
+		}
+		return m;
+	});
+
 	/**
 	 * Kind chips visible on this page. Two sources, deduped:
 	 *
@@ -146,18 +157,32 @@
 	 * style it distinctly.
 	 */
 	const kindCounts = $derived.by(() => {
-		// Direct counts per kind value carried by visible entities.
+		// Direct counts per filter key. When an entity has a class, the
+		// class entity id is the leaf discriminator (e.g. the Human entity
+		// id); otherwise fall back to kind. This makes "Human", "Nguwari"
+		// etc. appear as filter chips instead of just "person".
 		const direct = new Map<string, number>();
 		for (const e of filterEntitySet) {
-			const k = e.kind ?? '—';
+			const k = e.classId ?? e.kind ?? '—';
 			direct.set(k, (direct.get(k) ?? 0) + 1);
 		}
-		// For each direct kind in the tree, accumulate ancestor totals.
+		// For each direct kind (non-class) in the tree, accumulate ancestor totals.
 		const supertypeTotals = new Map<string, number>();
 		for (const [kind, count] of direct) {
 			if (!kindTree.has(kind)) continue;
 			for (const ancestor of kindTree.ancestors(kind)) {
 				supertypeTotals.set(ancestor, (supertypeTotals.get(ancestor) ?? 0) + count);
+			}
+		}
+		// Also accumulate ancestor totals for entities whose class maps to
+		// a kind in the hierarchy (class entities are not in the kindTree,
+		// but their owner's kind is — we look it up from the card).
+		for (const e of filterEntitySet) {
+			if (!e.classId) continue;
+			const k = e.kind ?? '—';
+			if (!kindTree.has(k)) continue;
+			for (const ancestor of kindTree.ancestors(k)) {
+				supertypeTotals.set(ancestor, (supertypeTotals.get(ancestor) ?? 0) + 1);
 			}
 		}
 		// A kind that is both a *direct* kind on the page (some entity
@@ -191,15 +216,17 @@
 			.sort(([a], [b]) => a.localeCompare(b));
 	});
 
-	function matchesKind(card: { kind: string | null }): boolean {
+	function matchesKind(card: { kind: string | null; classId?: string | null }): boolean {
 		if (activeKind === null) return true;
-		const k = card.kind ?? '—';
-		if (k === activeKind) return true;
-		// Walk ancestors so a supertype chip selects every
-		// descendant. Free-form kinds have no ancestors so this
-		// short-circuits cleanly.
-		if (!kindTree.has(k)) return false;
-		return kindTree.ancestors(k).includes(activeKind);
+		// Class id is the leaf key when present.
+		const leafKey = card.classId ?? card.kind ?? '—';
+		if (leafKey === activeKind) return true;
+		// Walk kind ancestors so a supertype chip selects every descendant.
+		// Class entities aren't in the kindTree, so we walk ancestors of
+		// the entity's kind instead.
+		const kindKey = card.kind ?? '—';
+		if (!kindTree.has(kindKey)) return false;
+		return kindTree.ancestors(kindKey).includes(activeKind);
 	}
 
 	function matchesTags(card: { tags: string[] }): boolean {
@@ -223,6 +250,7 @@
 
 	function matchesFilters(card: {
 		kind: string | null;
+		classId?: string | null;
 		tags: string[];
 		folderPath?: string;
 		id: string;
@@ -728,6 +756,8 @@
 							sigil={entity.sigil}
 							rank={entity.rank}
 							rankDisplay={data.entityRankDisplay}
+							classLabel={entity.className}
+							classHref={entity.classHref}
 						/>
 					{/each}
 				</div>
@@ -764,7 +794,7 @@
 									title={info.supertype ? `${kind} (supertype — ${info.count} total)` : kind}
 									onclick={() => (activeKind = kind)}
 								>
-									{kind}{#if info.supertype}<span class="count">{info.count}</span>{/if}
+									{classLabels.get(kind) ?? kind}{#if info.supertype}<span class="count">{info.count}</span>{/if}
 								</button>
 							{/each}
 						</div>

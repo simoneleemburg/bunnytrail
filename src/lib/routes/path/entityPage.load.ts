@@ -69,6 +69,16 @@ export async function loadEntityPage(entity: Entity) {
 	const kindId = typeof entity.meta.kind === 'string' ? entity.meta.kind : null;
 	const kindObj = kindId ? graph.kind(kindId) : undefined;
 
+	// Class chip: when the entity declares `class: <entity-id>`, resolve
+	// the target entity's name and emit a chip that links to its page.
+	// The class chip takes visual precedence over the kind chip on the
+	// entity detail page (same slot, but class is more specific).
+	const classId = typeof entity.meta.class === 'string' ? entity.meta.class : null;
+	const classEntity = classId ? graph.get(classId) : null;
+	const classChip = classEntity
+		? { id: classId as string, name: classEntity.meta.name, href: `/${classId}` }
+		: null;
+
 	// rankDisplay for this entity's own rank glyph and prev/next nav.
 	// Resolution order (first match wins):
 	//   1. The containing folder's _collection.yaml / _collection.md
@@ -162,6 +172,7 @@ export async function loadEntityPage(entity: Entity) {
 		'tags',
 		'relations',
 		'kind',
+		'class',
 		'language',
 		'code',
 		'sigil',
@@ -209,6 +220,22 @@ export async function loadEntityPage(entity: Entity) {
 		}))
 		.sort((a, b) => a.field.localeCompare(b.field));
 
+	// Instances: entities that declare `class: <this entity's id>`.
+	// Rendered on the entity page as an "Instances" tab (mirroring
+	// the kind page's About/Instances pattern) when non-empty.
+	const classMateEntities = graph.classMates(id);
+	const classMates = classMateEntities.map((e) => ({
+		id: e.id,
+		name: e.meta.name,
+		kind: typeof e.meta.kind === 'string' ? e.meta.kind : null,
+		typeLabel: graph.folderLabels(e.type).singular,
+		summaryHtml: cardSummaryHtml(e.meta.summary),
+		tags: e.meta.tags ?? [],
+		era: e.meta.era ?? null,
+		sigil: typeof e.meta.sigil === 'string' ? e.meta.sigil : null,
+		rank: typeof e.meta.rank === 'number' ? e.meta.rank : null
+	}));
+
 	// Rank-based prev/next navigation. When this entity has a numeric
 	// rank, find all folder-siblings (same containing folder) that also
 	// have a rank, sort them, and pick the immediate neighbours.
@@ -244,6 +271,7 @@ export async function loadEntityPage(entity: Entity) {
 	return {
 		breadcrumbs,
 		kindChip,
+		classChip,
 		entity: {
 			id: entity.id,
 			name: entity.meta.name,
@@ -271,7 +299,8 @@ export async function loadEntityPage(entity: Entity) {
 		// link at the foot of the prose; absent when the entity has
 		// no `craft.md`.
 		craftHref: entity.craft !== null ? `/${entity.id}/craft` : null,
-		rankNav
+		rankNav,
+		classMates
 	};
 }
 

@@ -4,6 +4,7 @@
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import PropertyList from '$lib/components/PropertyList.svelte';
 	import EntityLink from '$lib/components/EntityLink.svelte';
+	import EntityCard from '$lib/components/EntityCard.svelte';
 	import Tag from '$lib/components/Tag.svelte';
 	import { SvelteSet } from 'svelte/reactivity';
 	import { toRoman } from '$lib/types';
@@ -19,6 +20,20 @@
 				: String(data.kindChip.rank)
 			: null
 	);
+
+	// When the entity has a classChip (it is an instance of a class entity),
+	// override the kind chip to show the class name linking to the class entity
+	// instead of the kind name linking to /kinds/<id>.
+	const effectiveKindChip = $derived(
+		data.classChip && data.kindChip
+			? { ...data.kindChip, label: data.classChip.name, href: data.classChip.href }
+			: data.kindChip
+	);
+
+	// Tabs: shown only when the entity has classMates (instances of the same class).
+	// "About" wraps all existing page content; "Instances" lists classMates as cards.
+	const hasClassMates = $derived(data.classMates.length > 0);
+	let activeTab: 'about' | 'instances' = $state('about');
 
 	const COLLAPSE_AT = 8;
 	const expanded = new SvelteSet<string>();
@@ -216,7 +231,7 @@
 <article class="entity">
 	<PageHeader
 		breadcrumbs={data.breadcrumbs}
-		kindChip={data.kindChip}
+		kindChip={effectiveKindChip}
 		title={data.entity.name}
 		subtitleHtml={data.entity.summaryHtml}
 		language={data.language ?? undefined}
@@ -226,6 +241,33 @@
 	{#if data.entity.aliases.length > 0}
 		<p class="aliases"><em>Also known as: {data.entity.aliases.join(', ')}</em></p>
 	{/if}
+
+	{#if hasClassMates}
+		<div class="tabs" role="tablist" aria-label="Entity sections">
+			<button
+				type="button"
+				role="tab"
+				class="tab"
+				aria-selected={activeTab === 'about'}
+				class:active={activeTab === 'about'}
+				onclick={() => (activeTab = 'about')}
+			>
+				About
+			</button>
+			<button
+				type="button"
+				role="tab"
+				class="tab"
+				aria-selected={activeTab === 'instances'}
+				class:active={activeTab === 'instances'}
+				onclick={() => (activeTab = 'instances')}
+			>
+				Instances
+			</button>
+		</div>
+	{/if}
+
+	{#if !hasClassMates || activeTab === 'about'}
 
 	<!-- Fleuron: same ornamental chapter-mark used on collection pages,
 	     marking the boundary between the editorial header zone and the
@@ -364,9 +406,7 @@
 					</dl>
 				</section>
 			{/if}
-		</aside>
 
-		<aside class="sidebar sidebar--bottom">
 			{#if relationGroups.length > 0}
 				<section class="relations">
 					{#each relationGroups as group (group.key)}
@@ -415,6 +455,27 @@
 			{/if}
 		</aside>
 	</div>
+	{/if}
+
+	{#if hasClassMates && activeTab === 'instances'}
+		<div role="tabpanel" class="instances-panel">
+			<div class="grid">
+				{#each data.classMates as card (card.id)}
+					<EntityCard
+						id={card.id}
+						name={card.name}
+						type={card.typeLabel ?? 'entity'}
+						kind={card.kind}
+						summaryHtml={card.summaryHtml}
+						tags={card.tags}
+						era={card.era}
+						sigil={card.sigil}
+						rank={card.rank}
+					/>
+				{/each}
+			</div>
+		</div>
+	{/if}
 </article>
 
 <style>
@@ -422,6 +483,51 @@
 		color: var(--ink-soft);
 		margin: calc(-1 * var(--space-4)) 0 var(--space-5);
 		max-width: var(--prose-max);
+	}
+
+	/* Tab strip for About / Instances — mirrors KindPage treatment. */
+	.tabs {
+		display: flex;
+		justify-content: center;
+		gap: var(--space-4);
+		margin: 0 0 var(--space-5) 0;
+	}
+
+	.tab {
+		appearance: none;
+		background: none;
+		border: none;
+		padding: 0 0 var(--space-2) 0;
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.12em;
+		color: var(--ink-faint);
+		cursor: pointer;
+		border-bottom: 1px solid transparent;
+		transition:
+			color 120ms ease,
+			border-color 120ms ease;
+	}
+
+	.tab:hover {
+		color: var(--accent);
+	}
+
+	.tab.active {
+		color: var(--ink);
+		border-bottom-color: var(--accent);
+	}
+
+	/* Instances tab panel: entity card grid, same as KindPage. */
+	.instances-panel {
+		margin-top: var(--space-5);
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+		gap: var(--space-5) var(--space-6);
 	}
 
 	.rank-nav {
@@ -504,21 +610,14 @@
 		min-width: 0;
 	}
 
-	.sidebar--top,
-	.sidebar--bottom {
+	.sidebar--top {
 		grid-column: 5;
+		grid-row: 1 / span 99;
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-6);
 		font-size: var(--text-sm);
 		align-self: start;
-	}
-
-	.sidebar--top {
-		grid-row: 1;
-	}
-	.sidebar--bottom {
-		grid-row: 2;
 	}
 
 	@media (max-width: 60rem) {
@@ -528,22 +627,17 @@
 		}
 
 		.prose,
-		.sidebar--top,
-		.sidebar--bottom {
+		.sidebar--top {
 			grid-column: 1;
 			grid-row: auto;
 		}
 
 		.sidebar--top {
-			order: -1;
+			order: 1;
 		}
 
 		.prose {
 			order: 0;
-		}
-
-		.sidebar--bottom {
-			order: 1;
 		}
 	}
 

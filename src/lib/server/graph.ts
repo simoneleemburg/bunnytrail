@@ -620,6 +620,23 @@ export class Graph {
 		return null;
 	}
 
+	/**
+	 * All entities whose `meta.class` points at `classId` — i.e.
+	 * every entity that declares itself an instance of the given
+	 * entity. Sorted by rank then name.
+	 *
+	 * Used to build the "Instances" tab on entity pages that act as
+	 * class targets (e.g. the Human entity listing all humans).
+	 */
+	classMates(classId: EntityId): Entity[] {
+		const out: Entity[] = [];
+		for (const e of this.#entities.values()) {
+			if (e.meta.class === classId) out.push(e);
+		}
+		out.sort(byRankThenName);
+		return out;
+	}
+
 	/** Outgoing edges from `id`. */
 	outEdges(id: EntityId): Edge[] {
 		return this.#outEdges.get(id) ?? [];

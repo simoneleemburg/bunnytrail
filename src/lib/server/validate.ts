@@ -260,6 +260,27 @@ export function validateKindBodyWikilinks(args: ValidateArgs): void {
 	}
 }
 
+/**
+ * Validate the `class` field on entities. The value must be the full
+ * id of a known entity. Uses global resolution (class targets are
+ * typically universal-substrate entities like `foundation/nature/…`
+ * reachable from any cluster).
+ */
+export function validateClassField(args: ValidateArgs): void {
+	const { entities, issues } = args;
+	for (const entity of entities.values()) {
+		const cls = entity.meta.class;
+		if (typeof cls !== 'string' || !cls) continue;
+		if (!entities.has(cls)) {
+			issues.push({
+				kind: 'broken-link',
+				entity: entity.id,
+				detail: `class → ${cls} (not found)`
+			});
+		}
+	}
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------

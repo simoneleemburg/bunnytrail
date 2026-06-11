@@ -375,6 +375,18 @@ export interface EntityMeta {
 	/** Structured relations. */
 	relations?: Relation[];
 	/**
+	 * Entity-level class: the id of an entity (typically a nature entity
+	 * like `foundation/nature/mortals/human`) that this entity is an
+	 * instance of. Acts as a virtual sub-kind — displayed in the kind
+	 * pill on cards and the entity page header as the class entity's
+	 * name (e.g. "Human"), links to the class entity's page, and used
+	 * as the primary filter discriminator on collection pages.
+	 *
+	 * Must resolve to a known entity id. Replaces the equivalent
+	 * `kindred` relation pattern.
+	 */
+	class?: string;
+	/**
 	 * Optional book-mode configuration for entities that carry a
 	 * `chapters/` subfolder of prose pages. Controls how those pages
 	 * are labelled and rendered.

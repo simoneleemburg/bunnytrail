@@ -19,6 +19,10 @@
 		era?: string | null;
 		/** Optional sigil glyph rendered before the name. */
 		sigil?: string | null;
+		/** When set, replaces kind in the eyebrow with a linked class label (e.g. "Human"). */
+		classLabel?: string | null;
+		/** The href to link the classLabel to (the class entity's page). */
+		classHref?: string | null;
 		/** Optional sort rank from frontmatter. Displayed as "AXIOM · 2". */
 		rank?: number | null;
 		/**
@@ -38,6 +42,8 @@
 		tags = [],
 		era = null,
 		sigil = null,
+		classLabel = null,
+		classHref = null,
 		rank = null,
 		rankDisplay = null
 	}: Props = $props();
@@ -45,7 +51,11 @@
 
 <article class="entity-card">
 	<div class="eyebrow">
-		<span class="type">{kind ?? type}</span>{#if rank != null && rankDisplay !== 'none'}<span
+		{#if classLabel && classHref}
+			<a class="type class-link" href={classHref}>{classLabel}</a>
+		{:else}
+			<span class="type">{kind ?? type}</span>
+		{/if}{#if rank != null && rankDisplay !== 'none'}<span
 				class="sep">·</span
 			><span class="rank">{rankDisplay === 'roman' ? toRoman(rank) : rank}</span>{/if}
 		{#if era}
@@ -107,6 +117,21 @@
 		color: var(--accent-deep);
 		font-weight: 600;
 		letter-spacing: 0.1em;
+	}
+
+	/* Class links use the same visual weight as kind labels but carry
+	   an underline on hover to signal they're navigable. */
+	.eyebrow .class-link {
+		color: var(--accent-deep);
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		text-decoration: none;
+		position: relative;
+		z-index: 2;
+	}
+	.eyebrow .class-link:hover {
+		text-decoration: underline;
+		text-decoration-color: var(--accent-warm);
 	}
 
 	.sep {
