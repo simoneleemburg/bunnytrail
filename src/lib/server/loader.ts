@@ -15,7 +15,8 @@ import {
 	validateSummaryWikilinks,
 	validateCollectionWikilinks,
 	validateKindBodyWikilinks,
-	validateClassField
+	validateClassField,
+	validateLangLinks
 } from './validate';
 
 // Re-export symbols that external callers (graph.ts, guides.ts, specs)
@@ -129,6 +130,7 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 	validateCollectionWikilinks(validateArgs);
 	validateKindBodyWikilinks(validateArgs);
 	validateClassField(validateArgs);
+	validateLangLinks(validateArgs);
 
 	return {
 		entities,

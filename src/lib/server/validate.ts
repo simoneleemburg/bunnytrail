@@ -281,6 +281,84 @@ export function validateClassField(args: ValidateArgs): void {
 	}
 }
 
+/**
+ * Validate `[[code]]`-style language tags across all text surfaces:
+ * entity bodies, summaries, collection bodies, and kind bodies.
+ *
+ * Mirrors the decision tree in `markdown.ts` `rewriteBrackets()`:
+ * a `[[token]]` is treated as a lang tag only when it matches the
+ * lang-tag shape (`/^[a-z]{2,8}$/`) AND cannot be resolved as an
+ * entity wikilink. If it also isn't in the registered `langCodes`
+ * set, we emit a broken-link issue.
+ *
+ * This catches `[[ot]]` typos and references to language codes that
+ * haven't been defined yet, while ignoring valid entity slugs that
+ * happen to be short (e.g. `[[kael]]`, `[[harmonia]]`).
+ */
+export function validateLangLinks(args: ValidateArgs): void {
+	const { entities, collections, kindRegistry, clusterSet, universalSet, langCodes, issues } =
+		args;
+	const langShape = /^[a-z]{2,8}$/;
+
+	function checkBody(
+		body: string,
+		entityId: EntityId | undefined,
+		fromCluster: string | null,
+		surface: string
+	): void {
+		for (const raw of extractWikilinks(body)) {
+			// Only interested in bare-slug tokens that match the lang-tag shape.
+			if (!langShape.test(raw)) continue;
+			// If it's a registered lang code, it's valid — skip.
+			if (langCodes.has(raw)) continue;
+			// If it resolves as an entity, it's an entity wikilink — skip.
+			// Also skip `missing-in-cluster`: the resolver identified it as a
+			// cluster-scoped bare slug (an entity reference), just not found in
+			// this cluster. Report that via validateEntityWikilinks, not here.
+			const r = resolveWikilink(raw, entities, fromCluster, clusterSet, universalSet);
+			if (r.id !== null || r.reason === 'missing-in-cluster') continue;
+			issues.push({
+				kind: 'broken-link',
+				...(entityId !== undefined && { entity: entityId }),
+				detail: `${surface} → [[${raw}]] (unknown language code)`
+			});
+		}
+	}
+
+	// Entity bodies
+	for (const entity of entities.values()) {
+		const fromCluster = clusterOf(entity.id, clusterSet);
+		checkBody(entity.body, entity.id, fromCluster, 'language tag');
+	}
+
+	// Summaries
+	for (const entity of entities.values()) {
+		const summary = entity.meta.summary;
+		if (!summary) continue;
+		const fromCluster = clusterOf(entity.id, clusterSet);
+		checkBody(summary, entity.id, fromCluster, 'language tag in summary');
+	}
+
+	// Collection bodies
+	for (const [collPath, collection] of collections) {
+		if (!collection.body) continue;
+		const topLevel = collPath.split('/')[0];
+		const fromCluster = clusterSet.has(topLevel) ? topLevel : null;
+		checkBody(
+			collection.body,
+			undefined,
+			fromCluster,
+			`${collPath}/_collection.md: language tag`
+		);
+	}
+
+	// Kind bodies (global scope — no cluster)
+	for (const [kindId, kind] of kindRegistry) {
+		if (!kind.body) continue;
+		checkBody(kind.body, undefined, null, `kinds/${kindId}/_kind.md: language tag`);
+	}
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
