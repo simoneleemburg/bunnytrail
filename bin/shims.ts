@@ -164,6 +164,10 @@ export function planShims(mode: ShimMode): Shim[] {
 		{ file: 'tags/[tag]/+page.server.ts', contents: pageServer(mode, 'tags/tag') },
 		{ file: 'tags/[tag]/+page.svelte', contents: pageSvelte(mode, 'tags/tag') },
 
+		// Symbology index
+		{ file: 'symbology/+page.server.ts', contents: pageServer(mode, 'symbology') },
+		{ file: 'symbology/+page.svelte', contents: pageSvelte(mode, 'symbology') },
+
 		// Health dashboard
 		{ file: 'health/+page.server.ts', contents: pageServer(mode, 'health') },
 		{ file: 'health/+page.svelte', contents: pageSvelte(mode, 'health') }

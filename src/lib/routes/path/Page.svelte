@@ -6,6 +6,7 @@
 	import CraftPage from './CraftPage.svelte';
 	import KindsIndexPage from '../kinds/KindsIndexPage.svelte';
 	import KindPage from '../kinds/kind/KindPage.svelte';
+	import SymbologyPage from '../symbology/Page.svelte';
 	import { page } from '$app/state';
 
 	let { data }: { data: PathPageData } = $props();
@@ -30,6 +31,8 @@
 	<KindsIndexPage {data} />
 {:else if data.kind === 'kindPage'}
 	<KindPage {data} upHref={kindUpHref} />
+{:else if data.kind === 'symbology'}
+	<SymbologyPage {data} />
 {:else}
 	<EntityPage {data} />
 {/if}

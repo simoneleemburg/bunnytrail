@@ -29,7 +29,7 @@ export async function load({ url }: { url: URL }) {
 	// Top-level paths that have a cluster-scoped variant under
 	// /<cluster>/. /kinds is synthesized (not a content folder), so
 	// the union-shelf list doesn't include it.
-	const clusterAwarePaths = ['kinds'];
+	const clusterAwarePaths = ['kinds', 'symbology'];
 	const ctx: ScopeContext = { clusters, unionShelves, clusterAwarePaths };
 	// During prerender, every URL is just a path — querystrings are
 	// not part of the prerender input set, and SvelteKit forbids

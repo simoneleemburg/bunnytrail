@@ -8,6 +8,7 @@ import { loadChapterPage } from './chapterPage.load';
 import { loadCraftPage } from './craftPage.load';
 import { loadKindsIndexPage } from '../kinds/kindsIndexPage.load';
 import { loadKindPage } from '../kinds/kind/kindPage.load';
+import { loadSymbologyPage } from '../symbology/load';
 
 /**
  * Unified route for everything that lives inside the worldbuilding
@@ -54,6 +55,18 @@ export async function load({ params }: { params: { path: string } }) {
 			return { kind: 'kindPage' as const, ...loadKindPage(kindId, cluster) };
 		}
 		return { kind: 'kindsIndex' as const, ...loadKindsIndexPage(cluster) };
+	}
+
+	// Cluster-scoped /symbology: `<cluster>/symbology` or
+	// `<universal>/symbology`. Filters the global sigil index to
+	// entities within that root. Must run before entity/folder branches.
+	const symbologyMatch = path.match(/^([a-z0-9][a-z0-9-]*)\/symbology$/);
+	if (
+		symbologyMatch &&
+		(graph.clusters().includes(symbologyMatch[1]) ||
+			graph.universalFolders().includes(symbologyMatch[1]))
+	) {
+		return { kind: 'symbology' as const, ...loadSymbologyPage(symbologyMatch[1]) };
 	}
 
 	const entity = graph.get(path);
