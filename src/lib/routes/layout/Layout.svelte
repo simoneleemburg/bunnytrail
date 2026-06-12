@@ -64,6 +64,7 @@
 	// cluster picker also closes on outside click.
 	let drawerOpen = $state(false);
 	let clusterOpen = $state(false);
+	let metaOpen = $state(false);
 
 	// Active label for the cluster trigger. Falls back to the world
 	// "all" label when nothing's flagged selected (defensive — the
@@ -128,6 +129,7 @@
 		// shouldn't inherit the previous chrome state.
 		drawerOpen = false;
 		clusterOpen = false;
+		metaOpen = false;
 
 		if (bypassScopePaint) {
 			bypassScopePaint = false;
@@ -167,6 +169,7 @@
 	function onKeydown(e: KeyboardEvent) {
 		if (e.key !== 'Escape') return;
 		if (clusterOpen) clusterOpen = false;
+		else if (metaOpen) metaOpen = false;
 		else if (drawerOpen) drawerOpen = false;
 	}
 
@@ -185,6 +188,32 @@
 		if (!clusterOpen) return;
 		document.addEventListener('click', onDocumentClick);
 		return () => document.removeEventListener('click', onDocumentClick);
+	});
+
+	function onDocumentClickMeta(e: MouseEvent) {
+		const target = e.target as Element | null;
+		if (target?.closest('[data-meta-picker]')) return;
+		metaOpen = false;
+	}
+
+	$effect(() => {
+		if (!browser) return;
+		if (!metaOpen) return;
+		document.addEventListener('click', onDocumentClickMeta);
+		return () => document.removeEventListener('click', onDocumentClickMeta);
+	});
+
+	let metaActive = $derived.by(() => {
+		const current = '/' + ($page.url.pathname.replace(/^\/+/, '').replace(/\/+$/, '') || '');
+		return (
+			current === '/kinds' ||
+			current.startsWith('/kinds/') ||
+			current === '/blog' ||
+			current.startsWith('/blog/') ||
+			current === '/guides' ||
+			current.startsWith('/guides/') ||
+			/^\/[^/]+\/kinds(\/|$)/.test(current)
+		);
 	});
 </script>
 
@@ -227,7 +256,50 @@
 					<a href={item.href} aria-current={navAriaCurrent(item.href)}>{item.label}</a>
 				{/each}
 				<span class="nav-sep" aria-hidden="true">{data.navSep}</span>
-				<a href={data.kindsHref} aria-current={navAriaCurrent(data.kindsHref)}>Kinds</a>
+				<div class="meta-picker" data-meta-picker>
+					<button
+						type="button"
+						class="meta-trigger"
+						aria-haspopup="listbox"
+						aria-expanded={metaOpen}
+						aria-current={metaActive ? true : undefined}
+						onclick={() => (metaOpen = !metaOpen)}
+					>
+						Meta
+						<span class="meta-caret" aria-hidden="true">▾</span>
+					</button>
+					{#if metaOpen}
+						<ul class="meta-menu" role="listbox">
+							<li>
+								<a
+									href={data.kindsHref}
+									role="option"
+									aria-selected={!!navAriaCurrent(data.kindsHref)}
+									class:selected={!!navAriaCurrent(data.kindsHref)}
+									onclick={() => (metaOpen = false)}
+								>Kinds</a>
+							</li>
+							<li>
+								<a
+									href="/guides"
+									role="option"
+									aria-selected={!!navAriaCurrent('/guides')}
+									class:selected={!!navAriaCurrent('/guides')}
+									onclick={() => (metaOpen = false)}
+								>Guides</a>
+							</li>
+							<li>
+								<a
+									href="/blog"
+									role="option"
+									aria-selected={!!navAriaCurrent('/blog')}
+									class:selected={!!navAriaCurrent('/blog')}
+									onclick={() => (metaOpen = false)}
+								>Journal</a>
+							</li>
+						</ul>
+					{/if}
+				</div>
 			</nav>
 
 			<div class="chrome-end">
@@ -286,6 +358,8 @@
 						<a href={item.href} aria-current={navAriaCurrent(item.href)}>{item.label}</a>
 					{/each}
 					<a href={data.kindsHref} aria-current={navAriaCurrent(data.kindsHref)}>Kinds</a>
+				<a href="/guides" aria-current={navAriaCurrent('/guides')}>Guides</a>
+				<a href="/blog" aria-current={navAriaCurrent('/blog')}>Journal</a>
 				</nav>
 
 				{#if data.clusterOptions.length > 1}
@@ -455,6 +529,106 @@
 	:global(:where(.nav-sep)) {
 		color: var(--ink-faint);
 		font-size: var(--text-base);
+	}
+
+	/* ── Meta picker (Kinds / Journal / …) ──────────────────────
+	   Vertically-folding menu behind the masthead "Meta" trigger.
+	   Shares visual language with the cluster picker but is
+	   anchored left (aligned to the trigger) rather than right. */
+	.meta-picker {
+		position: relative;
+	}
+
+	.meta-trigger {
+		display: inline-flex;
+		align-items: baseline;
+		gap: var(--space-2);
+		font-family: var(--font-display);
+		font-size: var(--text-base);
+		letter-spacing: 0.01em;
+		color: var(--ink-soft);
+		background: transparent;
+		border: 1px solid transparent;
+		border-radius: var(--radius-md);
+		padding: var(--space-1) var(--space-2);
+		cursor: pointer;
+		transition:
+			background-color 120ms,
+			border-color 120ms,
+			color 120ms;
+	}
+
+	.meta-trigger:hover,
+	.meta-trigger:focus-visible {
+		color: var(--accent);
+		outline: none;
+	}
+
+	.meta-trigger[aria-expanded='true'],
+	.meta-trigger[aria-current] {
+		color: var(--ink);
+	}
+
+	.meta-caret {
+		font-size: 0.7em;
+		color: var(--ink-faint);
+		transition: transform 120ms;
+	}
+
+	.meta-trigger[aria-expanded='true'] .meta-caret {
+		transform: rotate(180deg);
+	}
+
+	.meta-menu {
+		position: absolute;
+		top: calc(100% + var(--space-2));
+		left: 0;
+		min-width: 9rem;
+		margin: 0;
+		padding: var(--space-2);
+		list-style: none;
+		background: var(--vellum);
+		border: 1px solid var(--rule);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-hover);
+		z-index: 20;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+	}
+
+	.meta-menu li {
+		margin: 0;
+	}
+
+	.meta-menu a {
+		display: block;
+		width: 100%;
+		font-family: var(--font-display);
+		font-size: var(--text-sm);
+		letter-spacing: 0.02em;
+		color: var(--ink-soft);
+		background: transparent;
+		text-decoration: none;
+		border-radius: var(--radius-sm);
+		padding: var(--space-2) var(--space-3);
+		cursor: pointer;
+	}
+
+	.meta-menu a:hover,
+	.meta-menu a:focus-visible {
+		background: var(--paper-warm);
+		color: var(--accent);
+		outline: none;
+	}
+
+	.meta-menu a.selected {
+		color: var(--accent);
+	}
+
+	.meta-menu a.selected::before {
+		content: '· ';
+		color: var(--accent);
 	}
 
 	.chrome-end {
@@ -712,7 +886,8 @@
 		}
 
 		.nav-desktop,
-		.cluster-picker-desktop {
+		.cluster-picker-desktop,
+		.meta-picker {
 			display: none;
 		}
 
