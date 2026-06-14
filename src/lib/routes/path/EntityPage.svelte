@@ -399,14 +399,19 @@
 
 			{#if relationGroups.length > 0}
 				<section class="relations">
-					{#each relationGroups as group (group.key)}
+					{#each relationGroups as group, gi (group.key)}
 						{@const isExpanded = expanded.has(group.key)}
 						{@const visible =
 							group.items.length > COLLAPSE_AT && !isExpanded
 								? group.items.slice(0, COLLAPSE_AT)
 								: group.items}
 						<div class="group">
-							<div class="group-label">{group.label}</div>
+							<div class="group-label">
+								{group.label}
+								{#if gi === 0}
+									<a class="graph-link" href={'/graph?node=' + encodeURIComponent(data.entity.id)}>Graph →</a>
+								{/if}
+							</div>
 							<ul>
 								{#each visible as item, i (item.entity?.id ?? i)}
 									{#if item.entity}
@@ -797,11 +802,27 @@
 	}
 
 	.group-label {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
 		font-size: var(--text-xs);
 		font-variant-caps: all-small-caps;
 		letter-spacing: 0.08em;
 		color: var(--ink-faint);
 		margin-bottom: var(--space-2);
+	}
+
+	.graph-link {
+		font-size: var(--text-xs);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.08em;
+		color: var(--ink-faint);
+		text-decoration: none;
+		margin-left: auto;
+	}
+
+	.graph-link:hover {
+		color: var(--accent);
 	}
 
 	.show-toggle {
