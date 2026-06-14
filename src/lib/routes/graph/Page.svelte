@@ -349,8 +349,8 @@
 				cluster: n.cluster,
 				degree: degrees.get(n.id) ?? 0,
 				isCenter,
-				// Pin the center node
-				...(isCenter ? { fx: width / 2, fy: height / 2 } : {})
+				// Pin the center node and give it an explicit start position
+				...(isCenter ? { fx: width / 2, fy: height / 2, x: width / 2, y: height / 2 } : {})
 			};
 			nodeMap.set(n.id, sn);
 			return sn;
@@ -374,35 +374,92 @@
 		const cx = width / 2;
 		const cy = height / 2;
 
+		// In ego mode the centre node is pinned at cx/cy — no forceCenter needed.
+		// Radial radius scales up for small neighbourhoods so nodes don't crowd.
+		const neighbourCount = isEgo ? nodes.length - 1 : 0;
+		const egoRadius = Math.max(180, 120 + neighbourCount * 18);
+
+		// Pre-position all ego-graph nodes before forceSimulation() sees them,
+		// so D3 cannot assign its own initial positions (which start near origin).
+		// Centre goes to cx/cy; neighbours go evenly around it at egoRadius.
+		if (isEgo) {
+			const nonCenter = nodes.filter((n) => !n.isCenter);
+			const center = nodes.find((n) => n.isCenter);
+			if (center) { center.x = cx; center.y = cy; }
+			nonCenter.forEach((n, i) => {
+				// Offset start angle by -π/2 so first neighbour sits directly above
+				const angle = -Math.PI / 2 + (2 * Math.PI * i) / Math.max(nonCenter.length, 1);
+				n.x = cx + egoRadius * Math.cos(angle);
+				n.y = cy + egoRadius * Math.sin(angle);
+			});
+		}
+
 		const sim = forceSimulation(nodes)
-			.force(
-				'link',
-				forceLink<SimNode, SimEdge>(edges)
-					.id((d) => d.id)
-					.distance(isEgo ? 120 : 80)
-					.strength(isEgo ? 0.8 : 0.4)
-			)
-			.force('charge', forceManyBody<SimNode>().strength(isEgo ? -400 : -180))
-			.force('center', forceCenter(cx, cy))
-			.force(
-				'collide',
-				forceCollide<SimNode>().radius((d) => nodeRadius(d.degree, d.isCenter) + 6)
+			.force('charge', forceManyBody<SimNode>().strength(isEgo ? -800 : -180))
+			.force('collide',
+				forceCollide<SimNode>().radius((d) => nodeRadius(d.degree, d.isCenter) + 10)
 			)
 			.alphaDecay(isEgo ? 0.03 : 0.02);
 
-		if (isEgo) {
-			// Push neighbours into a ring around the center
-			sim.force('radial', forceRadial<SimNode>(140, cx, cy).strength((d) => d.isCenter ? 0 : 0.6));
-		}
+		if (!isEgo) {
+			// Full graph: link force + center keep the graph coherent
+			sim
+				.force('link',
+					forceLink<SimNode, SimEdge>(edges)
+						.id((d) => d.id)
+						.distance(80)
+						.strength(0.4)
+				)
+				.force('center', forceCenter(cx, cy));
 
-		sim.on('tick', () => {
+			sim.on('tick', () => {
+				for (const e of edges) {
+					e.sourceNode = e.source as unknown as SimNode;
+					e.targetNode = e.target as unknown as SimNode;
+				}
+				simNodes = nodes.slice();
+				simEdges = edges.slice();
+			});
+		} else if (nodes.length <= 2) {
+			// 1-neighbour case: stop D3 before it ticks, then place nodes explicitly
+			// and wire up edges for the SVG renderer.
+			sim.stop();
+			// Re-apply positions after sim construction (D3 may jiggle them during init)
+			const nonCenter2 = nodes.filter((n) => !n.isCenter);
+			const center2 = nodes.find((n) => n.isCenter);
+			if (center2) { center2.x = cx; center2.y = cy; }
+			nonCenter2.forEach((n, i) => {
+				const angle = -Math.PI / 2 + (2 * Math.PI * i) / Math.max(nonCenter2.length, 1);
+				n.x = cx + egoRadius * Math.cos(angle);
+				n.y = cy + egoRadius * Math.sin(angle);
+			});
+			const nodeMap = new Map(nodes.map((n) => [n.id, n]));
 			for (const e of edges) {
-				e.sourceNode = e.source as unknown as SimNode;
-				e.targetNode = e.target as unknown as SimNode;
+				e.sourceNode = nodeMap.get(e.source as string);
+				e.targetNode = nodeMap.get(e.target as string);
 			}
 			simNodes = nodes.slice();
 			simEdges = edges.slice();
-		});
+		} else {
+			// Ego graph (3+ nodes): radial + link cooperate to form a ring.
+			sim
+				.force('link',
+					forceLink<SimNode, SimEdge>(edges)
+						.id((d) => d.id)
+						.distance(egoRadius)
+						.strength(0.3)
+				)
+				.force('radial', forceRadial<SimNode>(egoRadius, cx, cy).strength((d) => d.isCenter ? 0 : 0.8));
+
+			sim.on('tick', () => {
+				for (const e of edges) {
+					e.sourceNode = e.source as unknown as SimNode;
+					e.targetNode = e.target as unknown as SimNode;
+				}
+				simNodes = nodes.slice();
+				simEdges = edges.slice();
+			});
+		}
 
 		currentSim = sim;
 
