@@ -149,6 +149,46 @@
 						</div>
 					{/if}
 				</section>
+			{:else if block.kind === 'presence'}
+				{@const counts = block.entries.map(e =>
+					e.worldTotal !== null ? Math.round(e.percentage / 100 * e.worldTotal) : null
+				)}
+				{@const knownTotal = counts.every(c => c !== null)
+					? counts.reduce((s, c) => s! + c!, 0)
+					: null}
+				{@const maxCount = counts.reduce((m, c) => (c !== null && c > (m ?? 0) ? c : m), null as number | null)}
+				<section class="stat-block stat-block--presence">
+					<h2 class="stat-heading">Population presence</h2>
+					{#if knownTotal !== null}
+						<p class="stat-total">
+							<span class="stat-total__number">{formatNumber(knownTotal)}</span>
+							<span class="stat-total__label">known total</span>
+						</p>
+					{/if}
+					<ul class="presence-list">
+						{#each block.entries as entry, i (entry.worldId)}
+							{@const count = counts[i]}
+							{@const speciesPct = knownTotal ? Math.round((count ?? 0) / knownTotal * 100) : null}
+							<li class="presence-item">
+								<div class="presence-row">
+									<a class="presence-world" href={entry.href}>{entry.worldName}</a>
+									{#if speciesPct !== null}
+										<span class="presence-pct">{speciesPct}%</span>
+									{/if}
+									{#if count !== null}
+										<span class="presence-total">({formatNumber(count)})</span>
+									{/if}
+								</div>
+								<div class="presence-bar-track" aria-hidden="true">
+									<div
+										class="presence-bar-fill"
+										style:width="{maxCount ? ((count ?? 0) / maxCount) * 100 : 100}%"
+									></div>
+								</div>
+							</li>
+						{/each}
+					</ul>
+				</section>
 			{/if}
 		{/each}
 	</div>
@@ -265,5 +305,70 @@
 		font-size: var(--text-xs);
 		color: var(--ink-faint);
 		font-variant-numeric: tabular-nums;
+	}
+
+	/* ── Presence block ───────────────────────────────────────────── */
+	.presence-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+	}
+
+	.presence-item {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+	}
+
+	.presence-row {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-2);
+		flex-wrap: wrap;
+	}
+
+	.presence-world {
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		color: var(--ink);
+		text-decoration: none;
+		border-bottom: 1px solid var(--rule-hair, #d8d8d8);
+	}
+
+	.presence-world:hover {
+		color: var(--accent);
+		border-bottom-color: var(--accent-warm);
+	}
+
+	.presence-pct {
+		font-size: var(--text-xs);
+		font-variant-caps: all-small-caps;
+		font-variant-numeric: tabular-nums;
+		letter-spacing: 0.06em;
+		color: var(--ink);
+		font-weight: 600;
+	}
+
+	.presence-total {
+		font-size: var(--text-xs);
+		color: var(--ink-faint);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.presence-bar-track {
+		height: 4px;
+		background: var(--parchment-deep, #e2e2e2);
+		border-radius: 2px;
+		overflow: hidden;
+	}
+
+	.presence-bar-fill {
+		height: 100%;
+		background: var(--accent-soft, #777);
+		border-radius: 2px;
+		transition: width 200ms ease;
 	}
 </style>

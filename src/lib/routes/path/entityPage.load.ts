@@ -1,4 +1,5 @@
 import { graph, byRankThenName } from '$lib/server/graph';
+import type { SpeciesPresenceEntry } from '$lib/server/graph';
 import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderEntityBody, renderSummary } from '$lib/server/markdown';
 import { titleCaseSlug, toRoman, type Entity, type RankDisplay } from '$lib/types';
@@ -176,12 +177,29 @@ export async function loadEntityPage(entity: Entity) {
 	//           percentage: <number>
 	// YAML parses this as an array of objects whose keys are stat names.
 	// We normalise it into typed blocks and resolve entity links.
-	const statistics = parseStatistics(entity.meta.statistics, (eid: string) => {
+	const statistics: StatBlock[] = parseStatistics(entity.meta.statistics, (eid: string) => {
 		const target = graph.get(eid);
 		return target
 			? { name: target.meta.name, href: `/${eid}` }
 			: { name: eid.split('/').pop() ?? eid, href: `/${eid}` };
 	});
+
+	// Automatically derive a "presence" block from the reverse population
+	// index: if any world's `statistics.population.slices` references this
+	// entity, surface "Population presence" without any extra frontmatter.
+	const presenceEntries: SpeciesPresenceEntry[] = graph.speciesPresence(id);
+	if (presenceEntries.length > 0) {
+		statistics.push({
+			kind: 'presence',
+			entries: presenceEntries.map((e) => ({
+				worldId: e.worldId,
+				worldName: e.worldName,
+				href: e.href,
+				percentage: e.percentage,
+				worldTotal: e.worldTotal
+			}))
+		});
+	}
 
 	const HIDDEN = new Set([
 		'name',
@@ -369,7 +387,20 @@ export interface PopulationStat {
 	slices: PopulationSlice[];
 }
 
-export type StatBlock = PopulationStat;
+export interface PresenceEntry {
+	worldId: string;
+	worldName: string;
+	href: string;
+	percentage: number;
+	worldTotal: number | null;
+}
+
+export interface PresenceStat {
+	kind: 'presence';
+	entries: PresenceEntry[];
+}
+
+export type StatBlock = PopulationStat | PresenceStat;
 
 /**
  * Normalise the raw `statistics` frontmatter value into typed stat blocks.

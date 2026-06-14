@@ -33,6 +33,18 @@ export function byRankThenName(a: Entity, b: Entity): number {
  * It is intentionally simple: a few maps, no query language. If the data grows
  * past "thousands of entities" we can revisit.
  */
+/**
+ * One entry in the species-presence index: this species appears in the
+ * population statistics of `worldId` at `percentage`%.
+ */
+export interface SpeciesPresenceEntry {
+	worldId: EntityId;
+	worldName: string;
+	href: string;
+	percentage: number;
+	worldTotal: number | null;
+}
+
 export class Graph {
 	#entities = new Map<EntityId, Entity>();
 	#outEdges = new Map<EntityId, Edge[]>();
@@ -44,6 +56,8 @@ export class Graph {
 	#universalFolders: Set<string> = new Set();
 	#loaded = false;
 	#loading: Promise<void> | null = null;
+	/** Lazily built on first call to `speciesPresence()`. */
+	#speciesPopulationIndex: Map<EntityId, SpeciesPresenceEntry[]> | null = null;
 
 	/** Load (or reload) the entire graph from disk. */
 	async load(contentDir: string = CONTENT_DIR): Promise<void> {
@@ -61,6 +75,9 @@ export class Graph {
 			this.#clusters = clusters;
 			this.#universalFolders = universalFolders;
 			this.#loaded = true;
+			// Invalidate the lazy species-presence index so a dev-mode
+			// reload rebuilds it against the fresh entity set.
+			this.#speciesPopulationIndex = null;
 		})();
 		try {
 			await this.#loading;
@@ -635,6 +652,84 @@ export class Graph {
 		}
 		out.sort(byRankThenName);
 		return out;
+	}
+
+	/**
+	 * Every world-level population entry that references `speciesId`
+	 * in its `statistics.population.slices`. Lazily builds a reverse
+	 * index on first call (O(n) over all entities) and caches it for
+	 * subsequent calls. The cache is invalidated by `load()` so dev
+	 * hot-reloads always see fresh data.
+	 *
+	 * Returns an empty array for entities that appear in no world's
+	 * population statistics. Sorted by percentage descending so the
+	 * most populous presence appears first.
+	 */
+	speciesPresence(speciesId: EntityId): SpeciesPresenceEntry[] {
+		if (!this.#speciesPopulationIndex) {
+			this.#speciesPopulationIndex = this.#buildSpeciesPopulationIndex();
+		}
+		return this.#speciesPopulationIndex.get(speciesId) ?? [];
+	}
+
+	/**
+	 * Walk every entity, extract `statistics[].population` blocks, and
+	 * build a reverse map from species entity id → list of world entries.
+	 */
+	#buildSpeciesPopulationIndex(): Map<EntityId, SpeciesPresenceEntry[]> {
+		const index = new Map<EntityId, SpeciesPresenceEntry[]>();
+
+		for (const entity of this.#entities.values()) {
+			const rawStats = entity.meta.statistics;
+			if (!Array.isArray(rawStats)) continue;
+
+			for (const item of rawStats) {
+				if (!item || typeof item !== 'object') continue;
+				const entry = item as Record<string, unknown>;
+				if (!('population' in entry) || !Array.isArray(entry.population)) continue;
+
+				// Extract total and slices from the population array.
+				let total: number | null = null;
+				let slices: Array<{ species: string; percentage: number }> = [];
+
+				for (const popItem of entry.population) {
+					if (!popItem || typeof popItem !== 'object') continue;
+					const p = popItem as Record<string, unknown>;
+					if (typeof p.total === 'number') total = p.total;
+					if (Array.isArray(p.slices)) {
+						for (const s of p.slices) {
+							if (!s || typeof s !== 'object') continue;
+							const sl = s as Record<string, unknown>;
+							if (typeof sl.species === 'string' && typeof sl.percentage === 'number') {
+								slices.push({ species: sl.species, percentage: sl.percentage });
+							}
+						}
+					}
+				}
+
+				if (slices.length === 0) continue;
+
+				const worldEntry: Omit<SpeciesPresenceEntry, 'percentage'> = {
+					worldId: entity.id,
+					worldName: entity.meta.name,
+					href: `/${entity.id}`,
+					worldTotal: total
+				};
+
+				for (const slice of slices) {
+					const arr = index.get(slice.species) ?? [];
+					arr.push({ ...worldEntry, percentage: slice.percentage });
+					index.set(slice.species, arr);
+				}
+			}
+		}
+
+		// Sort each species' entry list by percentage descending.
+		for (const arr of index.values()) {
+			arr.sort((a, b) => b.percentage - a.percentage);
+		}
+
+		return index;
 	}
 
 	/** Outgoing edges from `id`. */
