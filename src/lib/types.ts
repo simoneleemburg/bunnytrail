@@ -616,6 +616,10 @@ export interface VocabEntry {
 	pos: string | null;
 	/** Usage notes, etymology, context. */
 	notes: string | null;
+	/** Short language code (e.g. "bu"), for display as an inline pill. */
+	langCode: string | null;
+	/** URL to the language entity page, for the pill link. */
+	langHref: string | null;
 	/**
 	 * Entity that contributed this entry. Null when the entry comes from the
 	 * language entity's own `vocabulary:` block.

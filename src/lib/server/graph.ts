@@ -880,6 +880,9 @@ export class Graph {
 		const index = new Map<EntityId, VocabEntry[]>();
 		// Build code→id map once so we can resolve short codes in vocabulary items.
 		const codes = this.languageCodes();
+		// Invert: langId → short code, for storing langCode on entries.
+		const idToCode = new Map<EntityId, string>();
+		for (const [code, id] of codes) idToCode.set(id, code);
 
 		/** Resolve a `language:` value (short code or full entity id) to a language entity id. */
 		const resolveLang = (raw: string): EntityId | null => {
@@ -903,7 +906,9 @@ export class Graph {
 			for (const item of raw) {
 				if (!item || typeof item !== 'object') continue;
 				const v = item as Record<string, unknown>;
-				const word = typeof v.word === 'string' ? v.word.trim() : null;
+				// word is optional — fall back to entity name when absent.
+				const wordRaw = typeof v.word === 'string' ? v.word.trim() : null;
+				const word = wordRaw || (typeof entity.meta.name === 'string' ? entity.meta.name : null);
 				if (!word) continue;
 
 				const meaning = typeof v.meaning === 'string' ? v.meaning.trim() || null : null;
@@ -921,6 +926,8 @@ export class Graph {
 						meaning,
 						pos,
 						notes,
+						langCode: idToCode.get(targetId) ?? null,
+						langHref: `/${targetId}`,
 						sourceId: null,
 						sourceName: null,
 						sourceHref: null
@@ -936,6 +943,8 @@ export class Graph {
 						meaning,
 						pos,
 						notes,
+						langCode: idToCode.get(targetId) ?? langRef,
+						langHref: `/${targetId}`,
 						sourceId: entity.id,
 						sourceName: entity.meta.name,
 						sourceHref: `/${entity.id}`

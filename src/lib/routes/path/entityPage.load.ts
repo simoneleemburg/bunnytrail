@@ -34,10 +34,22 @@ export async function loadEntityPage(entity: Entity) {
 		s ? renderSummary(s, resolveLink, languageCodes, { stripLinks: true, kindIds }) : null;
 
 	const langCode = typeof entity.meta.language === 'string' ? entity.meta.language : null;
-	const langTargetId = langCode ? languageCodes.get(langCode) : undefined;
-	const language = langCode
+	// If no scalar `language:` field, check vocabulary[] items for a language reference.
+	// A `vocabulary: [{language: bu}]` entry alone is sufficient to show the pill.
+	const effectiveLangCode = langCode ?? (() => {
+		const vocabArr = entity.meta.vocabulary;
+		if (!Array.isArray(vocabArr)) return null;
+		for (const item of vocabArr) {
+			if (!item || typeof item !== 'object') continue;
+			const v = item as Record<string, unknown>;
+			if (typeof v.language === 'string' && v.language) return v.language;
+		}
+		return null;
+	})();
+	const langTargetId = effectiveLangCode ? languageCodes.get(effectiveLangCode) : undefined;
+	const language = effectiveLangCode
 		? {
-				code: langCode,
+				code: effectiveLangCode,
 				href: langTargetId ? `/${langTargetId}` : '#',
 				broken: !langTargetId
 			}
