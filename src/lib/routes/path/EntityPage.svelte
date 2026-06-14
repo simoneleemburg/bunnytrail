@@ -42,6 +42,13 @@
 	const hasTabs = $derived(hasClassMates || hasStatistics || hasVocabulary);
 	let activeTab: 'about' | 'instances' | 'statistics' | 'vocabulary' = $state('about');
 
+	const effectiveTab = $derived.by(() => {
+		if (activeTab === 'instances' && !hasClassMates) return 'about';
+		if (activeTab === 'statistics' && !hasStatistics) return 'about';
+		if (activeTab === 'vocabulary' && !hasVocabulary) return 'about';
+		return activeTab;
+	});
+
 	const COLLAPSE_AT = 8;
 	const expanded = new SvelteSet<string>();
 
@@ -226,8 +233,8 @@
 				type="button"
 				role="tab"
 				class="tab"
-				aria-selected={activeTab === 'about'}
-				class:active={activeTab === 'about'}
+				aria-selected={effectiveTab === 'about'}
+				class:active={effectiveTab === 'about'}
 				onclick={() => (activeTab = 'about')}
 			>
 				About
@@ -237,8 +244,8 @@
 					type="button"
 					role="tab"
 					class="tab"
-					aria-selected={activeTab === 'instances'}
-					class:active={activeTab === 'instances'}
+				aria-selected={effectiveTab === 'instances'}
+				class:active={effectiveTab === 'instances'}
 					onclick={() => (activeTab = 'instances')}
 				>
 					Instances
@@ -249,8 +256,8 @@
 					type="button"
 					role="tab"
 					class="tab"
-					aria-selected={activeTab === 'statistics'}
-					class:active={activeTab === 'statistics'}
+				aria-selected={effectiveTab === 'statistics'}
+				class:active={effectiveTab === 'statistics'}
 					onclick={() => (activeTab = 'statistics')}
 				>
 					Statistics
@@ -261,8 +268,8 @@
 					type="button"
 					role="tab"
 					class="tab"
-					aria-selected={activeTab === 'vocabulary'}
-					class:active={activeTab === 'vocabulary'}
+				aria-selected={effectiveTab === 'vocabulary'}
+				class:active={effectiveTab === 'vocabulary'}
 					onclick={() => (activeTab = 'vocabulary')}
 				>
 					Vocabulary
@@ -271,7 +278,7 @@
 		</div>
 	{/if}
 
-	{#if !hasTabs || activeTab === 'about'}
+	{#if !hasTabs || effectiveTab === 'about'}
 
 	<!-- Fleuron: same ornamental chapter-mark used on collection pages,
 	     marking the boundary between the editorial header zone and the
@@ -466,7 +473,7 @@
 	</div>
 	{/if}
 
-	{#if hasClassMates && activeTab === 'instances'}
+	{#if hasClassMates && effectiveTab === 'instances'}
 		<div role="tabpanel" class="instances-panel">
 			<div class="grid">
 				{#each data.classMates as card (card.id)}
@@ -486,13 +493,13 @@
 		</div>
 	{/if}
 
-	{#if hasStatistics && activeTab === 'statistics'}
+	{#if hasStatistics && effectiveTab === 'statistics'}
 		<div role="tabpanel" class="statistics-tab-panel">
 			<StatisticsPanel blocks={data.statistics} />
 		</div>
 	{/if}
 
-	{#if hasVocabulary && activeTab === 'vocabulary'}
+	{#if hasVocabulary && effectiveTab === 'vocabulary'}
 		<div role="tabpanel" class="vocabulary-tab-panel">
 			<VocabularyTable entries={data.vocabulary} />
 		</div>
