@@ -170,7 +170,11 @@ export function planShims(mode: ShimMode): Shim[] {
 
 		// Health dashboard
 		{ file: 'health/+page.server.ts', contents: pageServer(mode, 'health') },
-		{ file: 'health/+page.svelte', contents: pageSvelte(mode, 'health') }
+		{ file: 'health/+page.svelte', contents: pageSvelte(mode, 'health') },
+
+		// Graph — entity relationship visualisation
+		{ file: 'graph/+page.server.ts', contents: pageServer(mode, 'graph') },
+		{ file: 'graph/+page.svelte', contents: pageSvelte(mode, 'graph') }
 	];
 	return out;
 }

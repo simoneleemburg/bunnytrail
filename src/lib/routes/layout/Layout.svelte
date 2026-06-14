@@ -214,6 +214,7 @@
 			current.startsWith('/guides/') ||
 			current === '/symbology' ||
 			current.startsWith('/symbology/') ||
+			current === '/graph' ||
 			/^\/[^/]+\/kinds(\/|$)/.test(current)
 		);
 	});
@@ -308,6 +309,15 @@
 									onclick={() => (metaOpen = false)}
 								>Symbology</a>
 							</li>
+							<li>
+								<a
+									href="/graph"
+									role="option"
+									aria-selected={!!navAriaCurrent('/graph')}
+									class:selected={!!navAriaCurrent('/graph')}
+									onclick={() => (metaOpen = false)}
+								>Graph</a>
+							</li>
 						</ul>
 					{/if}
 				</div>
@@ -372,6 +382,7 @@
 				<a href="/guides" aria-current={navAriaCurrent('/guides')}>Guides</a>
 				<a href="/blog" aria-current={navAriaCurrent('/blog')}>Journal</a>
 				<a href="/symbology" aria-current={navAriaCurrent('/symbology')}>Symbology</a>
+				<a href="/graph" aria-current={navAriaCurrent('/graph')}>Graph</a>
 				</nav>
 
 				{#if data.clusterOptions.length > 1}
