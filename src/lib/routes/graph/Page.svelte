@@ -14,7 +14,7 @@
 	} from 'd3-force';
 	import { zoom, zoomIdentity, type ZoomBehavior, type ZoomTransform } from 'd3-zoom';
 	import { select } from 'd3-selection';
-	import { buildKindTree } from '$lib/types';
+	import { buildKindTree, relationLabel } from '$lib/types';
 	import type { GraphData, GraphNode, GraphEdge } from './load';
 
 	let { data }: { data: GraphData } = $props();
@@ -533,30 +533,13 @@
 
 	// ── Edge label humanisation ───────────────────────────────────────────────
 
-	const EDGE_LABELS: Record<string, string> = {
-		'member-of':       'member of',
-		'located-in':      'located in',
-		'native-to':       'native to',
-		'region-of':       'region of',
-		'serves-in':       'serves in',
-		'spoken-in':       'spoken in',
-		'is-a':            'is a',
-		'occurred-on':     'occurred on',
-		'occurred-in':     'occurred in',
-		'records':         'records',
-		'recorded-on':     'recorded on',
-		'orbits':          'orbits',
-		'governed-by':     'governed by',
-		'local-account-of':'local account of',
-		'approaches':      'approaches',
-		'defined-by':      'defined by',
-		'bounded-by':      'bounded by',
-		'inhabits':        'inhabits',
-		'instance-of':     'instance of',
-	};
-
-	function edgeLabel(kind: string): string {
-		return EDGE_LABELS[kind] ?? kind.replace(/[-_]/g, ' ');
+	/**
+	 * Returns the directional label for an edge in ego mode.
+	 * Direction is resolved relative to `centerId`.
+	 */
+	function egoEdgeLabel(e: SimEdge, centerId: string): string {
+		const srcId = e.sourceNode?.id ?? (e.source as string);
+		return relationLabel(e.kind, srcId === centerId ? 'out' : 'in');
 	}
 
 	// ── Click handlers ────────────────────────────────────────────────────────
@@ -631,8 +614,6 @@
 			{@const sy = e.sourceNode?.y ?? 0}
 			{@const tx = e.targetNode?.x ?? 0}
 			{@const ty = e.targetNode?.y ?? 0}
-			{@const mx = (sx + tx) / 2}
-			{@const my = (sy + ty) / 2}
 			<line
 				x1={sx} y1={sy} x2={tx} y2={ty}
 				class="graph-edge"
@@ -640,16 +621,32 @@
 				class:graph-edge--dim={hoveredId !== null && !active}
 				data-kind={e.kind}
 			/>
-			{#if active && focusId}
-				<text
-					class="graph-edge-label"
-					x={mx}
-					y={my}
-					text-anchor="middle"
-					dominant-baseline="middle"
-				>{edgeLabel(e.kind)}</text>
-			{/if}
 		{/each}
+
+		<!-- Edge labels: one per neighbour (combines all edge kinds for that pair) -->
+		{#if focusId && hoveredId && hoveredId !== focusId}
+			{@const pairEdges = simEdges.filter((e) =>
+				(e.sourceNode?.id === hoveredId || e.targetNode?.id === hoveredId) &&
+				(e.sourceNode?.id === focusId   || e.targetNode?.id === focusId)
+			)}
+			{#if pairEdges.length > 0}
+				{@const sx = pairEdges[0].sourceNode?.x ?? 0}
+				{@const sy = pairEdges[0].sourceNode?.y ?? 0}
+				{@const tx = pairEdges[0].targetNode?.x ?? 0}
+				{@const ty = pairEdges[0].targetNode?.y ?? 0}
+				{@const mx = (sx + tx) / 2}
+				{@const my = (sy + ty) / 2}
+				{#each pairEdges as e, i}
+					<text
+						class="graph-edge-label"
+						x={mx}
+						y={my + i * 13}
+						text-anchor="middle"
+						dominant-baseline="middle"
+					>{egoEdgeLabel(e, focusId)}</text>
+				{/each}
+			{/if}
+		{/if}
 
 		<!-- Nodes -->
 		{#each simNodes as node (node.id)}

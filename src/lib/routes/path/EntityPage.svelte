@@ -8,6 +8,7 @@
 	import Tag from '$lib/components/Tag.svelte';
 	import StatisticsPanel from '$lib/components/StatisticsPanel.svelte';
 	import { SvelteSet } from 'svelte/reactivity';
+	import { relationLabel } from '$lib/types';
 	import { toRoman } from '$lib/types';
 
 	let { data }: { data: EntityPageData } = $props();
@@ -61,40 +62,7 @@
 	};
 
 	function labelForKind(kind: string, direction: 'out' | 'in'): string {
-		if (kind === 'wikilink') {
-			return direction === 'out' ? 'Mentions' : 'Mentioned by';
-		}
-		if (kind === 'inhabits') {
-			return direction === 'out' ? 'Inhabitant of' : 'Inhabitants';
-		}
-		if (direction === 'in') {
-			// Inverse labels for incoming edges. The relation is declared
-			// on the *other* entity, so on this page we want the converse
-			// reading. Without this, "X located-in Y" rendered on Y's page
-			// as "located in: X" reads as if Y is located in X.
-			const inverse: Record<string, string> = {
-				'region-of': 'Regions',
-				'native-to': 'Native peoples',
-				'serves-in': 'Members',
-				'spoken-in': 'Languages',
-				'located-in': 'Located here',
-				'is-a': 'Includes',
-				'member-of': 'Bodies',
-				'occurred-on': 'Events',
-				'occurred-in': 'Events',
-				records: 'Recorded in',
-				'recorded-on': 'Account',
-				orbits: 'Moons',
-				'governed-by': 'Governs',
-				'local-account-of': 'Local accounts',
-				approaches: 'Approached by',
-				'defined-by': 'Defines',
-				'bounded-by': 'Bounds',
-				inhabits: 'Inhabitants'
-			};
-			if (inverse[kind]) return inverse[kind];
-		}
-		return kind.replace(/[-_]/g, ' ').replace(/^./, (c) => c.toUpperCase());
+		return relationLabel(kind, direction);
 	}
 
 	/**

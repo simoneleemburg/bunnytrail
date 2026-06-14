@@ -549,3 +549,54 @@ export interface HealthIssue {
 	entity?: EntityId;
 	detail: string;
 }
+
+// ── Relation edge labels ──────────────────────────────────────────────────────
+//
+// Single source of truth for how typed edges are labelled, used by both the
+// entity page (About tab) and the graph ego-view edge labels.
+//
+// `outLabel`  — read from the *source* entity's perspective  ("Nora Patel → instance-of → Human")
+// `inLabel`   — read from the *target* entity's perspective  ("Human ← instance-of ← Nora Patel")
+
+export interface RelationLabels {
+	outLabel: string;
+	inLabel: string;
+}
+
+const RELATION_LABEL_MAP: Record<string, RelationLabels> = {
+	'member-of':        { outLabel: 'Member of',        inLabel: 'Members' },
+	'located-in':       { outLabel: 'Located in',       inLabel: 'Located here' },
+	'native-to':        { outLabel: 'Native to',        inLabel: 'Native peoples' },
+	'region-of':        { outLabel: 'Region of',        inLabel: 'Regions' },
+	'serves-in':        { outLabel: 'Serves in',        inLabel: 'Members' },
+	'spoken-in':        { outLabel: 'Spoken in',        inLabel: 'Languages' },
+	'is-a':             { outLabel: 'Is a',             inLabel: 'Includes' },
+	'occurred-on':      { outLabel: 'Occurred on',      inLabel: 'Events' },
+	'occurred-in':      { outLabel: 'Occurred in',      inLabel: 'Events' },
+	'records':          { outLabel: 'Records',          inLabel: 'Recorded in' },
+	'recorded-on':      { outLabel: 'Recorded on',      inLabel: 'Account' },
+	'orbits':           { outLabel: 'Orbits',           inLabel: 'Orbited by' },
+	'governed-by':      { outLabel: 'Governed by',      inLabel: 'Governs' },
+	'local-account-of': { outLabel: 'Local account of', inLabel: 'Local accounts' },
+	'approaches':       { outLabel: 'Approaches',       inLabel: 'Approached by' },
+	'defined-by':       { outLabel: 'Defined by',       inLabel: 'Defines' },
+	'bounded-by':       { outLabel: 'Bounded by',       inLabel: 'Bounds' },
+	'inhabits':         { outLabel: 'Inhabits',         inLabel: 'Inhabited by' },
+	'instance-of':      { outLabel: 'Instance of',      inLabel: 'Instances' },
+	'wikilink':         { outLabel: 'Mentions',         inLabel: 'Mentioned by' },
+};
+
+/**
+ * Return the human-readable label for a relation edge, from the perspective
+ * of a given entity.
+ *
+ * @param kind      - The relation kind string (e.g. `"located-in"`).
+ * @param direction - `"out"` if the entity is the *source* of the edge,
+ *                   `"in"` if it is the *target*.
+ */
+export function relationLabel(kind: string, direction: 'out' | 'in'): string {
+	const entry = RELATION_LABEL_MAP[kind];
+	if (entry) return direction === 'out' ? entry.outLabel : entry.inLabel;
+	// Fallback: humanise the raw kind slug
+	return kind.replace(/[-_]/g, ' ').replace(/^./, (c) => c.toUpperCase());
+}
