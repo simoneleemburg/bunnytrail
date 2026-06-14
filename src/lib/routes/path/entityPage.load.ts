@@ -201,6 +201,42 @@ export async function loadEntityPage(entity: Entity) {
 		});
 	}
 
+	// ── Derived "inhabits" edges from statistics ──────────────────────────
+	// Planet side: each population slice → a synthetic inEdge (the species
+	// "inhabits" this world). Deduplicates against explicit typed relations.
+	const existingInIds = new Set(inEdges.map((e) => e.from));
+	const existingOutIds = new Set(outEdges.map((e) => e.to));
+
+	for (const block of statistics) {
+		if (block.kind !== 'population') continue;
+		for (const slice of block.slices) {
+			if (slice.speciesId === '__other__') continue;
+			if (existingInIds.has(slice.speciesId)) continue;
+			existingInIds.add(slice.speciesId);
+			const entity = graph.get(slice.speciesId);
+			inEdges.push({
+				from: slice.speciesId,
+				to: id,
+				kind: 'inhabits',
+				fromEntity: pickCard(entity, cardSummaryHtml)
+			});
+		}
+	}
+
+	// Species side: each presence entry → a synthetic outEdge (this species
+	// "inhabits" that world). Deduplicates against explicit typed relations.
+	for (const entry of presenceEntries) {
+		if (existingOutIds.has(entry.worldId)) continue;
+		existingOutIds.add(entry.worldId);
+		const worldEntity = graph.get(entry.worldId);
+		outEdges.push({
+			from: id,
+			to: entry.worldId,
+			kind: 'inhabits',
+			toEntity: pickCard(worldEntity, cardSummaryHtml)
+		});
+	}
+
 	const HIDDEN = new Set([
 		'name',
 		'summary',
@@ -457,14 +493,38 @@ function parsePopulation(
 				if (!s || typeof s !== 'object') continue;
 				const slice = s as Record<string, unknown>;
 				const id = typeof slice.species === 'string' ? slice.species : null;
+				if (id === null) continue;
+
 				const pct = typeof slice.percentage === 'number' ? slice.percentage : null;
-				if (id === null || pct === null) continue;
+				const count = typeof slice.count === 'number' ? slice.count : null;
+
 				const resolved = resolveEntity(id);
-				slices.push({ speciesId: id, speciesName: resolved.name, href: resolved.href, percentage: pct });
+				// Store count alongside; percentage will be finalised below.
+				slices.push({
+					speciesId: id,
+					speciesName: resolved.name,
+					href: resolved.href,
+					percentage: pct ?? 0, // placeholder; overwritten below if count-based
+					_rawCount: count,
+					_rawPct: pct
+				} as PopulationSlice & { _rawCount: number | null; _rawPct: number | null });
 			}
 		}
 	}
 
-	if (total === null && slices.length === 0) return null;
-	return { kind: 'population', total, slices };
+	// Finalise percentages: prefer explicit percentage; fall back to count/total.
+	// Drop slices where neither could be resolved.
+	const finalSlices: PopulationSlice[] = [];
+	for (const sl of slices as (PopulationSlice & { _rawCount: number | null; _rawPct: number | null })[]) {
+		if (sl._rawPct !== null) {
+			finalSlices.push({ speciesId: sl.speciesId, speciesName: sl.speciesName, href: sl.href, percentage: sl._rawPct });
+		} else if (sl._rawCount !== null && total !== null && total > 0) {
+			const pct = Math.round((sl._rawCount / total) * 1000) / 10; // one decimal
+			finalSlices.push({ speciesId: sl.speciesId, speciesName: sl.speciesName, href: sl.href, percentage: pct });
+		}
+		// else: no usable data — skip
+	}
+
+	if (total === null && finalSlices.length === 0) return null;
+	return { kind: 'population', total, slices: finalSlices };
 }

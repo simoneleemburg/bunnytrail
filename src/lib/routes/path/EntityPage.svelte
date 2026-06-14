@@ -64,6 +64,9 @@
 		if (kind === 'wikilink') {
 			return direction === 'out' ? 'Mentions' : 'Mentioned by';
 		}
+		if (kind === 'inhabits') {
+			return direction === 'out' ? 'Inhabitant of' : 'Inhabitants';
+		}
 		if (direction === 'in') {
 			// Inverse labels for incoming edges. The relation is declared
 			// on the *other* entity, so on this page we want the converse
@@ -86,7 +89,8 @@
 				'local-account-of': 'Local accounts',
 				approaches: 'Approached by',
 				'defined-by': 'Defines',
-				'bounded-by': 'Bounds'
+				'bounded-by': 'Bounds',
+				inhabits: 'Inhabitants'
 			};
 			if (inverse[kind]) return inverse[kind];
 		}
