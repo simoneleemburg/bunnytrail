@@ -6,7 +6,8 @@ import type {
 	EntityType,
 	FolderLabels,
 	HealthIssue,
-	Kind
+	Kind,
+	VocabEntry
 } from '$lib/types';
 import { folderLabels } from '$lib/types';
 import { CONTENT_DIR } from './globals';
@@ -43,6 +44,8 @@ export interface SpeciesPresenceEntry {
 	href: string;
 	percentage: number;
 	worldTotal: number | null;
+	/** Raw count if the slice was authored as a count rather than a percentage. */
+	count?: number | null;
 }
 
 export class Graph {
@@ -58,6 +61,8 @@ export class Graph {
 	#loading: Promise<void> | null = null;
 	/** Lazily built on first call to `speciesPresence()`. */
 	#speciesPopulationIndex: Map<EntityId, SpeciesPresenceEntry[]> | null = null;
+	/** Lazily built on first call to `languageVocabulary()`. */
+	#vocabIndex: Map<EntityId, VocabEntry[]> | null = null;
 
 	/** Load (or reload) the entire graph from disk. */
 	async load(contentDir: string = CONTENT_DIR): Promise<void> {
@@ -75,9 +80,10 @@ export class Graph {
 			this.#clusters = clusters;
 			this.#universalFolders = universalFolders;
 			this.#loaded = true;
-			// Invalidate the lazy species-presence index so a dev-mode
-			// reload rebuilds it against the fresh entity set.
-			this.#speciesPopulationIndex = null;
+		// Invalidate lazy indices so a dev-mode reload rebuilds them
+		// against the fresh entity set.
+		this.#speciesPopulationIndex = null;
+		this.#vocabIndex = null;
 		})();
 		try {
 			await this.#loading;
@@ -688,24 +694,30 @@ export class Graph {
 				const entry = item as Record<string, unknown>;
 				if (!('population' in entry) || !Array.isArray(entry.population)) continue;
 
-				// Extract total and slices from the population array.
-				let total: number | null = null;
-				let slices: Array<{ species: string; percentage: number }> = [];
+			// Extract total and slices from the population array.
+			let total: number | null = null;
+			let slices: Array<{ species: string; percentage: number; count?: number }> = [];
 
-				for (const popItem of entry.population) {
-					if (!popItem || typeof popItem !== 'object') continue;
-					const p = popItem as Record<string, unknown>;
-					if (typeof p.total === 'number') total = p.total;
-					if (Array.isArray(p.slices)) {
-						for (const s of p.slices) {
-							if (!s || typeof s !== 'object') continue;
-							const sl = s as Record<string, unknown>;
-							if (typeof sl.species === 'string' && typeof sl.percentage === 'number') {
-								slices.push({ species: sl.species, percentage: sl.percentage });
-							}
+			for (const popItem of entry.population) {
+				if (!popItem || typeof popItem !== 'object') continue;
+				const p = popItem as Record<string, unknown>;
+				if (typeof p.total === 'number') total = p.total;
+				if (Array.isArray(p.slices)) {
+					for (const s of p.slices) {
+						if (!s || typeof s !== 'object') continue;
+						const sl = s as Record<string, unknown>;
+						if (typeof sl.species !== 'string') continue;
+						const pct = typeof sl.percentage === 'number' ? sl.percentage : null;
+						const cnt = typeof sl.count === 'number' ? sl.count : null;
+						if (pct !== null) {
+							slices.push({ species: sl.species, percentage: pct });
+						} else if (cnt !== null && total !== null && total > 0) {
+							// Full-precision percentage derived from count
+							slices.push({ species: sl.species, percentage: (cnt / total) * 100, count: cnt });
 						}
 					}
 				}
+			}
 
 				if (slices.length === 0) continue;
 
@@ -716,11 +728,11 @@ export class Graph {
 					worldTotal: total
 				};
 
-				for (const slice of slices) {
-					const arr = index.get(slice.species) ?? [];
-					arr.push({ ...worldEntry, percentage: slice.percentage });
-					index.set(slice.species, arr);
-				}
+			for (const slice of slices) {
+				const arr = index.get(slice.species) ?? [];
+				arr.push({ ...worldEntry, percentage: slice.percentage, count: slice.count ?? null });
+				index.set(slice.species, arr);
+			}
 			}
 		}
 
@@ -848,6 +860,96 @@ export class Graph {
 			out.set(code, e.id);
 		}
 		return out;
+	}
+
+	/**
+	 * All vocabulary entries attributed to a language entity, sorted
+	 * alphabetically by word. Collects entries from:
+	 *   1. The language entity's own `vocabulary:` frontmatter block
+	 *      (no `language:` field needed — all items belong to it).
+	 *   2. Any other entity whose `vocabulary:` block items carry a
+	 *      `language:` field that resolves (by short code or full id)
+	 *      to this language.
+	 */
+	languageVocabulary(langId: EntityId): VocabEntry[] {
+		if (!this.#vocabIndex) this.#vocabIndex = this.#buildVocabIndex();
+		return this.#vocabIndex.get(langId) ?? [];
+	}
+
+	#buildVocabIndex(): Map<EntityId, VocabEntry[]> {
+		const index = new Map<EntityId, VocabEntry[]>();
+		// Build code→id map once so we can resolve short codes in vocabulary items.
+		const codes = this.languageCodes();
+
+		/** Resolve a `language:` value (short code or full entity id) to a language entity id. */
+		const resolveLang = (raw: string): EntityId | null => {
+			if (codes.has(raw)) return codes.get(raw)!;
+			if (this.#entities.has(raw)) return raw;
+			return null;
+		};
+
+		const push = (langId: EntityId, entry: VocabEntry) => {
+			const arr = index.get(langId) ?? [];
+			arr.push(entry);
+			index.set(langId, arr);
+		};
+
+		for (const entity of this.#entities.values()) {
+			const raw = entity.meta.vocabulary;
+			if (!Array.isArray(raw)) continue;
+
+			const isLang = entity.meta.kind === 'language';
+
+			for (const item of raw) {
+				if (!item || typeof item !== 'object') continue;
+				const v = item as Record<string, unknown>;
+				const word = typeof v.word === 'string' ? v.word.trim() : null;
+				if (!word) continue;
+
+				const meaning = typeof v.meaning === 'string' ? v.meaning.trim() || null : null;
+				const pos = typeof v.pos === 'string' ? v.pos.trim() || null : null;
+				const notes = typeof v.notes === 'string' ? v.notes.trim() || null : null;
+
+				if (isLang) {
+					// Item on the language entity itself — always belongs here.
+					// Optionally a `language:` field can override (rare edge case).
+					const langOverride =
+						typeof v.language === 'string' ? resolveLang(v.language) : null;
+					const targetId = langOverride ?? entity.id;
+					push(targetId, {
+						word,
+						meaning,
+						pos,
+						notes,
+						sourceId: null,
+						sourceName: null,
+						sourceHref: null
+					});
+				} else {
+					// Item on a non-language entity — requires a `language:` field.
+					const langRef = typeof v.language === 'string' ? v.language : null;
+					if (!langRef) continue;
+					const targetId = resolveLang(langRef);
+					if (!targetId) continue;
+					push(targetId, {
+						word,
+						meaning,
+						pos,
+						notes,
+						sourceId: entity.id,
+						sourceName: entity.meta.name,
+						sourceHref: `/${entity.id}`
+					});
+				}
+			}
+		}
+
+		// Sort each language's list alphabetically by word.
+		for (const arr of index.values()) {
+			arr.sort((a, b) => a.word.localeCompare(b.word, undefined, { sensitivity: 'base' }));
+		}
+
+		return index;
 	}
 }
 

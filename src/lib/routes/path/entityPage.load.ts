@@ -2,7 +2,7 @@ import { graph, byRankThenName } from '$lib/server/graph';
 import type { SpeciesPresenceEntry } from '$lib/server/graph';
 import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderEntityBody, renderSummary } from '$lib/server/markdown';
-import { titleCaseSlug, toRoman, type Entity, type RankDisplay } from '$lib/types';
+import { titleCaseSlug, toRoman, type Entity, type RankDisplay, type VocabEntry } from '$lib/types';
 
 /**
  * Build the view-model for an entity page. Returned shape is consumed
@@ -196,7 +196,8 @@ export async function loadEntityPage(entity: Entity) {
 				worldName: e.worldName,
 				href: e.href,
 				percentage: e.percentage,
-				worldTotal: e.worldTotal
+				worldTotal: e.worldTotal,
+				count: e.count ?? null
 			}))
 		});
 	}
@@ -259,7 +260,9 @@ export async function loadEntityPage(entity: Entity) {
 		// appear as a raw sidebar property.
 		'rankDisplay',
 		// `statistics` is surfaced as its own structured panel.
-		'statistics'
+		'statistics',
+		// `vocabulary` is surfaced as its own Vocabulary tab.
+		'vocabulary'
 	]);
 	const extra: { key: string; value: unknown }[] = [];
 	for (const [key, value] of Object.entries(entity.meta)) {
@@ -309,6 +312,10 @@ export async function loadEntityPage(entity: Entity) {
 		sigil: typeof e.meta.sigil === 'string' ? e.meta.sigil : null,
 		rank: typeof e.meta.rank === 'number' ? e.meta.rank : null
 	}));
+
+	// Vocabulary: only collected for language entities.
+	const vocabulary: VocabEntry[] =
+		entity.meta.kind === 'language' ? graph.languageVocabulary(id) : [];
 
 	// Rank-based prev/next navigation. When this entity has a numeric
 	// rank, find all folder-siblings (same containing folder) that also
@@ -375,7 +382,8 @@ export async function loadEntityPage(entity: Entity) {
 		craftHref: entity.craft !== null ? `/${entity.id}/craft` : null,
 		rankNav,
 		classMates,
-		statistics
+		statistics,
+		vocabulary
 	};
 }
 
@@ -414,7 +422,10 @@ export interface PopulationSlice {
 	speciesId: string;
 	speciesName: string;
 	href: string | null;
+	/** Percentage of world population. Full precision — not rounded. */
 	percentage: number;
+	/** Raw count from frontmatter, if provided directly rather than as a percentage. */
+	count: number | null;
 }
 
 export interface PopulationStat {
@@ -429,6 +440,8 @@ export interface PresenceEntry {
 	href: string;
 	percentage: number;
 	worldTotal: number | null;
+	/** Raw count if the slice was authored as a count rather than a percentage. */
+	count: number | null;
 }
 
 export interface PresenceStat {
@@ -514,13 +527,15 @@ function parsePopulation(
 
 	// Finalise percentages: prefer explicit percentage; fall back to count/total.
 	// Drop slices where neither could be resolved.
+	// Keep full precision on percentage — rounding is the display layer's job.
 	const finalSlices: PopulationSlice[] = [];
 	for (const sl of slices as (PopulationSlice & { _rawCount: number | null; _rawPct: number | null })[]) {
 		if (sl._rawPct !== null) {
-			finalSlices.push({ speciesId: sl.speciesId, speciesName: sl.speciesName, href: sl.href, percentage: sl._rawPct });
+			finalSlices.push({ speciesId: sl.speciesId, speciesName: sl.speciesName, href: sl.href, percentage: sl._rawPct, count: null });
 		} else if (sl._rawCount !== null && total !== null && total > 0) {
-			const pct = Math.round((sl._rawCount / total) * 1000) / 10; // one decimal
-			finalSlices.push({ speciesId: sl.speciesId, speciesName: sl.speciesName, href: sl.href, percentage: pct });
+			// Full-precision percentage — do NOT round here
+			const pct = (sl._rawCount / total) * 100;
+			finalSlices.push({ speciesId: sl.speciesId, speciesName: sl.speciesName, href: sl.href, percentage: pct, count: sl._rawCount });
 		}
 		// else: no usable data — skip
 	}

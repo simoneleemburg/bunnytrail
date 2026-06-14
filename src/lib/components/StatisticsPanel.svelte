@@ -85,6 +85,22 @@
 	function formatNumber(n: number): string {
 		return n.toLocaleString('en-US');
 	}
+
+	/**
+	 * Format a percentage for display.
+	 * - ≥ 1%: one decimal place (e.g. "32%", "2.5%")
+	 * - 0.01–1%: two decimal places (e.g. "0.05%")
+	 * - > 0 but < 0.01%: "<0.01%"
+	 */
+	function formatPct(pct: number): string {
+		if (pct > 0 && pct < 0.01) return '<0.01%';
+		if (pct < 1) {
+			const rounded = Math.round(pct * 100) / 100;
+			return `${rounded}%`;
+		}
+		const rounded = Math.round(pct * 10) / 10;
+		return `${rounded}%`;
+	}
 </script>
 
 {#if blocks.length > 0}
@@ -94,7 +110,7 @@
 			{@const sliceTotal = block.slices.reduce((s, sl) => s + sl.percentage, 0)}
 			{@const remainder = Math.round((100 - sliceTotal) * 10) / 10}
 			{@const allSlices = remainder > 0.4
-				? [...block.slices, { speciesId: '__other__', speciesName: 'Other', href: null, percentage: remainder }]
+				? [...block.slices, { speciesId: '__other__', speciesName: 'Other', href: null, percentage: remainder, count: null }]
 				: block.slices}
 			{@const arcs = buildArcs(allSlices)}
 			{@const singleSlice = allSlices.length === 1 ? allSlices[0] : null}
@@ -140,7 +156,9 @@
 						{#if allSlices.length > 0}
 							<ul class="stat-legend">
 								{#each allSlices as slice, i (slice.speciesId)}
-									{@const count = block.total !== null ? Math.round(slice.percentage / 100 * block.total) : null}
+									{@const count = slice.count !== undefined && slice.count !== null
+										? slice.count
+										: (block.total !== null ? Math.round(slice.percentage / 100 * block.total) : null)}
 									<li class="stat-legend__item">
 										<span
 											class="stat-legend__swatch"
@@ -151,7 +169,7 @@
 										{:else}
 											<span class="stat-legend__label">{slice.speciesName}</span>
 										{/if}
-										<span class="stat-legend__pct">({slice.percentage}%)</span>
+										<span class="stat-legend__pct">({formatPct(slice.percentage)})</span>
 										{#if count !== null}
 											<span class="stat-legend__count">{formatNumber(count)}</span>
 										{/if}
@@ -164,7 +182,9 @@
 				</section>
 			{:else if block.kind === 'presence'}
 				{@const counts = block.entries.map(e =>
-					e.worldTotal !== null ? Math.round(e.percentage / 100 * e.worldTotal) : null
+					e.count !== undefined && e.count !== null
+						? e.count
+						: (e.worldTotal !== null ? Math.round(e.percentage / 100 * e.worldTotal) : null)
 				)}
 				{@const knownTotal = counts.every(c => c !== null)
 					? counts.reduce((s, c) => s! + c!, 0)
@@ -186,7 +206,7 @@
 								<div class="presence-row">
 									<a class="presence-world" href={entry.href}>{entry.worldName}</a>
 									{#if speciesPct !== null}
-										<span class="presence-pct">{speciesPct}%</span>
+										<span class="presence-pct">{formatPct(entry.percentage)}</span>
 									{/if}
 									{#if count !== null}
 										<span class="presence-total">({formatNumber(count)})</span>

@@ -600,3 +600,27 @@ export function relationLabel(kind: string, direction: 'out' | 'in'): string {
 	// Fallback: humanise the raw kind slug
 	return kind.replace(/[-_]/g, ' ').replace(/^./, (c) => c.toUpperCase());
 }
+
+// ── Vocabulary ────────────────────────────────────────────────────────────────
+//
+// A single word/term in a language, collected either from the language entity's
+// own `vocabulary:` frontmatter block, or from any other entity that carries a
+// `vocabulary:` block with a `language:` field pointing at a language.
+
+export interface VocabEntry {
+	/** The word or term in the language. */
+	word: string;
+	/** English gloss or definition. */
+	meaning: string | null;
+	/** Part of speech (noun, verb, proper noun, …). */
+	pos: string | null;
+	/** Usage notes, etymology, context. */
+	notes: string | null;
+	/**
+	 * Entity that contributed this entry. Null when the entry comes from the
+	 * language entity's own `vocabulary:` block.
+	 */
+	sourceId: string | null;
+	sourceName: string | null;
+	sourceHref: string | null;
+}

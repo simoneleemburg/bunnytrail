@@ -7,6 +7,7 @@
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import Tag from '$lib/components/Tag.svelte';
 	import StatisticsPanel from '$lib/components/StatisticsPanel.svelte';
+	import VocabularyTable from '$lib/components/VocabularyTable.svelte';
 	import { SvelteSet } from 'svelte/reactivity';
 	import { relationLabel } from '$lib/types';
 	import { toRoman } from '$lib/types';
@@ -34,11 +35,12 @@
 
 	// Tabs: shown when the entity has classMates (instances) and/or statistics.
 	// "About" wraps all existing page content; "Instances" lists classMates as cards;
-	// "Statistics" shows structured statistics blocks.
+	// "Statistics" shows structured statistics blocks; "Vocabulary" shows language words.
 	const hasClassMates = $derived(data.classMates.length > 0);
 	const hasStatistics = $derived(data.statistics.length > 0);
-	const hasTabs = $derived(hasClassMates || hasStatistics);
-	let activeTab: 'about' | 'instances' | 'statistics' = $state('about');
+	const hasVocabulary = $derived(data.vocabulary.length > 0);
+	const hasTabs = $derived(hasClassMates || hasStatistics || hasVocabulary);
+	let activeTab: 'about' | 'instances' | 'statistics' | 'vocabulary' = $state('about');
 
 	const COLLAPSE_AT = 8;
 	const expanded = new SvelteSet<string>();
@@ -252,6 +254,18 @@
 					onclick={() => (activeTab = 'statistics')}
 				>
 					Statistics
+				</button>
+			{/if}
+			{#if hasVocabulary}
+				<button
+					type="button"
+					role="tab"
+					class="tab"
+					aria-selected={activeTab === 'vocabulary'}
+					class:active={activeTab === 'vocabulary'}
+					onclick={() => (activeTab = 'vocabulary')}
+				>
+					Vocabulary
 				</button>
 			{/if}
 		</div>
@@ -477,6 +491,12 @@
 			<StatisticsPanel blocks={data.statistics} />
 		</div>
 	{/if}
+
+	{#if hasVocabulary && activeTab === 'vocabulary'}
+		<div role="tabpanel" class="vocabulary-tab-panel">
+			<VocabularyTable entries={data.vocabulary} />
+		</div>
+	{/if}
 </article>
 
 <style>
@@ -529,6 +549,13 @@
 	.statistics-tab-panel {
 		margin-top: var(--space-5);
 		max-width: var(--prose-w, 48rem);
+		margin-inline: auto;
+	}
+
+	/* Vocabulary tab panel: slightly wider to accommodate the table. */
+	.vocabulary-tab-panel {
+		margin-top: var(--space-5);
+		max-width: 64rem;
 		margin-inline: auto;
 	}
 
