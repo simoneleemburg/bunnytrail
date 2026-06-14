@@ -14,6 +14,7 @@
 	} from 'd3-force';
 	import { zoom, zoomIdentity, type ZoomBehavior, type ZoomTransform } from 'd3-zoom';
 	import { select } from 'd3-selection';
+	import { buildKindTree } from '$lib/types';
 	import type { GraphData, GraphNode, GraphEdge } from './load';
 
 	let { data }: { data: GraphData } = $props();
@@ -40,6 +41,148 @@
 	// When ?node=<id> is set we show the ego-graph for that node.
 	let focusId = $derived(page.url.searchParams.get('node'));
 
+	// ── Filter state ─────────────────────────────────────────────────────────
+
+	let selectedKinds = $state<Set<string>>(new Set());
+	let filterOpen = $state(false);
+
+	// Kind hierarchy for transitive matching
+	const kindTree = $derived(buildKindTree(new Map(Object.entries(data.kindParents ?? {}))));
+
+	// Pre-flattened tree rows for rendering. Each entry carries its depth so
+	// the template can indent without a recursive component.
+	interface KindRow {
+		id: string;
+		label: string;
+		/** Total count including all descendants. */
+		count: number;
+		/** True if this kind has any children that are also in the list. */
+		hasChildren: boolean;
+		/** Nesting depth (0 = root). */
+		depth: number;
+	}
+
+	// Expanded state — kind ids whose children are shown. Empty = all collapsed.
+	let expandedKinds = $state<Set<string>>(new Set());
+
+	function toggleCollapse(id: string) {
+		const next = new Set(expandedKinds);
+		if (next.has(id)) next.delete(id);
+		else next.add(id);
+		expandedKinds = next;
+	}
+
+	const kindTreeRows = $derived.by((): KindRow[] => {
+		// Pass 1: direct counts per kind
+		const direct = new Map<string, number>();
+		for (const n of data.nodes) {
+			const k = n.kind;
+			if (!k) continue;
+			direct.set(k, (direct.get(k) ?? 0) + 1);
+		}
+
+		// Pass 2: accumulate counts up to each ancestor
+		const totals = new Map<string, number>(direct);
+		for (const [kindId, count] of direct) {
+			for (const ancestor of kindTree.ancestors(kindId)) {
+				totals.set(ancestor, (totals.get(ancestor) ?? 0) + count);
+			}
+		}
+
+		// The set of kinds that have at least one entity (directly or via descendants)
+		const present = new Set(totals.keys());
+
+		// For each present kind, find its parent among also-present kinds
+		function presentParent(id: string): string | null {
+			let cur = kindTree.parent(id);
+			while (cur !== null) {
+				if (present.has(cur)) return cur;
+				cur = kindTree.parent(cur);
+			}
+			return null;
+		}
+
+		// Build children map restricted to present kinds
+		const children = new Map<string | null, string[]>();
+		for (const id of present) {
+			const par = presentParent(id);
+			if (!children.has(par)) children.set(par, []);
+			children.get(par)!.push(id);
+		}
+
+		// Sort children at each level: by count desc, then label
+		for (const list of children.values()) {
+			list.sort((a, b) => {
+				const dc = (totals.get(b) ?? 0) - (totals.get(a) ?? 0);
+				if (dc !== 0) return dc;
+				return (data.kindLabels?.[a] ?? a).localeCompare(data.kindLabels?.[b] ?? b);
+			});
+		}
+
+		// Pre-order DFS to produce flat list with depth
+		const rows: KindRow[] = [];
+		function walk(id: string, depth: number) {
+			const kids = children.get(id) ?? [];
+			rows.push({
+				id,
+				label: data.kindLabels?.[id] ?? id,
+				count: totals.get(id) ?? 0,
+				hasChildren: kids.length > 0,
+				depth
+			});
+			if (expandedKinds.has(id)) {
+				for (const child of kids) walk(child, depth + 1);
+			}
+		}
+		for (const root of (children.get(null) ?? [])) walk(root, 0);
+
+		return rows;
+	});
+
+	// The set of node ids that pass the current kind filter (OR across selected kinds,
+	// transitive). When nothing is selected, all nodes are visible.
+	const filteredNodeIds = $derived.by((): Set<string> | null => {
+		if (selectedKinds.size === 0) return null; // null = no filter active
+
+		const result = new Set<string>();
+		for (const n of data.nodes) {
+			const k = n.kind;
+			if (!k) continue;
+			for (const sel of selectedKinds) {
+				// match if n.kind equals sel OR sel is an ancestor of n.kind
+				if (k === sel || kindTree.ancestors(k).includes(sel)) {
+					result.add(n.id);
+					break;
+				}
+			}
+		}
+		return result;
+	});
+
+	// Filtered nodes/edges fed to the simulation
+	const filteredNodes = $derived.by((): GraphNode[] => {
+		if (!filteredNodeIds) return data.nodes;
+		return data.nodes.filter((n) => filteredNodeIds.has(n.id));
+	});
+
+	const filteredEdges = $derived.by((): GraphEdge[] => {
+		if (!filteredNodeIds) return data.edges;
+		return data.edges.filter(
+			(e) => filteredNodeIds.has(e.source) && filteredNodeIds.has(e.target)
+		);
+	});
+
+	function toggleKind(id: string) {
+		const next = new Set(selectedKinds);
+		if (next.has(id)) next.delete(id);
+		else next.add(id);
+		selectedKinds = next;
+	}
+
+	function clearFilter() {
+		selectedKinds = new Set();
+	}
+
 	// ── State ────────────────────────────────────────────────────────────────
 
 	let svgEl: SVGSVGElement;
@@ -65,7 +208,7 @@
 
 	const nodeById = $derived(new Map<string, GraphNode>(data.nodes.map((n) => [n.id, n])));
 
-	// neighbour sets for ego-graph derivation
+	// neighbour sets for ego-graph derivation — always over full data
 	const neighboursOf = $derived.by(() => {
 		const m = new Map<string, Set<string>>();
 		for (const e of data.edges) {
@@ -155,11 +298,11 @@
 	let currentSim: ReturnType<typeof forceSimulation<any, any>> | null = null;
 	let zoomBehavior: ZoomBehavior<SVGSVGElement, unknown> | null = null;
 
-	function buildFullGraph() {
-		const degrees = computeDegrees(data.nodes, data.edges);
+	function buildFullGraph(srcNodes: GraphNode[], srcEdges: GraphEdge[]) {
+		const degrees = computeDegrees(srcNodes, srcEdges);
 
 		const nodeMap = new Map<string, SimNode>();
-		const nodes: SimNode[] = data.nodes.map((n) => {
+		const nodes: SimNode[] = srcNodes.map((n) => {
 			const sn: SimNode = {
 				id: n.id,
 				name: n.name,
@@ -171,7 +314,7 @@
 			return sn;
 		});
 
-		const edges: SimEdge[] = data.edges
+		const edges: SimEdge[] = srcEdges
 			.filter((e) => nodeMap.has(e.source) && nodeMap.has(e.target))
 			.map((e) => ({ source: e.source, target: e.target, kind: e.kind }));
 
@@ -269,17 +412,20 @@
 		}
 	}
 
-	// ── Reactive: rebuild sim when focusId changes ────────────────────────────
+	// ── Reactive: rebuild sim when focusId OR filter changes ─────────────────
 
 	$effect(() => {
 		const id = focusId; // reactive dependency
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		filteredNodes; filteredEdges; // reactive dep — filter changes trigger resim
 		if (!svgEl) return; // not mounted yet
 		untrack(() => {
 			if (id) {
+				// Ego mode always uses full graph neighbourhood (filter doesn't apply in ego)
 				const { nodes, edges } = buildEgoGraph(id);
 				startSimulation(nodes, edges, true);
 			} else {
-				const { nodes, edges } = buildFullGraph();
+				const { nodes, edges } = buildFullGraph(filteredNodes, filteredEdges);
 				startSimulation(nodes, edges, false);
 			}
 		});
@@ -293,11 +439,13 @@
 
 		// Initial simulation
 		const id = untrack(() => focusId);
+		const fNodes = untrack(() => filteredNodes);
+		const fEdges = untrack(() => filteredEdges);
 		if (id) {
 			const { nodes, edges } = buildEgoGraph(id);
 			startSimulation(nodes, edges, true);
 		} else {
-			const { nodes, edges } = buildFullGraph();
+			const { nodes, edges } = buildFullGraph(fNodes, fEdges);
 			startSimulation(nodes, edges, false);
 		}
 
@@ -520,6 +668,79 @@
 	</nav>
 {/if}
 
+<!-- Kind filter panel (full-graph mode only) -->
+{#if !focusId}
+	<!-- Toggle button -->
+	<!-- svelte-ignore a11y_consider_explicit_label -->
+	<button
+		class="filter-toggle"
+		class:filter-toggle--active={selectedKinds.size > 0}
+		onclick={() => (filterOpen = !filterOpen)}
+		aria-expanded={filterOpen}
+		aria-label="Filter by kind"
+	>
+		<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+			<path d="M1 3h12M3 7h8M5 11h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+		</svg>
+		{#if selectedKinds.size > 0}
+			<span class="filter-badge">{selectedKinds.size}</span>
+		{/if}
+	</button>
+
+	<!-- Panel -->
+	{#if filterOpen}
+		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+		<aside class="filter-panel" onmouseenter={() => {}} onmouseleave={() => {}}>
+			<header class="filter-header">
+				<span class="filter-title">Filter by kind</span>
+				{#if selectedKinds.size > 0}
+					<button class="filter-clear" onclick={clearFilter}>Clear</button>
+				{/if}
+			</header>
+			<ul class="filter-list">
+				{#each kindTreeRows as row (row.id)}
+					<li class="filter-item" class:filter-item--child={row.depth > 0}>
+						{#if row.hasChildren}
+							<!-- Row with collapse toggle + checkbox -->
+							<div class="filter-row">
+								<button
+									class="filter-collapse"
+									class:filter-collapse--open={expandedKinds.has(row.id)}
+									onclick={() => toggleCollapse(row.id)}
+									aria-label={expandedKinds.has(row.id) ? 'Collapse' : 'Expand'}
+								>▶</button>
+								<label class="filter-row-inner">
+									<input
+										type="checkbox"
+										class="filter-check"
+										checked={selectedKinds.has(row.id)}
+										onchange={() => toggleKind(row.id)}
+									/>
+									<span class="filter-label">{row.label}</span>
+									<span class="filter-count">{row.count}</span>
+								</label>
+							</div>
+						{:else}
+							<!-- Leaf row — no collapse toggle, just indent guide -->
+							<label class="filter-row filter-row--leaf">
+								<span class="filter-indent-guide" aria-hidden="true"></span>
+								<input
+									type="checkbox"
+									class="filter-check"
+									checked={selectedKinds.has(row.id)}
+									onchange={() => toggleKind(row.id)}
+								/>
+								<span class="filter-label">{row.label}</span>
+								<span class="filter-count">{row.count}</span>
+							</label>
+						{/if}
+					</li>
+				{/each}
+			</ul>
+		</aside>
+	{/if}
+{/if}
+
 <!-- Legend -->
 <aside class="graph-legend">
 	{#each Object.entries(CLUSTER_COLORS) as [cluster, color]}
@@ -684,6 +905,220 @@
 		font-variant: small-caps;
 		letter-spacing: 0.07em;
 		color: #e8d5a3;
+	}
+
+	/* ── Kind filter toggle button ─────────────────────────────────────────── */
+
+	.filter-toggle {
+		position: fixed;
+		top: 148px;
+		right: 1.5rem;
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.35rem 0.75rem;
+		background: rgba(9, 8, 15, 0.82);
+		border: 1px solid rgba(199, 161, 90, 0.18);
+		border-radius: 2rem;
+		backdrop-filter: blur(6px);
+		cursor: pointer;
+		color: #9a8a72;
+		transition: color 0.15s, border-color 0.15s;
+		z-index: 10;
+		font-family: var(--font-ui, system-ui, sans-serif);
+		font-size: 10px;
+		font-variant: small-caps;
+		letter-spacing: 0.07em;
+	}
+
+	.filter-toggle:hover,
+	.filter-toggle--active {
+		color: #c7a15a;
+		border-color: rgba(199, 161, 90, 0.4);
+	}
+
+	.filter-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 16px;
+		height: 16px;
+		padding: 0 4px;
+		background: rgba(199, 161, 90, 0.25);
+		border-radius: 8px;
+		font-size: 9px;
+		color: #c7a15a;
+	}
+
+	/* ── Kind filter panel ─────────────────────────────────────────────────── */
+
+	.filter-panel {
+		position: fixed;
+		top: 186px; /* below the toggle button */
+		right: 1.5rem;
+		width: 220px;
+		max-height: calc(100vh - 220px);
+		overflow-y: auto;
+		background: rgba(9, 8, 15, 0.90);
+		border: 1px solid rgba(199, 161, 90, 0.18);
+		border-radius: 0.75rem;
+		backdrop-filter: blur(8px);
+		z-index: 10;
+		padding: 0.75rem 0;
+	}
+
+	/* Scrollbar — subtle */
+	.filter-panel::-webkit-scrollbar { width: 4px; }
+	.filter-panel::-webkit-scrollbar-track { background: transparent; }
+	.filter-panel::-webkit-scrollbar-thumb { background: rgba(199, 161, 90, 0.15); border-radius: 2px; }
+
+	.filter-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 0.9rem 0.5rem;
+		border-bottom: 1px solid rgba(199, 161, 90, 0.1);
+		margin-bottom: 0.25rem;
+	}
+
+	.filter-title {
+		font-family: var(--font-ui, system-ui, sans-serif);
+		font-size: 9px;
+		font-variant: small-caps;
+		letter-spacing: 0.1em;
+		color: #6a5a4a;
+		text-transform: uppercase;
+	}
+
+	.filter-clear {
+		font-family: var(--font-ui, system-ui, sans-serif);
+		font-size: 9px;
+		font-variant: small-caps;
+		letter-spacing: 0.07em;
+		color: #c7a15a;
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: 0;
+		transition: color 0.15s;
+	}
+
+	.filter-clear:hover {
+		color: #e8d5a3;
+	}
+
+	.filter-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.filter-item--child {
+		/* Left border line groups children visually under their parent */
+		border-left: 1px solid rgba(199, 161, 90, 0.15);
+		margin-left: 0.9rem;
+	}
+
+	/* Row that contains a collapse toggle + inner label */
+	.filter-row {
+		display: flex;
+		align-items: center;
+		gap: 0;
+		padding: 0.28rem 0.9rem 0.28rem 0;
+		cursor: pointer;
+		transition: background 0.1s;
+	}
+
+	.filter-row:hover {
+		background: rgba(199, 161, 90, 0.06);
+	}
+
+	/* Collapse arrow button */
+	.filter-collapse {
+		flex-shrink: 0;
+		width: 18px;
+		height: 18px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: none;
+		border: none;
+		cursor: pointer;
+		color: rgba(199, 161, 90, 0.3);
+		font-size: 7px;
+		padding: 0;
+		transition: color 0.1s, transform 0.15s;
+		transform: rotate(0deg);
+	}
+
+	.filter-collapse--open {
+		transform: rotate(90deg);
+		color: rgba(199, 161, 90, 0.5);
+	}
+
+	.filter-collapse:hover {
+		color: #c7a15a;
+	}
+
+	/* Inner label (used when there's a collapse toggle) */
+	.filter-row-inner {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		cursor: pointer;
+		min-width: 0;
+	}
+
+	/* Leaf rows have no collapse toggle; align checkbox with parent's */
+	.filter-row--leaf {
+		padding-left: 18px;
+	}
+
+	.filter-check {
+		appearance: none;
+		width: 12px;
+		height: 12px;
+		border: 1px solid rgba(199, 161, 90, 0.3);
+		border-radius: 3px;
+		background: transparent;
+		flex-shrink: 0;
+		cursor: pointer;
+		position: relative;
+		transition: background 0.1s, border-color 0.1s;
+	}
+
+	.filter-check:checked {
+		background: rgba(199, 161, 90, 0.3);
+		border-color: rgba(199, 161, 90, 0.7);
+	}
+
+	.filter-check:checked::after {
+		content: '';
+		position: absolute;
+		inset: 2px;
+		background: #c7a15a;
+		border-radius: 1px;
+	}
+
+	.filter-label {
+		flex: 1;
+		font-family: var(--font-ui, system-ui, sans-serif);
+		font-size: 10px;
+		font-variant: small-caps;
+		letter-spacing: 0.05em;
+		color: #c8b48a;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.filter-count {
+		font-family: var(--font-ui, system-ui, sans-serif);
+		font-size: 9px;
+		color: #4a3a2a;
+		flex-shrink: 0;
 	}
 
 	/* Legend */

@@ -98,7 +98,16 @@ export async function load() {
 		addEdge(entity.id, classId, 'instance-of');
 	}
 
-	return { nodes, edges };
+	// ── Kind hierarchy (for client-side transitive filtering) ─────
+	// Wire format: kindId → parentId | null (same as CollectionPage)
+	const kindParents: Record<string, string | null> = {};
+	const kindLabels: Record<string, string> = {};
+	for (const [id, k] of graph.kindRegistry()) {
+		kindParents[id] = k.parent;
+		kindLabels[id] = k.meta.singular ?? id;
+	}
+
+	return { nodes, edges, kindParents, kindLabels };
 }
 
 export type GraphData = Awaited<ReturnType<typeof load>>;
