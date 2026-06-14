@@ -93,11 +93,6 @@
 		align-items: center;
 		gap: var(--space-4);
 		padding: var(--space-2) 0;
-		border-bottom: 1px solid var(--rule-hair);
-	}
-
-	.symbol-row:last-child {
-		border-bottom: none;
 	}
 
 	.sigil {
