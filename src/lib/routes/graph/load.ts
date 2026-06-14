@@ -4,6 +4,8 @@ export interface GraphNode {
 	id: string;
 	name: string;
 	kind: string | null;
+	/** Resolved singular label for the kind, e.g. "Cosmological Concept". */
+	kindLabel: string | null;
 	/** First path segment — the cluster this entity belongs to. */
 	cluster: string;
 }
@@ -27,12 +29,17 @@ export async function load() {
 	await graph.ready();
 
 	// ── Nodes ──────────────────────────────────────────────────────
-	const nodes: GraphNode[] = graph.all().map((e) => ({
-		id: e.id,
-		name: e.meta.name,
-		kind: typeof e.meta.kind === 'string' ? e.meta.kind : null,
-		cluster: e.id.split('/')[0] ?? ''
-	}));
+	const nodes: GraphNode[] = graph.all().map((e) => {
+		const kindId = typeof e.meta.kind === 'string' ? e.meta.kind : null;
+		const kindObj = kindId ? graph.kind(kindId) : null;
+		return {
+			id: e.id,
+			name: e.meta.name,
+			kind: kindId,
+			kindLabel: kindObj?.meta.singular ?? kindId,
+			cluster: e.id.split('/')[0] ?? ''
+		};
+	});
 
 	// ── Typed edges (no wikilinks) ─────────────────────────────────
 	const edgeSet = new Set<string>(); // deduplicate by "source|target|kind"

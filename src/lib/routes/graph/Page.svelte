@@ -511,12 +511,12 @@
 	{@const centerNode = nodeById.get(focusId)}
 	<nav class="graph-overlay">
 		<a class="overlay-btn" href="/graph">← All</a>
-		{#if centerNode}
+		{#if centerNode?.kindLabel}
 			<span class="overlay-sep">·</span>
-			<span class="overlay-name">{centerNode.name}</span>
-			<span class="overlay-sep">·</span>
-			<a class="overlay-btn" href={'/' + focusId}>Open →</a>
+			<span class="overlay-name">{centerNode.kindLabel}</span>
 		{/if}
+		<span class="overlay-sep">·</span>
+		<a class="overlay-btn" href={'/' + focusId}>Open →</a>
 	</nav>
 {/if}
 
