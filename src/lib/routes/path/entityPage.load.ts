@@ -377,7 +377,7 @@ function toChildCard(e: Entity, cardSummaryHtml: (s: string | null | undefined) 
 export interface PopulationSlice {
 	speciesId: string;
 	speciesName: string;
-	href: string;
+	href: string | null;
 	percentage: number;
 }
 

@@ -90,9 +90,14 @@
 {#if blocks.length > 0}
 	<div class="statistics-panel">
 		{#each blocks as block (block.kind)}
-			{#if block.kind === 'population'}
-				{@const arcs = buildArcs(block.slices)}
-				{@const singleSlice = block.slices.length === 1 ? block.slices[0] : null}
+		{#if block.kind === 'population'}
+			{@const sliceTotal = block.slices.reduce((s, sl) => s + sl.percentage, 0)}
+			{@const remainder = Math.round((100 - sliceTotal) * 10) / 10}
+			{@const allSlices = remainder > 0.4
+				? [...block.slices, { speciesId: '__other__', speciesName: 'Other', href: null, percentage: remainder }]
+				: block.slices}
+			{@const arcs = buildArcs(allSlices)}
+			{@const singleSlice = allSlices.length === 1 ? allSlices[0] : null}
 
 				<section class="stat-block stat-block--population">
 					<h2 class="stat-heading">Population</h2>
@@ -115,37 +120,45 @@
 									aria-hidden="true"
 									focusable="false"
 								>
-									{#if arcs}
-										{#each arcs as arc (arc.slice.speciesId)}
-											<path d={arc.path} fill={arc.color} />
-										{/each}
-									{:else if singleSlice}
-										<!-- Single slice: full circle -->
-										<circle
-											cx={CX}
-											cy={CY}
-											r={R}
-											fill={PALETTE[0]}
-										/>
-									{/if}
-								</svg>
-							</div>
-
-							<!-- Legend -->
-							{#if block.slices.length > 0}
-								<ul class="stat-legend">
-									{#each block.slices as slice, i (slice.speciesId)}
-										<li class="stat-legend__item">
-											<span
-												class="stat-legend__swatch"
-												style:background-color={PALETTE[i % PALETTE.length]}
-											></span>
-											<a class="stat-legend__link" href={slice.href}>{slice.speciesName}</a>
-											<span class="stat-legend__pct">({slice.percentage}%)</span>
-										</li>
+						{#if arcs}
+									{#each arcs as arc (arc.slice.speciesId)}
+										<path d={arc.path} fill={arc.color} />
 									{/each}
-								</ul>
-							{/if}
+								{:else if singleSlice}
+									<!-- Single slice: full circle -->
+									<circle
+										cx={CX}
+										cy={CY}
+										r={R}
+										fill={PALETTE[0]}
+									/>
+								{/if}
+							</svg>
+						</div>
+
+						<!-- Legend -->
+						{#if allSlices.length > 0}
+							<ul class="stat-legend">
+								{#each allSlices as slice, i (slice.speciesId)}
+									{@const count = block.total !== null ? Math.round(slice.percentage / 100 * block.total) : null}
+									<li class="stat-legend__item">
+										<span
+											class="stat-legend__swatch"
+											style:background-color={slice.speciesId === '__other__' ? '#d4cdc4' : PALETTE[i % PALETTE.length]}
+										></span>
+										{#if slice.href}
+											<a class="stat-legend__link" href={slice.href}>{slice.speciesName}</a>
+										{:else}
+											<span class="stat-legend__label">{slice.speciesName}</span>
+										{/if}
+										<span class="stat-legend__pct">({slice.percentage}%)</span>
+										{#if count !== null}
+											<span class="stat-legend__count">{formatNumber(count)}</span>
+										{/if}
+									</li>
+								{/each}
+							</ul>
+						{/if}
 						</div>
 					{/if}
 				</section>
@@ -305,6 +318,18 @@
 		font-size: var(--text-xs);
 		color: var(--ink-faint);
 		font-variant-numeric: tabular-nums;
+	}
+
+	.stat-legend__label {
+		font-size: var(--text-sm);
+		color: var(--ink-mid);
+	}
+
+	.stat-legend__count {
+		font-size: var(--text-xs);
+		color: var(--ink-faint);
+		font-variant-numeric: tabular-nums;
+		margin-left: 0.25em;
 	}
 
 	/* ── Presence block ───────────────────────────────────────────── */
