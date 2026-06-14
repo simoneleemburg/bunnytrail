@@ -52,6 +52,15 @@
 	let width = $state(800);
 	let height = $state(600);
 
+	// Degree threshold for always-on labels in full graph mode.
+	// Top ~15% of nodes by degree, minimum 3.
+	let prominentDegree = $derived.by(() => {
+		if (focusId || simNodes.length === 0) return Infinity; // ego mode: all labels shown via focusId branch
+		const sorted = simNodes.map((n) => n.degree).sort((a, b) => b - a);
+		const cutoff = sorted[Math.floor(sorted.length * 0.15)] ?? 0;
+		return Math.max(cutoff, 3);
+	});
+
 	// ── Precompute lookup tables from raw data ────────────────────────────────
 
 	const nodeById = $derived(new Map<string, GraphNode>(data.nodes.map((n) => [n.id, n])));
@@ -134,6 +143,9 @@
 
 	function edgeIsActive(e: SimEdge): boolean {
 		if (!hoveredId) return false;
+		// In ego mode: only activate edges touching a *neighbour*, not the
+		// centre — hovering the centre would light every edge simultaneously.
+		if (focusId && hoveredId === focusId) return false;
 		return e.sourceNode?.id === hoveredId || e.targetNode?.id === hoveredId;
 	}
 
@@ -314,6 +326,34 @@
 		};
 	});
 
+	// ── Edge label humanisation ───────────────────────────────────────────────
+
+	const EDGE_LABELS: Record<string, string> = {
+		'member-of':       'member of',
+		'located-in':      'located in',
+		'native-to':       'native to',
+		'region-of':       'region of',
+		'serves-in':       'serves in',
+		'spoken-in':       'spoken in',
+		'is-a':            'is a',
+		'occurred-on':     'occurred on',
+		'occurred-in':     'occurred in',
+		'records':         'records',
+		'recorded-on':     'recorded on',
+		'orbits':          'orbits',
+		'governed-by':     'governed by',
+		'local-account-of':'local account of',
+		'approaches':      'approaches',
+		'defined-by':      'defined by',
+		'bounded-by':      'bounded by',
+		'inhabits':        'inhabits',
+		'instance-of':     'instance of',
+	};
+
+	function edgeLabel(kind: string): string {
+		return EDGE_LABELS[kind] ?? kind.replace(/[-_]/g, ' ');
+	}
+
 	// ── Click handlers ────────────────────────────────────────────────────────
 
 	function handleNodeClick(node: SimNode) {
@@ -369,20 +409,41 @@
 		</filter>
 	</defs>
 
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<!-- Background — resets hover when pointer moves off any node -->
+	<rect
+		class="graph-bg"
+		x="0" y="0"
+		width={width} height={height}
+		onmouseenter={() => (hoveredId = null)}
+	/>
+
 	<g transform={transform.toString()} bind:this={containerEl}>
 		<!-- Edges -->
 		{#each simEdges as e (e.sourceNode?.id + '→' + e.targetNode?.id + ':' + e.kind)}
 			{@const active = edgeIsActive(e)}
+			{@const sx = e.sourceNode?.x ?? 0}
+			{@const sy = e.sourceNode?.y ?? 0}
+			{@const tx = e.targetNode?.x ?? 0}
+			{@const ty = e.targetNode?.y ?? 0}
+			{@const mx = (sx + tx) / 2}
+			{@const my = (sy + ty) / 2}
 			<line
-				x1={e.sourceNode?.x ?? 0}
-				y1={e.sourceNode?.y ?? 0}
-				x2={e.targetNode?.x ?? 0}
-				y2={e.targetNode?.y ?? 0}
+				x1={sx} y1={sy} x2={tx} y2={ty}
 				class="graph-edge"
 				class:graph-edge--active={active}
 				class:graph-edge--dim={hoveredId !== null && !active}
 				data-kind={e.kind}
 			/>
+			{#if active && focusId}
+				<text
+					class="graph-edge-label"
+					x={mx}
+					y={my}
+					text-anchor="middle"
+					dominant-baseline="middle"
+				>{edgeLabel(e.kind)}</text>
+			{/if}
 		{/each}
 
 		<!-- Nodes -->
@@ -392,7 +453,13 @@
 			{@const isHovered = hoveredId === node.id}
 			{@const isNeighbourNode = isNeighbour(node.id)}
 			{@const dim = hoveredId !== null && !isHovered && !isNeighbourNode}
-			{@const showLabel = focusId !== null || isHovered || isNeighbourNode}
+			{@const showLabel = focusId !== null || isHovered || isNeighbourNode || node.degree >= prominentDegree}
+			<!-- Hit area: covers visible circle + label above. Label sits at
+			     dy=-(r+6) and is ~14px tall, so the rect top is -(r+24).
+			     Width is generous (120px) to cover typical label text. -->
+			{@const hitW = Math.max(r * 2 + 32, 120)}
+			{@const hitTop = -(r + 28)}
+			{@const hitH = r + 28 + r + 10}
 			<!-- svelte-ignore a11y_interactive_supports_focus -->
 			<g
 				class="graph-node"
@@ -403,8 +470,6 @@
 				transform="translate({node.x ?? 0},{node.y ?? 0})"
 				role="button"
 				aria-label={node.name}
-				onmouseenter={() => (hoveredId = node.id)}
-				onclick={() => handleNodeClick(node)}
 				onkeydown={(ev) => ev.key === 'Enter' && handleNodeClick(node)}
 			>
 				<circle
@@ -424,18 +489,33 @@
 						text-anchor="middle"
 					>{node.name}</text>
 				{/if}
+				<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
+				<!-- Invisible hit area on top — covers node + label -->
+				<rect
+					aria-hidden="true"
+					class="graph-hit"
+					x={-hitW / 2}
+					y={hitTop}
+					width={hitW}
+					height={hitH}
+					onmouseenter={() => (hoveredId = node.id)}
+					onclick={() => handleNodeClick(node)}
+				/>
 			</g>
 		{/each}
 	</g>
 </svg>
 
-<!-- Ego mode: back link + centre entity link -->
+<!-- Ego mode: compact control strip centered below the masthead -->
 {#if focusId}
 	{@const centerNode = nodeById.get(focusId)}
 	<nav class="graph-overlay">
-		<a class="overlay-back" href="/graph">← All entities</a>
+		<a class="overlay-btn" href="/graph">← All</a>
 		{#if centerNode}
-			<a class="overlay-entity" href={'/' + focusId}>{centerNode.name} →</a>
+			<span class="overlay-sep">·</span>
+			<span class="overlay-name">{centerNode.name}</span>
+			<span class="overlay-sep">·</span>
+			<a class="overlay-btn" href={'/' + focusId}>Open →</a>
 		{/if}
 	</nav>
 {/if}
@@ -475,6 +555,10 @@
 		cursor: grabbing;
 	}
 
+	.graph-bg {
+		fill: transparent;
+	}
+
 	/* Edges */
 	.graph-edge {
 		stroke: #a55b46;
@@ -497,6 +581,23 @@
 		stroke: #8fada2;
 	}
 
+	.graph-edge[data-kind='instance-of'] {
+		stroke: #b8a4c4;
+	}
+
+	/* Edge relationship labels — appear at midpoint on hover */
+	.graph-edge-label {
+		fill: #9a8a72;
+		font-family: var(--font-ui, system-ui, sans-serif);
+		font-size: 9px;
+		font-variant: small-caps;
+		letter-spacing: 0.05em;
+		pointer-events: none;
+		paint-order: stroke;
+		stroke: #09080f;
+		stroke-width: 4px;
+	}
+
 	/* Nodes */
 	.graph-node {
 		cursor: pointer;
@@ -509,6 +610,13 @@
 
 	.graph-node--dim {
 		opacity: 0.15;
+	}
+
+	/* Invisible hit area */
+	.graph-hit {
+		fill: transparent;
+		cursor: pointer;
+		stroke: none;
 	}
 
 	/* Labels */
@@ -531,33 +639,51 @@
 		letter-spacing: 0.06em;
 	}
 
-	/* Overlay nav (ego mode) */
+	/* Overlay nav (ego mode) — centered pill below the masthead rule */
 	.graph-overlay {
 		position: fixed;
-		top: calc(60px + 1rem);
-		left: 0;
-		right: 0;
+		top: 148px; /* just below header + decorative rule */
+		left: 50%;
+		transform: translateX(-50%);
 		display: flex;
-		justify-content: space-between;
-		padding: 0 1.5rem;
-		pointer-events: none;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.35rem 0.9rem;
+		background: rgba(9, 8, 15, 0.82);
+		border: 1px solid rgba(199, 161, 90, 0.18);
+		border-radius: 2rem;
+		backdrop-filter: blur(6px);
+		white-space: nowrap;
+		pointer-events: all;
+		z-index: 10;
 	}
 
-	.overlay-back,
-	.overlay-entity {
-		pointer-events: all;
+	.overlay-btn {
 		font-family: var(--font-ui, system-ui, sans-serif);
-		font-size: 11px;
+		font-size: 10px;
 		font-variant: small-caps;
-		letter-spacing: 0.06em;
-		color: #7a6a5a;
+		letter-spacing: 0.07em;
+		color: #c7a15a;
 		text-decoration: none;
 		transition: color 0.15s;
 	}
 
-	.overlay-back:hover,
-	.overlay-entity:hover {
-		color: #c7a15a;
+	.overlay-btn:hover {
+		color: #e8d5a3;
+	}
+
+	.overlay-sep {
+		font-size: 10px;
+		color: rgba(199, 161, 90, 0.3);
+		pointer-events: none;
+	}
+
+	.overlay-name {
+		font-family: var(--font-ui, system-ui, sans-serif);
+		font-size: 10px;
+		font-variant: small-caps;
+		letter-spacing: 0.07em;
+		color: #e8d5a3;
 	}
 
 	/* Legend */

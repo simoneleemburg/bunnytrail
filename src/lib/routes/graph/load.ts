@@ -82,6 +82,15 @@ export async function load() {
 		}
 	}
 
+	// ── Class edges ────────────────────────────────────────────────
+	// entity.meta.class = <classEntityId> → edge: entity → class, kind "instance-of"
+	for (const entity of graph.all()) {
+		const classId = entity.meta.class;
+		if (typeof classId !== 'string') continue;
+		if (!nodeIds.has(classId)) continue;
+		addEdge(entity.id, classId, 'instance-of');
+	}
+
 	return { nodes, edges };
 }
 
