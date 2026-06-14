@@ -73,9 +73,20 @@
 	}
 
 	const kindTreeRows = $derived.by((): KindRow[] => {
+		// In ego mode scope to the ego neighbourhood so the filter only shows
+		// kinds that are actually present among the current node's neighbours.
+		const sourceNodes: GraphNode[] = focusId
+			? [
+					...(nodeById.get(focusId) ? [nodeById.get(focusId)!] : []),
+					...[...(neighboursOf.get(focusId) ?? [])]
+						.map((id) => nodeById.get(id))
+						.filter((n): n is GraphNode => n !== undefined)
+			  ]
+			: data.nodes;
+
 		// Pass 1: direct counts per kind
 		const direct = new Map<string, number>();
-		for (const n of data.nodes) {
+		for (const n of sourceNodes) {
 			const k = n.kind;
 			if (!k) continue;
 			direct.set(k, (direct.get(k) ?? 0) + 1);
@@ -321,8 +332,11 @@
 		return { nodes, edges, nodeMap };
 	}
 
-	function buildEgoGraph(centerId: string) {
-		const neighbours = neighboursOf.get(centerId) ?? new Set<string>();
+	function buildEgoGraph(centerId: string, allowedNeighbours: Set<string> | null = null) {
+		const allNeighbours = neighboursOf.get(centerId) ?? new Set<string>();
+		const neighbours = allowedNeighbours
+			? new Set([...allNeighbours].filter((id) => allowedNeighbours.has(id)))
+			: allNeighbours;
 		const egoEdges = edgesOf.get(centerId) ?? [];
 
 		// Collect unique nodes: center + all neighbours
@@ -474,12 +488,11 @@
 	$effect(() => {
 		const id = focusId; // reactive dependency
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		filteredNodes; filteredEdges; // reactive dep — filter changes trigger resim
+		filteredNodes; filteredEdges; filteredNodeIds; // reactive deps — filter changes trigger resim
 		if (!svgEl) return; // not mounted yet
 		untrack(() => {
 			if (id) {
-				// Ego mode always uses full graph neighbourhood (filter doesn't apply in ego)
-				const { nodes, edges } = buildEgoGraph(id);
+				const { nodes, edges } = buildEgoGraph(id, filteredNodeIds);
 				startSimulation(nodes, edges, true);
 			} else {
 				const { nodes, edges } = buildFullGraph(filteredNodes, filteredEdges);
@@ -498,8 +511,9 @@
 		const id = untrack(() => focusId);
 		const fNodes = untrack(() => filteredNodes);
 		const fEdges = untrack(() => filteredEdges);
+		const fNodeIds = untrack(() => filteredNodeIds);
 		if (id) {
-			const { nodes, edges } = buildEgoGraph(id);
+			const { nodes, edges } = buildEgoGraph(id, fNodeIds);
 			startSimulation(nodes, edges, true);
 		} else {
 			const { nodes, edges } = buildFullGraph(fNodes, fEdges);
@@ -722,27 +736,26 @@
 	</nav>
 {/if}
 
-<!-- Kind filter panel (full-graph mode only) -->
-{#if !focusId}
-	<!-- Toggle button -->
-	<!-- svelte-ignore a11y_consider_explicit_label -->
-	<button
-		class="filter-toggle"
-		class:filter-toggle--active={selectedKinds.size > 0}
-		onclick={() => (filterOpen = !filterOpen)}
-		aria-expanded={filterOpen}
-		aria-label="Filter by kind"
-	>
-		<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-			<path d="M1 3h12M3 7h8M5 11h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-		</svg>
-		{#if selectedKinds.size > 0}
-			<span class="filter-badge">{selectedKinds.size}</span>
-		{/if}
-	</button>
+<!-- Kind filter panel -->
+<!-- Toggle button -->
+<!-- svelte-ignore a11y_consider_explicit_label -->
+<button
+	class="filter-toggle"
+	class:filter-toggle--active={selectedKinds.size > 0}
+	onclick={() => (filterOpen = !filterOpen)}
+	aria-expanded={filterOpen}
+	aria-label="Filter by kind"
+>
+	<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+		<path d="M1 3h12M3 7h8M5 11h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+	</svg>
+	{#if selectedKinds.size > 0}
+		<span class="filter-badge">{selectedKinds.size}</span>
+	{/if}
+</button>
 
-	<!-- Panel -->
-	{#if filterOpen}
+<!-- Panel -->
+{#if filterOpen}
 		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 		<aside class="filter-panel" onmouseenter={() => {}} onmouseleave={() => {}}>
 			<header class="filter-header">
@@ -793,7 +806,6 @@
 			</ul>
 		</aside>
 	{/if}
-{/if}
 
 <!-- Legend -->
 <aside class="graph-legend">
