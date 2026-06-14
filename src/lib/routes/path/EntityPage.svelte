@@ -6,6 +6,7 @@
 	import EntityLink from '$lib/components/EntityLink.svelte';
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import Tag from '$lib/components/Tag.svelte';
+	import StatisticsPanel from '$lib/components/StatisticsPanel.svelte';
 	import { SvelteSet } from 'svelte/reactivity';
 	import { toRoman } from '$lib/types';
 
@@ -30,10 +31,13 @@
 			: data.kindChip
 	);
 
-	// Tabs: shown only when the entity has classMates (instances of the same class).
-	// "About" wraps all existing page content; "Instances" lists classMates as cards.
+	// Tabs: shown when the entity has classMates (instances) and/or statistics.
+	// "About" wraps all existing page content; "Instances" lists classMates as cards;
+	// "Statistics" shows structured statistics blocks.
 	const hasClassMates = $derived(data.classMates.length > 0);
-	let activeTab: 'about' | 'instances' = $state('about');
+	const hasStatistics = $derived(data.statistics.length > 0);
+	const hasTabs = $derived(hasClassMates || hasStatistics);
+	let activeTab: 'about' | 'instances' | 'statistics' = $state('about');
 
 	const COLLAPSE_AT = 8;
 	const expanded = new SvelteSet<string>();
@@ -242,7 +246,7 @@
 		<p class="aliases"><em>Also known as: {data.entity.aliases.join(', ')}</em></p>
 	{/if}
 
-	{#if hasClassMates}
+	{#if hasTabs}
 		<div class="tabs" role="tablist" aria-label="Entity sections">
 			<button
 				type="button"
@@ -254,20 +258,34 @@
 			>
 				About
 			</button>
-			<button
-				type="button"
-				role="tab"
-				class="tab"
-				aria-selected={activeTab === 'instances'}
-				class:active={activeTab === 'instances'}
-				onclick={() => (activeTab = 'instances')}
-			>
-				Instances
-			</button>
+			{#if hasClassMates}
+				<button
+					type="button"
+					role="tab"
+					class="tab"
+					aria-selected={activeTab === 'instances'}
+					class:active={activeTab === 'instances'}
+					onclick={() => (activeTab = 'instances')}
+				>
+					Instances
+				</button>
+			{/if}
+			{#if hasStatistics}
+				<button
+					type="button"
+					role="tab"
+					class="tab"
+					aria-selected={activeTab === 'statistics'}
+					class:active={activeTab === 'statistics'}
+					onclick={() => (activeTab = 'statistics')}
+				>
+					Statistics
+				</button>
+			{/if}
 		</div>
 	{/if}
 
-	{#if !hasClassMates || activeTab === 'about'}
+	{#if !hasTabs || activeTab === 'about'}
 
 	<!-- Fleuron: same ornamental chapter-mark used on collection pages,
 	     marking the boundary between the editorial header zone and the
@@ -476,6 +494,12 @@
 			</div>
 		</div>
 	{/if}
+
+	{#if hasStatistics && activeTab === 'statistics'}
+		<div role="tabpanel" class="statistics-tab-panel">
+			<StatisticsPanel blocks={data.statistics} />
+		</div>
+	{/if}
 </article>
 
 <style>
@@ -522,6 +546,13 @@
 	/* Instances tab panel: entity card grid, same as KindPage. */
 	.instances-panel {
 		margin-top: var(--space-5);
+	}
+
+	/* Statistics tab panel: centered prose column width. */
+	.statistics-tab-panel {
+		margin-top: var(--space-5);
+		max-width: var(--prose-w, 48rem);
+		margin-inline: auto;
 	}
 
 	.grid {

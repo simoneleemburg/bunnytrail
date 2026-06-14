@@ -165,6 +165,24 @@ export async function loadEntityPage(entity: Entity) {
 		return [...byKind.values()].sort((a, b) => a.label.plural.localeCompare(b.label.plural));
 	})();
 
+	// ── Statistics ────────────────────────────────────────────────
+	// Parse the `statistics` frontmatter field into a structured view-model.
+	// The raw shape is:
+	//   statistics:
+	//     - population:
+	//       - total: <number>
+	//       - slices:
+	//         - species: <entity-id>
+	//           percentage: <number>
+	// YAML parses this as an array of objects whose keys are stat names.
+	// We normalise it into typed blocks and resolve entity links.
+	const statistics = parseStatistics(entity.meta.statistics, (eid: string) => {
+		const target = graph.get(eid);
+		return target
+			? { name: target.meta.name, href: `/${eid}` }
+			: { name: eid.split('/').pop() ?? eid, href: `/${eid}` };
+	});
+
 	const HIDDEN = new Set([
 		'name',
 		'summary',
@@ -185,7 +203,9 @@ export async function loadEntityPage(entity: Entity) {
 		// is either ignored (the containing _collection governs display) or
 		// set on the entity's own _collection.  Either way it should not
 		// appear as a raw sidebar property.
-		'rankDisplay'
+		'rankDisplay',
+		// `statistics` is surfaced as its own structured panel.
+		'statistics'
 	]);
 	const extra: { key: string; value: unknown }[] = [];
 	for (const [key, value] of Object.entries(entity.meta)) {
@@ -300,7 +320,8 @@ export async function loadEntityPage(entity: Entity) {
 		// no `craft.md`.
 		craftHref: entity.craft !== null ? `/${entity.id}/craft` : null,
 		rankNav,
-		classMates
+		classMates,
+		statistics
 	};
 }
 
@@ -331,4 +352,88 @@ function toChildCard(e: Entity, cardSummaryHtml: (s: string | null | undefined) 
 		kind: typeof e.meta.kind === 'string' ? e.meta.kind : null,
 		rank: typeof e.meta.rank === 'number' ? e.meta.rank : null
 	};
+}
+
+// ── Statistics helpers ─────────────────────────────────────────────────────
+
+export interface PopulationSlice {
+	speciesId: string;
+	speciesName: string;
+	href: string;
+	percentage: number;
+}
+
+export interface PopulationStat {
+	kind: 'population';
+	total: number | null;
+	slices: PopulationSlice[];
+}
+
+export type StatBlock = PopulationStat;
+
+/**
+ * Normalise the raw `statistics` frontmatter value into typed stat blocks.
+ *
+ * Raw YAML shape (as parsed by the `yaml` package):
+ *   statistics:
+ *     - population:          ← array item whose key is the stat name
+ *       - total: 100000
+ *       - slices:
+ *         - species: <id>
+ *           percentage: <n>
+ *
+ * The YAML parser turns this into:
+ *   [ { population: [ { total: 100000 }, { slices: [...] } ] } ]
+ */
+function parseStatistics(
+	raw: unknown,
+	resolveEntity: (id: string) => { name: string; href: string }
+): StatBlock[] {
+	if (!Array.isArray(raw)) return [];
+	const blocks: StatBlock[] = [];
+
+	for (const item of raw) {
+		if (!item || typeof item !== 'object') continue;
+		const entry = item as Record<string, unknown>;
+
+		if ('population' in entry) {
+			const pop = parsePopulation(entry.population, resolveEntity);
+			if (pop) blocks.push(pop);
+		}
+	}
+
+	return blocks;
+}
+
+function parsePopulation(
+	raw: unknown,
+	resolveEntity: (id: string) => { name: string; href: string }
+): PopulationStat | null {
+	if (!Array.isArray(raw)) return null;
+
+	let total: number | null = null;
+	let slices: PopulationSlice[] = [];
+
+	for (const item of raw) {
+		if (!item || typeof item !== 'object') continue;
+		const entry = item as Record<string, unknown>;
+
+		if ('total' in entry && typeof entry.total === 'number') {
+			total = entry.total;
+		}
+		if ('slices' in entry && Array.isArray(entry.slices)) {
+			for (const s of entry.slices) {
+				if (!s || typeof s !== 'object') continue;
+				const slice = s as Record<string, unknown>;
+				const id = typeof slice.species === 'string' ? slice.species : null;
+				const pct = typeof slice.percentage === 'number' ? slice.percentage : null;
+				if (id === null || pct === null) continue;
+				const resolved = resolveEntity(id);
+				slices.push({ speciesId: id, speciesName: resolved.name, href: resolved.href, percentage: pct });
+			}
+		}
+	}
+
+	if (total === null && slices.length === 0) return null;
+	return { kind: 'population', total, slices };
 }
