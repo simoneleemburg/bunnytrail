@@ -38,6 +38,19 @@ export function byRankThenName(a: Entity, b: Entity): number {
  * One entry in the species-presence index: this species appears in the
  * population statistics of `worldId` at `percentage`%.
  */
+export interface SpeciesSubGroupEntry {
+	groupId: EntityId;
+	groupName: string;
+	href: string;
+	/** Count of THIS species within this sub-group. */
+	count: number | null;
+	/**
+	 * What fraction of the parent world's species-slice count this sub-group
+	 * accounts for. E.g. 163 Greyhorns / 89,600 Shar on Ashara = 0.18%.
+	 */
+	pctOfSlice: number | null;
+}
+
 export interface SpeciesPresenceEntry {
 	worldId: EntityId;
 	worldName: string;
@@ -46,6 +59,20 @@ export interface SpeciesPresenceEntry {
 	worldTotal: number | null;
 	/** Raw count if the slice was authored as a count rather than a percentage. */
 	count?: number | null;
+	/** Known sub-groups under this world that contain this species. */
+	subGroups: SpeciesSubGroupEntry[];
+}
+
+/**
+ * A full sub-group population block for world-page rendering.
+ * One per sub-group entity that has `within: <worldId>` in its statistics.
+ */
+export interface WorldSubGroup {
+	groupId: EntityId;
+	groupName: string;
+	href: string;
+	total: number | null;
+	slices: Array<{ species: string; percentage: number; count: number | null }>;
 }
 
 export class Graph {
@@ -61,6 +88,8 @@ export class Graph {
 	#loading: Promise<void> | null = null;
 	/** Lazily built on first call to `speciesPresence()`. */
 	#speciesPopulationIndex: Map<EntityId, SpeciesPresenceEntry[]> | null = null;
+	/** Lazily built alongside #speciesPopulationIndex: worldId → WorldSubGroup[]. */
+	#worldSubGroupsIndex: Map<EntityId, WorldSubGroup[]> | null = null;
 	/** Lazily built on first call to `languageVocabulary()`. */
 	#vocabIndex: Map<EntityId, VocabEntry[]> | null = null;
 
@@ -83,6 +112,7 @@ export class Graph {
 		// Invalidate lazy indices so a dev-mode reload rebuilds them
 		// against the fresh entity set.
 		this.#speciesPopulationIndex = null;
+		this.#worldSubGroupsIndex = null;
 		this.#vocabIndex = null;
 		})();
 		try {
@@ -673,18 +703,51 @@ export class Graph {
 	 */
 	speciesPresence(speciesId: EntityId): SpeciesPresenceEntry[] {
 		if (!this.#speciesPopulationIndex) {
-			this.#speciesPopulationIndex = this.#buildSpeciesPopulationIndex();
+			const { speciesIndex, worldIndex } = this.#buildPopulationIndices();
+			this.#speciesPopulationIndex = speciesIndex;
+			this.#worldSubGroupsIndex = worldIndex;
 		}
 		return this.#speciesPopulationIndex.get(speciesId) ?? [];
 	}
 
 	/**
-	 * Walk every entity, extract `statistics[].population` blocks, and
-	 * build a reverse map from species entity id → list of world entries.
+	 * All known sub-groups for a world entity as full population blocks.
+	 * Each entry carries the sub-group's own species breakdown for rendering
+	 * as a separate pie chart alongside the world's main population chart.
 	 */
-	#buildSpeciesPopulationIndex(): Map<EntityId, SpeciesPresenceEntry[]> {
-		const index = new Map<EntityId, SpeciesPresenceEntry[]>();
+	worldSubGroups(worldId: EntityId): WorldSubGroup[] {
+		if (!this.#worldSubGroupsIndex) {
+			const { speciesIndex, worldIndex } = this.#buildPopulationIndices();
+			this.#speciesPopulationIndex = speciesIndex;
+			this.#worldSubGroupsIndex = worldIndex;
+		}
+		return this.#worldSubGroupsIndex.get(worldId) ?? [];
+	}
 
+	/**
+	 * Walk every entity, extract `statistics[].population` blocks, and
+	 * build two reverse indices:
+	 *
+	 *   speciesIndex: species entity id → list of world entries (with subGroups)
+	 *   worldIndex:   world entity id  → WorldSubGroup[] (full population blocks)
+	 *
+	 * Two passes:
+	 *   Pass 1 — entities WITHOUT `within`: world-level population blocks
+	 *            (e.g. Ashara). Builds the speciesIndex.
+	 *   Pass 2 — entities WITH `within`: sub-groups (e.g. The Greyhorns,
+	 *            Tholingia). For each species slice, finds the parent world's
+	 *            entry in speciesIndex and attaches a SpeciesSubGroupEntry
+	 *            with pctOfSlice = sub-group species count / world species count.
+	 *            Also appends a full WorldSubGroup to worldIndex.
+	 */
+	#buildPopulationIndices(): {
+		speciesIndex: Map<EntityId, SpeciesPresenceEntry[]>;
+		worldIndex: Map<EntityId, WorldSubGroup[]>;
+	} {
+		const speciesIndex = new Map<EntityId, SpeciesPresenceEntry[]>();
+		const worldIndex = new Map<EntityId, WorldSubGroup[]>();
+
+		// ── Pass 1: world-level population blocks (no `within`) ─────────────
 		for (const entity of this.#entities.values()) {
 			const rawStats = entity.meta.statistics;
 			if (!Array.isArray(rawStats)) continue;
@@ -694,54 +757,146 @@ export class Graph {
 				const entry = item as Record<string, unknown>;
 				if (!('population' in entry) || !Array.isArray(entry.population)) continue;
 
-			// Extract total and slices from the population array.
-			let total: number | null = null;
-			let slices: Array<{ species: string; percentage: number; count?: number }> = [];
+				// Skip sub-group entities (they have `within` in the population array).
+				let hasWithin = false;
+				for (const popItem of entry.population) {
+					if (popItem && typeof popItem === 'object' && 'within' in (popItem as object)) {
+						hasWithin = true;
+						break;
+					}
+				}
+				if (hasWithin) continue;
 
-			for (const popItem of entry.population) {
-				if (!popItem || typeof popItem !== 'object') continue;
-				const p = popItem as Record<string, unknown>;
-				if (typeof p.total === 'number') total = p.total;
-				if (Array.isArray(p.slices)) {
-					for (const s of p.slices) {
-						if (!s || typeof s !== 'object') continue;
-						const sl = s as Record<string, unknown>;
-						if (typeof sl.species !== 'string') continue;
-						const pct = typeof sl.percentage === 'number' ? sl.percentage : null;
-						const cnt = typeof sl.count === 'number' ? sl.count : null;
-						if (pct !== null) {
-							slices.push({ species: sl.species, percentage: pct });
-						} else if (cnt !== null && total !== null && total > 0) {
-							// Full-precision percentage derived from count
-							slices.push({ species: sl.species, percentage: (cnt / total) * 100, count: cnt });
+				let total: number | null = null;
+				let slices: Array<{ species: string; percentage: number; count?: number }> = [];
+
+				for (const popItem of entry.population) {
+					if (!popItem || typeof popItem !== 'object') continue;
+					const p = popItem as Record<string, unknown>;
+					if (typeof p.total === 'number') total = p.total;
+					if (Array.isArray(p.slices)) {
+						for (const s of p.slices) {
+							if (!s || typeof s !== 'object') continue;
+							const sl = s as Record<string, unknown>;
+							if (typeof sl.species !== 'string') continue;
+							const pct = typeof sl.percentage === 'number' ? sl.percentage : null;
+							const cnt = typeof sl.count === 'number' ? sl.count : null;
+							if (pct !== null) {
+								slices.push({ species: sl.species, percentage: pct });
+							} else if (cnt !== null && total !== null && total > 0) {
+								slices.push({ species: sl.species, percentage: (cnt / total) * 100, count: cnt });
+							}
 						}
 					}
 				}
-			}
 
 				if (slices.length === 0) continue;
 
-				const worldEntry: Omit<SpeciesPresenceEntry, 'percentage'> = {
+				const worldEntry: Omit<SpeciesPresenceEntry, 'percentage' | 'subGroups'> = {
 					worldId: entity.id,
 					worldName: entity.meta.name,
 					href: `/${entity.id}`,
 					worldTotal: total
 				};
 
-			for (const slice of slices) {
-				const arr = index.get(slice.species) ?? [];
-				arr.push({ ...worldEntry, percentage: slice.percentage, count: slice.count ?? null });
-				index.set(slice.species, arr);
-			}
+				for (const slice of slices) {
+					const arr = speciesIndex.get(slice.species) ?? [];
+					arr.push({ ...worldEntry, percentage: slice.percentage, count: slice.count ?? null, subGroups: [] });
+					speciesIndex.set(slice.species, arr);
+				}
 			}
 		}
 
 		// Sort each species' entry list by percentage descending.
-		for (const arr of index.values()) {
+		for (const arr of speciesIndex.values()) {
 			arr.sort((a, b) => b.percentage - a.percentage);
 		}
 
-		return index;
+		// ── Pass 2: sub-group population blocks (have `within`) ─────────────
+		for (const entity of this.#entities.values()) {
+			const rawStats = entity.meta.statistics;
+			if (!Array.isArray(rawStats)) continue;
+
+			for (const item of rawStats) {
+				if (!item || typeof item !== 'object') continue;
+				const entry = item as Record<string, unknown>;
+				if (!('population' in entry) || !Array.isArray(entry.population)) continue;
+
+				let withinId: string | null = null;
+				let subTotal: number | null = null;
+				let subSlices: Array<{ species: string; pct: number; count: number | null }> = [];
+
+				for (const popItem of entry.population) {
+					if (!popItem || typeof popItem !== 'object') continue;
+					const p = popItem as Record<string, unknown>;
+					if (typeof p.within === 'string') withinId = p.within;
+					if (typeof p.total === 'number') subTotal = p.total;
+					if (Array.isArray(p.slices)) {
+						for (const s of p.slices) {
+							if (!s || typeof s !== 'object') continue;
+							const sl = s as Record<string, unknown>;
+							if (typeof sl.species !== 'string') continue;
+							const pct = typeof sl.percentage === 'number' ? sl.percentage : null;
+							const cnt = typeof sl.count === 'number' ? sl.count : null;
+							if (pct !== null) {
+								const count = subTotal !== null ? Math.round((pct / 100) * subTotal) : null;
+								subSlices.push({ species: sl.species, pct, count });
+							} else if (cnt !== null && subTotal !== null && subTotal > 0) {
+								subSlices.push({ species: sl.species, pct: (cnt / subTotal) * 100, count: cnt });
+							}
+						}
+					}
+				}
+
+				if (!withinId || subSlices.length === 0) continue;
+
+				const groupName = entity.meta.name;
+				const groupHref = `/${entity.id}`;
+
+				// Attach a SpeciesSubGroupEntry to each matching species presence entry.
+				for (const subSlice of subSlices) {
+					const worldEntries = speciesIndex.get(subSlice.species) ?? [];
+					const worldEntry = worldEntries.find((e) => e.worldId === withinId);
+
+					// pctOfSlice: sub-group's species count / world's total species count
+					let pctOfSlice: number | null = null;
+					if (worldEntry && worldEntry.worldTotal !== null) {
+						const worldSliceCount = (worldEntry.percentage / 100) * worldEntry.worldTotal;
+						if (worldSliceCount > 0) {
+							const subCount = subSlice.count ?? (subTotal !== null ? Math.round((subSlice.pct / 100) * subTotal) : null);
+							if (subCount !== null) {
+								pctOfSlice = (subCount / worldSliceCount) * 100;
+							}
+						}
+					}
+
+					const subGroupEntry: SpeciesSubGroupEntry = {
+						groupId: entity.id,
+						groupName,
+						href: groupHref,
+						count: subSlice.count ?? (subTotal !== null ? Math.round((subSlice.pct / 100) * subTotal) : null),
+						pctOfSlice
+					};
+
+					if (worldEntry) {
+						worldEntry.subGroups.push(subGroupEntry);
+					}
+				}
+
+				// Append a full WorldSubGroup for world-page rendering (separate pie).
+				const worldSubGroups = worldIndex.get(withinId as EntityId) ?? [];
+				worldSubGroups.push({
+					groupId: entity.id,
+					groupName,
+					href: groupHref,
+					total: subTotal,
+					slices: subSlices.map((s) => ({ species: s.species, percentage: s.pct, count: s.count }))
+				});
+				worldIndex.set(withinId as EntityId, worldSubGroups);
+			}
+		}
+
+		return { speciesIndex, worldIndex };
 	}
 
 	/** Outgoing edges from `id`. */

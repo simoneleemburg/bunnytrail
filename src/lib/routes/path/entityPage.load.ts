@@ -200,6 +200,32 @@ export async function loadEntityPage(entity: Entity) {
 			: { name: eid.split('/').pop() ?? eid, href: `/${eid}` };
 	});
 
+	// Attach known sub-group population blocks to world-level population stats
+	// (e.g. Ashara). graph.worldSubGroups() returns WorldSubGroup[], each with
+	// its own species breakdown for rendering as a separate pie chart.
+	const worldSubGroupsList = graph.worldSubGroups(id);
+	if (worldSubGroupsList.length > 0) {
+		for (const block of statistics) {
+			if (block.kind !== 'population') continue;
+			block.subGroupBlocks = worldSubGroupsList.map((sg) => ({
+				groupId: sg.groupId,
+				groupName: sg.groupName,
+				href: sg.href,
+				total: sg.total,
+				slices: sg.slices.map((s) => {
+					const resolved = graph.get(s.species);
+					return {
+						speciesId: s.species,
+						speciesName: resolved?.meta.name ?? s.species.split('/').pop() ?? s.species,
+						href: resolved ? `/${s.species}` : null,
+						percentage: s.percentage,
+						count: s.count
+					};
+				})
+			}));
+		}
+	}
+
 	// Automatically derive a "presence" block from the reverse population
 	// index: if any world's `statistics.population.slices` references this
 	// entity, surface "Population presence" without any extra frontmatter.
@@ -213,7 +239,14 @@ export async function loadEntityPage(entity: Entity) {
 				href: e.href,
 				percentage: e.percentage,
 				worldTotal: e.worldTotal,
-				count: e.count ?? null
+				count: e.count ?? null,
+				subGroups: e.subGroups.map((sg) => ({
+					groupId: sg.groupId,
+					groupName: sg.groupName,
+					href: sg.href,
+					count: sg.count,
+					pctOfSlice: sg.pctOfSlice
+				}))
 			}))
 		});
 	}
@@ -467,6 +500,25 @@ function toChildCard(e: Entity, cardSummaryHtml: (s: string | null | undefined) 
 
 // ── Statistics helpers ─────────────────────────────────────────────────────
 
+export interface SubGroupEntry {
+	groupId: string;
+	groupName: string;
+	href: string;
+	/** Count of THIS species within this sub-group (for presence panel). */
+	count: number | null;
+	/** % of parent world's species-slice that this sub-group accounts for. */
+	pctOfSlice: number | null;
+}
+
+/** A sub-group's own population block, for rendering as a separate pie on world pages. */
+export interface SubGroupBlock {
+	groupId: string;
+	groupName: string;
+	href: string;
+	total: number | null;
+	slices: PopulationSlice[];
+}
+
 export interface PopulationSlice {
 	speciesId: string;
 	speciesName: string;
@@ -480,7 +532,13 @@ export interface PopulationSlice {
 export interface PopulationStat {
 	kind: 'population';
 	total: number | null;
+	/** Entity id this population is a sub-set of (set on sub-group entities). */
+	withinId: string | null;
+	withinName: string | null;
+	withinHref: string | null;
 	slices: PopulationSlice[];
+	/** Full population blocks for each sub-group (for world-page separate pies). */
+	subGroupBlocks: SubGroupBlock[];
 }
 
 export interface PresenceEntry {
@@ -491,6 +549,8 @@ export interface PresenceEntry {
 	worldTotal: number | null;
 	/** Raw count if the slice was authored as a count rather than a percentage. */
 	count: number | null;
+	/** Known sub-groups within this world for this species. */
+	subGroups: SubGroupEntry[];
 }
 
 export interface PresenceStat {
@@ -541,6 +601,7 @@ function parsePopulation(
 	if (!Array.isArray(raw)) return null;
 
 	let total: number | null = null;
+	let withinId: string | null = null;
 	let slices: PopulationSlice[] = [];
 
 	for (const item of raw) {
@@ -549,6 +610,9 @@ function parsePopulation(
 
 		if ('total' in entry && typeof entry.total === 'number') {
 			total = entry.total;
+		}
+		if ('within' in entry && typeof entry.within === 'string') {
+			withinId = entry.within;
 		}
 		if ('slices' in entry && Array.isArray(entry.slices)) {
 			for (const s of entry.slices) {
@@ -562,16 +626,26 @@ function parsePopulation(
 
 				const resolved = resolveEntity(id);
 				// Store count alongside; percentage will be finalised below.
-				slices.push({
+			slices.push({
 					speciesId: id,
 					speciesName: resolved.name,
 					href: resolved.href,
 					percentage: pct ?? 0, // placeholder; overwritten below if count-based
+					count: null,
 					_rawCount: count,
 					_rawPct: pct
 				} as PopulationSlice & { _rawCount: number | null; _rawPct: number | null });
 			}
 		}
+	}
+
+	// Resolve within entity name/href.
+	let withinName: string | null = null;
+	let withinHref: string | null = null;
+	if (withinId !== null) {
+		const resolved = resolveEntity(withinId);
+		withinName = resolved.name;
+		withinHref = resolved.href;
 	}
 
 	// Finalise percentages: prefer explicit percentage; fall back to count/total.
@@ -589,6 +663,6 @@ function parsePopulation(
 		// else: no usable data — skip
 	}
 
-	if (total === null && finalSlices.length === 0) return null;
-	return { kind: 'population', total, slices: finalSlices };
+	if (total === null && finalSlices.length === 0 && withinId === null) return null;
+	return { kind: 'population', total, withinId, withinName, withinHref, slices: finalSlices, subGroupBlocks: [] };
 }

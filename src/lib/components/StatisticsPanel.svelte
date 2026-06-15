@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { StatBlock, PopulationSlice } from '$lib/routes/path/entityPage.load';
+	import type { StatBlock, PopulationSlice, SubGroupEntry, SubGroupBlock } from '$lib/routes/path/entityPage.load';
 
 	interface Props {
 		blocks: StatBlock[];
@@ -180,7 +180,68 @@
 						</div>
 					{/if}
 				</section>
-			{:else if block.kind === 'presence'}
+			{#if block.subGroupBlocks && block.subGroupBlocks.length > 0}
+				{#each block.subGroupBlocks as sg (sg.groupId)}
+					{@const sgSliceTotal = sg.slices.reduce((s, sl) => s + sl.percentage, 0)}
+					{@const sgRemainder = Math.round((100 - sgSliceTotal) * 10) / 10}
+					{@const sgAllSlices = sgRemainder > 0.4
+						? [...sg.slices, { speciesId: '__other__', speciesName: 'Other', href: null, percentage: sgRemainder, count: null }]
+						: sg.slices}
+					{@const sgArcs = buildArcs(sgAllSlices)}
+					{@const sgSingleSlice = sgAllSlices.length === 1 ? sgAllSlices[0] : null}
+					<section class="stat-block stat-block--subgroup">
+						<h3 class="subgroup-heading">
+							<a class="subgroup-heading__link" href={sg.href}>{sg.groupName}</a>
+						</h3>
+						{#if sg.total !== null}
+							<p class="stat-total">
+								<span class="stat-total__number">{formatNumber(sg.total)}</span>
+								<span class="stat-total__label">total</span>
+							</p>
+						{/if}
+						{#if sgArcs || sgSingleSlice}
+							<div class="stat-chart-wrap">
+								<div class="stat-chart stat-chart--small">
+									<svg viewBox="0 0 300 300" width="140" height="140" aria-hidden="true" focusable="false">
+										{#if sgArcs}
+											{#each sgArcs as arc (arc.slice.speciesId)}
+												<path d={arc.path} fill={arc.color} />
+											{/each}
+										{:else if sgSingleSlice}
+											<circle cx={CX} cy={CY} r={R} fill={PALETTE[0]} />
+										{/if}
+									</svg>
+								</div>
+								{#if sgAllSlices.length > 0}
+									<ul class="stat-legend stat-legend--small">
+										{#each sgAllSlices as slice, i (slice.speciesId)}
+											{@const count = slice.count !== undefined && slice.count !== null
+												? slice.count
+												: (sg.total !== null ? Math.round(slice.percentage / 100 * sg.total) : null)}
+											<li class="stat-legend__item">
+												<span
+													class="stat-legend__swatch"
+													style:background-color={slice.speciesId === '__other__' ? '#d4cdc4' : PALETTE[i % PALETTE.length]}
+												></span>
+												{#if slice.href}
+													<a class="stat-legend__link" href={slice.href}>{slice.speciesName}</a>
+												{:else}
+													<span class="stat-legend__label">{slice.speciesName}</span>
+												{/if}
+												<span class="stat-legend__pct">({formatPct(slice.percentage)})</span>
+												{#if count !== null}
+													<span class="stat-legend__count">{formatNumber(count)}</span>
+												{/if}
+											</li>
+										{/each}
+									</ul>
+								{/if}
+							</div>
+						{/if}
+					</section>
+				{/each}
+			{/if}
+		{:else if block.kind === 'presence'}
 				{@const counts = block.entries.map(e =>
 					e.count !== undefined && e.count !== null
 						? e.count
@@ -218,6 +279,22 @@
 										style:width="{maxCount ? ((count ?? 0) / maxCount) * 100 : 100}%"
 									></div>
 								</div>
+								{#if entry.subGroups && entry.subGroups.length > 0}
+									<ul class="subgroup-list">
+										{#each entry.subGroups as sg (sg.groupId)}
+											<li class="subgroup-item">
+												<span class="subgroup-arrow" aria-hidden="true">↳</span>
+												<a class="subgroup-link" href={sg.href}>{sg.groupName}</a>
+												{#if sg.count !== null}
+													<span class="subgroup-count">{formatNumber(sg.count)}</span>
+												{/if}
+												{#if sg.pctOfSlice !== null}
+													<span class="subgroup-pct">({formatPct(sg.pctOfSlice)})</span>
+												{/if}
+											</li>
+										{/each}
+									</ul>
+								{/if}
 							</li>
 						{/each}
 					</ul>
@@ -415,5 +492,93 @@
 		background: var(--accent-soft, #777);
 		border-radius: 2px;
 		transition: width 200ms ease;
+	}
+
+	/* ── Sub-groups ───────────────────────────────────────────────── */
+	.subgroup-list {
+		list-style: none;
+		margin: var(--space-2) 0 0 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+		width: 100%;
+	}
+
+	.subgroup-item {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-1);
+		font-size: var(--text-xs);
+		color: var(--ink-faint);
+		padding-inline-start: var(--space-3);
+	}
+
+	.subgroup-arrow {
+		color: var(--ink-faint);
+		flex: 0 0 auto;
+		font-size: 0.65em;
+	}
+
+	.subgroup-link {
+		font-family: var(--font-serif);
+		font-size: var(--text-xs);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.05em;
+		color: var(--ink-mid);
+		text-decoration: none;
+		border-bottom: 1px solid var(--rule-hair, #d8d8d8);
+	}
+
+	.subgroup-link:hover {
+		color: var(--accent);
+		border-bottom-color: var(--accent-warm);
+	}
+
+	.subgroup-count {
+		font-variant-numeric: tabular-nums;
+		color: var(--ink-faint);
+	}
+
+	.subgroup-pct {
+		font-variant-numeric: tabular-nums;
+		color: var(--ink-faint);
+	}
+
+	/* ── Sub-group population charts ──────────────────────────────── */
+	.stat-block--subgroup {
+		margin-top: var(--space-5);
+		padding-top: var(--space-4);
+		border-top: 1px solid var(--rule-hair, #e0e0e0);
+	}
+
+	.subgroup-heading {
+		font-family: var(--font-serif);
+		font-size: var(--text-xs);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.08em;
+		font-weight: 600;
+		color: var(--ink-mid);
+		margin: 0 0 var(--space-3);
+		text-transform: lowercase;
+	}
+
+	.subgroup-heading__link {
+		color: inherit;
+		text-decoration: none;
+		border-bottom: 1px solid var(--rule-hair, #d8d8d8);
+	}
+
+	.subgroup-heading__link:hover {
+		color: var(--accent);
+		border-bottom-color: var(--accent-warm);
+	}
+
+	.stat-chart--small svg {
+		max-width: 140px;
+	}
+
+	.stat-legend--small {
+		flex: 1 1 8rem;
 	}
 </style>
