@@ -102,7 +102,7 @@ export function loadAggregateSubShelfPage(shelf: string, subShelf: string) {
 				.map(([label, count]) => ({ label, count }))
 				.sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
 			return {
-				type: `${shelf}/${subShelf}/${name}`,
+				type: labelSourcePath,
 				plural: childLabels.plural,
 				description: childDescription,
 				rank: null as number | null,
