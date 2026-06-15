@@ -396,6 +396,25 @@
 				</section>
 			{/if}
 
+			{#if data.namesInOtherLanguages.length > 0}
+				<section class="names-in-languages">
+					<dl>
+						{#each data.namesInOtherLanguages as entry (entry.langCode)}
+							<dt>
+								{#if entry.langHref}
+									<a href={entry.langHref}>{entry.langName}</a>
+								{:else}
+									{entry.langName}
+								{/if}
+							</dt>
+							<dd>
+								{entry.word}{#if entry.notes}<span class="names-note">{entry.notes}</span>{/if}
+							</dd>
+						{/each}
+					</dl>
+				</section>
+			{/if}
+
 			{#if data.extra.length > 0}
 				<section>
 					<PropertyList items={data.extra} />
@@ -1054,5 +1073,46 @@
 
 	.craft-link a:hover {
 		color: var(--accent);
+	}
+
+	.names-in-languages dl {
+		margin: 0;
+		display: grid;
+		grid-template-columns: max-content 1fr;
+		column-gap: var(--space-4);
+		row-gap: var(--space-2);
+	}
+
+	.names-in-languages dt {
+		font-size: var(--text-xs);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.08em;
+		color: var(--ink-faint);
+		font-weight: 500;
+		padding-top: 0.15em;
+	}
+
+	.names-in-languages dt a {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.names-in-languages dt a:hover {
+		color: var(--accent);
+	}
+
+	.names-in-languages dd {
+		margin: 0;
+		font-family: var(--font-display);
+		color: var(--ink);
+	}
+
+	.names-note {
+		display: block;
+		font-family: var(--font-sans, inherit);
+		font-size: var(--text-xs);
+		font-style: italic;
+		color: var(--ink-soft);
+		margin-top: 0.1em;
 	}
 </style>

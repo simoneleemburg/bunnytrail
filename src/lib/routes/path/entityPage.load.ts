@@ -35,14 +35,18 @@ export async function loadEntityPage(entity: Entity) {
 
 	const langCode = typeof entity.meta.language === 'string' ? entity.meta.language : null;
 	// If no scalar `language:` field, check vocabulary[] items for a language reference.
-	// A `vocabulary: [{language: bu}]` entry alone is sufficient to show the pill.
+	// Only items with no explicit `word` field qualify — those are implicitly naming
+	// the entity itself in that language, which is what the header pill signals.
+	// Items that carry a distinct `word` (like an older name) go to the sidebar list
+	// instead and must not trigger the pill.
 	const effectiveLangCode = langCode ?? (() => {
 		const vocabArr = entity.meta.vocabulary;
 		if (!Array.isArray(vocabArr)) return null;
 		for (const item of vocabArr) {
 			if (!item || typeof item !== 'object') continue;
 			const v = item as Record<string, unknown>;
-			if (typeof v.language === 'string' && v.language) return v.language;
+			const hasWord = typeof v.word === 'string' && v.word.trim() !== '';
+			if (!hasWord && typeof v.language === 'string' && v.language) return v.language;
 		}
 		return null;
 	})();
@@ -329,6 +333,38 @@ export async function loadEntityPage(entity: Entity) {
 	const vocabulary: VocabEntry[] =
 		entity.meta.kind === 'language' ? graph.languageVocabulary(id) : [];
 
+	// Names in other languages: vocabulary items on non-language entities that
+	// carry a `language:` field. Shown as a compact sidebar list — language
+	// name/code + word + optional notes. Distinct from the full Vocabulary tab
+	// (which only appears on language entities).
+	const namesInOtherLanguages: {
+		word: string;
+		langCode: string;
+		langName: string;
+		langHref: string | null;
+		notes: string | null;
+	}[] = (() => {
+		if (entity.meta.kind === 'language') return [];
+		const raw = entity.meta.vocabulary;
+		if (!Array.isArray(raw)) return [];
+		const out = [];
+		for (const item of raw) {
+			if (!item || typeof item !== 'object') continue;
+			const v = item as Record<string, unknown>;
+			const langRef = typeof v.language === 'string' ? v.language.trim() : null;
+			if (!langRef) continue;
+			const word = typeof v.word === 'string' ? v.word.trim() : null;
+			if (!word) continue;
+			const notes = typeof v.notes === 'string' ? v.notes.trim() || null : null;
+			const targetId = languageCodes.get(langRef) ?? (graph.get(langRef) ? langRef : null);
+			const langEntity = targetId ? graph.get(targetId) : null;
+			const langName = langEntity?.meta.name ?? langRef;
+			const langHref = targetId ? `/${targetId}` : null;
+			out.push({ word, langCode: langRef, langName, langHref, notes });
+		}
+		return out;
+	})();
+
 	// Rank-based prev/next navigation. When this entity has a numeric
 	// rank, find all folder-siblings (same containing folder) that also
 	// have a rank, sort them, and pick the immediate neighbours.
@@ -395,7 +431,8 @@ export async function loadEntityPage(entity: Entity) {
 		rankNav,
 		classMates,
 		statistics,
-		vocabulary
+		vocabulary,
+		namesInOtherLanguages
 	};
 }
 
