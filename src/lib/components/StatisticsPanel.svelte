@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { StatBlock, PopulationSlice, SubGroupEntry, SubGroupBlock } from '$lib/routes/path/entityPage.load';
+	import { SvelteMap } from 'svelte/reactivity';
 
 	interface Props {
 		blocks: StatBlock[];
@@ -101,6 +102,60 @@
 		const rounded = Math.round(pct * 10) / 10;
 		return `${rounded}%`;
 	}
+
+	/** Generic arc — not tied to PopulationSlice. */
+	interface GroupArc {
+		path: string;
+		color: string;
+		id: string;
+		name: string;
+		href: string;
+		pct: number;
+		count: number | null;
+	}
+
+	/**
+	 * Build arc data for the groups aggregate pie.
+	 * `items` are already in percentage-of-world-total space.
+	 * Colors are pre-assigned by the caller (kind-based).
+	 */
+	function buildGroupArcs(items: GroupArc[]): GroupArc[] | null {
+		if (items.length === 0) return null;
+		const total = items.reduce((s, a) => s + a.pct, 0);
+		if (total <= 0 || total > 150) return null;
+		if (items.length === 1) return null; // single: render plain circle
+
+		const scale = (2 * Math.PI) / total;
+		const arcs: GroupArc[] = [];
+		let cursor = 0;
+		for (const item of items) {
+			const span = item.pct * scale;
+			const start = cursor + GAP_RAD;
+			const end = cursor + span - GAP_RAD;
+			if (end > start) {
+				arcs.push({ ...item, path: sliceToPath(CX, CY, R, start, end) });
+			}
+			cursor += span;
+		}
+		return arcs.length > 0 ? arcs : null;
+	}
+
+	/**
+	 * Assign palette colors to groups by kind.
+	 * Groups of the same kind share a color; undefined kind gets the next unused color.
+	 */
+	function kindColors(blocks: SubGroupBlock[]): SvelteMap<string, string> {
+		const kindMap = new SvelteMap<string, string>();
+		let idx = 0;
+		for (const sg of blocks) {
+			const key = sg.kind ?? `__id__${sg.groupId}`;
+			if (!kindMap.has(key)) {
+				kindMap.set(key, PALETTE[idx % PALETTE.length]);
+				idx++;
+			}
+		}
+		return kindMap;
+	}
 </script>
 
 {#if blocks.length > 0}
@@ -180,6 +235,56 @@
 						</div>
 					{/if}
 				</section>
+			{#if block.subGroupBlocks && block.subGroupBlocks.length > 0 && block.total !== null}
+				{@const colorMap = kindColors(block.subGroupBlocks)}
+				{@const groupItems = block.subGroupBlocks.map((sg) => {
+					const effectiveTotal = sg.total ?? sg.derivedTotal;
+					const pct = effectiveTotal !== null ? (effectiveTotal / block.total!) * 100 : null;
+					const color = colorMap.get(sg.kind ?? `__id__${sg.groupId}`) ?? '#d4cdc4';
+					return { id: sg.groupId, name: sg.groupName, href: sg.href, pct: pct ?? 0, count: effectiveTotal, color, path: '' };
+				}).filter(g => g.pct > 0)}
+				{@const groupTotal = groupItems.reduce((s, g) => s + g.pct, 0)}
+				{@const groupRemainder = Math.round((100 - groupTotal) * 10) / 10}
+				{@const allGroupItems = groupRemainder > 0.4
+					? [...groupItems, { id: '__other__', name: 'Other', href: '', pct: groupRemainder, count: null, color: '#d4cdc4', path: '' }]
+					: groupItems}
+				{@const groupArcs = buildGroupArcs(allGroupItems)}
+				{@const singleGroupItem = allGroupItems.length === 1 ? allGroupItems[0] : null}
+				{#if groupArcs || singleGroupItem}
+					<section class="stat-block stat-block--groups">
+						<h2 class="stat-heading">Known groups</h2>
+						<div class="stat-chart-wrap">
+							<div class="stat-chart">
+								<svg viewBox="0 0 300 300" width="220" height="220" aria-hidden="true" focusable="false">
+									{#if groupArcs}
+										{#each groupArcs as arc (arc.id)}
+											<path d={arc.path} fill={arc.color} />
+										{/each}
+									{:else if singleGroupItem}
+										<circle cx={CX} cy={CY} r={R} fill={singleGroupItem.color} />
+									{/if}
+								</svg>
+							</div>
+							<ul class="stat-legend">
+								{#each allGroupItems as item (item.id)}
+									<li class="stat-legend__item">
+										<span class="stat-legend__swatch" style:background-color={item.color}></span>
+										{#if item.href && item.id !== '__other__'}
+											<a class="stat-legend__link" href={item.href}>{item.name}</a>
+										{:else}
+											<span class="stat-legend__label">{item.name}</span>
+										{/if}
+										<span class="stat-legend__pct">({formatPct(item.pct)})</span>
+										{#if item.count !== null}
+											<span class="stat-legend__count">{formatNumber(item.count)}</span>
+										{/if}
+									</li>
+								{/each}
+							</ul>
+						</div>
+					</section>
+				{/if}
+			{/if}
 			{#if block.subGroupBlocks && block.subGroupBlocks.length > 0}
 				{#each block.subGroupBlocks as sg (sg.groupId)}
 					{@const sgSliceTotal = sg.slices.reduce((s, sl) => s + sl.percentage, 0)}
@@ -543,6 +648,13 @@
 	.subgroup-pct {
 		font-variant-numeric: tabular-nums;
 		color: var(--ink-faint);
+	}
+
+	/* ── Known groups chart ───────────────────────────────────────── */
+	.stat-block--groups {
+		margin-top: var(--space-6);
+		padding-top: var(--space-5);
+		border-top: 1px solid var(--rule-hair, #e0e0e0);
 	}
 
 	/* ── Sub-group population charts ──────────────────────────────── */

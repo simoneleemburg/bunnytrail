@@ -71,7 +71,15 @@ export interface WorldSubGroup {
 	groupId: EntityId;
 	groupName: string;
 	href: string;
+	kind: string | null;
+	/** Authored total from frontmatter, if present. */
 	total: number | null;
+	/**
+	 * Best-effort total derived from the sub-group's species slices against
+	 * the parent world's known species counts. Used for the aggregate groups
+	 * pie when `total` is null. Null if derivation is not possible.
+	 */
+	derivedTotal: number | null;
 	slices: Array<{ species: string; percentage: number; count: number | null }>;
 }
 
@@ -848,51 +856,76 @@ export class Graph {
 					}
 				}
 
-				if (!withinId || subSlices.length === 0) continue;
+			if (!withinId || subSlices.length === 0) continue;
 
-				const groupName = entity.meta.name;
-				const groupHref = `/${entity.id}`;
+			const groupName = entity.meta.name;
+			const groupHref = `/${entity.id}`;
+			const groupKind = typeof entity.meta.kind === 'string' ? entity.meta.kind : null;
 
-				// Attach a SpeciesSubGroupEntry to each matching species presence entry.
-				for (const subSlice of subSlices) {
-					const worldEntries = speciesIndex.get(subSlice.species) ?? [];
-					const worldEntry = worldEntries.find((e) => e.worldId === withinId);
+			// Attach a SpeciesSubGroupEntry to each matching species presence entry.
+			for (const subSlice of subSlices) {
+				const worldEntries = speciesIndex.get(subSlice.species) ?? [];
+				const worldEntry = worldEntries.find((e) => e.worldId === withinId);
 
-					// pctOfSlice: sub-group's species count / world's total species count
-					let pctOfSlice: number | null = null;
-					if (worldEntry && worldEntry.worldTotal !== null) {
-						const worldSliceCount = (worldEntry.percentage / 100) * worldEntry.worldTotal;
-						if (worldSliceCount > 0) {
-							const subCount = subSlice.count ?? (subTotal !== null ? Math.round((subSlice.pct / 100) * subTotal) : null);
-							if (subCount !== null) {
-								pctOfSlice = (subCount / worldSliceCount) * 100;
-							}
+				// pctOfSlice: sub-group's species count / world's total species count
+				let pctOfSlice: number | null = null;
+				if (worldEntry && worldEntry.worldTotal !== null) {
+					const worldSliceCount = (worldEntry.percentage / 100) * worldEntry.worldTotal;
+					if (worldSliceCount > 0) {
+						const subCount = subSlice.count ?? (subTotal !== null ? Math.round((subSlice.pct / 100) * subTotal) : null);
+						if (subCount !== null) {
+							pctOfSlice = (subCount / worldSliceCount) * 100;
 						}
-					}
-
-					const subGroupEntry: SpeciesSubGroupEntry = {
-						groupId: entity.id,
-						groupName,
-						href: groupHref,
-						count: subSlice.count ?? (subTotal !== null ? Math.round((subSlice.pct / 100) * subTotal) : null),
-						pctOfSlice
-					};
-
-					if (worldEntry) {
-						worldEntry.subGroups.push(subGroupEntry);
 					}
 				}
 
-				// Append a full WorldSubGroup for world-page rendering (separate pie).
-				const worldSubGroups = worldIndex.get(withinId as EntityId) ?? [];
-				worldSubGroups.push({
+				const subGroupEntry: SpeciesSubGroupEntry = {
 					groupId: entity.id,
 					groupName,
 					href: groupHref,
-					total: subTotal,
-					slices: subSlices.map((s) => ({ species: s.species, percentage: s.pct, count: s.count }))
-				});
-				worldIndex.set(withinId as EntityId, worldSubGroups);
+					count: subSlice.count ?? (subTotal !== null ? Math.round((subSlice.pct / 100) * subTotal) : null),
+					pctOfSlice
+				};
+
+				if (worldEntry) {
+					worldEntry.subGroups.push(subGroupEntry);
+				}
+			}
+
+			// Derive a total from species-slice overlap with the world when
+			// `total` is not explicitly authored. For each sub-group species
+			// slice, find the world's count for that species and scale by the
+			// sub-group's percentage of that species.
+			let derivedTotal: number | null = null;
+			if (subTotal === null) {
+				let derivedSum = 0;
+				let derivable = true;
+				for (const subSlice of subSlices) {
+					const worldEntries = speciesIndex.get(subSlice.species) ?? [];
+					const worldEntry = worldEntries.find((e) => e.worldId === withinId);
+					if (worldEntry && worldEntry.worldTotal !== null) {
+						const worldSliceCount = (worldEntry.percentage / 100) * worldEntry.worldTotal;
+						derivedSum += (subSlice.pct / 100) * worldSliceCount;
+					} else {
+						derivable = false;
+						break;
+					}
+				}
+				if (derivable && derivedSum > 0) derivedTotal = Math.round(derivedSum);
+			}
+
+			// Append a full WorldSubGroup for world-page rendering (aggregate + species pies).
+			const worldSubGroups = worldIndex.get(withinId as EntityId) ?? [];
+			worldSubGroups.push({
+				groupId: entity.id,
+				groupName,
+				href: groupHref,
+				kind: groupKind,
+				total: subTotal,
+				derivedTotal,
+				slices: subSlices.map((s) => ({ species: s.species, percentage: s.pct, count: s.count }))
+			});
+			worldIndex.set(withinId as EntityId, worldSubGroups);
 			}
 		}
 

@@ -211,7 +211,9 @@ export async function loadEntityPage(entity: Entity) {
 				groupId: sg.groupId,
 				groupName: sg.groupName,
 				href: sg.href,
+				kind: sg.kind,
 				total: sg.total,
+				derivedTotal: sg.derivedTotal,
 				slices: sg.slices.map((s) => {
 					const resolved = graph.get(s.species);
 					return {
@@ -515,7 +517,10 @@ export interface SubGroupBlock {
 	groupId: string;
 	groupName: string;
 	href: string;
+	kind: string | null;
 	total: number | null;
+	/** Derived total when `total` is not authored; null if not derivable. */
+	derivedTotal: number | null;
 	slices: PopulationSlice[];
 }
 
