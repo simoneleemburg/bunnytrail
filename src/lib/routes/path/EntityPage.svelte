@@ -35,15 +35,18 @@
 
 	// Tabs: shown when the entity has classMates (instances) and/or statistics.
 	// "About" wraps all existing page content; "Instances" lists classMates as cards;
+	// "Holders" lists roleHolders (entities holding this as a role);
 	// "Statistics" shows structured statistics blocks; "Vocabulary" shows language words.
 	const hasClassMates = $derived(data.classMates.length > 0);
+	const hasRoleHolders = $derived(data.roleHolders.length > 0);
 	const hasStatistics = $derived(data.statistics.length > 0);
 	const hasVocabulary = $derived(data.vocabulary.length > 0);
-	const hasTabs = $derived(hasClassMates || hasStatistics || hasVocabulary);
-	let activeTab: 'about' | 'instances' | 'statistics' | 'vocabulary' = $state('about');
+	const hasTabs = $derived(hasClassMates || hasRoleHolders || hasStatistics || hasVocabulary);
+	let activeTab: 'about' | 'instances' | 'holders' | 'statistics' | 'vocabulary' = $state('about');
 
 	const effectiveTab = $derived.by(() => {
 		if (activeTab === 'instances' && !hasClassMates) return 'about';
+		if (activeTab === 'holders' && !hasRoleHolders) return 'about';
 		if (activeTab === 'statistics' && !hasStatistics) return 'about';
 		if (activeTab === 'vocabulary' && !hasVocabulary) return 'about';
 		return activeTab;
@@ -291,6 +294,18 @@
 					onclick={() => (activeTab = 'instances')}
 				>
 					Instances
+				</button>
+			{/if}
+			{#if hasRoleHolders}
+				<button
+					type="button"
+					role="tab"
+					class="tab"
+					aria-selected={effectiveTab === 'holders'}
+					class:active={effectiveTab === 'holders'}
+					onclick={() => (activeTab = 'holders')}
+				>
+					Holders
 				</button>
 			{/if}
 			{#if hasStatistics}
@@ -582,6 +597,30 @@
 						type={card.typeLabel ?? 'entity'}
 						kind={card.kind}
 						summaryHtml={card.summaryHtml}
+						tags={card.tags}
+						era={card.era}
+						sigil={card.sigil}
+						rank={card.rank}
+					/>
+				{/each}
+			</div>
+		</div>
+	{/if}
+
+	{#if hasRoleHolders && effectiveTab === 'holders'}
+		<div role="tabpanel" class="instances-panel">
+			<div class="grid">
+				{#each data.roleHolders as card (card.id)}
+					<EntityCard
+						id={card.id}
+						name={card.name}
+						type={card.typeLabel ?? 'entity'}
+						kind={card.kind}
+						classLabel={card.classLabel}
+						classHref={card.classHref}
+						summaryHtml={card.groupName
+							? `<span class="holder-group">in <a href="${card.groupHref}">${card.groupName}</a></span>`
+							: card.summaryHtml}
 						tags={card.tags}
 						era={card.era}
 						sigil={card.sigil}

@@ -368,6 +368,40 @@ export async function loadEntityPage(entity: Entity) {
 		rank: typeof e.meta.rank === 'number' ? e.meta.rank : null
 	}));
 
+	// Role holders: entities that reference this entity in the `role` field
+	// of one of their relations. Surfaces on role-kind entity pages as a
+	// "Holders" tab — analogous to the "Instances" tab but driven by the
+	// role relation pattern rather than the `class:` field.
+	// Each entry also carries the group the holder belongs to (the `target`
+	// of the relation that carries this role) so the tab can show
+	// "Old Elfric — The Dawncallers" at a glance.
+	const roleHolders = graph.all()
+		.flatMap((e) =>
+			(e.meta.relations ?? [])
+				.filter((rel) => rel.role === id)
+				.map((rel) => ({ holder: e, targetId: rel.target }))
+		)
+		.map(({ holder, targetId }) => {
+			const groupEntity = graph.get(targetId);
+			const classId = typeof holder.meta.class === 'string' ? holder.meta.class : null;
+			const classEntity = classId ? graph.get(classId) : null;
+			return {
+				id: holder.id,
+				name: holder.meta.name,
+				kind: typeof holder.meta.kind === 'string' ? holder.meta.kind : null,
+				typeLabel: graph.folderLabels(holder.type).singular,
+				summaryHtml: cardSummaryHtml(holder.meta.summary),
+				tags: holder.meta.tags ?? [],
+				era: holder.meta.era ?? null,
+				sigil: typeof holder.meta.sigil === 'string' ? holder.meta.sigil : null,
+				rank: typeof holder.meta.rank === 'number' ? holder.meta.rank : null,
+				classLabel: classEntity?.meta.name ?? null,
+				classHref: classId ? `/${classId}` : null,
+				groupName: groupEntity?.meta.name ?? null,
+				groupHref: groupEntity ? `/${targetId}` : null
+			};
+		});
+
 	// Vocabulary: only collected for language entities.
 	const vocabulary: VocabEntry[] =
 		entity.meta.kind === 'language' ? graph.languageVocabulary(id) : [];
@@ -469,6 +503,7 @@ export async function loadEntityPage(entity: Entity) {
 		craftHref: entity.craft !== null ? `/${entity.id}/craft` : null,
 		rankNav,
 		classMates,
+		roleHolders,
 		statistics,
 		vocabulary,
 		namesInOtherLanguages
