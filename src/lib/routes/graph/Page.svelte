@@ -314,15 +314,48 @@
 	function buildFullGraph(srcNodes: GraphNode[], srcEdges: GraphEdge[]) {
 		const degrees = computeDegrees(srcNodes, srcEdges);
 
+		// Group nodes by cluster so same-cluster nodes start near each other.
+		// This gives the force simulation a much better initial state and
+		// avoids the cold-start tangle where everything piles up at the origin.
+		const clusterOrder = [...new Set(srcNodes.map((n) => n.cluster))].sort();
+		const clusterIndex = new Map(clusterOrder.map((c, i) => [c, i]));
+		const clusterCount = clusterOrder.length;
+
+		// Place cluster centroids evenly around a circle, then spread each
+		// cluster's nodes in a small phyllotaxis spiral around their centroid.
+		const outerR = Math.min(width, height) * 0.36;
+		const goldenAngle = Math.PI * (3 - Math.sqrt(5)); // ~137.5°
+
+		// Count nodes per cluster for spiral sizing.
+		const clusterSizes = new Map<string, number>();
+		for (const n of srcNodes) clusterSizes.set(n.cluster, (clusterSizes.get(n.cluster) ?? 0) + 1);
+
+		// Per-cluster offset counter for the spiral index.
+		const clusterOffset = new Map<string, number>();
+
 		const nodeMap = new Map<string, SimNode>();
 		const nodes: SimNode[] = srcNodes.map((n) => {
+			const ci = clusterIndex.get(n.cluster) ?? 0;
+			const clusterAngle = (2 * Math.PI * ci) / Math.max(clusterCount, 1);
+			const cx0 = width / 2 + outerR * Math.cos(clusterAngle);
+			const cy0 = height / 2 + outerR * Math.sin(clusterAngle);
+
+			// Phyllotaxis spiral within the cluster.
+			const idx = clusterOffset.get(n.cluster) ?? 0;
+			clusterOffset.set(n.cluster, idx + 1);
+			const clusterR = Math.min(outerR * 0.55, 12 * Math.sqrt(clusterSizes.get(n.cluster) ?? 1));
+			const spiralR = clusterR * Math.sqrt(idx / Math.max((clusterSizes.get(n.cluster) ?? 1), 1));
+			const spiralA = idx * goldenAngle;
+
 			const sn: SimNode = {
 				id: n.id,
 				name: n.name,
 				kind: n.kind,
 				cluster: n.cluster,
 				degree: degrees.get(n.id) ?? 0,
-				isRoleNode: n.isRoleNode
+				isRoleNode: n.isRoleNode,
+				x: cx0 + spiralR * Math.cos(spiralA),
+				y: cy0 + spiralR * Math.sin(spiralA)
 			};
 			nodeMap.set(n.id, sn);
 			return sn;
