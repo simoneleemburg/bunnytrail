@@ -28,6 +28,8 @@
 		cluster: string;
 		degree: number;
 		isCenter?: boolean;
+		/** Mirrors GraphNode.isRoleNode — used to expand ego graphs by one extra hop. */
+		isRoleNode: boolean;
 	}
 
 	interface SimEdge extends SimulationLinkDatum<SimNode> {
@@ -319,7 +321,8 @@
 				name: n.name,
 				kind: n.kind,
 				cluster: n.cluster,
-				degree: degrees.get(n.id) ?? 0
+				degree: degrees.get(n.id) ?? 0,
+				isRoleNode: n.isRoleNode
 			};
 			nodeMap.set(n.id, sn);
 			return sn;
@@ -337,18 +340,53 @@
 		const neighbours = allowedNeighbours
 			? new Set([...allNeighbours].filter((id) => allowedNeighbours.has(id)))
 			: allNeighbours;
-		const egoEdges = edgesOf.get(centerId) ?? [];
 
-		// Collect unique nodes: center + all neighbours
-		const egoNodeIds = new Set([centerId, ...neighbours]);
+		// Expand one extra hop through role-node neighbours: if a 1-hop
+		// neighbour is a role intermediary, include *its* neighbours too so
+		// the full member→role→group chain is always visible in ego mode.
+		const expandedNeighbours = new Set(neighbours);
+		for (const nid of neighbours) {
+			const n = nodeById.get(nid);
+			if (!n?.isRoleNode) continue;
+			for (const secondHop of (neighboursOf.get(nid) ?? new Set())) {
+				if (secondHop === centerId) continue; // don't re-add self
+				if (allowedNeighbours && !allowedNeighbours.has(secondHop)) continue;
+				expandedNeighbours.add(secondHop);
+			}
+		}
+
+		const egoEdges = (edgesOf.get(centerId) ?? []).slice();
+
+		// Also collect edges that connect role-node neighbours to their
+		// second-hop targets (role→group edges not incident to centerId).
+		for (const nid of expandedNeighbours) {
+			const n = nodeById.get(nid);
+			if (!n?.isRoleNode) continue;
+			for (const e of (edgesOf.get(nid) ?? [])) {
+				// Only include edges where both endpoints are in the ego set
+				const otherId = e.source === nid ? e.target : e.source;
+				if (otherId !== centerId && expandedNeighbours.has(otherId)) {
+					egoEdges.push(e);
+				}
+			}
+		}
+
+		// Collect unique nodes: center + all (expanded) neighbours
+		const egoNodeIds = new Set([centerId, ...expandedNeighbours]);
 		const egoNodeData = [...egoNodeIds]
 			.map((id) => nodeById.get(id))
 			.filter((n): n is GraphNode => n !== undefined);
 
-		// Only edges that connect center ↔ neighbour
-		const egoEdgeData = egoEdges.filter(
-			(e) => egoNodeIds.has(e.source) && egoNodeIds.has(e.target)
-		);
+		// Only edges where both endpoints are in the ego set
+		const seenEdgeKeys = new Set<string>();
+		const egoEdgeData: GraphEdge[] = [];
+		for (const e of egoEdges) {
+			if (!egoNodeIds.has(e.source) || !egoNodeIds.has(e.target)) continue;
+			const key = `${e.source}|${e.target}|${e.kind}`;
+			if (seenEdgeKeys.has(key)) continue;
+			seenEdgeKeys.add(key);
+			egoEdgeData.push(e);
+		}
 
 		// Degrees within ego graph (for sizing neighbours)
 		const degrees = computeDegrees(egoNodeData, egoEdgeData);
@@ -362,6 +400,7 @@
 				kind: n.kind,
 				cluster: n.cluster,
 				degree: degrees.get(n.id) ?? 0,
+				isRoleNode: n.isRoleNode,
 				isCenter,
 				// Pin the center node and give it an explicit start position
 				...(isCenter ? { fx: width / 2, fy: height / 2, x: width / 2, y: height / 2 } : {})
@@ -393,19 +432,73 @@
 		const neighbourCount = isEgo ? nodes.length - 1 : 0;
 		const egoRadius = Math.max(180, 120 + neighbourCount * 18);
 
+		// Role nodes sit at ~55% of the outer radius — they're intermediaries,
+		// not endpoints, so they should visually bridge center and outer nodes.
+		const roleRadius = egoRadius * 0.55;
+
 		// Pre-position all ego-graph nodes before forceSimulation() sees them,
 		// so D3 cannot assign its own initial positions (which start near origin).
-		// Centre goes to cx/cy; neighbours go evenly around it at egoRadius.
+		//
+		// Endpoint nodes (non-role, non-center) are spaced evenly around the
+		// outer ring. Each role node is then placed at the midpoint angle
+		// between the two endpoint nodes it bridges (the member it receives a
+		// `holds-role` edge from, and the group it points to via `role-in`),
+		// at the inner roleRadius. This makes the chain read left-to-right
+		// (or at whatever angle its endpoints land) rather than scattering
+		// role nodes to arbitrary positions in the ring.
 		if (isEgo) {
-			const nonCenter = nodes.filter((n) => !n.isCenter);
 			const center = nodes.find((n) => n.isCenter);
 			if (center) { center.x = cx; center.y = cy; }
-			nonCenter.forEach((n, i) => {
-				// Offset start angle by -π/2 so first neighbour sits directly above
-				const angle = -Math.PI / 2 + (2 * Math.PI * i) / Math.max(nonCenter.length, 1);
+
+			const endpointNodes = nodes.filter((n) => !n.isCenter && !n.isRoleNode);
+			const roleNodes     = nodes.filter((n) => !n.isCenter &&  n.isRoleNode);
+
+			// Assign evenly-spaced angles to endpoint nodes only.
+			const angleOf = new Map<string, number>();
+			endpointNodes.forEach((n, i) => {
+				const angle = -Math.PI / 2 + (2 * Math.PI * i) / Math.max(endpointNodes.length, 1);
+				angleOf.set(n.id, angle);
 				n.x = cx + egoRadius * Math.cos(angle);
 				n.y = cy + egoRadius * Math.sin(angle);
 			});
+
+			// Place each role node at the midpoint angle of its two adjacent
+			// endpoint nodes. We look at the edge list to find which endpoint
+			// nodes surround this role node (holds-role source + role-in target).
+			for (const rn of roleNodes) {
+				// Collect endpoint neighbours of this role node from edges.
+				const neighbourAngles: number[] = [];
+				for (const e of edges) {
+					const src = e.source as string;
+					const tgt = e.target as string;
+					const otherId = src === rn.id ? tgt
+					              : tgt === rn.id ? src
+					              : null;
+					if (otherId === null) continue;
+					// Skip the centre node itself — we want endpoint neighbours only.
+					const centerNode = nodes.find((n) => n.isCenter);
+					if (centerNode && otherId === centerNode.id) continue;
+					const a = angleOf.get(otherId);
+					if (a !== undefined) neighbourAngles.push(a);
+				}
+
+				let midAngle: number;
+				if (neighbourAngles.length >= 2) {
+					// Average of the two endpoint angles — use atan2 on the
+					// sum of unit vectors to handle wrap-around correctly.
+					const sx = neighbourAngles.reduce((s, a) => s + Math.cos(a), 0);
+					const sy = neighbourAngles.reduce((s, a) => s + Math.sin(a), 0);
+					midAngle = Math.atan2(sy, sx);
+				} else if (neighbourAngles.length === 1) {
+					midAngle = neighbourAngles[0];
+				} else {
+					// Fallback: place above center if no endpoint neighbours found.
+					midAngle = -Math.PI / 2;
+				}
+
+				rn.x = cx + roleRadius * Math.cos(midAngle);
+				rn.y = cy + roleRadius * Math.sin(midAngle);
+			}
 		}
 
 		const sim = forceSimulation(nodes)
@@ -444,8 +537,9 @@
 			if (center2) { center2.x = cx; center2.y = cy; }
 			nonCenter2.forEach((n, i) => {
 				const angle = -Math.PI / 2 + (2 * Math.PI * i) / Math.max(nonCenter2.length, 1);
-				n.x = cx + egoRadius * Math.cos(angle);
-				n.y = cy + egoRadius * Math.sin(angle);
+				const r = n.isRoleNode ? roleRadius : egoRadius;
+				n.x = cx + r * Math.cos(angle);
+				n.y = cy + r * Math.sin(angle);
 			});
 			const nodeMap = new Map(nodes.map((n) => [n.id, n]));
 			for (const e of edges) {
@@ -456,6 +550,8 @@
 			simEdges = edges.slice();
 		} else {
 			// Ego graph (3+ nodes): radial + link cooperate to form a ring.
+			// Role nodes target a smaller radius so they sit between the
+			// centre and the outer endpoint nodes.
 			sim
 				.force('link',
 					forceLink<SimNode, SimEdge>(edges)
@@ -463,7 +559,10 @@
 						.distance(egoRadius)
 						.strength(0.3)
 				)
-				.force('radial', forceRadial<SimNode>(egoRadius, cx, cy).strength((d) => d.isCenter ? 0 : 0.8));
+				.force('radial', forceRadial<SimNode>(
+					(d) => d.isCenter ? 0 : d.isRoleNode ? roleRadius : egoRadius,
+					cx, cy
+				).strength((d) => d.isCenter ? 0 : 0.8));
 
 			sim.on('tick', () => {
 				for (const e of edges) {
@@ -870,6 +969,19 @@
 
 	.graph-edge[data-kind='instance-of'] {
 		stroke: #b8a4c4;
+	}
+
+	.graph-edge[data-kind='holds-role'],
+	.graph-edge[data-kind='role-in'] {
+		stroke: #c7a15a;
+		stroke-opacity: 0.25;
+		stroke-dasharray: 4 3;
+	}
+
+	.graph-edge--active[data-kind='holds-role'],
+	.graph-edge--active[data-kind='role-in'] {
+		stroke-opacity: 0.8;
+		stroke-width: 1.5;
 	}
 
 	/* Edge relationship labels — appear at midpoint on hover */

@@ -105,6 +105,13 @@ export function validateRelations(args: ValidateArgs): void {
 					detail: `relation ${rel.kind} → ${rel.target} (not found)`
 				});
 			}
+			if (rel.role !== undefined && !entities.has(rel.role)) {
+				issues.push({
+					kind: 'broken-link',
+					entity: entity.id,
+					detail: `relation ${rel.kind} → ${rel.target}: role → ${rel.role} (not found)`
+				});
+			}
 		}
 	}
 }

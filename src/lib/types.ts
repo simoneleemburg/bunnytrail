@@ -312,6 +312,16 @@ export interface Relation {
 	 * an explicit order sort after those that have one.
 	 */
 	order?: number;
+	/**
+	 * Optional role qualifier — the entity id of a role or position
+	 * the source entity holds *within* the target. For example, a
+	 * `member-of` relation from a person to a group can carry
+	 * `role: <path>/runtha` to express that the person is the herd
+	 * leader, not just a plain member. Multiple members of the same
+	 * group with different roles can then be sub-grouped by role on
+	 * the group's entity page.
+	 */
+	role?: EntityId;
 }
 
 /** Meta loaded from the YAML sidecar. */
@@ -541,6 +551,8 @@ export interface Edge {
 	note?: string;
 	/** See `Relation.order`. */
 	order?: number;
+	/** See `Relation.role`. */
+	role?: EntityId;
 }
 
 /** Health-check problems detected at load time. */
@@ -583,6 +595,8 @@ const RELATION_LABEL_MAP: Record<string, RelationLabels> = {
 	'bounded-by':       { outLabel: 'Bounded by',       inLabel: 'Bounds' },
 	'inhabits':         { outLabel: 'Inhabits',         inLabel: 'Inhabited by' },
 	'instance-of':      { outLabel: 'Instance of',      inLabel: 'Instances' },
+	'holds-role':       { outLabel: 'Holds role',       inLabel: 'Role held by' },
+	'role-in':          { outLabel: 'Role in',          inLabel: 'Roles' },
 	'wikilink':         { outLabel: 'Mentions',         inLabel: 'Mentioned by' },
 };
 

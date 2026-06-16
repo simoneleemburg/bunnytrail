@@ -8,6 +8,13 @@ export interface GraphNode {
 	kindLabel: string | null;
 	/** First path segment — the cluster this entity belongs to. */
 	cluster: string;
+	/**
+	 * True when this node is a role intermediary — it appears in the graph
+	 * as a waypoint between a member and a group (via holds-role / role-in
+	 * synthetic edges). The ego graph expands through these nodes by one
+	 * additional hop so the full member→role→group chain is always visible.
+	 */
+	isRoleNode: boolean;
 }
 
 export interface GraphEdge {
@@ -22,6 +29,11 @@ export interface GraphEdge {
  * (as links). Derived "inhabits" edges from population statistics are
  * also included.
  *
+ * Relations that carry a `role` field are exploded into two synthetic
+ * edges — `holds-role` (source → role entity) and `role-in` (role
+ * entity → target) — and the direct edge is suppressed. This makes
+ * the role entity a visible waypoint in the graph.
+ *
  * Wikilink edges are intentionally excluded — they are too numerous
  * and would make the graph unreadable.
  */
@@ -29,17 +41,9 @@ export async function load() {
 	await graph.ready();
 
 	// ── Nodes ──────────────────────────────────────────────────────
-	const nodes: GraphNode[] = graph.all().map((e) => {
-		const kindId = typeof e.meta.kind === 'string' ? e.meta.kind : null;
-		const kindObj = kindId ? graph.kind(kindId) : null;
-		return {
-			id: e.id,
-			name: e.meta.name,
-			kind: kindId,
-			kindLabel: kindObj?.meta.singular ?? kindId,
-			cluster: e.id.split('/')[0] ?? ''
-		};
-	});
+	// We need to know which node ids are role intermediaries before
+	// building the node list, so collect them in the edge pass below.
+	const roleNodeIds = new Set<string>();
 
 	// ── Typed edges (no wikilinks) ─────────────────────────────────
 	const edgeSet = new Set<string>(); // deduplicate by "source|target|kind"
@@ -55,9 +59,31 @@ export async function load() {
 	for (const entity of graph.all()) {
 		for (const e of graph.outEdges(entity.id)) {
 			if (e.kind === 'wikilink') continue;
-			addEdge(e.from, e.to, e.kind);
+			if (e.role) {
+				// Two-hop: source →[holds-role]→ role →[role-in]→ target
+				// Suppress the direct edge entirely.
+				roleNodeIds.add(e.role);
+				addEdge(e.from, e.role, 'holds-role');
+				addEdge(e.role, e.to, 'role-in');
+			} else {
+				addEdge(e.from, e.to, e.kind);
+			}
 		}
 	}
+
+	// ── Nodes ──────────────────────────────────────────────────────
+	const nodes: GraphNode[] = graph.all().map((e) => {
+		const kindId = typeof e.meta.kind === 'string' ? e.meta.kind : null;
+		const kindObj = kindId ? graph.kind(kindId) : null;
+		return {
+			id: e.id,
+			name: e.meta.name,
+			kind: kindId,
+			kindLabel: kindObj?.meta.singular ?? kindId,
+			cluster: e.id.split('/')[0] ?? '',
+			isRoleNode: roleNodeIds.has(e.id)
+		};
+	});
 
 	// ── Derived "inhabits" edges from population statistics ────────
 	// Re-derive here rather than calling speciesPresence() per entity,

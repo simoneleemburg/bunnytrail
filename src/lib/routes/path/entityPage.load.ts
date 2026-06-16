@@ -132,11 +132,13 @@ export async function loadEntityPage(entity: Entity) {
 
 	const outEdges = graph.outEdges(id).map((e) => ({
 		...e,
-		toEntity: pickCard(graph.get(e.to), cardSummaryHtml)
+		toEntity: pickCard(graph.get(e.to), cardSummaryHtml),
+		roleEntity: e.role ? pickRoleEntity(graph.get(e.role)) : null
 	}));
 	const inEdges = graph.inEdges(id).map((e) => ({
 		...e,
-		fromEntity: pickCard(graph.get(e.from), cardSummaryHtml)
+		fromEntity: pickCard(graph.get(e.from), cardSummaryHtml),
+		roleEntity: e.role ? pickRoleEntity(graph.get(e.role)) : null
 	}));
 
 	// Filesystem-derived containment: entities living *inside* this
@@ -270,7 +272,8 @@ export async function loadEntityPage(entity: Entity) {
 				from: slice.speciesId,
 				to: id,
 				kind: 'inhabits',
-				fromEntity: pickCard(entity, cardSummaryHtml)
+				fromEntity: pickCard(entity, cardSummaryHtml),
+				roleEntity: null
 			});
 		}
 	}
@@ -285,7 +288,8 @@ export async function loadEntityPage(entity: Entity) {
 			from: id,
 			to: entry.worldId,
 			kind: 'inhabits',
-			toEntity: pickCard(worldEntity, cardSummaryHtml)
+			toEntity: pickCard(worldEntity, cardSummaryHtml),
+			roleEntity: null
 		});
 	}
 
@@ -488,6 +492,12 @@ function pickCard(
 		sigil: typeof e.meta.sigil === 'string' ? e.meta.sigil : null,
 		kind: e.meta.kind ?? null
 	};
+}
+
+/** Minimal role-entity shape used for sub-group headings in the relations sidebar. */
+function pickRoleEntity(e: ReturnType<typeof graph.get>): { id: string; name: string; href: string } | null {
+	if (!e) return null;
+	return { id: e.id, name: e.meta.name, href: `/${e.id}` };
 }
 
 function toChildCard(e: Entity, cardSummaryHtml: (s: string | null | undefined) => string | null) {

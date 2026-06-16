@@ -164,7 +164,8 @@ export function buildEdges(entities: Map<EntityId, Entity>): {
 				to: rel.target,
 				kind: rel.kind,
 				note: rel.note,
-				order: rel.order
+				order: rel.order,
+				role: rel.role
 			};
 			push(outIdx, entity.id, edge);
 			push(inIdx, rel.target, edge);
