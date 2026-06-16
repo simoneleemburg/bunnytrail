@@ -356,15 +356,48 @@
 					? counts.reduce((s, c) => s! + c!, 0)
 					: null}
 				{@const maxCount = counts.reduce((m, c) => (c !== null && c > (m ?? 0) ? c : m), null as number | null)}
+				{@const presenceItems = block.entries.map((entry, i) => {
+					const count = counts[i];
+					if (count === null) return null;
+					const pct = knownTotal ? (count / knownTotal) * 100 : null;
+					return { id: entry.worldId, name: entry.worldName, href: entry.href, pct: pct ?? 0, count, color: PALETTE[i % PALETTE.length], path: '' };
+				}).filter((item): item is NonNullable<typeof item> => item !== null && item.pct > 0)}
+				{@const presenceArcs = presenceItems.length > 0 ? buildGroupArcs(presenceItems) : null}
+				{@const singlePresenceItem = presenceItems.length === 1 ? presenceItems[0] : null}
 				<section class="stat-block stat-block--presence">
 					<h2 class="stat-heading">Population presence</h2>
-					{#if knownTotal !== null}
-						<p class="stat-total">
-							<span class="stat-total__number">{formatNumber(knownTotal)}</span>
-							<span class="stat-total__label">known total</span>
-						</p>
-					{/if}
-					<ul class="presence-list">
+				{#if knownTotal !== null}
+					<p class="stat-total">
+						<span class="stat-total__number">{formatNumber(knownTotal)}</span>
+						<span class="stat-total__label">known total</span>
+					</p>
+				{/if}
+				{#if presenceArcs || singlePresenceItem}
+					<div class="stat-chart-wrap">
+						<div class="stat-chart">
+							<svg viewBox="0 0 300 300" width="220" height="220" aria-hidden="true" focusable="false">
+								{#if presenceArcs}
+									{#each presenceArcs as arc (arc.id)}
+										<path d={arc.path} fill={arc.color} />
+									{/each}
+								{:else if singlePresenceItem}
+									<circle cx={CX} cy={CY} r={R} fill={singlePresenceItem.color} />
+								{/if}
+							</svg>
+						</div>
+						<ul class="stat-legend">
+							{#each presenceItems as item (item.id)}
+								<li class="stat-legend__item">
+									<span class="stat-legend__swatch" style:background-color={item.color}></span>
+									<a class="stat-legend__link" href={item.href}>{item.name}</a>
+									<span class="stat-legend__pct">({formatPct(item.pct)})</span>
+									<span class="stat-legend__count">{formatNumber(item.count)}</span>
+								</li>
+							{/each}
+						</ul>
+					</div>
+				{/if}
+				<ul class="presence-list">
 						{#each block.entries as entry, i (entry.worldId)}
 							{@const count = counts[i]}
 							{@const speciesPct = knownTotal ? Math.round((count ?? 0) / knownTotal * 100) : null}
@@ -382,6 +415,7 @@
 									<div
 										class="presence-bar-fill"
 										style:width="{maxCount ? ((count ?? 0) / maxCount) * 100 : 100}%"
+										style:background-color={PALETTE[i % PALETTE.length]}
 									></div>
 								</div>
 								{#if entry.subGroups && entry.subGroups.length > 0}
