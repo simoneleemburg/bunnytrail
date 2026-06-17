@@ -608,7 +608,7 @@ const RELATION_LABEL_MAP: Record<string, RelationLabels> = {
 	'region-of':        { outLabel: 'Region of',        inLabel: 'Regions' },
 	'serves-in':        { outLabel: 'Serves in',        inLabel: 'Members' },
 	'spoken-in':        { outLabel: 'Spoken in',        inLabel: 'Languages' },
-	'is-a':             { outLabel: 'Is a',             inLabel: 'Includes' },
+	'has-trait':        { outLabel: 'Has trait',        inLabel: 'Trait of' },
 	'occurred-on':      { outLabel: 'Occurred on',      inLabel: 'Events' },
 	'occurred-in':      { outLabel: 'Occurred in',      inLabel: 'Events' },
 	'records':          { outLabel: 'Records',          inLabel: 'Recorded in' },
