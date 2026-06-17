@@ -7,6 +7,7 @@ import type {
 	FolderLabels,
 	HealthIssue,
 	Kind,
+	KindGroup,
 	VocabEntry
 } from '$lib/types';
 import { folderLabels } from '$lib/types';
@@ -89,6 +90,7 @@ export class Graph {
 	#inEdges = new Map<EntityId, Edge[]>();
 	#issues: HealthIssue[] = [];
 	#kindRegistry: Map<string, Kind> = new Map();
+	#kindGroups: Map<string, KindGroup> = new Map();
 	#collections: Map<string, Collection> = new Map();
 	#clusters: Set<string> = new Set();
 	#universalFolders: Set<string> = new Set();
@@ -105,7 +107,7 @@ export class Graph {
 	async load(contentDir: string = CONTENT_DIR): Promise<void> {
 		if (this.#loading) return this.#loading;
 		this.#loading = (async () => {
-			const { entities, issues, kindRegistry, collections, clusters, universalFolders } =
+			const { entities, issues, kindRegistry, kindGroups, collections, clusters, universalFolders } =
 				await loadAll(contentDir);
 			const edges = buildEdges(entities);
 			this.#entities = entities;
@@ -113,6 +115,7 @@ export class Graph {
 			this.#inEdges = edges.in;
 			this.#issues = issues;
 			this.#kindRegistry = kindRegistry;
+			this.#kindGroups = kindGroups;
 			this.#collections = collections;
 			this.#clusters = clusters;
 			this.#universalFolders = universalFolders;
@@ -166,6 +169,20 @@ export class Graph {
 	 */
 	kindIds(): ReadonlySet<string> {
 		return new Set(this.#kindRegistry.keys());
+	}
+
+	/**
+	 * All loaded kind groups from `content_meta/kinds/`. Groups are
+	 * display-only; they are not kinds and do not participate in the
+	 * kind hierarchy.
+	 */
+	kindGroupRegistry(): ReadonlyMap<string, KindGroup> {
+		return this.#kindGroups;
+	}
+
+	/** A single kind group by id, or undefined. */
+	kindGroup(id: string): KindGroup | undefined {
+		return this.#kindGroups.get(id);
 	}
 
 	/**

@@ -1,7 +1,7 @@
 import { graph } from '$lib/server/graph';
 import { loadKindsIndexPage } from './kindsIndexPage.load';
 
-export type { KindNode } from './kindsIndexPage.load';
+export type { KindNode, KindGroupSection, KindsIndexPageData } from './kindsIndexPage.load';
 
 /**
  * Global kind hierarchy overview (cross-cluster). Walks the kind

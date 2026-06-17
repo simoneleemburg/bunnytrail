@@ -133,7 +133,19 @@ export async function load() {
 		kindLabels[id] = k.meta.singular ?? id;
 	}
 
-	return { nodes, edges, kindParents, kindLabels };
+	// ── Kind groups (for filter bar section headers) ───────────────
+	// Wire format: kindId → groupId | null
+	// Also: groupId → group title (for rendering group headers)
+	const kindGroupOf: Record<string, string | null> = {};
+	for (const [id, k] of graph.kindRegistry()) {
+		kindGroupOf[id] = k.group;
+	}
+	const kindGroupTitles: Record<string, string> = {};
+	for (const [id, g] of graph.kindGroupRegistry()) {
+		kindGroupTitles[id] = g.title ?? id;
+	}
+
+	return { nodes, edges, kindParents, kindLabels, kindGroupOf, kindGroupTitles };
 }
 
 export type GraphData = Awaited<ReturnType<typeof load>>;

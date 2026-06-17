@@ -1,4 +1,5 @@
 import { graph } from '$lib/server/graph';
+import { titleCaseSlug } from '$lib/types';
 import type { ClusterScope } from '$lib/cluster';
 
 export interface KindNode {
@@ -12,8 +13,27 @@ export interface KindNode {
 	children: KindNode[];
 }
 
-export interface KindsIndexPageData {
+/**
+ * A section of the kinds index page. When the world has kind groups,
+ * each group produces one section with a heading. Ungrouped root kinds
+ * (those with `group === null`) produce a final section with
+ * `groupId === null` and no heading.
+ */
+export interface KindGroupSection {
+	/** Group id, or null for ungrouped root kinds. */
+	groupId: string | null;
+	/** Display title for the group heading, or null when ungrouped. */
+	groupTitle: string | null;
 	roots: KindNode[];
+}
+
+export interface KindsIndexPageData {
+	/**
+	 * When any kind groups are registered, kinds are partitioned into
+	 * sections. When no groups exist the list has a single section with
+	 * `groupId === null` (backwards-compat shape).
+	 */
+	sections: KindGroupSection[];
 	unregistered: { kind: string; count: number }[];
 }
 
@@ -29,6 +49,7 @@ export interface KindsIndexPageData {
  */
 export function loadKindsIndexPage(scope: ClusterScope): KindsIndexPageData {
 	const registry = graph.kindRegistry();
+	const groupRegistry = graph.kindGroupRegistry();
 
 	const inScope = (id: string): boolean => (scope === null ? true : id.startsWith(`${scope}/`));
 	const hrefFor = (kind: string): string =>
@@ -63,12 +84,44 @@ export function loadKindsIndexPage(scope: ClusterScope): KindsIndexPageData {
 		};
 	}
 
-	const roots = graph
-		.topLevelKinds()
-		.map((k) => k.id)
-		.sort()
-		.map(build)
-		.filter((n): n is KindNode => n !== null);
+	const allTopLevel = graph.topLevelKinds().map((k) => k.id).sort();
+
+	// Partition top-level kinds into group sections.
+	// Build a map from groupId → sorted kind ids.
+	const grouped = new Map<string | null, string[]>();
+	for (const kindId of allTopLevel) {
+		const k = registry.get(kindId);
+		const g = k?.group ?? null;
+		if (!grouped.has(g)) grouped.set(g, []);
+		grouped.get(g)!.push(kindId);
+	}
+
+	// Determine section order: groups in insertion order (alphabetical
+	// since kinds are sorted), ungrouped kinds last.
+	const sections: KindGroupSection[] = [];
+
+	// First emit grouped sections (sorted by group id for stability).
+	const sortedGroupIds = [...grouped.keys()]
+		.filter((g): g is string => g !== null)
+		.sort();
+
+	for (const groupId of sortedGroupIds) {
+		const kindIds = grouped.get(groupId) ?? [];
+		const roots = kindIds.map(build).filter((n): n is KindNode => n !== null);
+		if (scope !== null && roots.length === 0) continue;
+
+		const groupObj = groupRegistry.get(groupId);
+		const groupTitle = groupObj?.title ?? titleCaseSlug(groupId);
+
+		sections.push({ groupId, groupTitle, roots });
+	}
+
+	// Ungrouped kinds go last, no heading.
+	const ungroupedIds = grouped.get(null) ?? [];
+	const ungroupedRoots = ungroupedIds.map(build).filter((n): n is KindNode => n !== null);
+	if (scope === null || ungroupedRoots.length > 0) {
+		sections.push({ groupId: null, groupTitle: null, roots: ungroupedRoots });
+	}
 
 	// Free-form kinds: every distinct `kind:` value carried by an
 	// entity that isn't registered. In scope mode, only count
@@ -85,7 +138,7 @@ export function loadKindsIndexPage(scope: ClusterScope): KindsIndexPageData {
 		.map(([kind, count]) => ({ kind, count }))
 		.sort((a, b) => b.count - a.count || a.kind.localeCompare(b.kind));
 
-	return { roots, unregistered };
+	return { sections, unregistered };
 }
 
 function kindFamily(kind: string): Set<string> {

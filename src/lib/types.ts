@@ -69,8 +69,34 @@ export interface Kind {
 	meta: KindMeta;
 	/** Parent kind id (the enclosing folder), or null at the root. */
 	parent: string | null;
+	/**
+	 * The id of the kind group this kind belongs to, or null when ungrouped.
+	 * Kind groups are organisational overlays declared via `_kindgroup.yaml`
+	 * in a folder inside `content_meta/kinds/`. They are not kinds themselves
+	 * and do not affect the kind hierarchy — `parent` is independent.
+	 */
+	group: string | null;
 	/** Raw markdown body, or null if no `_kind.md` companion exists. */
 	body: string | null;
+}
+
+/**
+ * An organisational group of kinds, declared via `_kindgroup.yaml` inside
+ * a folder under `content_meta/kinds/`. Groups provide display-level
+ * separation on the kinds index page and the graph filter bar; they are
+ * **not** kinds themselves and do not participate in the kind hierarchy.
+ *
+ * One layer only: groups cannot be nested. A folder with `_kindgroup.yaml`
+ * and no `_kind.yaml` / `_kind.md` is a group container; the valid-id
+ * subdirectories inside it become member kinds (with `group` set to this
+ * group's id).
+ */
+export interface KindGroup {
+	id: string;
+	/** Display title. Defaults to the title-cased folder name when absent. */
+	title: string | null;
+	/** Optional short editorial description. */
+	description: string | null;
 }
 
 /**

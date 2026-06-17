@@ -1,12 +1,16 @@
 <script lang="ts">
 	import PageHeader from '$lib/components/PageHeader.svelte';
-	import type { KindNode } from './load';
+	import type { KindNode, KindGroupSection } from './load';
 
 	let {
 		data
 	}: {
-		data: { roots: KindNode[]; unregistered: { kind: string; count: number }[] };
+		data: { sections: KindGroupSection[]; unregistered: { kind: string; count: number }[] };
 	} = $props();
+
+	const isGrouped = $derived(
+		data.sections.length > 1 || (data.sections.length === 1 && data.sections[0].groupId !== null)
+	);
 </script>
 
 <PageHeader title="Kinds" />
@@ -34,11 +38,26 @@
 	</li>
 {/snippet}
 
-{#if data.roots.length === 0}
+{#if data.sections.every((s) => s.roots.length === 0)}
 	<p class="empty"><em>No kinds have been registered yet.</em></p>
+{:else if isGrouped}
+	{#each data.sections as section (section.groupId ?? '__ungrouped__')}
+		<section class="kind-group">
+			{#if section.groupTitle}
+				<h2 class="section-heading">{section.groupTitle}</h2>
+			{/if}
+			{#if section.roots.length > 0}
+				<ul class="tree">
+					{#each section.roots as root (root.kind)}
+						{@render branch(root)}
+					{/each}
+				</ul>
+			{/if}
+		</section>
+	{/each}
 {:else}
 	<ul class="tree">
-		{#each data.roots as root (root.kind)}
+		{#each data.sections[0].roots as root (root.kind)}
 			{@render branch(root)}
 		{/each}
 	</ul>
@@ -89,6 +108,14 @@
 	.kind {
 		display: flex;
 		flex-direction: column;
+	}
+
+	.kind-group {
+		margin-top: var(--space-7);
+	}
+
+	.kind-group:first-child {
+		margin-top: 0;
 	}
 
 	.unregistered {

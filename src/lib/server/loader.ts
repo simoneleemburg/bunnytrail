@@ -1,6 +1,6 @@
 import { readdir } from 'node:fs/promises';
 import type { Dirent } from 'node:fs';
-import type { Edge, Entity, EntityId, EntityType, HealthIssue, Kind, Collection } from '$lib/types';
+import type { Edge, Entity, EntityId, EntityType, HealthIssue, Kind, KindGroup, Collection } from '$lib/types';
 import { loadKindRegistry } from './kinds';
 import { CONTENT_DIR } from './globals';
 import { walk, readDirents } from './walker';
@@ -38,6 +38,12 @@ export interface LoadResult {
 	 * source of truth for kind metadata and hierarchy.
 	 */
 	kindRegistry: Map<string, Kind>;
+	/**
+	 * Organisational kind groups loaded from `content_meta/kinds/` folders
+	 * that carry a `_kindgroup.yaml`. Groups are display-only overlays;
+	 * they do not participate in the kind hierarchy.
+	 */
+	kindGroups: Map<string, KindGroup>;
 	/**
 	 * Collections discovered while walking `content/`, keyed by
 	 * folder path. Only folders that carry a `_collection.yaml`
@@ -136,6 +142,7 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 		entities,
 		issues,
 		kindRegistry: registryResult.kinds,
+		kindGroups: registryResult.groups,
 		collections,
 		clusters: clusterSet,
 		universalFolders: universalSet

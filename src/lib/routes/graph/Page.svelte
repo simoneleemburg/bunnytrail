@@ -62,6 +62,11 @@
 		hasChildren: boolean;
 		/** Nesting depth (0 = root). */
 		depth: number;
+		/**
+		 * The group id of this row's kind, or null when ungrouped.
+		 * Only set for depth-0 rows; child rows inherit via the parent.
+		 */
+		group: string | null;
 	}
 
 	// Expanded state — kind ids whose children are shown. Empty = all collapsed.
@@ -134,20 +139,21 @@
 
 		// Pre-order DFS to produce flat list with depth
 		const rows: KindRow[] = [];
-		function walk(id: string, depth: number) {
+		function walk(id: string, depth: number, group: string | null) {
 			const kids = children.get(id) ?? [];
 			rows.push({
 				id,
 				label: data.kindLabels?.[id] ?? id,
 				count: totals.get(id) ?? 0,
 				hasChildren: kids.length > 0,
-				depth
+				depth,
+				group: depth === 0 ? (data.kindGroupOf?.[id] ?? null) : null
 			});
 			if (expandedKinds.has(id)) {
-				for (const child of kids) walk(child, depth + 1);
+				for (const child of kids) walk(child, depth + 1, null);
 			}
 		}
-		for (const root of (children.get(null) ?? [])) walk(root, 0);
+		for (const root of (children.get(null) ?? [])) walk(root, 0, null);
 
 		return rows;
 	});
@@ -897,7 +903,14 @@
 				{/if}
 			</header>
 			<ul class="filter-list">
-				{#each kindTreeRows as row (row.id)}
+				{#each kindTreeRows as row, i (row.id)}
+					{@const prevGroup = i > 0 ? kindTreeRows[i - 1].group : undefined}
+					{@const isNewGroup = row.depth === 0 && row.group !== null && row.group !== prevGroup}
+					{#if isNewGroup}
+						<li class="filter-group-header" aria-hidden="true">
+							{data.kindGroupTitles?.[row.group!] ?? row.group}
+						</li>
+					{/if}
 					<li class="filter-item" class:filter-item--child={row.depth > 0}>
 						{#if row.hasChildren}
 							<!-- Row with collapse toggle + checkbox -->
@@ -1222,6 +1235,23 @@
 		list-style: none;
 		margin: 0;
 		padding: 0;
+	}
+
+	.filter-group-header {
+		padding: 0.5rem 0.9rem 0.2rem;
+		font-family: var(--font-ui, system-ui, sans-serif);
+		font-size: 8px;
+		font-variant: small-caps;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: rgba(199, 161, 90, 0.45);
+		border-top: 1px solid rgba(199, 161, 90, 0.08);
+		margin-top: 0.25rem;
+	}
+
+	.filter-group-header:first-child {
+		border-top: none;
+		margin-top: 0;
 	}
 
 	.filter-item--child {
