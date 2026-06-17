@@ -64,9 +64,14 @@
 		depth: number;
 		/**
 		 * The group id of this row's kind, or null when ungrouped.
-		 * Only set for depth-0 rows; child rows inherit via the parent.
+		 * Only set for depth-0 rows; child rows carry null.
 		 */
 		group: string | null;
+		/**
+		 * True when this row is the first in a new group and should be
+		 * preceded by a group header in the rendered list.
+		 */
+		showGroupHeader: boolean;
 	}
 
 	// Expanded state — kind ids whose children are shown. Empty = all collapsed.
@@ -137,9 +142,32 @@
 			});
 		}
 
+		// Sort root-level kinds: group together by group id (alphabetical),
+		// ungrouped last. Within each group sort by count desc then label.
+		// Children within a parent are already sorted above; we only re-sort
+		// the root list here.
+		const rootList = children.get(null) ?? [];
+		rootList.sort((a, b) => {
+			const ga = data.kindGroupOf?.[a] ?? null;
+			const gb = data.kindGroupOf?.[b] ?? null;
+			// ungrouped sink to bottom
+			if (ga === null && gb !== null) return 1;
+			if (ga !== null && gb === null) return -1;
+			// both grouped: sort by group id alphabetically first
+			if (ga !== gb) return (ga ?? '').localeCompare(gb ?? '');
+			// within the same group: count desc then label
+			const dc = (totals.get(b) ?? 0) - (totals.get(a) ?? 0);
+			if (dc !== 0) return dc;
+			return (data.kindLabels?.[a] ?? a).localeCompare(data.kindLabels?.[b] ?? b);
+		});
+
 		// Pre-order DFS to produce flat list with depth
 		const rows: KindRow[] = [];
-		function walk(id: string, depth: number, group: string | null) {
+		let lastGroup: string | null | undefined = undefined; // undefined = nothing emitted yet
+		function walk(id: string, depth: number) {
+			const group = depth === 0 ? (data.kindGroupOf?.[id] ?? null) : null;
+			const showGroupHeader = depth === 0 && group !== null && group !== lastGroup;
+			if (depth === 0) lastGroup = group;
 			const kids = children.get(id) ?? [];
 			rows.push({
 				id,
@@ -147,13 +175,14 @@
 				count: totals.get(id) ?? 0,
 				hasChildren: kids.length > 0,
 				depth,
-				group: depth === 0 ? (data.kindGroupOf?.[id] ?? null) : null
+				group,
+				showGroupHeader
 			});
 			if (expandedKinds.has(id)) {
-				for (const child of kids) walk(child, depth + 1, null);
+				for (const child of kids) walk(child, depth + 1);
 			}
 		}
-		for (const root of (children.get(null) ?? [])) walk(root, 0, null);
+		for (const root of rootList) walk(root, 0);
 
 		return rows;
 	});
@@ -903,10 +932,8 @@
 				{/if}
 			</header>
 			<ul class="filter-list">
-				{#each kindTreeRows as row, i (row.id)}
-					{@const prevGroup = i > 0 ? kindTreeRows[i - 1].group : undefined}
-					{@const isNewGroup = row.depth === 0 && row.group !== null && row.group !== prevGroup}
-					{#if isNewGroup}
+				{#each kindTreeRows as row (row.id)}
+					{#if row.showGroupHeader}
 						<li class="filter-group-header" aria-hidden="true">
 							{data.kindGroupTitles?.[row.group!] ?? row.group}
 						</li>
