@@ -14,7 +14,6 @@ import {
 	validateEntityKinds,
 	validateSummaryWikilinks,
 	validateCollectionWikilinks,
-	validateKindBodyWikilinks,
 	validateClassField,
 	validateLangLinks
 } from './validate';
@@ -134,7 +133,6 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 	validateEntityKinds(validateArgs);
 	validateSummaryWikilinks(validateArgs);
 	validateCollectionWikilinks(validateArgs);
-	validateKindBodyWikilinks(validateArgs);
 	validateClassField(validateArgs);
 	validateLangLinks(validateArgs);
 

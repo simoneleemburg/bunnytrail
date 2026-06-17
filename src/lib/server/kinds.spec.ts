@@ -7,18 +7,17 @@ import { loadKindRegistry } from './kinds';
 /**
  * Seed a kinds registry on disk. `tree` is an object whose keys are
  * folder paths relative to the registry root, and whose values are
- * either `null` (just create the folder), or `{ yaml?, md? }` to
- * write `_kind.yaml` / `_kind.md` inside it.
+ * either `null` (just create the folder), or `{ yaml? }` to
+ * write `_kind.yaml` inside it.
  */
 async function seedKindsDir(
-	tree: Record<string, null | { yaml?: string; md?: string }>
+	tree: Record<string, null | { yaml?: string }>
 ): Promise<string> {
 	const dir = await mkdtemp(join(tmpdir(), 'alteria-kinds-'));
 	for (const [path, files] of Object.entries(tree)) {
 		const abs = join(dir, path);
 		await mkdir(abs, { recursive: true });
 		if (files?.yaml !== undefined) await writeFile(join(abs, '_kind.yaml'), files.yaml);
-		if (files?.md !== undefined) await writeFile(join(abs, '_kind.md'), files.md);
 	}
 	return dir;
 }
@@ -60,24 +59,6 @@ describe('loadKindRegistry', () => {
 		expect(result.kinds.get('place')?.meta).toEqual({});
 		expect(result.kinds.get('place')?.parent).toBe(null);
 		expect(result.kinds.get('realm')?.parent).toBe('place');
-	});
-
-	it('reads _kind.md prose bodies when present', async () => {
-		const dir = await seedKindsDir({
-			'celestial-body': {
-				yaml: 'singular: Celestial Body\nplural: Celestial Bodies',
-				md: 'A category page rather than an entity.\n'
-			}
-		});
-		const result = await loadKindRegistry(dir);
-		expect(result.issues).toEqual([]);
-		expect(result.kinds.get('celestial-body')?.body).toContain('category page');
-	});
-
-	it('returns null body when no _kind.md exists', async () => {
-		const dir = await seedKindsDir({ place: { yaml: 'singular: Place\nplural: Places' } });
-		const result = await loadKindRegistry(dir);
-		expect(result.kinds.get('place')?.body).toBe(null);
 	});
 
 	it('flags malformed yaml without aborting the rest of the registry', async () => {
@@ -131,46 +112,5 @@ describe('loadKindRegistry', () => {
 		expect(result.issues.some((i) => i.detail.includes('singular must be a string'))).toBe(true);
 		// Bad field is dropped but the kind still registers.
 		expect(result.kinds.get('place')?.meta.singular).toBeUndefined();
-	});
-
-	it('loads a kind whose metadata lives in _kind.md frontmatter', async () => {
-		const dir = await seedKindsDir({
-			place: {
-				md: [
-					'---',
-					'singular: Place',
-					'plural: Places',
-					'description: A registered location.',
-					'---',
-					'',
-					'Editorial prose for the place kind.',
-					''
-				].join('\n')
-			}
-		});
-		const result = await loadKindRegistry(dir);
-		const place = result.kinds.get('place');
-		expect(place).toBeDefined();
-		expect(place!.meta.singular).toBe('Place');
-		expect(place!.meta.plural).toBe('Places');
-		expect(place!.meta.description).toBe('A registered location.');
-		expect(place!.body!.startsWith('\nEditorial prose')).toBe(true);
-		expect(result.issues).toEqual([]);
-	});
-
-	it('emits an issue when both _kind.yaml and _kind.md frontmatter declare metadata', async () => {
-		const dir = await seedKindsDir({
-			place: {
-				yaml: 'singular: From YAML',
-				md: '---\nsingular: From Frontmatter\n---\n\nProse.\n'
-			}
-		});
-		const result = await loadKindRegistry(dir);
-		expect(result.issues.some((i) => i.detail.includes('pick one'))).toBe(true);
-		// Conflict surfaces — meta defaults, but the kind still registers
-		// (the body is preserved so the kind page still renders).
-		const place = result.kinds.get('place');
-		expect(place).toBeDefined();
-		expect(place!.meta.singular).toBeUndefined();
 	});
 });

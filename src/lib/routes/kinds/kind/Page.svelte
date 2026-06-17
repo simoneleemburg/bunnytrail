@@ -11,7 +11,6 @@
 			singular: string;
 			plural: string;
 			description: string | null;
-			bodyHtml: string | null;
 			slice: KindSliceNode | null;
 			direct: KindCard[];
 			kindRefSections: KindRefSection[];

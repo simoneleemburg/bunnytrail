@@ -240,34 +240,6 @@ export function validateCollectionWikilinks(args: ValidateArgs): void {
 }
 
 /**
- * Validate wikilinks in kind bodies (_kind.md prose). Kind pages are
- * global (no cluster scope), so resolution is fully global. Issues
- * carry the kind path in `detail`.
- */
-export function validateKindBodyWikilinks(args: ValidateArgs): void {
-	const { entities, kindRegistry, clusterSet, universalSet, langCodes, issues } = args;
-	for (const [kindId, kind] of kindRegistry) {
-		if (!kind.body) continue;
-		for (const raw of extractWikilinks(kind.body)) {
-			if (langCodes.has(raw)) continue;
-			const r = resolveWikilink(raw, entities, null, clusterSet, universalSet);
-			if (r.id !== null) continue;
-			if (r.reason === 'ambiguous' || r.reason === 'ambiguous-in-cluster') {
-				issues.push({
-					kind: 'broken-link',
-					detail: `kinds/${kindId}/_kind.md: wikilink → ${raw} (ambiguous: matches ${r.matches.join(', ')})`
-				});
-			} else {
-				issues.push({
-					kind: 'broken-link',
-					detail: `kinds/${kindId}/_kind.md: wikilink → ${raw} (not found)`
-				});
-			}
-		}
-	}
-}
-
-/**
  * Validate the `class` field on entities. The value must be the full
  * id of a known entity. Uses global resolution (class targets are
  * typically universal-substrate entities like `foundation/nature/…`
@@ -357,12 +329,6 @@ export function validateLangLinks(args: ValidateArgs): void {
 			fromCluster,
 			`${collPath}/_collection.md: language tag`
 		);
-	}
-
-	// Kind bodies (global scope — no cluster)
-	for (const [kindId, kind] of kindRegistry) {
-		if (!kind.body) continue;
-		checkBody(kind.body, undefined, null, `kinds/${kindId}/_kind.md: language tag`);
 	}
 }
 

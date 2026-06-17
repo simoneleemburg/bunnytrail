@@ -12,7 +12,6 @@
 			singular: string;
 			plural: string;
 			description: string | null;
-			bodyHtml: string | null;
 			slice: KindSliceNode | null;
 			direct: KindCard[];
 			kindRefSections: KindRefSection[];
@@ -27,7 +26,7 @@
 	// when its content is empty; if only one has content the strip
 	// is skipped entirely and that tab's content renders unframed.
 	const hasRefs = $derived(data.kindRefSections.length > 0 || data.backlinks.length > 0);
-	const hasAbout = $derived(Boolean(data.description) || Boolean(data.bodyHtml) || hasRefs);
+	const hasAbout = $derived(Boolean(data.description) || hasRefs);
 	const hasInstances = $derived(data.direct.length > 0);
 	const tabCount = $derived((hasAbout ? 1 : 0) + (hasInstances ? 1 : 0));
 
@@ -89,10 +88,6 @@
 		<div class="about-main">
 			{#if data.description}
 				<p class="bt-lede">{data.description}</p>
-			{/if}
-
-			{#if data.bodyHtml}
-				<div class="prose">{@html data.bodyHtml}</div>
 			{/if}
 		</div>
 
@@ -292,27 +287,6 @@
 		font-size: var(--text-xs);
 		font-variant-caps: all-small-caps;
 		letter-spacing: 0.06em;
-	}
-
-	.prose {
-		max-width: var(--prose-max);
-		margin: 0 0 var(--space-6) 0;
-		color: var(--ink);
-	}
-
-	.prose :global(p),
-	.prose :global(ul),
-	.prose :global(ol) {
-		margin: 0 0 var(--space-4);
-	}
-
-	.prose :global(ul),
-	.prose :global(ol) {
-		padding-left: var(--space-5);
-	}
-
-	.prose :global(blockquote) {
-		margin: var(--space-5) 0;
 	}
 
 	.tree,

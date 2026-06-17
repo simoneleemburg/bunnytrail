@@ -71,13 +71,8 @@ export interface Kind {
 	parent: string | null;
 	/**
 	 * The id of the kind group this kind belongs to, or null when ungrouped.
-	 * Kind groups are organisational overlays declared via `_kindgroup.yaml`
-	 * in a folder inside `content_meta/kinds/`. They are not kinds themselves
-	 * and do not affect the kind hierarchy — `parent` is independent.
 	 */
 	group: string | null;
-	/** Raw markdown body, or null if no `_kind.md` companion exists. */
-	body: string | null;
 }
 
 /**

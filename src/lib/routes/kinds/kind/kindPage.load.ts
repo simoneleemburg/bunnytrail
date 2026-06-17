@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { graph, byRankThenName } from '$lib/server/graph';
 import { inverseLabelFor } from '$lib/server/kindLinkLabels';
-import { renderBody, renderSummary, makeCollectionResolver } from '$lib/server/markdown';
+import { renderSummary } from '$lib/server/markdown';
 import type { Entity } from '$lib/types';
 import type { ClusterScope } from '$lib/cluster';
 
@@ -57,7 +57,6 @@ export interface KindPageData {
 	singular: string;
 	plural: string;
 	description: string | null;
-	bodyHtml: string | null;
 	slice: KindSliceNode | null;
 	direct: KindCard[];
 	kindRefSections: KindRefSection[];
@@ -112,25 +111,6 @@ export function loadKindPage(kindId: string, scope: ClusterScope): KindPageData 
 	const singular = kind.meta.singular ?? titleCase(kindId);
 	const plural = kind.meta.plural ?? `${singular}s`;
 
-	// Optional prose body (content_meta/kinds/<…>/<kindId>/_kind.md).
-	const bodyHtml = kind.body
-		? renderBody(
-				kind.body,
-				resolveLink,
-				languageCodes,
-				kindIds,
-				makeCollectionResolver({
-					getCollection: (p) => graph.collection(p),
-					folderLabels: (p) => graph.folderLabels(p),
-					resolveLink,
-					languageCodes,
-					kindIds
-				}),
-				undefined,
-				kindLookup
-			)
-		: null;
-
 	const family = kindFamily(kindId);
 	const direct = graph
 		.all()
@@ -163,7 +143,6 @@ export function loadKindPage(kindId: string, scope: ClusterScope): KindPageData 
 		singular,
 		plural,
 		description: kind.meta.description ?? null,
-		bodyHtml,
 		slice,
 		direct,
 		kindRefSections,

@@ -5,7 +5,6 @@ import { parse as parseYaml } from 'yaml';
 import type { HealthIssue, Kind, KindGroup, KindMeta } from '$lib/types';
 import { titleCaseSlug } from '$lib/types';
 import { defaultKindsDir } from './globals';
-import { splitFrontmatter } from './frontmatter';
 
 const KIND_ID_RE = /^[a-z][a-z0-9-]*$/;
 
@@ -20,21 +19,19 @@ export interface KindLoadResult {
 
 /**
  * Walk `content_meta/kinds/` (or `BUNNYTRAIL_KINDS_DIR`) recursively and return
- * every declared kind. Each subdirectory whose name passes
- * `KIND_ID_RE` is a kind; its `_kind.yaml` (if present) supplies
- * label and description overrides, and `_kind.md` (if present)
- * supplies a prose body. A kind with no marker files is still
- * registered with default labels — the folder existing is enough.
+ * every declared kind. Each subdirectory whose name passes `KIND_ID_RE` is a
+ * kind; its `_kind.yaml` (if present) supplies label and description overrides.
+ * A kind with no marker file is still registered with default labels — the
+ * folder existing is enough.
  *
- * A subdirectory that contains `_kindgroup.yaml` (and has no `_kind.yaml`
- * or `_kind.md`) is treated as an organisational **group**, not a kind.
- * Groups are one level deep: kind folders inside a group folder become
- * members of that group (their `group` field is set to the group id).
- * Groups do not affect the kind hierarchy (`parent` is independent).
+ * A subdirectory that contains `_kindgroup.yaml` (and no `_kind.yaml`) is
+ * treated as an organisational **group**, not a kind. Groups are one level
+ * deep: kind folders inside a group folder become members of that group
+ * (their `group` field is set to the group id). Groups do not affect the
+ * kind hierarchy (`parent` is independent).
  *
- * If the registry directory does not exist, returns an empty
- * registry with no issues — callers should treat absence as "no
- * kinds registered yet" rather than an error.
+ * If the registry directory does not exist, returns an empty registry with
+ * no issues — callers should treat absence as "no kinds registered yet".
  */
 export async function loadKindRegistry(
 	kindsDir: string = defaultKindsDir()
@@ -86,15 +83,12 @@ async function walk(
 
 		const childDir = join(absDir, id);
 
-		// Check whether this folder is a kind-group container.
-		// A folder is a group when it has `_kindgroup.yaml` and no `_kind.yaml`
-		// or `_kind.md`. Groups are only allowed at the root level (parent === null);
-		// groups nested inside groups are ignored with a warning.
+		// A folder with `_kindgroup.yaml` and no `_kind.yaml` is a group container.
+		// Groups are only allowed at the top level (parent === null) and cannot nest.
 		const isGroup = await isKindGroupFolder(childDir);
 
 		if (isGroup) {
 			if (parent !== null) {
-				// Groups inside kind folders are not supported.
 				issues.push({
 					kind: 'invalid-yaml',
 					detail: `${relTo(childDir, rootDir)}: _kindgroup.yaml is only supported at the top level of content_meta/kinds/`
@@ -102,7 +96,6 @@ async function walk(
 				continue;
 			}
 			if (group !== null) {
-				// Groups nested inside other groups are not supported.
 				issues.push({
 					kind: 'invalid-yaml',
 					detail: `${relTo(childDir, rootDir)}: kind groups cannot be nested`
@@ -120,25 +113,20 @@ async function walk(
 				groups.set(id, kindGroup);
 			}
 
-			// Recurse into the group folder; kinds inside inherit this group id.
-			// Pass parent=null so kind hierarchy is unaffected by grouping.
 			await walk(childDir, null, id, kinds, groups, issues, rootDir);
 			continue;
 		}
 
 		// Regular kind folder.
-		const { meta, body } = await loadKindFiles(childDir, id, rootDir, issues);
+		const meta = await loadKindMeta(childDir, id, rootDir, issues);
 
-		// First declaration wins; warn on the duplicate but keep
-		// walking so a sibling typo doesn't hide the rest of the
-		// tree from the consumer.
 		if (kinds.has(id)) {
 			issues.push({
 				kind: 'invalid-yaml',
 				detail: `${relTo(childDir, rootDir)}: kind '${id}' is declared more than once`
 			});
 		} else {
-			kinds.set(id, { id, meta, parent, group, body });
+			kinds.set(id, { id, meta, parent, group });
 		}
 
 		await walk(childDir, id, group, kinds, groups, issues, rootDir);
@@ -147,17 +135,13 @@ async function walk(
 
 /**
  * Return true when the folder should be treated as a kind-group container:
- * it has `_kindgroup.yaml` and does NOT have `_kind.yaml` or `_kind.md`.
+ * has `_kindgroup.yaml` and no `_kind.yaml`.
  */
 async function isKindGroupFolder(dir: string): Promise<boolean> {
 	const hasGroupFile = await fileExists(join(dir, '_kindgroup.yaml'));
 	if (!hasGroupFile) return false;
-	// If the author accidentally put both, treat it as an error but still
-	// prefer kind semantics (we return false; the loadKindFiles path will
-	// surface the group file as an unknown extra, which is harmless).
 	const hasKindYaml = await fileExists(join(dir, '_kind.yaml'));
-	const hasKindMd = await fileExists(join(dir, '_kind.md'));
-	return !hasKindYaml && !hasKindMd;
+	return !hasKindYaml;
 }
 
 /**
@@ -184,8 +168,7 @@ async function loadKindGroupFile(
 		return { id, title: null, description: null };
 	}
 
-	const obj =
-		parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : {};
+	const obj = parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : {};
 	const title = typeof obj.title === 'string' ? obj.title : null;
 	const description = typeof obj.description === 'string' ? obj.description : null;
 
@@ -202,55 +185,23 @@ async function loadKindGroupFile(
 }
 
 /**
- * Load a kind's editorial files. Two layouts are supported:
- *
- *   1. Sidecar (legacy): `_kind.yaml` carries the metadata,
- *      `_kind.md` carries the prose.
- *   2. Frontmatter:      `_kind.md` carries both — a `---`-fenced
- *      YAML block at the top, followed by the prose body.
- *
- * If both `_kind.yaml` and `_kind.md` frontmatter declare metadata
- * for the same kind, that's an authoring mistake: emit a health
- * issue and fall back to default labels (no body, no description)
- * so the conflict surfaces rather than one source silently
- * shadowing the other.
+ * Load a kind's `_kind.yaml` metadata. Returns an empty `KindMeta` when
+ * the file is absent — the folder existing is enough to register a kind.
  */
-async function loadKindFiles(
+async function loadKindMeta(
 	kindDir: string,
 	id: string,
 	rootDir: string,
 	issues: HealthIssue[]
-): Promise<{ meta: KindMeta; body: string | null }> {
+): Promise<KindMeta> {
 	const yamlPath = join(kindDir, '_kind.yaml');
-	const mdPath = join(kindDir, '_kind.md');
-	const yamlRaw = await readOptional(yamlPath);
-	const mdRaw = await readOptional(mdPath);
-	const mdSplit = mdRaw !== null ? splitFrontmatter(mdRaw) : null;
-	const hasFrontmatter = mdSplit?.frontmatter !== null && mdSplit?.frontmatter !== undefined;
-
-	if (yamlRaw !== null && hasFrontmatter) {
-		issues.push({
-			kind: 'invalid-yaml',
-			detail: `${relTo(kindDir, rootDir)}: both _kind.yaml and _kind.md frontmatter declare metadata; pick one`
-		});
-		// Surface a consistent body so the kind is still browseable.
-		return { meta: {}, body: mdSplit?.body ?? null };
-	}
-
-	if (hasFrontmatter && mdSplit) {
-		const meta = parseKindMeta(mdSplit.frontmatter ?? '', mdPath, rootDir, issues);
-		return { meta, body: mdSplit.body };
-	}
-
-	const meta = yamlRaw !== null ? parseKindMeta(yamlRaw, yamlPath, rootDir, issues) : {};
+	const raw = await readOptional(yamlPath);
 	void id;
-	return { meta, body: mdRaw };
+	return raw !== null ? parseKindMeta(raw, yamlPath, rootDir, issues) : {};
 }
 
 /**
- * Parse + validate a YAML document into a `KindMeta`. Pure aside
- * from pushing health issues. Used both for `_kind.yaml` files and
- * for the YAML body of a `_kind.md` frontmatter block.
+ * Parse + validate a YAML document into a `KindMeta`.
  */
 function parseKindMeta(
 	raw: string,
@@ -271,10 +222,6 @@ function parseKindMeta(
 	const meta: KindMeta =
 		parsed && typeof parsed === 'object' ? ({ ...(parsed as KindMeta) } as KindMeta) : {};
 
-	// Light field validation. The yaml type is loose; we only
-	// complain about wrong shapes for the fields we care about,
-	// and we drop unknown extras silently. A stray `kindParent`
-	// field is now meaningless — warn so the author notices.
 	const dropped = (parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : {})
 		.kindParent;
 	if (dropped !== undefined) {

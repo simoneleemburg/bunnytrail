@@ -118,7 +118,6 @@ export async function load() {
 	const totalChapters = worksWithChapters.reduce((n, e) => n + e.chapters.length, 0);
 
 	const kinds = [...graph.kindRegistry().values()];
-	const kindsWithProse = kinds.filter((k) => (k.body ?? '').trim().length > 0).length;
 
 	// Optional crest SVG inlined above the world title. Worlds drop
 	// a `crest.svg` in their assets/ dir to get a centred ornament
@@ -165,7 +164,6 @@ export async function load() {
 		totalChapters,
 		workCount: worksWithChapters.length,
 		kindCount: kinds.length,
-		kindsWithProse,
 		tags: graph.tags().slice(0, 12),
 		issues: graph.issues().length,
 		sourceProjects,
