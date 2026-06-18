@@ -220,7 +220,7 @@
 											style:background-color={slice.speciesId === '__other__' ? '#d4cdc4' : PALETTE[i % PALETTE.length]}
 										></span>
 										{#if slice.href}
-											<a class="stat-legend__link" href={slice.href}>{slice.speciesName}</a>
+											<a class="stat-legend__link" href="{slice.href}?tab=statistics">{slice.speciesName}</a>
 										{:else}
 											<span class="stat-legend__label">{slice.speciesName}</span>
 										{/if}
@@ -296,7 +296,7 @@
 					{@const sgSingleSlice = sgAllSlices.length === 1 ? sgAllSlices[0] : null}
 					<section class="stat-block stat-block--subgroup">
 						<h3 class="subgroup-heading">
-							<a class="subgroup-heading__link" href={sg.href}>{sg.groupName}</a>
+							<a class="subgroup-heading__link" href="{sg.href}?tab=statistics">{sg.groupName}</a>
 						</h3>
 						{#if sg.total !== null}
 							<p class="stat-total">
@@ -329,7 +329,7 @@
 													style:background-color={slice.speciesId === '__other__' ? '#d4cdc4' : PALETTE[i % PALETTE.length]}
 												></span>
 												{#if slice.href}
-													<a class="stat-legend__link" href={slice.href}>{slice.speciesName}</a>
+													<a class="stat-legend__link" href="{slice.href}?tab=statistics">{slice.speciesName}</a>
 												{:else}
 													<span class="stat-legend__label">{slice.speciesName}</span>
 												{/if}
@@ -389,9 +389,9 @@
 							{#each presenceItems as item (item.id)}
 								<li class="stat-legend__item">
 									<span class="stat-legend__swatch" style:background-color={item.color}></span>
-									<a class="stat-legend__link" href={item.href}>{item.name}</a>
-									<span class="stat-legend__pct">({formatPct(item.pct)})</span>
-									<span class="stat-legend__count">{formatNumber(item.count)}</span>
+								<a class="stat-legend__link" href="{item.href}?tab=statistics">{item.name}</a>
+								<span class="stat-legend__pct">({formatPct(item.pct)})</span>
+								<span class="stat-legend__count">{formatNumber(item.count)}</span>
 								</li>
 							{/each}
 						</ul>
