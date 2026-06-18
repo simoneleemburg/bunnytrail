@@ -13,6 +13,7 @@ import type {
 import { folderLabels } from '$lib/types';
 import { CONTENT_DIR } from './globals';
 import { buildEdges, loadAll, resolveWikilink } from './loader';
+import { loadWorld } from './world';
 
 /**
  * Compare two entities: ranked entities sort first (ascending), unranked
@@ -107,13 +108,18 @@ export class Graph {
 	async load(contentDir: string = CONTENT_DIR): Promise<void> {
 		if (this.#loading) return this.#loading;
 		this.#loading = (async () => {
+			// Load world config first so the relation registry can flow into loadAll.
+			const { config: worldConfig, issues: worldIssues } = await loadWorld();
 			const { entities, issues, kindRegistry, kindGroups, collections, clusters, universalFolders } =
-				await loadAll(contentDir);
+				await loadAll(contentDir, {
+					relationRegistry: worldConfig.relations,
+					allowUndefinedRelations: worldConfig.allowUndefinedRelations
+				});
 			const edges = buildEdges(entities);
 			this.#entities = entities;
 			this.#outEdges = edges.out;
 			this.#inEdges = edges.in;
-			this.#issues = issues;
+			this.#issues = [...worldIssues, ...issues];
 			this.#kindRegistry = kindRegistry;
 			this.#kindGroups = kindGroups;
 			this.#collections = collections;

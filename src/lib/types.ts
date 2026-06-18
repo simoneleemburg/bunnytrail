@@ -596,7 +596,29 @@ export interface RelationLabels {
 	inLabel: string;
 }
 
-const RELATION_LABEL_MAP: Record<string, RelationLabels> = {
+/**
+ * Per-relation-kind schema entry authored in `content_meta/world.md`.
+ *
+ * `domain`    — kind ids the *source* entity must satisfy (at or below in
+ *               the kind tree). Omit to allow any source.
+ * `codomain`  — kind ids the *target* entity must satisfy. Omit to allow any target.
+ *
+ * Kind matching is hierarchical: an entity satisfies a constraint if its
+ * `kind` equals the listed id OR is a descendant of it in the kind tree.
+ */
+export interface RelationSchema extends RelationLabels {
+	domain?: string[];
+	codomain?: string[];
+}
+
+/** The full world-level relation registry as loaded from world.md. */
+export type RelationRegistry = Map<string, RelationSchema>;
+
+// Engine-level fallback labels for well-known relation kinds.
+// World config takes precedence; these kick in when a kind has no
+// world-defined schema entry (so labels still render sensibly on
+// a world that hasn't yet defined its schema).
+export const ENGINE_RELATION_DEFAULTS: Record<string, RelationLabels> = {
 	'member-of':        { outLabel: 'Member of',        inLabel: 'Members' },
 	'located-in':       { outLabel: 'Located in',       inLabel: 'Located here' },
 	'native-to':        { outLabel: 'Native to',        inLabel: 'Native peoples' },
@@ -628,10 +650,17 @@ const RELATION_LABEL_MAP: Record<string, RelationLabels> = {
  * @param kind      - The relation kind string (e.g. `"located-in"`).
  * @param direction - `"out"` if the entity is the *source* of the edge,
  *                   `"in"` if it is the *target*.
+ * @param registry  - Optional world-level registry; consulted first.
  */
-export function relationLabel(kind: string, direction: 'out' | 'in'): string {
-	const entry = RELATION_LABEL_MAP[kind];
-	if (entry) return direction === 'out' ? entry.outLabel : entry.inLabel;
+export function relationLabel(
+	kind: string,
+	direction: 'out' | 'in',
+	registry?: RelationRegistry
+): string {
+	const worldEntry = registry?.get(kind);
+	if (worldEntry) return direction === 'out' ? worldEntry.outLabel : worldEntry.inLabel;
+	const engineEntry = ENGINE_RELATION_DEFAULTS[kind];
+	if (engineEntry) return direction === 'out' ? engineEntry.outLabel : engineEntry.inLabel;
 	// Fallback: humanise the raw kind slug
 	return kind.replace(/[-_]/g, ' ').replace(/^./, (c) => c.toUpperCase());
 }

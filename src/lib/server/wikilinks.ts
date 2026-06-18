@@ -2,17 +2,21 @@ import type { EntityId } from '$lib/types';
 
 /**
  * Match `[[type/slug]]` or `[[type/<sub>/.../slug]]` (optionally
- * labelled) in markdown bodies. The path is one or more kebab-case
- * segments joined by `/`.
+ * labelled) in markdown bodies. The path is one or more segments
+ * (kebab-case or any mix of alphanumerics and hyphens) joined by `/`.
  *
  * Also catches bare slugs, optional `#anchor` fragments, and
  * optional `|label` suffixes. The anchor and label are dropped here;
  * only the path part flows into wikilink resolution. Bare lang-code
  * matches (e.g. `[[ot]]`) are also caught — consumers filter those
  * out by checking against the language-code set before resolving.
+ *
+ * Paths are normalised to lowercase before being returned so that
+ * authors who accidentally capitalise a slug (e.g. `[[Naya]]`) get
+ * a broken-link issue rather than a silently ignored wikilink.
  */
 export const WIKILINK_RE =
-	/\[\[([a-z][a-z0-9-]*(?:\/[a-z0-9-]+)*)(?:#[a-z0-9][a-z0-9-]*)?(?:\|[^\]]+)?\]\]/g;
+	/\[\[([A-Za-z][A-Za-z0-9-]*(?:\/[A-Za-z0-9-]+)*)(?:#[a-z0-9][a-z0-9-]*)?(?:\|[^\]]+)?\]\]/g;
 
 /**
  * Extract entity wikilink ids from a markdown body. Accepts paths
@@ -29,7 +33,7 @@ export const WIKILINK_RE =
 export function extractWikilinks(body: string): EntityId[] {
 	const out = new Set<EntityId>();
 	for (const m of body.matchAll(WIKILINK_RE)) {
-		const p = m[1];
+		const p = m[1].toLowerCase();
 		if (p.startsWith('kinds/')) continue;
 		out.add(p);
 	}
@@ -43,10 +47,29 @@ export function extractWikilinks(body: string): EntityId[] {
  * separately so the body itself doesn't need to know which kinds
  * are registered.
  */
+/**
+ * Extract wikilink paths that have **no** pipe label, e.g. `[[naya]]`
+ * or `[[aurethia/nature/species/naya]]` but NOT `[[naya|Naya]]`.
+ * Used to surface unlabelled entity references as health issues.
+ * Lang-code filtering is left to the caller.
+ */
+export function extractUnlabelledWikilinks(body: string): string[] {
+	// Matches [[path]] and [[path#anchor]] but NOT [[path|label]]
+	const re =
+		/\[\[([A-Za-z][A-Za-z0-9-]*(?:\/[A-Za-z0-9-]+)*)(?:#[a-z0-9][a-z0-9-]*)?\]\]/g;
+	const out = new Set<string>();
+	for (const m of body.matchAll(re)) {
+		const p = m[1].toLowerCase();
+		if (p.startsWith('kinds/')) continue;
+		out.add(p);
+	}
+	return [...out];
+}
+
 export function extractKindLinks(body: string): string[] {
 	const out = new Set<string>();
 	for (const m of body.matchAll(WIKILINK_RE)) {
-		const p = m[1];
+		const p = m[1].toLowerCase();
 		if (!p.startsWith('kinds/')) continue;
 		const id = p.slice('kinds/'.length);
 		if (id) out.add(id);

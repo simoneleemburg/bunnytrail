@@ -84,7 +84,7 @@ async function seedTempContent(): Promise<string> {
 	);
 	await writeFile(
 		join(dir, 'characters', 'kael', 'index.md'),
-		'Kael walks the [[places/duskmere|Duskmere]] roads and dreams of [[places/atlantis]].'
+		'Kael walks the [[places/duskmere|Duskmere]] roads and dreams of [[places/atlantis|Atlantis]].'
 	);
 
 	await writeFile(
@@ -151,7 +151,11 @@ describe('extractWikilinks', () => {
 	});
 
 	it('ignores non-wikilink double brackets', () => {
-		expect(extractWikilinks('[[NotAnId]] and [text](link)')).toEqual([]);
+		expect(extractWikilinks('[text](link)')).toEqual([]);
+	});
+
+	it('normalises uppercase paths to lowercase so they surface as broken links', () => {
+		expect(extractWikilinks('[[NotAnId|label]]')).toEqual(['notanid']);
 	});
 
 	it('excludes [[kinds/<id>]] paths (those flow through extractKindLinks)', () => {
@@ -592,7 +596,7 @@ describe('loadAll frontmatter layout', () => {
 				'tags: [city]',
 				'---',
 				'',
-				'A city of [[places/duskmere]] dialects.',
+				'A city of [[places/duskmere|Duskmere]] dialects.',
 				''
 			].join('\n')
 		);
@@ -740,10 +744,10 @@ describe('loadAll: cluster-scoped wikilinks', () => {
 		await writeFile(
 			join(dir, 'aurethia', 'characters', 'kael', 'index.md'),
 			[
-				'Kael walks [[duskmere]] roads,',
-				'remembers [[shanghai]],',
-				'visits [[earth/places/shanghai]],',
-				'and meditates on [[harmonia]].'
+			'Kael walks [[duskmere|Duskmere]] roads,',
+			'remembers [[shanghai|Shanghai]],',
+			'visits [[earth/places/shanghai|Shanghai]],',
+			'and meditates on [[harmonia|Harmonia]].'
 			].join(' ')
 		);
 
@@ -871,5 +875,107 @@ describe('loadAll: cluster-scoped wikilinks', () => {
 			new Set(['foundation'])
 		);
 		expect(r).toEqual({ id: 'foundation/concepts/harmonia' });
+	});
+});
+
+// ---------------------------------------------------------------------------
+// validateLangLinks + validateUnlabelledWikilinks (via loadAll end-to-end)
+// ---------------------------------------------------------------------------
+
+/**
+ * Seed a minimal content tree that exercises lang-tag and label validation:
+ *
+ *   languages/buunhic  — entity in a `languages` folder, has `code: bu`
+ *   species/naya       — entity; slug `naya` passes langShape
+ *   characters/freya   — body with:
+ *                          [[bu]]         — valid lang code, no label needed ✓
+ *                          [[naya|Naya]]  — labelled entity ref ✓
+ *                          [[naya]]       — unlabelled entity ref → issue
+ *                          [[xy]]         — unregistered lang code → issue
+ */
+async function seedLangLinkContent(): Promise<string> {
+	const dir = await mkdtemp(join(tmpdir(), 'alteria-lang-'));
+
+	await mkdir(join(dir, 'languages', 'buunhic'), { recursive: true });
+	await writeFile(
+		join(dir, 'languages', 'buunhic', 'index.yaml'),
+		'name: Buunhic\nkind: language\ncode: bu\n'
+	);
+	await writeFile(join(dir, 'languages', 'buunhic', 'index.md'), 'A northern tongue.');
+
+	await mkdir(join(dir, 'species', 'naya'), { recursive: true });
+	await writeFile(join(dir, 'species', 'naya', 'index.yaml'), 'name: Naya\nkind: species\n');
+	await writeFile(join(dir, 'species', 'naya', 'index.md'), 'Ethereal beings of Nareth.');
+
+	await mkdir(join(dir, 'characters', 'freya'), { recursive: true });
+	await writeFile(join(dir, 'characters', 'freya', 'index.yaml'), 'name: Freya\nkind: character\n');
+	await writeFile(
+		join(dir, 'characters', 'freya', 'index.md'),
+		'Freya [[bu]] is a knight. She knows the [[naya|Naya]] but also [[naya]] and [[xy]].'
+	);
+
+	return dir;
+}
+
+describe('validateLangLinks', () => {
+	it('does not flag a registered language code', async () => {
+		const dir = await seedLangLinkContent();
+		const { issues } = await loadAll(dir);
+		const langIssues = issues.filter(
+			(i) => i.kind === 'broken-link' && i.detail.includes('unknown language code')
+		);
+		expect(langIssues.some((i) => i.detail.includes('[[bu]]'))).toBe(false);
+	});
+
+	it('emits a broken-link issue for an unregistered language code', async () => {
+		const dir = await seedLangLinkContent();
+		const { issues } = await loadAll(dir);
+		const langIssues = issues.filter(
+			(i) => i.kind === 'broken-link' && i.detail.includes('unknown language code')
+		);
+		expect(langIssues.some((i) => i.detail.includes('[[xy]]'))).toBe(true);
+		expect(langIssues.every((i) => i.entity === 'characters/freya')).toBe(true);
+	});
+
+	it('does not flag a labelled entity wikilink as an unknown lang code', async () => {
+		const dir = await seedLangLinkContent();
+		const { issues } = await loadAll(dir);
+		const langIssues = issues.filter(
+			(i) => i.kind === 'broken-link' && i.detail.includes('unknown language code')
+		);
+		expect(langIssues.some((i) => i.detail.includes('[[naya]]'))).toBe(false);
+	});
+});
+
+describe('validateUnlabelledWikilinks', () => {
+	it('does not flag a lang-code bare wikilink', async () => {
+		const dir = await seedLangLinkContent();
+		const { issues } = await loadAll(dir);
+		const unlabelled = issues.filter(
+			(i) => i.kind === 'broken-link' && i.detail.includes('missing label')
+		);
+		expect(unlabelled.some((i) => i.detail.includes('[[bu]]'))).toBe(false);
+	});
+
+	it('flags an unlabelled entity wikilink', async () => {
+		const dir = await seedLangLinkContent();
+		const { issues } = await loadAll(dir);
+		const unlabelled = issues.filter(
+			(i) => i.kind === 'broken-link' && i.detail.includes('missing label')
+		);
+		expect(unlabelled.some((i) => i.detail.includes('[[naya]]'))).toBe(true);
+		expect(unlabelled.find((i) => i.detail.includes('[[naya]]'))?.entity).toBe('characters/freya');
+	});
+
+	it('does not flag a labelled entity wikilink', async () => {
+		const dir = await seedLangLinkContent();
+		const { issues } = await loadAll(dir);
+		const unlabelled = issues.filter(
+			(i) => i.kind === 'broken-link' && i.detail.includes('missing label')
+		);
+		// [[naya|Naya]] has a label — must not appear
+		expect(
+			unlabelled.some((i) => i.detail.includes('[[naya]]') && i.detail.includes('|Naya'))
+		).toBe(false);
 	});
 });

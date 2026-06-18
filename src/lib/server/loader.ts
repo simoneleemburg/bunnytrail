@@ -1,6 +1,6 @@
 import { readdir } from 'node:fs/promises';
 import type { Dirent } from 'node:fs';
-import type { Edge, Entity, EntityId, EntityType, HealthIssue, Kind, KindGroup, Collection } from '$lib/types';
+import type { Edge, Entity, EntityId, EntityType, HealthIssue, Kind, KindGroup, Collection, RelationRegistry } from '$lib/types';
 import { loadKindRegistry } from './kinds';
 import { CONTENT_DIR } from './globals';
 import { walk, readDirents } from './walker';
@@ -15,7 +15,9 @@ import {
 	validateSummaryWikilinks,
 	validateCollectionWikilinks,
 	validateClassField,
-	validateLangLinks
+	validateLangLinks,
+	validateUnlabelledWikilinks,
+	validateRelationSchema
 } from './validate';
 
 // Re-export symbols that external callers (graph.ts, guides.ts, specs)
@@ -90,7 +92,10 @@ export async function discoverTypes(contentDir: string = CONTENT_DIR): Promise<E
  *   - `kinds.ts`    — kind registry loading
  *   - `wikilinks.ts`— extraction and resolution primitives
  */
-export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadResult> {
+export async function loadAll(
+	contentDir: string = CONTENT_DIR,
+	opts: { relationRegistry?: RelationRegistry; allowUndefinedRelations?: boolean } = {}
+): Promise<LoadResult> {
 	const entities = new Map<EntityId, Entity>();
 	const issues: HealthIssue[] = [];
 	const collections = new Map<string, Collection>();
@@ -123,6 +128,8 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 		clusterSet,
 		universalSet,
 		langCodes,
+		relationRegistry: opts.relationRegistry ?? new Map(),
+		allowUndefinedRelations: opts.allowUndefinedRelations ?? true,
 		issues
 	};
 
@@ -135,6 +142,8 @@ export async function loadAll(contentDir: string = CONTENT_DIR): Promise<LoadRes
 	validateCollectionWikilinks(validateArgs);
 	validateClassField(validateArgs);
 	validateLangLinks(validateArgs);
+	validateUnlabelledWikilinks(validateArgs);
+	validateRelationSchema(validateArgs);
 
 	return {
 		entities,

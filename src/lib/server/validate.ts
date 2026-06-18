@@ -1,5 +1,5 @@
-import type { Collection, Entity, EntityId, HealthIssue, Kind } from '$lib/types';
-import { extractWikilinks, resolveWikilink } from './wikilinks';
+import type { Collection, Entity, EntityId, HealthIssue, Kind, RelationRegistry } from '$lib/types';
+import { extractUnlabelledWikilinks, extractWikilinks, resolveWikilink } from './wikilinks';
 
 /**
  * Everything needed to run post-walk validation. Passed as a single
@@ -12,6 +12,10 @@ export interface ValidateArgs {
 	clusterSet: Set<string>;
 	universalSet: Set<string>;
 	langCodes: Set<string>;
+	/** World-level relation registry (from world.md). Empty map = not configured. */
+	relationRegistry: RelationRegistry;
+	/** When false, relation kinds not in the registry emit health warnings. */
+	allowUndefinedRelations: boolean;
 	issues: HealthIssue[];
 }
 
@@ -290,12 +294,17 @@ export function validateLangLinks(args: ValidateArgs): void {
 			if (!langShape.test(raw)) continue;
 			// If it's a registered lang code, it's valid — skip.
 			if (langCodes.has(raw)) continue;
-			// If it resolves as an entity, it's an entity wikilink — skip.
-			// Also skip `missing-in-cluster`: the resolver identified it as a
-			// cluster-scoped bare slug (an entity reference), just not found in
-			// this cluster. Report that via validateEntityWikilinks, not here.
+			// If it resolves as a real entity from this context, it's an
+			// entity wikilink — skip.
 			const r = resolveWikilink(raw, entities, fromCluster, clusterSet, universalSet);
-			if (r.id !== null || r.reason === 'missing-in-cluster') continue;
+			if (r.id !== null) continue;
+			// For missing-in-cluster, do a global check: if the slug suffix-
+			// matches any entity anywhere in the graph, treat it as a
+			// cross-cluster entity wikilink and defer to validateEntityWikilinks.
+			if (r.reason === 'missing-in-cluster') {
+				const global = resolveWikilink(raw, entities, null, clusterSet, universalSet);
+				if (global.id !== null) continue;
+			}
 			issues.push({
 				kind: 'broken-link',
 				...(entityId !== undefined && { entity: entityId }),
@@ -374,4 +383,126 @@ function brokenWikilinkIssue(
 		...(entityId !== undefined && { entity: entityId }),
 		detail: `${label} → ${raw} (not found)`
 	};
+}
+
+/**
+ * Validate entity relations against the world-level relation registry.
+ *
+ * Two checks:
+ *   1. **Undefined kind** — when `allowUndefinedRelations` is false, any
+ *      relation kind not present in the registry emits a warning.
+ *   2. **Domain / codomain** — when the schema entry carries `domain` or
+ *      `codomain` constraints, the source/target entity's `kind` must
+ *      equal or be a descendant of at least one listed kind in the kind
+ *      tree. Violations emit a `broken-link` issue (close enough for the
+ *      health-page grouping; a dedicated `invalid-relation` kind would
+ *      require a UI change).
+ */
+export function validateRelationSchema(args: ValidateArgs): void {
+	const { entities, kindRegistry, relationRegistry, allowUndefinedRelations, issues } = args;
+
+	// Pre-build ancestor map: kind id -> Set of ancestor ids (self + all parents)
+	function ancestors(kindId: string): Set<string> {
+		const result = new Set<string>();
+		let current: string | null = kindId;
+		while (current !== null) {
+			result.add(current);
+			current = kindRegistry.get(current)?.parent ?? null;
+		}
+		return result;
+	}
+
+	function satisfiesConstraint(entityKind: string | undefined, constraint: string[]): boolean {
+		if (!entityKind) return false;
+		const entityAncestors = ancestors(entityKind);
+		return constraint.some((c) => entityAncestors.has(c));
+	}
+
+	for (const entity of entities.values()) {
+		for (const rel of entity.meta.relations ?? []) {
+			const schema = relationRegistry.get(rel.kind);
+
+			// Check 1: undefined relation kind
+			if (!schema && !allowUndefinedRelations) {
+				issues.push({
+					kind: 'invalid-yaml',
+					entity: entity.id,
+					detail: `relation kind '${rel.kind}' is not defined in content_meta/world.md relations schema`
+				});
+				continue; // skip constraint checks — no schema to check against
+			}
+
+			if (!schema) continue;
+
+			// Check 2: domain constraint (source entity)
+			if (schema.domain && schema.domain.length > 0) {
+				const sourceKind = entity.meta.kind;
+				if (!satisfiesConstraint(sourceKind, schema.domain)) {
+					issues.push({
+						kind: 'invalid-yaml',
+						entity: entity.id,
+						detail: `relation '${rel.kind}': source kind '${sourceKind ?? '(none)'}' does not satisfy domain [${schema.domain.join(', ')}]`
+					});
+				}
+			}
+
+			// Check 3: codomain constraint (target entity)
+			if (schema.codomain && schema.codomain.length > 0) {
+				const target = entities.get(rel.target);
+				if (target) {
+					const targetKind = target.meta.kind;
+					if (!satisfiesConstraint(targetKind, schema.codomain)) {
+						issues.push({
+							kind: 'invalid-yaml',
+							entity: entity.id,
+							detail: `relation '${rel.kind}' → ${rel.target}: target kind '${targetKind ?? '(none)'}' does not satisfy codomain [${schema.codomain.join(', ')}]`
+						});
+					}
+				}
+				// broken target (entity not found) is already caught by validateRelations
+			}
+		}
+	}
+}
+
+/**
+ * Enforce the authoring rule: entity wikilinks must always carry a
+ * pipe label (`[[path|Label]]`). Bare wikilinks without a label are
+ * only permitted for inline language-code tags (e.g. `[[bu]]`).
+ *
+ * Checks entity bodies, summaries, and collection bodies.
+ */
+export function validateUnlabelledWikilinks(args: ValidateArgs): void {
+	const { entities, collections, langCodes, issues } = args;
+
+	function checkBody(
+		body: string,
+		entityId: EntityId | undefined,
+		surface: string
+	): void {
+		for (const raw of extractUnlabelledWikilinks(body)) {
+			if (langCodes.has(raw)) continue;
+			issues.push({
+				kind: 'broken-link',
+				...(entityId !== undefined && { entity: entityId }),
+				detail: `${surface} → [[${raw}]] (missing label — write [[${raw}|Label]])`
+			});
+		}
+	}
+
+	for (const entity of entities.values()) {
+		if (!entity.body) continue;
+		checkBody(entity.body, entity.id, 'unlabelled wikilink');
+	}
+
+	for (const entity of entities.values()) {
+		const summary = entity.meta.summary;
+		if (!summary) continue;
+		checkBody(summary, entity.id, 'unlabelled wikilink in summary');
+	}
+
+	for (const [collPath, collection] of collections) {
+		if (!collection.body) continue;
+		checkBody(collection.body, undefined, `${collPath}/_collection.md: unlabelled wikilink`);
+	}
 }
