@@ -365,13 +365,6 @@ export interface EntityMeta {
 	 * "Unregistered" section on `/kinds`.
 	 */
 	kind?: string;
-	/**
-	 * Gender, where it's part of who an entity is. Free-form so authors
-	 * can write what they want — "trans man", "trans woman", "fluid",
-	 * "non-binary", "agender", whatever fits. Surfaced in the property
-	 * list, never inferred.
-	 */
-	gender?: string;
 	/** "active" | "deceased" | "lost" | "ruined" | anything else. */
 	status?: string;
 	/**
@@ -439,6 +432,26 @@ export interface EntityMeta {
 	 *     "Canto"). When omitted the format's defaults apply.
 	 */
 	book?: BookMeta;
+	/**
+	 * Vocabulary entries for this entity. On a `language` entity these are
+	 * words native to that language. On any other entity, each entry must
+	 * carry a `language:` field (short code or entity id) to associate it
+	 * with a language. Collected and exposed via `graph.vocabularyForLang()`.
+	 */
+	vocabulary?: Array<{
+		word?: string;
+		meaning?: string;
+		pos?: string;
+		notes?: string;
+		language?: string;
+	}>;
+	/**
+	 * Population statistics blocks. Each element groups a population entry
+	 * with optional `within: <worldId>` sub-group membership and a
+	 * `population` array of slices (species percentages / counts).
+	 * Read by `graph.buildPresenceIndex()`.
+	 */
+	statistics?: Array<Record<string, unknown>>;
 	/** Arbitrary extra fields rendered in the property list sidebar. */
 	[key: string]: unknown;
 }

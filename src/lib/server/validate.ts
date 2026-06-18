@@ -536,7 +536,6 @@ const KNOWN_ENTITY_META_FIELDS = new Set([
 	'tags',
 	'era',
 	'kind',
-	'gender',
 	'status',
 	'rank',
 	'rankDisplay',
@@ -546,7 +545,9 @@ const KNOWN_ENTITY_META_FIELDS = new Set([
 	'relations',
 	'properties',
 	'class',
-	'book'
+	'book',
+	'vocabulary',
+	'statistics'
 ]);
 
 /**
