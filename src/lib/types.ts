@@ -614,33 +614,14 @@ export interface RelationSchema extends RelationLabels {
 /** The full world-level relation registry as loaded from world.md. */
 export type RelationRegistry = Map<string, RelationSchema>;
 
-// Engine-level fallback labels for well-known relation kinds.
-// World config takes precedence; these kick in when a kind has no
-// world-defined schema entry (so labels still render sensibly on
-// a world that hasn't yet defined its schema).
+// Engine-level defaults for relation labels. Only the synthetic `wikilink`
+// edge kind (emitted by the loader, not authored) is defined here — its
+// labels are needed even when no world schema is present. All other relation
+// kinds should be defined in the world's `content_meta/world.md` schema;
+// any kind not found there falls back to the humanise-slug path in
+// `relationLabel()`.
 export const ENGINE_RELATION_DEFAULTS: Record<string, RelationLabels> = {
-	'member-of':        { outLabel: 'Member of',        inLabel: 'Members' },
-	'located-in':       { outLabel: 'Located in',       inLabel: 'Located here' },
-	'native-to':        { outLabel: 'Native to',        inLabel: 'Native peoples' },
-	'region-of':        { outLabel: 'Region of',        inLabel: 'Regions' },
-	'serves-in':        { outLabel: 'Serves in',        inLabel: 'Members' },
-	'spoken-in':        { outLabel: 'Spoken in',        inLabel: 'Languages' },
-	'has-trait':        { outLabel: 'Has trait',        inLabel: 'Trait of' },
-	'occurred-on':      { outLabel: 'Occurred on',      inLabel: 'Events' },
-	'occurred-in':      { outLabel: 'Occurred in',      inLabel: 'Events' },
-	'records':          { outLabel: 'Records',          inLabel: 'Recorded in' },
-	'recorded-on':      { outLabel: 'Recorded on',      inLabel: 'Account' },
-	'orbits':           { outLabel: 'Orbits',           inLabel: 'Orbited by' },
-	'governed-by':      { outLabel: 'Governed by',      inLabel: 'Governs' },
-	'local-account-of': { outLabel: 'Local account of', inLabel: 'Local accounts' },
-	'approaches':       { outLabel: 'Approaches',       inLabel: 'Approached by' },
-	'defined-by':       { outLabel: 'Defined by',       inLabel: 'Defines' },
-	'bounded-by':       { outLabel: 'Bounded by',       inLabel: 'Bounds' },
-	'inhabits':         { outLabel: 'Inhabits',         inLabel: 'Inhabited by' },
-	'instance-of':      { outLabel: 'Instance of',      inLabel: 'Instances' },
-	'holds-role':       { outLabel: 'Holds role',       inLabel: 'Role held by' },
-	'role-in':          { outLabel: 'Role in',          inLabel: 'Roles' },
-	'wikilink':         { outLabel: 'Mentions',         inLabel: 'Mentioned by' },
+	'wikilink': { outLabel: 'Mentions', inLabel: 'Mentioned by' },
 };
 
 /**

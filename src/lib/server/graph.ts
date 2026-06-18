@@ -8,6 +8,7 @@ import type {
 	HealthIssue,
 	Kind,
 	KindGroup,
+	RelationRegistry,
 	VocabEntry
 } from '$lib/types';
 import { folderLabels } from '$lib/types';
@@ -92,6 +93,7 @@ export class Graph {
 	#issues: HealthIssue[] = [];
 	#kindRegistry: Map<string, Kind> = new Map();
 	#kindGroups: Map<string, KindGroup> = new Map();
+	#relationRegistry: RelationRegistry = new Map();
 	#collections: Map<string, Collection> = new Map();
 	#clusters: Set<string> = new Set();
 	#universalFolders: Set<string> = new Set();
@@ -122,6 +124,7 @@ export class Graph {
 			this.#issues = [...worldIssues, ...issues];
 			this.#kindRegistry = kindRegistry;
 			this.#kindGroups = kindGroups;
+			this.#relationRegistry = worldConfig.relations;
 			this.#collections = collections;
 			this.#clusters = clusters;
 			this.#universalFolders = universalFolders;
@@ -189,6 +192,28 @@ export class Graph {
 	/** A single kind group by id, or undefined. */
 	kindGroup(id: string): KindGroup | undefined {
 		return this.#kindGroups.get(id);
+	}
+
+	/** The world-level relation registry from world.md. Empty map when not configured. */
+	relationRegistry(): RelationRegistry {
+		return this.#relationRegistry;
+	}
+
+	/**
+	 * All outgoing relation edges of a specific kind across the whole graph.
+	 * Returns pairs of { source: Entity, target: Entity } for every entity
+	 * that carries a relation of the given kind pointing to a known target.
+	 */
+	edgesByRelationKind(kind: string): { source: Entity; target: Entity }[] {
+		const out: { source: Entity; target: Entity }[] = [];
+		for (const entity of this.#entities.values()) {
+			for (const rel of entity.meta.relations ?? []) {
+				if (rel.kind !== kind) continue;
+				const target = this.#entities.get(rel.target);
+				if (target) out.push({ source: entity, target });
+			}
+		}
+		return out;
 	}
 
 	/**
