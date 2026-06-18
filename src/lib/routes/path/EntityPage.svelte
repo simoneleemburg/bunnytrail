@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 	import type { EntityPageData } from './entityPage.load';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import PropertyList from '$lib/components/PropertyList.svelte';
@@ -42,7 +43,14 @@
 	const hasStatistics = $derived(data.statistics.length > 0);
 	const hasVocabulary = $derived(data.vocabulary.length > 0);
 	const hasTabs = $derived(hasClassMates || hasRoleHolders || hasStatistics || hasVocabulary);
-	let activeTab: 'about' | 'instances' | 'holders' | 'statistics' | 'vocabulary' = $state('about');
+	const VALID_TABS = ['about', 'instances', 'holders', 'statistics', 'vocabulary'] as const;
+	type TabId = (typeof VALID_TABS)[number];
+
+	const activeTab = $derived.by((): TabId => {
+		const param = page.url.searchParams.get('tab');
+		if (param && (VALID_TABS as readonly string[]).includes(param)) return param as TabId;
+		return 'about';
+	});
 
 	const effectiveTab = $derived.by(() => {
 		if (activeTab === 'instances' && !hasClassMates) return 'about';
@@ -51,6 +59,16 @@
 		if (activeTab === 'vocabulary' && !hasVocabulary) return 'about';
 		return activeTab;
 	});
+
+	function gotoTab(tab: TabId) {
+		const url = new URL(page.url);
+		if (tab === 'about') {
+			url.searchParams.delete('tab');
+		} else {
+			url.searchParams.set('tab', tab);
+		}
+		goto(url.toString(), { replaceState: true, noScroll: true });
+	}
 
 	const COLLAPSE_AT = 8;
 	const expanded = new SvelteSet<string>();
@@ -280,7 +298,7 @@
 				class="tab"
 				aria-selected={effectiveTab === 'about'}
 				class:active={effectiveTab === 'about'}
-				onclick={() => (activeTab = 'about')}
+				onclick={() => gotoTab('about')}
 			>
 				About
 			</button>
@@ -291,7 +309,7 @@
 					class="tab"
 				aria-selected={effectiveTab === 'instances'}
 				class:active={effectiveTab === 'instances'}
-					onclick={() => (activeTab = 'instances')}
+					onclick={() => gotoTab('instances')}
 				>
 					Instances
 				</button>
@@ -303,7 +321,7 @@
 					class="tab"
 					aria-selected={effectiveTab === 'holders'}
 					class:active={effectiveTab === 'holders'}
-					onclick={() => (activeTab = 'holders')}
+					onclick={() => gotoTab('holders')}
 				>
 					Holders
 				</button>
@@ -315,7 +333,7 @@
 					class="tab"
 				aria-selected={effectiveTab === 'statistics'}
 				class:active={effectiveTab === 'statistics'}
-					onclick={() => (activeTab = 'statistics')}
+					onclick={() => gotoTab('statistics')}
 				>
 					Statistics
 				</button>
@@ -327,7 +345,7 @@
 					class="tab"
 				aria-selected={effectiveTab === 'vocabulary'}
 				class:active={effectiveTab === 'vocabulary'}
-					onclick={() => (activeTab = 'vocabulary')}
+					onclick={() => gotoTab('vocabulary')}
 				>
 					Vocabulary
 				</button>
