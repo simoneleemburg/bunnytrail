@@ -221,7 +221,6 @@
 		align-items: center;
 		gap: var(--space-3);
 		padding: var(--space-2) 0;
-		border-bottom: var(--rule-thin);
 		font-size: var(--text-sm);
 	}
 
@@ -299,7 +298,6 @@
 		align-items: baseline;
 		gap: var(--space-3);
 		padding: var(--space-2) 0;
-		border-bottom: var(--rule-thin);
 		font-size: var(--text-sm);
 	}
 </style>

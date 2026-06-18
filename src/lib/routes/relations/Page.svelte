@@ -94,7 +94,6 @@
 		gap: var(--space-4);
 		align-items: center;
 		padding: var(--space-2) 0;
-		border-bottom: var(--rule-thin);
 		font-size: var(--text-sm);
 	}
 
@@ -220,7 +219,6 @@
 		gap: var(--space-4);
 		align-items: center;
 		padding: var(--space-2) 0;
-		border-bottom: var(--rule-thin);
 		font-size: var(--text-sm);
 	}
 </style>

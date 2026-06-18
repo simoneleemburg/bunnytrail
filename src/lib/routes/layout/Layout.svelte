@@ -260,7 +260,9 @@
 				{#each data.nav as item (item.href)}
 					<a href={item.href} aria-current={navAriaCurrent(item.href)}>{item.label}</a>
 				{/each}
-				<span class="nav-sep" aria-hidden="true">{data.navSep}</span>
+			</nav>
+
+			<div class="chrome-end">
 				<div class="meta-picker" data-meta-picker>
 					<button
 						type="button"
@@ -270,7 +272,7 @@
 						aria-current={metaActive ? true : undefined}
 						onclick={() => (metaOpen = !metaOpen)}
 					>
-						Meta
+						<span class="meta-eyebrow">Meta</span>
 						<span class="meta-caret" aria-hidden="true">▾</span>
 					</button>
 					{#if metaOpen}
@@ -332,9 +334,7 @@
 						</ul>
 					{/if}
 				</div>
-			</nav>
 
-			<div class="chrome-end">
 				{#if data.clusterOptions.length > 1}
 					<div class="cluster-picker cluster-picker-desktop" data-cluster-picker>
 						<button
@@ -577,15 +577,13 @@
 	.meta-trigger {
 		display: inline-flex;
 		align-items: baseline;
-		gap: var(--space-2);
-		font-family: var(--font-display);
-		font-size: var(--text-base);
-		letter-spacing: 0.01em;
+		gap: var(--space-3);
+		font: inherit;
 		color: var(--ink-soft);
 		background: transparent;
 		border: 1px solid transparent;
 		border-radius: var(--radius-md);
-		padding: var(--space-1) var(--space-2);
+		padding: var(--space-2) var(--space-3);
 		cursor: pointer;
 		transition:
 			background-color 120ms,
@@ -595,13 +593,23 @@
 
 	.meta-trigger:hover,
 	.meta-trigger:focus-visible {
-		color: var(--accent);
+		background: var(--paper-warm);
+		border-color: var(--rule);
 		outline: none;
 	}
 
 	.meta-trigger[aria-expanded='true'],
 	.meta-trigger[aria-current] {
-		color: var(--ink);
+		background: var(--paper-warm);
+		border-color: var(--rule);
+	}
+
+	.meta-eyebrow {
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-sm);
+		letter-spacing: 0;
+		color: var(--ink-faint);
 	}
 
 	.meta-caret {
@@ -617,7 +625,7 @@
 	.meta-menu {
 		position: absolute;
 		top: calc(100% + var(--space-2));
-		left: 0;
+		right: 0;
 		min-width: 9rem;
 		margin: 0;
 		padding: var(--space-2);
@@ -634,6 +642,13 @@
 
 	.meta-menu li {
 		margin: 0;
+		border-radius: 6px;
+		transition: background-color 120ms;
+	}
+
+	.meta-menu li:has(a:hover),
+	.meta-menu li:has(a:focus-visible) {
+		background-color: var(--paper-warm);
 	}
 
 	.meta-menu a {
@@ -643,18 +658,44 @@
 		font-size: var(--text-sm);
 		letter-spacing: 0.02em;
 		color: var(--ink-soft);
-		background: transparent;
+		background-image: linear-gradient(
+			100deg,
+			currentColor 0%,
+			currentColor 42%,
+			var(--accent-warm) 50%,
+			currentColor 58%,
+			currentColor 100%
+		);
+		background-size: 250% 100%;
+		background-position: 130% 0;
+		background-clip: text;
+		-webkit-background-clip: text;
 		text-decoration: none;
-		border-radius: var(--radius-sm);
+		border-radius: 6px;
 		padding: var(--space-2) var(--space-3);
 		cursor: pointer;
 	}
 
 	.meta-menu a:hover,
 	.meta-menu a:focus-visible {
-		background: var(--paper-warm);
 		color: var(--accent);
 		outline: none;
+		animation: menu-item-gleam 400ms ease-out;
+	}
+
+	@keyframes menu-item-gleam {
+		0% {
+			background-position: 130% 0;
+			-webkit-text-fill-color: currentColor;
+		}
+		15%,
+		85% {
+			-webkit-text-fill-color: transparent;
+		}
+		100% {
+			background-position: -30% 0;
+			-webkit-text-fill-color: currentColor;
+		}
 	}
 
 	.meta-menu a.selected {
