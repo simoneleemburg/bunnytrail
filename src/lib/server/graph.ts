@@ -863,9 +863,13 @@ export class Graph {
 			}
 		}
 
-		// Sort each species' entry list by percentage descending.
+		// Sort each species' entry list by absolute count descending, falling back to percentage.
 		for (const arr of speciesIndex.values()) {
-			arr.sort((a, b) => b.percentage - a.percentage);
+			arr.sort((a, b) => {
+				const aCount = a.count ?? (a.worldTotal !== null ? a.percentage / 100 * a.worldTotal : 0);
+				const bCount = b.count ?? (b.worldTotal !== null ? b.percentage / 100 * b.worldTotal : 0);
+				return bCount - aCount;
+			});
 		}
 
 		// ── Pass 2: sub-group population blocks (have `within`) ─────────────

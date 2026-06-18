@@ -270,7 +270,7 @@
 									<li class="stat-legend__item">
 										<span class="stat-legend__swatch" style:background-color={item.color}></span>
 										{#if item.href && item.id !== '__other__'}
-											<a class="stat-legend__link" href={item.href}>{item.name}</a>
+								<a class="stat-legend__link" href="{item.href}?tab=statistics">{item.name}</a>
 										{:else}
 											<span class="stat-legend__label">{item.name}</span>
 										{/if}
@@ -403,7 +403,7 @@
 							{@const speciesPct = knownTotal ? Math.round((count ?? 0) / knownTotal * 100) : null}
 							<li class="presence-item">
 								<div class="presence-row">
-									<a class="presence-world" href={entry.href}>{entry.worldName}</a>
+									<a class="presence-world" href="{entry.href}?tab=statistics">{entry.worldName}</a>
 									{#if speciesPct !== null}
 										<span class="presence-pct">{formatPct(entry.percentage)}</span>
 									{/if}
@@ -411,19 +411,22 @@
 										<span class="presence-total">({formatNumber(count)})</span>
 									{/if}
 								</div>
-								<div class="presence-bar-track" aria-hidden="true">
-									<div
-										class="presence-bar-fill"
-										style:width="{maxCount ? ((count ?? 0) / maxCount) * 100 : 100}%"
-										style:background-color={PALETTE[i % PALETTE.length]}
-									></div>
-								</div>
+							<div
+								class="presence-bar-track"
+								style:width="{maxCount ? ((count ?? 0) / maxCount) * 100 : 100}%"
+								aria-hidden="true"
+							>
+							<div
+								class="presence-bar-fill"
+								style:width="{entry.percentage}%"
+							></div>
+							</div>
 								{#if entry.subGroups && entry.subGroups.length > 0}
 									<ul class="subgroup-list">
 										{#each entry.subGroups as sg (sg.groupId)}
 											<li class="subgroup-item">
 												<span class="subgroup-arrow" aria-hidden="true">↳</span>
-												<a class="subgroup-link" href={sg.href}>{sg.groupName}</a>
+												<a class="subgroup-link" href="{sg.href}?tab=statistics">{sg.groupName}</a>
 												{#if sg.count !== null}
 													<span class="subgroup-count">{formatNumber(sg.count)}</span>
 												{/if}
@@ -596,12 +599,10 @@
 		font-size: var(--text-sm);
 		color: var(--ink);
 		text-decoration: none;
-		border-bottom: 1px solid var(--rule-hair, #d8d8d8);
 	}
 
 	.presence-world:hover {
 		color: var(--accent);
-		border-bottom-color: var(--accent-warm);
 	}
 
 	.presence-pct {
@@ -621,16 +622,17 @@
 
 	.presence-bar-track {
 		height: 4px;
-		background: var(--parchment-deep, #e2e2e2);
+		background: color-mix(in srgb, var(--accent-deep) 35%, transparent);
 		border-radius: 2px;
 		overflow: hidden;
+		/* width is set inline: proportional to population share */
 	}
 
 	.presence-bar-fill {
 		height: 100%;
-		background: var(--accent-soft, #777);
+		background: var(--accent-deep);
 		border-radius: 2px;
-		transition: width 200ms ease;
+		/* width is set inline: species penetration % within the world */
 	}
 
 	/* ── Sub-groups ───────────────────────────────────────────────── */
