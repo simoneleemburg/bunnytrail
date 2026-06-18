@@ -1,6 +1,6 @@
 import { readdir } from 'node:fs/promises';
 import type { Dirent } from 'node:fs';
-import type { Edge, Entity, EntityId, EntityType, HealthIssue, Kind, KindGroup, Collection, RelationRegistry } from '$lib/types';
+import type { Edge, Entity, EntityId, EntityType, HealthIssue, Kind, KindGroup, Collection, PropertyRegistry, RelationRegistry } from '$lib/types';
 import { loadKindRegistry } from './kinds';
 import { CONTENT_DIR } from './globals';
 import { walk, readDirents } from './walker';
@@ -17,7 +17,9 @@ import {
 	validateClassField,
 	validateLangLinks,
 	validateUnlabelledWikilinks,
-	validateRelationSchema
+	validateRelationSchema,
+	validatePropertySchema,
+	validateUnknownEntityFields
 } from './validate';
 
 // Re-export symbols that external callers (graph.ts, guides.ts, specs)
@@ -94,7 +96,12 @@ export async function discoverTypes(contentDir: string = CONTENT_DIR): Promise<E
  */
 export async function loadAll(
 	contentDir: string = CONTENT_DIR,
-	opts: { relationRegistry?: RelationRegistry; allowUndefinedRelations?: boolean } = {}
+	opts: {
+		relationRegistry?: RelationRegistry;
+		allowUndefinedRelations?: boolean;
+		propertyRegistry?: PropertyRegistry;
+		allowUndefinedProperties?: boolean;
+	} = {}
 ): Promise<LoadResult> {
 	const entities = new Map<EntityId, Entity>();
 	const issues: HealthIssue[] = [];
@@ -130,6 +137,8 @@ export async function loadAll(
 		langCodes,
 		relationRegistry: opts.relationRegistry ?? new Map(),
 		allowUndefinedRelations: opts.allowUndefinedRelations ?? true,
+		propertyRegistry: opts.propertyRegistry ?? new Map(),
+		allowUndefinedProperties: opts.allowUndefinedProperties ?? true,
 		issues
 	};
 
@@ -144,6 +153,8 @@ export async function loadAll(
 	validateLangLinks(validateArgs);
 	validateUnlabelledWikilinks(validateArgs);
 	validateRelationSchema(validateArgs);
+	validatePropertySchema(validateArgs);
+	validateUnknownEntityFields(validateArgs);
 
 	return {
 		entities,

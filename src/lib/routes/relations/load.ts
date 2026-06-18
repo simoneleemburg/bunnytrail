@@ -1,5 +1,6 @@
 import { graph } from '$lib/server/graph';
 import { relationLabel } from '$lib/types';
+import type { PropertySchema } from '$lib/types';
 
 export interface RelationIndexEntry {
 	kind: string;
@@ -16,12 +17,24 @@ export interface RelationIndexEntry {
 	href: string;
 }
 
+export interface PropertyIndexEntry {
+	id: string;
+	label: string;
+	count: number;
+	schema: PropertySchema;
+	href: string;
+}
+
 export interface RelationsIndexPageData {
 	entries: RelationIndexEntry[];
 	/** Relation kinds used in content but absent from world schema (when strict). */
 	undefinedKinds: { kind: string; count: number }[];
 	/** true when world.md has a relations: block */
 	hasSchema: boolean;
+	/** Property entries from the world property registry. */
+	propertyEntries: PropertyIndexEntry[];
+	/** true when world.md has a properties: block */
+	hasPropertySchema: boolean;
 }
 
 export async function load(): Promise<RelationsIndexPageData> {
@@ -78,5 +91,20 @@ export async function load(): Promise<RelationsIndexPageData> {
 		}
 	}
 
-	return { entries, undefinedKinds, hasSchema };
+	// Property data
+	const propRegistry = graph.propertyRegistry();
+	const hasPropertySchema = propRegistry.size > 0;
+	const propertyEntries: PropertyIndexEntry[] = [];
+	for (const [id, schema] of propRegistry) {
+		propertyEntries.push({
+			id,
+			label: schema.label,
+			count: graph.propertiesByKind(id).length,
+			schema,
+			href: `/properties/${id}`
+		});
+	}
+	propertyEntries.sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+
+	return { entries, undefinedKinds, hasSchema, propertyEntries, hasPropertySchema };
 }

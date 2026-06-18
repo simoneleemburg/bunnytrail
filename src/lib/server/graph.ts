@@ -8,6 +8,7 @@ import type {
 	HealthIssue,
 	Kind,
 	KindGroup,
+	PropertyRegistry,
 	RelationRegistry,
 	VocabEntry
 } from '$lib/types';
@@ -94,6 +95,7 @@ export class Graph {
 	#kindRegistry: Map<string, Kind> = new Map();
 	#kindGroups: Map<string, KindGroup> = new Map();
 	#relationRegistry: RelationRegistry = new Map();
+	#propertyRegistry: PropertyRegistry = new Map();
 	#collections: Map<string, Collection> = new Map();
 	#clusters: Set<string> = new Set();
 	#universalFolders: Set<string> = new Set();
@@ -115,7 +117,9 @@ export class Graph {
 			const { entities, issues, kindRegistry, kindGroups, collections, clusters, universalFolders } =
 				await loadAll(contentDir, {
 					relationRegistry: worldConfig.relations,
-					allowUndefinedRelations: worldConfig.allowUndefinedRelations
+					allowUndefinedRelations: worldConfig.allowUndefinedRelations,
+					propertyRegistry: worldConfig.properties,
+					allowUndefinedProperties: worldConfig.allowUndefinedProperties
 				});
 			const edges = buildEdges(entities);
 			this.#entities = entities;
@@ -125,6 +129,7 @@ export class Graph {
 			this.#kindRegistry = kindRegistry;
 			this.#kindGroups = kindGroups;
 			this.#relationRegistry = worldConfig.relations;
+			this.#propertyRegistry = worldConfig.properties;
 			this.#collections = collections;
 			this.#clusters = clusters;
 			this.#universalFolders = universalFolders;
@@ -199,6 +204,11 @@ export class Graph {
 		return this.#relationRegistry;
 	}
 
+	/** The world-level property registry from world.md. Empty map when not configured. */
+	propertyRegistry(): PropertyRegistry {
+		return this.#propertyRegistry;
+	}
+
 	/**
 	 * All outgoing relation edges of a specific kind across the whole graph.
 	 * Returns pairs of { source: Entity, target: Entity } for every entity
@@ -213,6 +223,29 @@ export class Graph {
 				if (target) out.push({ source: entity, target });
 			}
 		}
+		return out;
+	}
+
+	/**
+	 * All entities that carry a specific property id in their `meta.properties`
+	 * block. Returns entries sorted by entity name.
+	 */
+	propertiesByKind(
+		propertyId: string
+	): Array<{ entityId: string; entityName: string; href: string; value: unknown }> {
+		const out: Array<{ entityId: string; entityName: string; href: string; value: unknown }> = [];
+		for (const entity of this.#entities.values()) {
+			const props = entity.meta.properties;
+			if (!props || typeof props !== 'object' || Array.isArray(props)) continue;
+			if (!(propertyId in props)) continue;
+			out.push({
+				entityId: entity.id,
+				entityName: entity.meta.name,
+				href: `/${entity.id}`,
+				value: (props as Record<string, unknown>)[propertyId]
+			});
+		}
+		out.sort((a, b) => a.entityName.localeCompare(b.entityName));
 		return out;
 	}
 

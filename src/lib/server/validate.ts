@@ -1,4 +1,4 @@
-import type { Collection, Entity, EntityId, HealthIssue, Kind, RelationRegistry } from '$lib/types';
+import type { Collection, Entity, EntityId, HealthIssue, Kind, PropertyRegistry, RelationRegistry } from '$lib/types';
 import { extractUnlabelledWikilinks, extractWikilinks, resolveWikilink } from './wikilinks';
 
 /**
@@ -16,6 +16,10 @@ export interface ValidateArgs {
 	relationRegistry: RelationRegistry;
 	/** When false, relation kinds not in the registry emit health warnings. */
 	allowUndefinedRelations: boolean;
+	/** World-level property registry (from world.md). Empty map = not configured. */
+	propertyRegistry: PropertyRegistry;
+	/** When false, property keys not in the registry emit health warnings. */
+	allowUndefinedProperties: boolean;
 	issues: HealthIssue[];
 }
 
@@ -504,5 +508,128 @@ export function validateUnlabelledWikilinks(args: ValidateArgs): void {
 	for (const [collPath, collection] of collections) {
 		if (!collection.body) continue;
 		checkBody(collection.body, undefined, `${collPath}/_collection.md: unlabelled wikilink`);
+	}
+}
+
+/**
+ * Validate property keys and values on every entity against the
+ * world-level property registry.
+ *
+ * Three checks (mirroring `validateRelationSchema`):
+ *  1. Undefined property key — emitted when the registry is non-empty
+ *     and `allowUndefinedProperties` is false.
+ *  2. Property-kind mismatch — the entity's kind is not in
+ *     `schema.allowedKinds`.
+ *  3. Property-value mismatch — the value is not in `schema.values`.
+ */
+/**
+ * The set of field names that are part of the `EntityMeta` contract.
+ * Any top-level key in entity frontmatter that is NOT in this set is
+ * considered an unknown field and surfaced as a health warning.
+ *
+ * Keep in sync with the `EntityMeta` interface in `src/lib/types.ts`.
+ */
+const KNOWN_ENTITY_META_FIELDS = new Set([
+	'name',
+	'aliases',
+	'summary',
+	'tags',
+	'era',
+	'kind',
+	'gender',
+	'status',
+	'rank',
+	'rankDisplay',
+	'code',
+	'language',
+	'sigil',
+	'relations',
+	'properties',
+	'class',
+	'book'
+]);
+
+/**
+ * Flags any top-level frontmatter field on an entity that is not part of
+ * the known `EntityMeta` contract. These are most likely old-style ad-hoc
+ * fields (e.g. `gender: x` before the `properties:` migration) that should
+ * be moved under `properties:`.
+ */
+export function validateUnknownEntityFields(args: ValidateArgs): void {
+	const { entities, issues } = args;
+
+	for (const entity of entities.values()) {
+		const meta = entity.meta as Record<string, unknown>;
+		for (const key of Object.keys(meta)) {
+			if (!KNOWN_ENTITY_META_FIELDS.has(key)) {
+				issues.push({
+					kind: 'unknown-entity-field',
+					entity: entity.id,
+					detail: `unknown top-level field '${key}' — move it under 'properties:' if it is a custom attribute`
+				});
+			}
+		}
+	}
+}
+
+export function validatePropertySchema(args: ValidateArgs): void {
+	const { entities, kindRegistry, propertyRegistry, allowUndefinedProperties, issues } = args;
+
+	// Ancestor helper — mirrors the one in validateRelationSchema
+	function ancestors(kindId: string): Set<string> {
+		const result = new Set<string>();
+		let current: string | null = kindId;
+		while (current !== null) {
+			result.add(current);
+			current = kindRegistry.get(current)?.parent ?? null;
+		}
+		return result;
+	}
+
+	for (const entity of entities.values()) {
+		const props = entity.meta.properties;
+		if (!props || typeof props !== 'object' || Array.isArray(props)) continue;
+
+		for (const [key, value] of Object.entries(props as Record<string, unknown>)) {
+			const schema = propertyRegistry.get(key);
+
+			// Check 1: undefined property key
+			if (!schema && propertyRegistry.size > 0 && !allowUndefinedProperties) {
+				issues.push({
+					kind: 'undefined-property',
+					entity: entity.id,
+					detail: `property '${key}' is not defined in content_meta/world.md properties schema`
+				});
+				continue; // skip further checks — no schema to check against
+			}
+
+			if (!schema) continue;
+
+			// Check 2: allowedKinds constraint
+			if (schema.allowedKinds && schema.allowedKinds.length > 0) {
+				const entityKind = entity.meta.kind;
+				const entityAncestors = entityKind ? ancestors(entityKind) : new Set<string>();
+				const satisfies = schema.allowedKinds.some((k) => entityAncestors.has(k));
+				if (!satisfies) {
+					issues.push({
+						kind: 'property-kind-mismatch',
+						entity: entity.id,
+						detail: `property '${key}': entity kind '${entityKind ?? '(none)'}' is not in allowedKinds [${schema.allowedKinds.join(', ')}]`
+					});
+				}
+			}
+
+			// Check 3: values constraint
+			if (schema.values && schema.values.length > 0) {
+				const strVal = String(value);
+				if (!schema.values.includes(strVal)) {
+					issues.push({
+						kind: 'property-value-mismatch',
+						entity: entity.id,
+						detail: `property '${key}': value '${strVal}' is not in allowed values [${schema.values.join(', ')}]`
+					});
+				}
+			}
+		}
 	}
 }

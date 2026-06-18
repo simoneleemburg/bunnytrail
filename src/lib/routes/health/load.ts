@@ -57,6 +57,22 @@ export async function load() {
 		'invalid-yaml': {
 			label: 'Invalid metadata',
 			blurb: 'YAML that loaded but failed validation — most commonly an unregistered `kind:`.'
+		},
+		'undefined-property': {
+			label: 'Undefined properties',
+			blurb: 'Property keys used in entity frontmatter that are not listed in the world schema.'
+		},
+		'property-kind-mismatch': {
+			label: 'Property kind mismatches',
+			blurb: "Entity's kind is not in the property's allowedKinds constraint."
+		},
+		'property-value-mismatch': {
+			label: 'Property value mismatches',
+			blurb: "Property value is not in the property's allowed values list."
+		},
+		'unknown-entity-field': {
+			label: 'Unknown entity fields',
+			blurb: "Top-level frontmatter field not in the EntityMeta contract — likely a lingering old-style custom field that should be moved under 'properties:'."
 		}
 	};
 
@@ -94,6 +110,7 @@ export async function load() {
 		'invalid-yaml',
 		'missing-yaml',
 		'missing-md',
+		'unknown-entity-field',
 		'orphan'
 	];
 	const groups = order.map((k) => byKind.get(k)).filter((g): g is Group => g !== undefined);

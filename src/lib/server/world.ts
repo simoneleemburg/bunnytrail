@@ -1,6 +1,6 @@
 import { readFile, stat } from 'node:fs/promises';
 import { parse as parseYaml } from 'yaml';
-import type { HealthIssue, RelationRegistry, RelationSchema } from '$lib/types';
+import type { HealthIssue, PropertyRegistry, PropertySchema, RelationRegistry, RelationSchema } from '$lib/types';
 import { defaultWorldConfigPath } from './globals';
 import { splitFrontmatter } from './frontmatter';
 import { renderPlainBody } from './markdown';
@@ -86,6 +86,21 @@ export interface WorldConfig {
 	 * Has no effect when the `relations:` block is absent entirely.
 	 */
 	allowUndefinedRelations: boolean;
+	/**
+	 * World-level property registry parsed from the `properties:` block
+	 * in `content_meta/world.md`. Keys are property ids; values carry
+	 * a required label and optional allowedKinds/values constraints.
+	 * Empty map when not configured.
+	 */
+	properties: PropertyRegistry;
+	/**
+	 * When `false` (the default when the `properties:` block is present),
+	 * any property key used in content that is NOT listed in the
+	 * registry emits a health-page warning. Set to `true` to silence
+	 * those warnings while the schema is still being built out.
+	 * Has no effect when the `properties:` block is absent entirely.
+	 */
+	allowUndefinedProperties: boolean;
 }
 
 const FALLBACK_NAME = 'Bunnytrail';
@@ -110,7 +125,9 @@ function fallbackConfig(): WorldConfig {
 		allScopeLabel: `All ${FALLBACK_NAME}`,
 		ornament: fallbackOrnament(),
 		relations: new Map(),
-		allowUndefinedRelations: true
+		allowUndefinedRelations: true,
+		properties: new Map(),
+		allowUndefinedProperties: true
 	};
 }
 
@@ -163,11 +180,12 @@ export async function loadWorld(
 	const allScopeLabel = readString(meta, 'allScopeLabel', issues) ?? `All ${name}`;
 	const ornament = readOrnament(meta, issues);
 	const { relations, allowUndefinedRelations } = readRelations(meta, issues);
+	const { properties, allowUndefinedProperties } = readProperties(meta, issues);
 
 	const ledeHtml = body.trim() === '' ? null : renderPlainBody(body);
 
 	return {
-		config: { name, shortName, tagline, allScopeLabel, ornament, relations, allowUndefinedRelations },
+		config: { name, shortName, tagline, allScopeLabel, ornament, relations, allowUndefinedRelations, properties, allowUndefinedProperties },
 		ledeHtml,
 		present: true,
 		issues
@@ -322,6 +340,100 @@ function readRelations(
 	}
 
 	return { relations: registry, allowUndefinedRelations };
+}
+
+/**
+ * Parse the optional `properties:` block from world.md frontmatter.
+ *
+ * Expected shape:
+ *
+ *     properties:
+ *       gender:
+ *         label: Gender
+ *         allowedKinds: [person, character]
+ *         values: [woman, man, fluid, "trans man", "trans woman"]
+ *       notation:
+ *         label: Notation
+ *         allowedKinds: [quantity]
+ *       role:
+ *         label: Role
+ *
+ * `allowUndefinedProperties` is read from a sibling key; defaults to
+ * `false` when the `properties:` block is present (strict mode), `true`
+ * when the block is absent (no opinion).
+ */
+function readProperties(
+	meta: Record<string, unknown>,
+	issues: HealthIssue[]
+): { properties: PropertyRegistry; allowUndefinedProperties: boolean } {
+	const raw = meta['properties'];
+	const hasBlock = raw !== undefined && raw !== null;
+
+	// allowUndefinedProperties: explicit bool, or derived from whether block exists
+	let allowUndefinedProperties = !hasBlock;
+	const allowRaw = meta['allowUndefinedProperties'];
+	if (allowRaw !== undefined && allowRaw !== null) {
+		if (typeof allowRaw !== 'boolean') {
+			issues.push({
+				kind: 'invalid-yaml',
+				detail: 'content_meta/world.md: allowUndefinedProperties must be a boolean when present'
+			});
+		} else {
+			allowUndefinedProperties = allowRaw;
+		}
+	}
+
+	if (!hasBlock) return { properties: new Map(), allowUndefinedProperties };
+
+	if (typeof raw !== 'object' || Array.isArray(raw)) {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: 'content_meta/world.md: properties must be a mapping when present'
+		});
+		return { properties: new Map(), allowUndefinedProperties };
+	}
+
+	const registry: PropertyRegistry = new Map();
+	const block = raw as Record<string, unknown>;
+
+	for (const [propId, entry] of Object.entries(block)) {
+		if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
+			issues.push({
+				kind: 'invalid-yaml',
+				detail: `content_meta/world.md: properties.${propId} must be a mapping`
+			});
+			continue;
+		}
+		const e = entry as Record<string, unknown>;
+
+		const label = readStringFrom(e, 'label', `properties.${propId}.label`, issues);
+		if (!label) {
+			issues.push({
+				kind: 'invalid-yaml',
+				detail: `content_meta/world.md: properties.${propId} requires a label`
+			});
+			continue;
+		}
+
+		const schema: PropertySchema = { label };
+
+		for (const listKey of ['allowedKinds', 'values'] as const) {
+			const cv = e[listKey];
+			if (cv === undefined || cv === null) continue;
+			if (!Array.isArray(cv) || cv.some((v) => typeof v !== 'string')) {
+				issues.push({
+					kind: 'invalid-yaml',
+					detail: `content_meta/world.md: properties.${propId}.${listKey} must be an array of strings`
+				});
+				continue;
+			}
+			schema[listKey] = cv as string[];
+		}
+
+		registry.set(propId, schema);
+	}
+
+	return { properties: registry, allowUndefinedProperties };
 }
 
 function readStringFrom(

@@ -406,6 +406,13 @@ export interface EntityMeta {
 	/** Structured relations. */
 	relations?: Relation[];
 	/**
+	 * Structured property values, authored as a `properties:` YAML block.
+	 * Keys are property ids (e.g. `gender`, `notation`); values are the
+	 * authored property values. Validated against the world-level property
+	 * registry at load time.
+	 */
+	properties?: Record<string, unknown>;
+	/**
 	 * Entity-level class: the id of an entity (typically a nature entity
 	 * like `foundation/nature/mortals/human`) that this entity is an
 	 * instance of. Acts as a virtual sub-kind — displayed in the kind
@@ -578,7 +585,16 @@ export interface Edge {
 
 /** Health-check problems detected at load time. */
 export interface HealthIssue {
-	kind: 'broken-link' | 'orphan' | 'missing-md' | 'missing-yaml' | 'invalid-yaml';
+	kind:
+		| 'broken-link'
+		| 'orphan'
+		| 'missing-md'
+		| 'missing-yaml'
+		| 'invalid-yaml'
+		| 'undefined-property'
+		| 'property-kind-mismatch'
+		| 'property-value-mismatch'
+		| 'unknown-entity-field';
 	entity?: EntityId;
 	detail: string;
 }
@@ -613,6 +629,26 @@ export interface RelationSchema extends RelationLabels {
 
 /** The full world-level relation registry as loaded from world.md. */
 export type RelationRegistry = Map<string, RelationSchema>;
+
+/**
+ * Per-property-id schema entry authored in `content_meta/world.md`.
+ *
+ * `allowedKinds` — entity kind ids whose entities may carry this property.
+ *                  Omit to allow any entity kind.
+ * `values`       — enum of allowed values for the property.
+ *                  Omit to allow any value.
+ */
+export interface PropertySchema {
+	/** Display name, e.g. "Gender". Required. */
+	label: string;
+	/** Entity kind ids that may carry this property. Omit for any kind. */
+	allowedKinds?: string[];
+	/** Enum of allowed values, e.g. ["woman","man","fluid"]. Omit for any value. */
+	values?: string[];
+}
+
+/** The full world-level property registry as loaded from world.md. */
+export type PropertyRegistry = Map<string, PropertySchema>;
 
 // Engine-level defaults for relation labels. Only the synthetic `wikilink`
 // edge kind (emitted by the loader, not authored) is defined here — its

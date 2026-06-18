@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import PageHeader from '$lib/components/PageHeader.svelte';
-	import type { RelationIndexEntry, RelationsIndexPageData } from './load';
+	import type { RelationsIndexPageData } from './load';
 
 	let { data }: { data: RelationsIndexPageData } = $props();
 
 	const hasEntries = $derived(data.entries.length > 0);
+	const hasPropertyEntries = $derived(data.propertyEntries.length > 0);
 </script>
 
 <svelte:head>
@@ -65,6 +66,26 @@
 				</li>
 			{/each}
 		</ul>
+	</section>
+{/if}
+
+{#if data.hasPropertySchema}
+	<section class="properties-section">
+		<h2 class="section-heading">Properties</h2>
+		<p class="section-blurb">Property types defined in the world schema.</p>
+		{#if !hasPropertyEntries}
+			<p class="empty"><em>No property kinds defined yet.</em></p>
+		{:else}
+			<ul class="property-list" role="list">
+				{#each data.propertyEntries as entry (entry.id)}
+					<li class="property-row">
+						<a class="kind-id" href={entry.href}>{entry.id}</a>
+						<span class="label">{entry.label}</span>
+						<span class="count" aria-label="{entry.count} entities">{entry.count}</span>
+					</li>
+				{/each}
+			</ul>
+		{/if}
 	</section>
 {/if}
 
@@ -220,5 +241,40 @@
 		align-items: center;
 		padding: var(--space-2) 0;
 		font-size: var(--text-sm);
+	}
+
+	/* ── Properties section ── */
+	.properties-section {
+		margin-top: var(--space-7);
+	}
+
+	.property-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		border-top: var(--rule-thin);
+	}
+
+	.property-row {
+		display: grid;
+		grid-template-columns: minmax(10rem, 16rem) minmax(10rem, 1fr) 4rem;
+		gap: var(--space-4);
+		align-items: center;
+		padding: var(--space-2) 0;
+		font-size: var(--text-sm);
+	}
+
+	@media (max-width: 36rem) {
+		.property-row {
+			grid-template-columns: 1fr auto;
+		}
+
+		.label {
+			grid-column: 1 / -1;
+		}
+	}
+
+	.label {
+		color: var(--ink-soft);
 	}
 </style>

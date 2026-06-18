@@ -317,9 +317,20 @@ export async function loadEntityPage(entity: Entity) {
 		// `statistics` is surfaced as its own structured panel.
 		'statistics',
 		// `vocabulary` is surfaced as its own Vocabulary tab.
-		'vocabulary'
+		'vocabulary',
+		// `properties` is read separately below from entity.meta.properties.
+		'properties'
 	]);
 	const extra: { key: string; value: unknown }[] = [];
+	// Read structured properties from the explicit `properties:` block
+	const metaProps = entity.meta.properties;
+	if (metaProps && typeof metaProps === 'object' && !Array.isArray(metaProps)) {
+		for (const [key, value] of Object.entries(metaProps as Record<string, unknown>)) {
+			if (value === null || value === undefined || value === '') continue;
+			extra.push({ key, value });
+		}
+	}
+	// Also surface any non-hidden, non-kindRef meta fields not in `properties`
 	for (const [key, value] of Object.entries(entity.meta)) {
 		if (HIDDEN.has(key)) continue;
 		// Kind-link fields are surfaced in their own block (kindRefs
