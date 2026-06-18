@@ -793,6 +793,13 @@
 
 	.cluster-menu li {
 		margin: 0;
+		border-radius: 6px;
+		transition: background-color 120ms;
+	}
+
+	.cluster-menu li:has(button:hover),
+	.cluster-menu li:has(button:focus-visible) {
+		background-color: var(--paper-warm);
 	}
 
 	.cluster-menu button {
@@ -802,18 +809,45 @@
 		font-size: var(--text-sm);
 		letter-spacing: 0.02em;
 		color: var(--ink-soft);
-		background: transparent;
+		background-image: linear-gradient(
+			100deg,
+			currentColor 0%,
+			currentColor 42%,
+			var(--accent-warm) 50%,
+			currentColor 58%,
+			currentColor 100%
+		);
+		background-size: 250% 100%;
+		background-position: 130% 0;
+		background-clip: text;
+		-webkit-background-clip: text;
+		background-color: transparent;
 		border: 0;
-		border-radius: var(--radius-sm);
+		border-radius: 6px;
 		padding: var(--space-2) var(--space-3);
 		cursor: pointer;
 	}
 
 	.cluster-menu button:hover,
 	.cluster-menu button:focus-visible {
-		background: var(--paper-warm);
 		color: var(--accent);
 		outline: none;
+		animation: cluster-item-gleam 400ms ease-out;
+	}
+
+	@keyframes cluster-item-gleam {
+		0% {
+			background-position: 130% 0;
+			-webkit-text-fill-color: currentColor;
+		}
+		15%,
+		85% {
+			-webkit-text-fill-color: transparent;
+		}
+		100% {
+			background-position: -30% 0;
+			-webkit-text-fill-color: currentColor;
+		}
 	}
 
 	.cluster-menu button.selected {
