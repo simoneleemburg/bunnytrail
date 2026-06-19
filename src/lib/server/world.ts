@@ -1,6 +1,6 @@
 import { readFile, stat } from 'node:fs/promises';
 import { parse as parseYaml } from 'yaml';
-import type { HealthIssue, PropertyRegistry, PropertySchema } from '$lib/types';
+import type { HealthIssue } from '$lib/types';
 import { defaultWorldConfigPath } from './globals';
 import { splitFrontmatter } from './frontmatter';
 import { renderPlainBody } from './markdown';
@@ -79,18 +79,10 @@ export interface WorldConfig {
 	 */
 	allowUndefinedRelations: boolean;
 	/**
-	 * World-level property registry parsed from the `properties:` block
-	 * in `content_meta/world.md`. Keys are property ids; values carry
-	 * a required label and optional allowedKinds/values constraints.
-	 * Empty map when not configured.
-	 */
-	properties: PropertyRegistry;
-	/**
-	 * When `false` (the default when the `properties:` block is present),
-	 * any property key used in content that is NOT listed in the
-	 * registry emits a health-page warning. Set to `true` to silence
-	 * those warnings while the schema is still being built out.
-	 * Has no effect when the `properties:` block is absent entirely.
+	 * When `false` (the default), any property key used in content that
+	 * is NOT declared in any `_kind.yaml` `properties:` block emits a
+	 * health-page warning. Set to `true` in `content_meta/world.md` to
+	 * silence those warnings globally while the schema is being built out.
 	 */
 	allowUndefinedProperties: boolean;
 }
@@ -117,7 +109,6 @@ function fallbackConfig(): WorldConfig {
 		allScopeLabel: `All ${FALLBACK_NAME}`,
 		ornament: fallbackOrnament(),
 		allowUndefinedRelations: true,
-		properties: new Map(),
 		allowUndefinedProperties: true
 	};
 }
@@ -171,12 +162,12 @@ export async function loadWorld(
 	const allScopeLabel = readString(meta, 'allScopeLabel', issues) ?? `All ${name}`;
 	const ornament = readOrnament(meta, issues);
 	const allowUndefinedRelations = readAllowUndefinedRelations(meta, issues);
-	const { properties, allowUndefinedProperties } = readProperties(meta, issues);
+	const allowUndefinedProperties = readAllowUndefinedProperties(meta, issues);
 
 	const ledeHtml = body.trim() === '' ? null : renderPlainBody(body);
 
 	return {
-		config: { name, shortName, tagline, allScopeLabel, ornament, allowUndefinedRelations, properties, allowUndefinedProperties },
+		config: { name, shortName, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties },
 		ledeHtml,
 		present: true,
 		issues
@@ -263,97 +254,26 @@ function readAllowUndefinedRelations(
 }
 
 /**
- * Parse the optional `properties:` block from world.md frontmatter.
- *
- * Expected shape:
- *
- *     properties:
- *       gender:
- *         label: Gender
- *         allowedKinds: [person, character]
- *         values: [woman, man, fluid, "trans man", "trans woman"]
- *       notation:
- *         label: Notation
- *         allowedKinds: [quantity]
- *       role:
- *         label: Role
- *
- * `allowUndefinedProperties` is read from a sibling key; defaults to
- * `false` when the `properties:` block is present (strict mode), `true`
- * when the block is absent (no opinion).
+ * Read the optional `allowUndefinedProperties` boolean from world.md frontmatter.
+ * Defaults to `false` (strict) when absent — any property key not declared in
+ * any `_kind.yaml` `properties:` block will produce a health-page warning.
+ * Set to `true` to silence those warnings globally while the schema is being
+ * built out.
  */
-function readProperties(
+function readAllowUndefinedProperties(
 	meta: Record<string, unknown>,
 	issues: HealthIssue[]
-): { properties: PropertyRegistry; allowUndefinedProperties: boolean } {
-	const raw = meta['properties'];
-	const hasBlock = raw !== undefined && raw !== null;
-
-	// allowUndefinedProperties: explicit bool, or derived from whether block exists
-	let allowUndefinedProperties = !hasBlock;
-	const allowRaw = meta['allowUndefinedProperties'];
-	if (allowRaw !== undefined && allowRaw !== null) {
-		if (typeof allowRaw !== 'boolean') {
-			issues.push({
-				kind: 'invalid-yaml',
-				detail: 'content_meta/world.md: allowUndefinedProperties must be a boolean when present'
-			});
-		} else {
-			allowUndefinedProperties = allowRaw;
-		}
-	}
-
-	if (!hasBlock) return { properties: new Map(), allowUndefinedProperties };
-
-	if (typeof raw !== 'object' || Array.isArray(raw)) {
+): boolean {
+	const raw = meta['allowUndefinedProperties'];
+	if (raw === undefined || raw === null) return false;
+	if (typeof raw !== 'boolean') {
 		issues.push({
 			kind: 'invalid-yaml',
-			detail: 'content_meta/world.md: properties must be a mapping when present'
+			detail: 'content_meta/world.md: allowUndefinedProperties must be a boolean when present'
 		});
-		return { properties: new Map(), allowUndefinedProperties };
+		return false;
 	}
-
-	const registry: PropertyRegistry = new Map();
-	const block = raw as Record<string, unknown>;
-
-	for (const [propId, entry] of Object.entries(block)) {
-		if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
-			issues.push({
-				kind: 'invalid-yaml',
-				detail: `content_meta/world.md: properties.${propId} must be a mapping`
-			});
-			continue;
-		}
-		const e = entry as Record<string, unknown>;
-
-		const label = readStringFrom(e, 'label', `properties.${propId}.label`, issues);
-		if (!label) {
-			issues.push({
-				kind: 'invalid-yaml',
-				detail: `content_meta/world.md: properties.${propId} requires a label`
-			});
-			continue;
-		}
-
-		const schema: PropertySchema = { label };
-
-		for (const listKey of ['allowedKinds', 'values'] as const) {
-			const cv = e[listKey];
-			if (cv === undefined || cv === null) continue;
-			if (!Array.isArray(cv) || cv.some((v) => typeof v !== 'string')) {
-				issues.push({
-					kind: 'invalid-yaml',
-					detail: `content_meta/world.md: properties.${propId}.${listKey} must be an array of strings`
-				});
-				continue;
-			}
-			schema[listKey] = cv as string[];
-		}
-
-		registry.set(propId, schema);
-	}
-
-	return { properties: registry, allowUndefinedProperties };
+	return raw;
 }
 
 function readStringFrom(

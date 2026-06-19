@@ -22,7 +22,7 @@ content_meta/kinds/
   <ontology-id>/
     _ontology.yaml          ← declares this folder as a named ontology
     <kind-id>/
-      _kind.yaml            ← a kind that belongs to this ontology
+      _kind.yaml            ← a kind; may declare properties
     <kind-id>/
       ...
   <kind-id>/                ← a kind with no ontology (group: null)
@@ -78,31 +78,59 @@ relations:
     target: some-institution
 ```
 
-## `allowUndefinedRelations` in `world.md`
+## `_kind.yaml` schema
 
-The global strictness toggle lives in `content_meta/world.md`. When `false`
-(the default), any relation kind used in entity content that is not declared
-in any `_ontology.yaml` `relations:` block emits a health-page warning.
+```yaml
+singular: Display name singular      # string | omit
+plural: Display name plural          # string | omit
+description: Short editorial note    # string | omit
+
+properties:
+  <property-id>:                     # e.g. gender, notation
+    label: Display label             # string, required
+    values: [value, ...]             # enum of allowed values | omit
+```
+
+Properties declared on a kind are valid on that kind and all its descendants
+via the kind hierarchy — no `allowedKinds` field is needed or supported.
+Entity YAML uses the bare property id:
+
+```yaml
+properties:
+  gender: woman
+```
+
+## `world.md` strictness toggles
+
+`content_meta/world.md` holds two global strictness booleans. Both default to
+`false` — strict mode — meaning undeclared relation kinds and property keys
+produce health-page warnings.
 
 ```yaml
 # content_meta/world.md
-allowUndefinedRelations: false   # default — warn on undeclared relation kinds
+allowUndefinedRelations: false    # warn on relation kinds not in any _ontology.yaml
+allowUndefinedProperties: false   # warn on property keys not in any _kind.yaml
 ```
 
-Set to `true` to silence those warnings globally while the schema is being
-built out. The relation registry itself is not in `world.md`.
+Set either to `true` to silence warnings while the schema is being built out.
+Neither the relation registry nor the property registry lives in `world.md`.
 
 ## Engine API
 
 | Symbol | Type | Notes |
 |---|---|---|
 | `Ontology` | interface (`src/lib/types.ts`) | `{ id, title: string\|null, description: string\|null, relations: RelationRegistry }` |
+| `KindMeta.properties` | `Record<string, { label, values? }> \| undefined` | Per-kind property declarations |
+| `PropertySchema` | interface (`src/lib/types.ts`) | `{ label, declaringKind, values? }` — `declaringKind` set by loader |
 | `graph.ontologyRegistry()` | `ReadonlyMap<string, Ontology>` | All loaded ontologies |
 | `graph.ontology(id)` | `Ontology \| undefined` | Single lookup by folder name |
 | `graph.relationRegistry()` | `RelationRegistry` | Merged registry from all ontologies |
+| `graph.propertyRegistry()` | `PropertyRegistry` | Merged registry from all kinds |
 | `Kind.group` | `string \| null` | Ontology id this kind belongs to, or null |
-| `KindLoadResult.relations` | `RelationRegistry` | Merged registry built during kind loading |
+| `KindLoadResult.relations` | `RelationRegistry` | Merged relation registry |
+| `KindLoadResult.properties` | `PropertyRegistry` | Merged property registry |
 | `LoadResult.relations` | `RelationRegistry` | Threaded through from `KindLoadResult` |
+| `LoadResult.properties` | `PropertyRegistry` | Threaded through from `KindLoadResult` |
 | `OntologySection` | interface (`src/lib/routes/kinds/load.ts`) | View-model section on the kinds index page |
 | `GraphData.ontologyOf` | `Record<string, string\|null>` | kind id → ontology id, for the graph filter bar |
 | `GraphData.ontologyTitles` | `Record<string, string>` | ontology id → display title |
@@ -118,3 +146,10 @@ as a flat `relations:` mapping in `content_meta/world.md`. It has moved into
 the `relations:` block of each relevant `_ontology.yaml`. The
 `allowUndefinedRelations` boolean remains in `world.md` as a global strictness
 toggle; the registry itself does not.
+
+**`properties:` block in `world.md`** — the property registry previously lived
+as a `properties:` mapping in `content_meta/world.md` with an `allowedKinds`
+field for scoping. It has moved into the `properties:` block of each relevant
+`_kind.yaml`. Kind scope is now implicit via the kind hierarchy — `allowedKinds`
+is no longer supported. The `allowUndefinedProperties` boolean remains in
+`world.md`; the registry itself does not.

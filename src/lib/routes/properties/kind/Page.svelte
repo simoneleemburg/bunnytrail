@@ -18,19 +18,17 @@
 	breadcrumbs={[{ href: '/properties', label: 'Properties' }]}
 />
 
-{#if data.schema.allowedKinds || data.schema.values}
+{#if data.schema.declaringKind || data.schema.values}
 	<div class="schema-card">
 		<div class="schema-row">
 			<span class="schema-label">Id</span>
 			<code class="kind-mono">{data.kindId}</code>
 		</div>
-		{#if data.schema.allowedKinds && data.schema.allowedKinds.length > 0}
+		{#if data.schema.declaringKind}
 			<div class="schema-row">
-				<span class="schema-label">Kinds</span>
+				<span class="schema-label">Kind</span>
 				<span class="pill-group">
-					{#each data.schema.allowedKinds as k (k)}
-						<span class="pill">{k}</span>
-					{/each}
+					<span class="pill">{data.schema.declaringKind}</span>
 				</span>
 			</div>
 		{/if}

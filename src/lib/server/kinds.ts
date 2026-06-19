@@ -2,7 +2,7 @@ import { readdir, readFile, stat } from 'node:fs/promises';
 import type { Dirent } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { parse as parseYaml } from 'yaml';
-import type { HealthIssue, Kind, Ontology, KindMeta, RelationRegistry, RelationSchema } from '$lib/types';
+import type { HealthIssue, Kind, Ontology, KindMeta, RelationRegistry, RelationSchema, PropertyRegistry } from '$lib/types';
 import { titleCaseSlug } from '$lib/types';
 import { defaultKindsDir } from './globals';
 
@@ -21,6 +21,14 @@ export interface KindLoadResult {
 	 * `content_meta/kinds/`).
 	 */
 	relations: RelationRegistry;
+	/**
+	 * Merged property registry built from every `_kind.yaml` that
+	 * carries a `properties:` block. Keys are property ids; values carry
+	 * the label, optional values enum, and the declaring kind id.
+	 * Scope is implicit via the kind hierarchy — a property declared on
+	 * kind X is valid on X and all its descendants.
+	 */
+	properties: PropertyRegistry;
 	/** Any problems encountered (malformed yaml, bad folder name). */
 	issues: HealthIssue[];
 }
@@ -51,10 +59,11 @@ export async function loadKindRegistry(
 	const kinds = new Map<string, Kind>();
 	const ontologies = new Map<string, Ontology>();
 	const relations: RelationRegistry = new Map();
+	const properties: PropertyRegistry = new Map();
 	const issues: HealthIssue[] = [];
 
 	const rootExists = await dirExists(kindsDir);
-	if (!rootExists) return { kinds, ontologies, relations, issues };
+	if (!rootExists) return { kinds, ontologies, relations, properties, issues };
 
 	// Load root-level _ontology.yaml (global relations, no prefix).
 	const rootOntologyPath = join(kindsDir, '_ontology.yaml');
@@ -63,9 +72,9 @@ export async function loadKindRegistry(
 		for (const [id, schema] of rootRelations) relations.set(id, schema);
 	}
 
-	await walk(kindsDir, null, null, kinds, ontologies, relations, issues, kindsDir);
+	await walk(kindsDir, null, null, kinds, ontologies, relations, properties, issues, kindsDir);
 
-	return { kinds, ontologies, relations, issues };
+	return { kinds, ontologies, relations, properties, issues };
 }
 
 async function walk(
@@ -75,6 +84,7 @@ async function walk(
 	kinds: Map<string, Kind>,
 	ontologies: Map<string, Ontology>,
 	relations: RelationRegistry,
+	properties: PropertyRegistry,
 	issues: HealthIssue[],
 	rootDir: string
 ): Promise<void> {
@@ -136,7 +146,7 @@ async function walk(
 				for (const [relId, schema] of ontology.relations) relations.set(relId, schema);
 			}
 
-			await walk(childDir, null, id, kinds, ontologies, relations, issues, rootDir);
+			await walk(childDir, null, id, kinds, ontologies, relations, properties, issues, rootDir);
 			continue;
 		}
 
@@ -150,9 +160,15 @@ async function walk(
 			});
 		} else {
 			kinds.set(id, { id, meta, parent, group });
+			// Merge this kind's declared properties into the global registry.
+			if (meta.properties) {
+				for (const [propId, entry] of Object.entries(meta.properties)) {
+					properties.set(propId, { label: entry.label, declaringKind: id, values: entry.values });
+				}
+			}
 		}
 
-		await walk(childDir, id, group, kinds, ontologies, relations, issues, rootDir);
+		await walk(childDir, id, group, kinds, ontologies, relations, properties, issues, rootDir);
 	}
 }
 
@@ -401,26 +417,73 @@ function parseKindMeta(
 		});
 		return {};
 	}
-	const meta: KindMeta =
-		parsed && typeof parsed === 'object' ? ({ ...(parsed as KindMeta) } as KindMeta) : {};
+	const obj = parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : {};
 
-	const dropped = (parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : {})
-		.kindParent;
-	if (dropped !== undefined) {
+	if (obj.kindParent !== undefined) {
 		issues.push({
 			kind: 'invalid-yaml',
 			detail: `${relTo(yamlPath, rootDir)}: 'kindParent' is no longer supported — parent kind is derived from the folder hierarchy`
 		});
 	}
 
+	const meta: KindMeta = {};
+
 	for (const field of ['singular', 'plural', 'description'] as const) {
-		const value = meta[field];
-		if (value !== undefined && typeof value !== 'string') {
+		const value = obj[field];
+		if (value === undefined) continue;
+		if (typeof value !== 'string') {
 			issues.push({
 				kind: 'invalid-yaml',
 				detail: `${relTo(yamlPath, rootDir)}: ${field} must be a string`
 			});
-			meta[field] = undefined;
+		} else {
+			meta[field] = value;
+		}
+	}
+
+	// Parse optional properties block.
+	const rawProps = obj['properties'];
+	if (rawProps !== undefined && rawProps !== null) {
+		if (typeof rawProps !== 'object' || Array.isArray(rawProps)) {
+			issues.push({
+				kind: 'invalid-yaml',
+				detail: `${relTo(yamlPath, rootDir)}: properties must be a mapping when present`
+			});
+		} else {
+			const propsBlock = rawProps as Record<string, unknown>;
+			const properties: KindMeta['properties'] = {};
+			for (const [propId, entry] of Object.entries(propsBlock)) {
+				if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
+					issues.push({
+						kind: 'invalid-yaml',
+						detail: `${relTo(yamlPath, rootDir)}: properties.${propId} must be a mapping`
+					});
+					continue;
+				}
+				const e = entry as Record<string, unknown>;
+				const label = readStringFrom(e, 'label', `${relTo(yamlPath, rootDir)}: properties.${propId}.label`, issues);
+				if (!label) {
+					issues.push({
+						kind: 'invalid-yaml',
+						detail: `${relTo(yamlPath, rootDir)}: properties.${propId} requires a label`
+					});
+					continue;
+				}
+				let values: string[] | undefined;
+				const rawValues = e['values'];
+				if (rawValues !== undefined && rawValues !== null) {
+					if (!Array.isArray(rawValues) || rawValues.some((v) => typeof v !== 'string')) {
+						issues.push({
+							kind: 'invalid-yaml',
+							detail: `${relTo(yamlPath, rootDir)}: properties.${propId}.values must be an array of strings`
+						});
+					} else {
+						values = rawValues as string[];
+					}
+				}
+				properties[propId] = values !== undefined ? { label, values } : { label };
+			}
+			if (Object.keys(properties).length > 0) meta.properties = properties;
 		}
 	}
 

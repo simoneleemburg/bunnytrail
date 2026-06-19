@@ -16,7 +16,7 @@ export interface ValidateArgs {
 	relationRegistry: RelationRegistry;
 	/** When false, relation kinds not in the registry emit health warnings. */
 	allowUndefinedRelations: boolean;
-	/** World-level property registry (from world.md). Empty map = not configured. */
+	/** Merged property registry built from all `_kind.yaml` files. Empty map = not configured. */
 	propertyRegistry: PropertyRegistry;
 	/** When false, property keys not in the registry emit health warnings. */
 	allowUndefinedProperties: boolean;
@@ -580,7 +580,7 @@ export function validateUnknownEntityFields(args: ValidateArgs): void {
 export function validatePropertySchema(args: ValidateArgs): void {
 	const { entities, kindRegistry, propertyRegistry, allowUndefinedProperties, issues } = args;
 
-	// Ancestor helper — mirrors the one in validateRelationSchema
+	// Ancestor set for a kind: self + all parents up the hierarchy.
 	function ancestors(kindId: string): Set<string> {
 		const result = new Set<string>();
 		let current: string | null = kindId;
@@ -599,29 +599,26 @@ export function validatePropertySchema(args: ValidateArgs): void {
 			const schema = propertyRegistry.get(key);
 
 			// Check 1: undefined property key
-			if (!schema && propertyRegistry.size > 0 && !allowUndefinedProperties) {
+			if (!schema && !allowUndefinedProperties) {
 				issues.push({
 					kind: 'undefined-property',
 					entity: entity.id,
-					detail: `property '${key}' is not defined in content_meta/world.md properties schema`
+					detail: `property '${key}' is not declared in any _kind.yaml properties block`
 				});
 				continue; // skip further checks — no schema to check against
 			}
 
 			if (!schema) continue;
 
-			// Check 2: allowedKinds constraint
-			if (schema.allowedKinds && schema.allowedKinds.length > 0) {
-				const entityKind = entity.meta.kind;
-				const entityAncestors = entityKind ? ancestors(entityKind) : new Set<string>();
-				const satisfies = schema.allowedKinds.some((k) => entityAncestors.has(k));
-				if (!satisfies) {
-					issues.push({
-						kind: 'property-kind-mismatch',
-						entity: entity.id,
-						detail: `property '${key}': entity kind '${entityKind ?? '(none)'}' is not in allowedKinds [${schema.allowedKinds.join(', ')}]`
-					});
-				}
+			// Check 2: kind scope — entity's kind must be the declaring kind or a descendant.
+			const entityKind = entity.meta.kind;
+			const entityAncestors = entityKind ? ancestors(entityKind) : new Set<string>();
+			if (!entityAncestors.has(schema.declaringKind)) {
+				issues.push({
+					kind: 'property-kind-mismatch',
+					entity: entity.id,
+					detail: `property '${key}' is declared on kind '${schema.declaringKind}' — entity kind '${entityKind ?? '(none)'}' is not that kind or a descendant`
+				});
 			}
 
 			// Check 3: values constraint

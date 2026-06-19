@@ -54,6 +54,11 @@ export interface LoadResult {
 	 */
 	relations: RelationRegistry;
 	/**
+	 * Merged property registry built from all `_kind.yaml` files.
+	 * Keys are property ids; values carry label, values enum, and declaring kind id.
+	 */
+	properties: PropertyRegistry;
+	/**
 	 * Collections discovered while walking `content/`, keyed by
 	 * folder path. Only folders that carry a `_collection.yaml`
 	 * marker (or a bare `_collection.md`) are recorded; other
@@ -104,7 +109,6 @@ export async function loadAll(
 	contentDir: string = CONTENT_DIR,
 	opts: {
 		allowUndefinedRelations?: boolean;
-		propertyRegistry?: PropertyRegistry;
 		allowUndefinedProperties?: boolean;
 	} = {}
 ): Promise<LoadResult> {
@@ -142,8 +146,8 @@ export async function loadAll(
 		langCodes,
 		relationRegistry: registryResult.relations,
 		allowUndefinedRelations: opts.allowUndefinedRelations ?? false,
-		propertyRegistry: opts.propertyRegistry ?? new Map(),
-		allowUndefinedProperties: opts.allowUndefinedProperties ?? true,
+		propertyRegistry: registryResult.properties,
+		allowUndefinedProperties: opts.allowUndefinedProperties ?? false,
 		issues
 	};
 
@@ -167,6 +171,7 @@ export async function loadAll(
 		kindRegistry: registryResult.kinds,
 		ontologies: registryResult.ontologies,
 		relations: registryResult.relations,
+		properties: registryResult.properties,
 		collections,
 		clusters: clusterSet,
 		universalFolders: universalSet

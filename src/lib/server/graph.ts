@@ -114,10 +114,9 @@ export class Graph {
 		this.#loading = (async () => {
 			// Load world config for identity, ornament, property registry, and global relation strictness.
 			const { config: worldConfig, issues: worldIssues } = await loadWorld();
-			const { entities, issues, kindRegistry, ontologies, relations, collections, clusters, universalFolders } =
+			const { entities, issues, kindRegistry, ontologies, relations, properties, collections, clusters, universalFolders } =
 				await loadAll(contentDir, {
 					allowUndefinedRelations: worldConfig.allowUndefinedRelations,
-					propertyRegistry: worldConfig.properties,
 					allowUndefinedProperties: worldConfig.allowUndefinedProperties
 				});
 			const edges = buildEdges(entities);
@@ -128,7 +127,7 @@ export class Graph {
 			this.#kindRegistry = kindRegistry;
 			this.#ontologies = ontologies;
 			this.#relationRegistry = relations;
-			this.#propertyRegistry = worldConfig.properties;
+			this.#propertyRegistry = properties;
 			this.#collections = collections;
 			this.#clusters = clusters;
 			this.#universalFolders = universalFolders;

@@ -54,6 +54,13 @@ export interface KindMeta {
 	plural?: string;
 	/** A short editorial description shown on the kind's page. */
 	description?: string;
+	/**
+	 * Property schemas declared on this kind. Keys are property ids
+	 * (e.g. `"gender"`); values carry a required `label` and optional
+	 * `values` enum. Scope is implicit: these properties are valid on
+	 * this kind and all its descendants via the kind hierarchy.
+	 */
+	properties?: Record<string, { label: string; values?: string[] }>;
 }
 
 /**
@@ -651,23 +658,27 @@ export interface RelationSchema extends RelationLabels {
 export type RelationRegistry = Map<string, RelationSchema>;
 
 /**
- * Per-property-id schema entry authored in `content_meta/world.md`.
+ * Per-property-id schema entry declared in a `_kind.yaml` `properties:` block.
  *
- * `allowedKinds` — entity kind ids whose entities may carry this property.
- *                  Omit to allow any entity kind.
- * `values`       — enum of allowed values for the property.
- *                  Omit to allow any value.
+ * `declaringKind` — the kind id whose `_kind.yaml` declared this property.
+ *                   Scope is implicit: the property is valid on that kind and
+ *                   all its descendants via the kind hierarchy.
+ * `values`        — enum of allowed values. Omit to allow any value.
  */
 export interface PropertySchema {
 	/** Display name, e.g. "Gender". Required. */
 	label: string;
-	/** Entity kind ids that may carry this property. Omit for any kind. */
-	allowedKinds?: string[];
+	/**
+	 * The kind id whose `_kind.yaml` declared this property. Set by the
+	 * loader — not authored directly. Used by the validator to check that
+	 * the entity's kind is the declaring kind or a descendant of it.
+	 */
+	declaringKind: string;
 	/** Enum of allowed values, e.g. ["woman","man","fluid"]. Omit for any value. */
 	values?: string[];
 }
 
-/** The full world-level property registry as loaded from world.md. */
+/** The full property registry built from all `_kind.yaml` files. */
 export type PropertyRegistry = Map<string, PropertySchema>;
 
 // Engine-level defaults for relation labels. Only the synthetic `wikilink`
