@@ -14,26 +14,26 @@ export interface KindNode {
 }
 
 /**
- * A section of the kinds index page. When the world has kind groups,
- * each group produces one section with a heading. Ungrouped root kinds
+ * A section of the kinds index page. When the world has ontologies,
+ * each ontology produces one section with a heading. Ungrouped root kinds
  * (those with `group === null`) produce a final section with
- * `groupId === null` and no heading.
+ * `ontologyId === null` and no heading.
  */
-export interface KindGroupSection {
-	/** Group id, or null for ungrouped root kinds. */
-	groupId: string | null;
-	/** Display title for the group heading, or null when ungrouped. */
-	groupTitle: string | null;
+export interface OntologySection {
+	/** Ontology id, or null for ungrouped root kinds. */
+	ontologyId: string | null;
+	/** Display title for the ontology heading, or null when ungrouped. */
+	ontologyTitle: string | null;
 	roots: KindNode[];
 }
 
 export interface KindsIndexPageData {
 	/**
-	 * When any kind groups are registered, kinds are partitioned into
-	 * sections. When no groups exist the list has a single section with
-	 * `groupId === null` (backwards-compat shape).
+	 * When any ontologies are registered, kinds are partitioned into
+	 * sections. When no ontologies exist the list has a single section with
+	 * `ontologyId === null` (backwards-compat shape).
 	 */
-	sections: KindGroupSection[];
+	sections: OntologySection[];
 	unregistered: { kind: string; count: number }[];
 }
 
@@ -49,7 +49,7 @@ export interface KindsIndexPageData {
  */
 export function loadKindsIndexPage(scope: ClusterScope): KindsIndexPageData {
 	const registry = graph.kindRegistry();
-	const groupRegistry = graph.kindGroupRegistry();
+	const ontologyRegistry = graph.ontologyRegistry();
 
 	const inScope = (id: string): boolean => (scope === null ? true : id.startsWith(`${scope}/`));
 	const hrefFor = (kind: string): string =>
@@ -96,31 +96,31 @@ export function loadKindsIndexPage(scope: ClusterScope): KindsIndexPageData {
 		grouped.get(g)!.push(kindId);
 	}
 
-	// Determine section order: groups in insertion order (alphabetical
+	// Determine section order: ontologies in insertion order (alphabetical
 	// since kinds are sorted), ungrouped kinds last.
-	const sections: KindGroupSection[] = [];
+	const sections: OntologySection[] = [];
 
-	// First emit grouped sections (sorted by group id for stability).
-	const sortedGroupIds = [...grouped.keys()]
+	// First emit ontology sections (sorted by ontology id for stability).
+	const sortedOntologyIds = [...grouped.keys()]
 		.filter((g): g is string => g !== null)
 		.sort();
 
-	for (const groupId of sortedGroupIds) {
-		const kindIds = grouped.get(groupId) ?? [];
+	for (const ontologyId of sortedOntologyIds) {
+		const kindIds = grouped.get(ontologyId) ?? [];
 		const roots = kindIds.map(build).filter((n): n is KindNode => n !== null);
 		if (scope !== null && roots.length === 0) continue;
 
-		const groupObj = groupRegistry.get(groupId);
-		const groupTitle = groupObj?.title ?? titleCaseSlug(groupId);
+		const ontologyObj = ontologyRegistry.get(ontologyId);
+		const ontologyTitle = ontologyObj?.title ?? titleCaseSlug(ontologyId);
 
-		sections.push({ groupId, groupTitle, roots });
+		sections.push({ ontologyId, ontologyTitle, roots });
 	}
 
 	// Ungrouped kinds go last, no heading.
 	const ungroupedIds = grouped.get(null) ?? [];
 	const ungroupedRoots = ungroupedIds.map(build).filter((n): n is KindNode => n !== null);
 	if (scope === null || ungroupedRoots.length > 0) {
-		sections.push({ groupId: null, groupTitle: null, roots: ungroupedRoots });
+		sections.push({ ontologyId: null, ontologyTitle: null, roots: ungroupedRoots });
 	}
 
 	// Free-form kinds: every distinct `kind:` value carried by an

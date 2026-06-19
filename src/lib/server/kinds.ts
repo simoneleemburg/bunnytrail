@@ -2,7 +2,7 @@ import { readdir, readFile, stat } from 'node:fs/promises';
 import type { Dirent } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { parse as parseYaml } from 'yaml';
-import type { HealthIssue, Kind, KindGroup, KindMeta } from '$lib/types';
+import type { HealthIssue, Kind, Ontology, KindMeta } from '$lib/types';
 import { titleCaseSlug } from '$lib/types';
 import { defaultKindsDir } from './globals';
 
@@ -11,8 +11,8 @@ const KIND_ID_RE = /^[a-z][a-z0-9-]*$/;
 export interface KindLoadResult {
 	/** All loaded kinds, keyed by id. */
 	kinds: Map<string, Kind>;
-	/** All loaded kind groups, keyed by id. */
-	groups: Map<string, KindGroup>;
+	/** All loaded ontologies, keyed by id. */
+	ontologies: Map<string, Ontology>;
 	/** Any problems encountered (malformed yaml, bad folder name). */
 	issues: HealthIssue[];
 }
@@ -24,10 +24,10 @@ export interface KindLoadResult {
  * A kind with no marker file is still registered with default labels — the
  * folder existing is enough.
  *
- * A subdirectory that contains `_kindgroup.yaml` (and no `_kind.yaml`) is
- * treated as an organisational **group**, not a kind. Groups are one level
- * deep: kind folders inside a group folder become members of that group
- * (their `group` field is set to the group id). Groups do not affect the
+ * A subdirectory that contains `_ontology.yaml` (and no `_kind.yaml`) is
+ * treated as an organisational **ontology**, not a kind. Ontologies are one level
+ * deep: kind folders inside an ontology folder become members of that ontology
+ * (their `group` field is set to the ontology id). Ontologies do not affect the
  * kind hierarchy (`parent` is independent).
  *
  * If the registry directory does not exist, returns an empty registry with
@@ -37,15 +37,15 @@ export async function loadKindRegistry(
 	kindsDir: string = defaultKindsDir()
 ): Promise<KindLoadResult> {
 	const kinds = new Map<string, Kind>();
-	const groups = new Map<string, KindGroup>();
+	const ontologies = new Map<string, Ontology>();
 	const issues: HealthIssue[] = [];
 
 	const rootExists = await dirExists(kindsDir);
-	if (!rootExists) return { kinds, groups, issues };
+	if (!rootExists) return { kinds, ontologies, issues };
 
-	await walk(kindsDir, null, null, kinds, groups, issues, kindsDir);
+	await walk(kindsDir, null, null, kinds, ontologies, issues, kindsDir);
 
-	return { kinds, groups, issues };
+	return { kinds, ontologies, issues };
 }
 
 async function walk(
@@ -53,7 +53,7 @@ async function walk(
 	parent: string | null,
 	group: string | null,
 	kinds: Map<string, Kind>,
-	groups: Map<string, KindGroup>,
+	ontologies: Map<string, Ontology>,
 	issues: HealthIssue[],
 	rootDir: string
 ): Promise<void> {
@@ -83,37 +83,37 @@ async function walk(
 
 		const childDir = join(absDir, id);
 
-		// A folder with `_kindgroup.yaml` and no `_kind.yaml` is a group container.
-		// Groups are only allowed at the top level (parent === null) and cannot nest.
-		const isGroup = await isKindGroupFolder(childDir);
+		// A folder with `_ontology.yaml` and no `_kind.yaml` is an ontology container.
+		// Ontologies are only allowed at the top level (parent === null) and cannot nest.
+		const isGroup = await isOntologyFolder(childDir);
 
 		if (isGroup) {
 			if (parent !== null) {
 				issues.push({
 					kind: 'invalid-yaml',
-					detail: `${relTo(childDir, rootDir)}: _kindgroup.yaml is only supported at the top level of content_meta/kinds/`
+					detail: `${relTo(childDir, rootDir)}: _ontology.yaml is only supported at the top level of content_meta/kinds/`
 				});
 				continue;
 			}
 			if (group !== null) {
 				issues.push({
 					kind: 'invalid-yaml',
-					detail: `${relTo(childDir, rootDir)}: kind groups cannot be nested`
+					detail: `${relTo(childDir, rootDir)}: ontologies cannot be nested`
 				});
 				continue;
 			}
 
-			if (groups.has(id)) {
+			if (ontologies.has(id)) {
 				issues.push({
 					kind: 'invalid-yaml',
-					detail: `${relTo(childDir, rootDir)}: kind group '${id}' is declared more than once`
+					detail: `${relTo(childDir, rootDir)}: ontology '${id}' is declared more than once`
 				});
 			} else {
-				const kindGroup = await loadKindGroupFile(childDir, id, rootDir, issues);
-				groups.set(id, kindGroup);
+				const ontology = await loadOntologyFile(childDir, id, rootDir, issues);
+				ontologies.set(id, ontology);
 			}
 
-			await walk(childDir, null, id, kinds, groups, issues, rootDir);
+			await walk(childDir, null, id, kinds, ontologies, issues, rootDir);
 			continue;
 		}
 
@@ -129,31 +129,31 @@ async function walk(
 			kinds.set(id, { id, meta, parent, group });
 		}
 
-		await walk(childDir, id, group, kinds, groups, issues, rootDir);
+		await walk(childDir, id, group, kinds, ontologies, issues, rootDir);
 	}
 }
 
 /**
- * Return true when the folder should be treated as a kind-group container:
- * has `_kindgroup.yaml` and no `_kind.yaml`.
+ * Return true when the folder should be treated as an ontology container:
+ * has `_ontology.yaml` and no `_kind.yaml`.
  */
-async function isKindGroupFolder(dir: string): Promise<boolean> {
-	const hasGroupFile = await fileExists(join(dir, '_kindgroup.yaml'));
+async function isOntologyFolder(dir: string): Promise<boolean> {
+	const hasGroupFile = await fileExists(join(dir, '_ontology.yaml'));
 	if (!hasGroupFile) return false;
 	const hasKindYaml = await fileExists(join(dir, '_kind.yaml'));
 	return !hasKindYaml;
 }
 
 /**
- * Load a `_kindgroup.yaml` file and return a `KindGroup`.
+ * Load a `_ontology.yaml` file and return an `Ontology`.
  */
-async function loadKindGroupFile(
+async function loadOntologyFile(
 	dir: string,
 	id: string,
 	rootDir: string,
 	issues: HealthIssue[]
-): Promise<KindGroup> {
-	const yamlPath = join(dir, '_kindgroup.yaml');
+): Promise<Ontology> {
+	const yamlPath = join(dir, '_ontology.yaml');
 	const raw = await readOptional(yamlPath);
 	if (raw === null) return { id, title: null, description: null };
 

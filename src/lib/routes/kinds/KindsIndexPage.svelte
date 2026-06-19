@@ -1,15 +1,15 @@
 <script lang="ts">
 	import PageHeader from '$lib/components/PageHeader.svelte';
-	import type { KindNode, KindGroupSection } from './load';
+	import type { KindNode, OntologySection } from './load';
 
 	let {
 		data
 	}: {
-		data: { sections: KindGroupSection[]; unregistered: { kind: string; count: number }[] };
+		data: { sections: OntologySection[]; unregistered: { kind: string; count: number }[] };
 	} = $props();
 
 	const isGrouped = $derived(
-		data.sections.length > 1 || (data.sections.length === 1 && data.sections[0].groupId !== null)
+		data.sections.length > 1 || (data.sections.length === 1 && data.sections[0].ontologyId !== null)
 	);
 </script>
 
@@ -41,10 +41,10 @@
 {#if data.sections.every((s) => s.roots.length === 0)}
 	<p class="empty"><em>No kinds have been registered yet.</em></p>
 {:else if isGrouped}
-	{#each data.sections as section (section.groupId ?? '__ungrouped__')}
+	{#each data.sections as section (section.ontologyId ?? '__ungrouped__')}
 		<section class="kind-group">
-			{#if section.groupTitle}
-				<h2 class="section-heading">{section.groupTitle}</h2>
+			{#if section.ontologyTitle}
+				<h2 class="section-heading">{section.ontologyTitle}</h2>
 			{/if}
 			{#if section.roots.length > 0}
 				<ul class="tree">

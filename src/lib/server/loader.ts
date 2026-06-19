@@ -1,6 +1,6 @@
 import { readdir } from 'node:fs/promises';
 import type { Dirent } from 'node:fs';
-import type { Edge, Entity, EntityId, EntityType, HealthIssue, Kind, KindGroup, Collection, PropertyRegistry, RelationRegistry } from '$lib/types';
+import type { Edge, Entity, EntityId, EntityType, HealthIssue, Kind, Ontology, Collection, PropertyRegistry, RelationRegistry } from '$lib/types';
 import { loadKindRegistry } from './kinds';
 import { CONTENT_DIR } from './globals';
 import { walk, readDirents } from './walker';
@@ -42,11 +42,11 @@ export interface LoadResult {
 	 */
 	kindRegistry: Map<string, Kind>;
 	/**
-	 * Organisational kind groups loaded from `content_meta/kinds/` folders
-	 * that carry a `_kindgroup.yaml`. Groups are display-only overlays;
+	 * Organisational ontologies loaded from `content_meta/kinds/` folders
+	 * that carry a `_ontology.yaml`. Ontologies are display-only overlays;
 	 * they do not participate in the kind hierarchy.
 	 */
-	kindGroups: Map<string, KindGroup>;
+	ontologies: Map<string, Ontology>;
 	/**
 	 * Collections discovered while walking `content/`, keyed by
 	 * folder path. Only folders that carry a `_collection.yaml`
@@ -160,7 +160,7 @@ export async function loadAll(
 		entities,
 		issues,
 		kindRegistry: registryResult.kinds,
-		kindGroups: registryResult.groups,
+		ontologies: registryResult.ontologies,
 		collections,
 		clusters: clusterSet,
 		universalFolders: universalSet

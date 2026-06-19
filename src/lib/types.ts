@@ -70,23 +70,23 @@ export interface Kind {
 	/** Parent kind id (the enclosing folder), or null at the root. */
 	parent: string | null;
 	/**
-	 * The id of the kind group this kind belongs to, or null when ungrouped.
+	 * The id of the ontology this kind belongs to, or null when ungrouped.
 	 */
 	group: string | null;
 }
 
 /**
- * An organisational group of kinds, declared via `_kindgroup.yaml` inside
- * a folder under `content_meta/kinds/`. Groups provide display-level
+ * An organisational group of kinds, declared via `_ontology.yaml` inside
+ * a folder under `content_meta/kinds/`. Ontologies provide display-level
  * separation on the kinds index page and the graph filter bar; they are
  * **not** kinds themselves and do not participate in the kind hierarchy.
  *
- * One layer only: groups cannot be nested. A folder with `_kindgroup.yaml`
- * and no `_kind.yaml` / `_kind.md` is a group container; the valid-id
+ * One layer only: ontologies cannot be nested. A folder with `_ontology.yaml`
+ * and no `_kind.yaml` / `_kind.md` is an ontology container; the valid-id
  * subdirectories inside it become member kinds (with `group` set to this
- * group's id).
+ * ontology's id).
  */
-export interface KindGroup {
+export interface Ontology {
 	id: string;
 	/** Display title. Defaults to the title-cased folder name when absent. */
 	title: string | null;

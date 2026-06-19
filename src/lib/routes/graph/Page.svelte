@@ -148,8 +148,8 @@
 		// the root list here.
 		const rootList = children.get(null) ?? [];
 		rootList.sort((a, b) => {
-			const ga = data.kindGroupOf?.[a] ?? null;
-			const gb = data.kindGroupOf?.[b] ?? null;
+			const ga = data.ontologyOf?.[a] ?? null;
+			const gb = data.ontologyOf?.[b] ?? null;
 			// ungrouped sink to bottom
 			if (ga === null && gb !== null) return 1;
 			if (ga !== null && gb === null) return -1;
@@ -165,7 +165,7 @@
 		const rows: KindRow[] = [];
 		let lastGroup: string | null | undefined = undefined; // undefined = nothing emitted yet
 		function walk(id: string, depth: number) {
-			const group = depth === 0 ? (data.kindGroupOf?.[id] ?? null) : null;
+			const group = depth === 0 ? (data.ontologyOf?.[id] ?? null) : null;
 			const showGroupHeader = depth === 0 && group !== null && group !== lastGroup;
 			if (depth === 0) lastGroup = group;
 			const kids = children.get(id) ?? [];
@@ -935,7 +935,7 @@
 				{#each kindTreeRows as row (row.id)}
 					{#if row.showGroupHeader}
 						<li class="filter-group-header" aria-hidden="true">
-							{data.kindGroupTitles?.[row.group!] ?? row.group}
+							{data.ontologyTitles?.[row.group!] ?? row.group}
 						</li>
 					{/if}
 					<li class="filter-item" class:filter-item--child={row.depth > 0}>

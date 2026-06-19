@@ -7,7 +7,7 @@ import type {
 	FolderLabels,
 	HealthIssue,
 	Kind,
-	KindGroup,
+	Ontology,
 	PropertyRegistry,
 	RelationRegistry,
 	VocabEntry
@@ -93,7 +93,7 @@ export class Graph {
 	#inEdges = new Map<EntityId, Edge[]>();
 	#issues: HealthIssue[] = [];
 	#kindRegistry: Map<string, Kind> = new Map();
-	#kindGroups: Map<string, KindGroup> = new Map();
+	#ontologies: Map<string, Ontology> = new Map();
 	#relationRegistry: RelationRegistry = new Map();
 	#propertyRegistry: PropertyRegistry = new Map();
 	#collections: Map<string, Collection> = new Map();
@@ -114,8 +114,8 @@ export class Graph {
 		this.#loading = (async () => {
 			// Load world config first so the relation registry can flow into loadAll.
 			const { config: worldConfig, issues: worldIssues } = await loadWorld();
-			const { entities, issues, kindRegistry, kindGroups, collections, clusters, universalFolders } =
-				await loadAll(contentDir, {
+		const { entities, issues, kindRegistry, ontologies, collections, clusters, universalFolders } =
+			await loadAll(contentDir, {
 					relationRegistry: worldConfig.relations,
 					allowUndefinedRelations: worldConfig.allowUndefinedRelations,
 					propertyRegistry: worldConfig.properties,
@@ -127,7 +127,7 @@ export class Graph {
 			this.#inEdges = edges.in;
 			this.#issues = [...worldIssues, ...issues];
 			this.#kindRegistry = kindRegistry;
-			this.#kindGroups = kindGroups;
+			this.#ontologies = ontologies;
 			this.#relationRegistry = worldConfig.relations;
 			this.#propertyRegistry = worldConfig.properties;
 			this.#collections = collections;
@@ -186,17 +186,17 @@ export class Graph {
 	}
 
 	/**
-	 * All loaded kind groups from `content_meta/kinds/`. Groups are
+	 * All loaded ontologies from `content_meta/kinds/`. Ontologies are
 	 * display-only; they are not kinds and do not participate in the
 	 * kind hierarchy.
 	 */
-	kindGroupRegistry(): ReadonlyMap<string, KindGroup> {
-		return this.#kindGroups;
+	ontologyRegistry(): ReadonlyMap<string, Ontology> {
+		return this.#ontologies;
 	}
 
-	/** A single kind group by id, or undefined. */
-	kindGroup(id: string): KindGroup | undefined {
-		return this.#kindGroups.get(id);
+	/** A single ontology by id, or undefined. */
+	ontology(id: string): Ontology | undefined {
+		return this.#ontologies.get(id);
 	}
 
 	/** The world-level relation registry from world.md. Empty map when not configured. */

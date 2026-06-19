@@ -133,19 +133,19 @@ export async function load() {
 		kindLabels[id] = k.meta.singular ?? id;
 	}
 
-	// ── Kind groups (for filter bar section headers) ───────────────
-	// Wire format: kindId → groupId | null
-	// Also: groupId → group title (for rendering group headers)
-	const kindGroupOf: Record<string, string | null> = {};
+	// ── Ontologies (for filter bar section headers) ───────────────
+	// Wire format: kindId → ontologyId | null
+	// Also: ontologyId → ontology title (for rendering section headers)
+	const ontologyOf: Record<string, string | null> = {};
 	for (const [id, k] of graph.kindRegistry()) {
-		kindGroupOf[id] = k.group;
+		ontologyOf[id] = k.group;
 	}
-	const kindGroupTitles: Record<string, string> = {};
-	for (const [id, g] of graph.kindGroupRegistry()) {
-		kindGroupTitles[id] = g.title ?? id;
+	const ontologyTitles: Record<string, string> = {};
+	for (const [id, g] of graph.ontologyRegistry()) {
+		ontologyTitles[id] = g.title ?? id;
 	}
 
-	return { nodes, edges, kindParents, kindLabels, kindGroupOf, kindGroupTitles };
+	return { nodes, edges, kindParents, kindLabels, ontologyOf, ontologyTitles };
 }
 
 export type GraphData = Awaited<ReturnType<typeof load>>;
