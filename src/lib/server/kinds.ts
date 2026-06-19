@@ -163,7 +163,13 @@ async function walk(
 			// Merge this kind's declared properties into the global registry.
 			if (meta.properties) {
 				for (const [propId, entry] of Object.entries(meta.properties)) {
-					properties.set(propId, { label: entry.label, declaringKind: id, values: entry.values });
+					const schema = { label: entry.label, declaringKind: id, values: entry.values };
+					const existing = properties.get(propId);
+					if (existing) {
+						existing.push(schema);
+					} else {
+						properties.set(propId, [schema]);
+					}
 				}
 			}
 		}

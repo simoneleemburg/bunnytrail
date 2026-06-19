@@ -678,8 +678,10 @@ export interface PropertySchema {
 	values?: string[];
 }
 
-/** The full property registry built from all `_kind.yaml` files. */
-export type PropertyRegistry = Map<string, PropertySchema>;
+/** The full property registry built from all `_kind.yaml` files.
+ *  A property key may be declared on multiple unrelated kinds (overloading);
+ *  the array holds one entry per declaring kind. */
+export type PropertyRegistry = Map<string, PropertySchema[]>;
 
 // Engine-level defaults for relation labels. Only the synthetic `wikilink`
 // edge kind (emitted by the loader, not authored) is defined here — its

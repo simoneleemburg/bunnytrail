@@ -604,10 +604,10 @@ export function validatePropertySchema(args: ValidateArgs): void {
 		if (!props || typeof props !== 'object' || Array.isArray(props)) continue;
 
 		for (const [key, value] of Object.entries(props as Record<string, unknown>)) {
-			const schema = propertyRegistry.get(key);
+			const schemas = propertyRegistry.get(key);
 
 			// Check 1: undefined property key
-			if (!schema && !allowUndefinedProperties) {
+			if (!schemas && !allowUndefinedProperties) {
 				issues.push({
 					kind: 'undefined-property',
 					entity: entity.id,
@@ -616,28 +616,37 @@ export function validatePropertySchema(args: ValidateArgs): void {
 				continue; // skip further checks — no schema to check against
 			}
 
-			if (!schema) continue;
+			if (!schemas) continue;
 
-			// Check 2: kind scope — entity's kind must be the declaring kind or a descendant.
+			// Check 2: kind scope — entity's kind must satisfy at least one declaration.
+			// A property key may be overloaded across unrelated kinds; it is valid as
+			// long as the entity's kind (or any of its ancestors) matches any declaringKind.
 			const entityKind = entity.meta.kind;
 			const entityAncestors = entityKind ? ancestors(entityKind) : new Set<string>();
-			if (!entityAncestors.has(schema.declaringKind)) {
+			const matchingSchemas = schemas.filter((s) => entityAncestors.has(s.declaringKind));
+
+			if (matchingSchemas.length === 0) {
+				// No declaration fits this entity's kind — report using all declaring kinds
+				const declarers = schemas.map((s) => `'${s.declaringKind}'`).join(', ');
 				issues.push({
 					kind: 'property-kind-mismatch',
 					entity: entity.id,
-					detail: `property '${key}' is declared on kind '${schema.declaringKind}' — entity kind '${entityKind ?? '(none)'}' is not that kind or a descendant`
+					detail: `property '${key}' is declared on kind ${declarers} — entity kind '${entityKind ?? '(none)'}' is not that kind or a descendant`
 				});
+				continue;
 			}
 
-			// Check 3: values constraint
-			if (schema.values && schema.values.length > 0) {
-				const strVal = String(value);
-				if (!schema.values.includes(strVal)) {
-					issues.push({
-						kind: 'property-value-mismatch',
-						entity: entity.id,
-						detail: `property '${key}': value '${strVal}' is not in allowed values [${schema.values.join(', ')}]`
-					});
+			// Check 3: values constraint — apply against each matching declaration that has one.
+			for (const schema of matchingSchemas) {
+				if (schema.values && schema.values.length > 0) {
+					const strVal = String(value);
+					if (!schema.values.includes(strVal)) {
+						issues.push({
+							kind: 'property-value-mismatch',
+							entity: entity.id,
+							detail: `property '${key}': value '${strVal}' is not in allowed values [${schema.values.join(', ')}]`
+						});
+					}
 				}
 			}
 		}

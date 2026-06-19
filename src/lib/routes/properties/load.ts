@@ -21,12 +21,15 @@ export async function load(): Promise<PropertiesIndexPageData> {
 	const hasSchema = registry.size > 0;
 
 	const entries: PropertyIndexEntry[] = [];
-	for (const [id, schema] of registry) {
+	for (const [id, schemas] of registry) {
+		// Use the first declaration's label as the display label for the index row.
+		// All declarations for a key should use the same label by convention.
+		const primarySchema = schemas[0];
 		entries.push({
 			id,
-			label: schema.label,
+			label: primarySchema.label,
 			count: graph.propertiesByKind(id).length,
-			schema,
+			schema: primarySchema,
 			href: `/properties/${id}`
 		});
 	}

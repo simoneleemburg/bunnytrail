@@ -21,7 +21,7 @@ export interface PropertyIndexEntry {
 	id: string;
 	label: string;
 	count: number;
-	schema: PropertySchema;
+	schemas: PropertySchema[];
 	href: string;
 }
 
@@ -95,12 +95,12 @@ export async function load(): Promise<RelationsIndexPageData> {
 	const propRegistry = graph.propertyRegistry();
 	const hasPropertySchema = propRegistry.size > 0;
 	const propertyEntries: PropertyIndexEntry[] = [];
-	for (const [id, schema] of propRegistry) {
+	for (const [id, schemas] of propRegistry) {
 		propertyEntries.push({
 			id,
-			label: schema.label,
+			label: schemas[0].label,
 			count: graph.propertiesByKind(id).length,
-			schema,
+			schemas,
 			href: `/properties/${id}`
 		});
 	}

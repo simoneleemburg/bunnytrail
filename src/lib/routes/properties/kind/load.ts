@@ -11,7 +11,7 @@ export interface PropertyEntry {
 
 export interface PropertyDetailPageData {
 	kindId: string;
-	schema: PropertySchema;
+	schemas: PropertySchema[];
 	entries: PropertyEntry[];
 }
 
@@ -19,13 +19,13 @@ export async function load({ params }: { params: { kind: string } }): Promise<Pr
 	await graph.ready();
 	const { kind } = params;
 	const registry = graph.propertyRegistry();
-	const schema = registry.get(kind);
+	const schemas = registry.get(kind);
 
-	if (!schema) {
+	if (!schemas) {
 		error(404, `No property '${kind}' found in schema`);
 	}
 
 	const entries = graph.propertiesByKind(kind);
 
-	return { kindId: kind, schema, entries };
+	return { kindId: kind, schemas, entries };
 }

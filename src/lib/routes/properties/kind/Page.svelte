@@ -6,41 +6,79 @@
 	let { data }: { data: PropertyDetailPageData } = $props();
 
 	const hasEntries = $derived(data.entries.length > 0);
+
+	// Show the schema card when any schema has a declaringKind or values
+	const showSchemaCard = $derived(
+		data.schemas.some((s) => s.declaringKind || (s.values && s.values.length > 0))
+	);
+
+	// Collect all declaringKinds across schemas (filter out undefined)
+	const declaringKinds = $derived(
+		data.schemas.map((s) => s.declaringKind).filter((k): k is string => k !== undefined)
+	);
+
+	// Schemas that have values
+	const schemasWithValues = $derived(data.schemas.filter((s) => s.values && s.values.length > 0));
+
+	// If all schemas with values share the same values array contents, collapse to one row
+	const singleValuesRow = $derived(
+		schemasWithValues.length <= 1 ||
+			schemasWithValues.every(
+				(s) =>
+					s.values!.length === schemasWithValues[0].values!.length &&
+					s.values!.every((v, i) => v === schemasWithValues[0].values![i])
+			)
+	);
 </script>
 
 <svelte:head>
-	<title>{data.schema.label} · Properties · {page.data.world.shortName}</title>
+	<title>{data.schemas[0].label} · Properties · {page.data.world.shortName}</title>
 </svelte:head>
 
 <PageHeader
-	title={data.schema.label}
+	title={data.schemas[0].label}
 	eyebrow="Properties"
 	breadcrumbs={[{ href: '/properties', label: 'Properties' }]}
 />
 
-{#if data.schema.declaringKind || data.schema.values}
+{#if showSchemaCard}
 	<div class="schema-card">
 		<div class="schema-row">
 			<span class="schema-label">Id</span>
 			<code class="kind-mono">{data.kindId}</code>
 		</div>
-		{#if data.schema.declaringKind}
+		{#if declaringKinds.length > 0}
 			<div class="schema-row">
 				<span class="schema-label">Kind</span>
 				<span class="pill-group">
-					<span class="pill">{data.schema.declaringKind}</span>
-				</span>
-			</div>
-		{/if}
-		{#if data.schema.values && data.schema.values.length > 0}
-			<div class="schema-row">
-				<span class="schema-label">Values</span>
-				<span class="pill-group">
-					{#each data.schema.values as v (v)}
-						<span class="pill">{v}</span>
+					{#each declaringKinds as k (k)}
+						<span class="pill">{k}</span>
 					{/each}
 				</span>
 			</div>
+		{/if}
+		{#if schemasWithValues.length > 0}
+			{#if singleValuesRow}
+				<div class="schema-row">
+					<span class="schema-label">Values</span>
+					<span class="pill-group">
+						{#each schemasWithValues[0].values! as v (v)}
+							<span class="pill">{v}</span>
+						{/each}
+					</span>
+				</div>
+			{:else}
+				{#each schemasWithValues as s (s.declaringKind ?? s.values![0])}
+					<div class="schema-row">
+						<span class="schema-label">{s.declaringKind ?? 'Values'}</span>
+						<span class="pill-group">
+							{#each s.values! as v (v)}
+								<span class="pill">{v}</span>
+							{/each}
+						</span>
+					</div>
+				{/each}
+			{/if}
 		{/if}
 	</div>
 {/if}
