@@ -2,7 +2,7 @@ import { readdir, readFile, stat } from 'node:fs/promises';
 import type { Dirent } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { parse as parseYaml } from 'yaml';
-import type { HealthIssue, Kind, Ontology, KindMeta } from '$lib/types';
+import type { HealthIssue, Kind, Ontology, KindMeta, RelationRegistry, RelationSchema } from '$lib/types';
 import { titleCaseSlug } from '$lib/types';
 import { defaultKindsDir } from './globals';
 
@@ -13,6 +13,14 @@ export interface KindLoadResult {
 	kinds: Map<string, Kind>;
 	/** All loaded ontologies, keyed by id. */
 	ontologies: Map<string, Ontology>;
+	/**
+	 * Merged relation registry built from every `_ontology.yaml` that
+	 * carries a `relations:` block. Keys are the full prefixed ids —
+	 * `<ontology-id>/<slug>` for named ontologies, bare slug for the
+	 * root ontology (a `_ontology.yaml` placed directly under
+	 * `content_meta/kinds/`).
+	 */
+	relations: RelationRegistry;
 	/** Any problems encountered (malformed yaml, bad folder name). */
 	issues: HealthIssue[];
 }
@@ -30,6 +38,10 @@ export interface KindLoadResult {
  * (their `group` field is set to the ontology id). Ontologies do not affect the
  * kind hierarchy (`parent` is independent).
  *
+ * A `_ontology.yaml` placed directly at the root of `content_meta/kinds/`
+ * (not inside a subfolder) acts as the **root ontology** and may declare
+ * global relations with bare (unprefixed) ids.
+ *
  * If the registry directory does not exist, returns an empty registry with
  * no issues — callers should treat absence as "no kinds registered yet".
  */
@@ -38,14 +50,22 @@ export async function loadKindRegistry(
 ): Promise<KindLoadResult> {
 	const kinds = new Map<string, Kind>();
 	const ontologies = new Map<string, Ontology>();
+	const relations: RelationRegistry = new Map();
 	const issues: HealthIssue[] = [];
 
 	const rootExists = await dirExists(kindsDir);
-	if (!rootExists) return { kinds, ontologies, issues };
+	if (!rootExists) return { kinds, ontologies, relations, issues };
 
-	await walk(kindsDir, null, null, kinds, ontologies, issues, kindsDir);
+	// Load root-level _ontology.yaml (global relations, no prefix).
+	const rootOntologyPath = join(kindsDir, '_ontology.yaml');
+	if (await fileExists(rootOntologyPath)) {
+		const rootRelations = await readOntologyRelations(rootOntologyPath, null, kindsDir, issues);
+		for (const [id, schema] of rootRelations) relations.set(id, schema);
+	}
 
-	return { kinds, ontologies, issues };
+	await walk(kindsDir, null, null, kinds, ontologies, relations, issues, kindsDir);
+
+	return { kinds, ontologies, relations, issues };
 }
 
 async function walk(
@@ -54,6 +74,7 @@ async function walk(
 	group: string | null,
 	kinds: Map<string, Kind>,
 	ontologies: Map<string, Ontology>,
+	relations: RelationRegistry,
 	issues: HealthIssue[],
 	rootDir: string
 ): Promise<void> {
@@ -111,9 +132,11 @@ async function walk(
 			} else {
 				const ontology = await loadOntologyFile(childDir, id, rootDir, issues);
 				ontologies.set(id, ontology);
+				// Merge this ontology's relations into the global registry.
+				for (const [relId, schema] of ontology.relations) relations.set(relId, schema);
 			}
 
-			await walk(childDir, null, id, kinds, ontologies, issues, rootDir);
+			await walk(childDir, null, id, kinds, ontologies, relations, issues, rootDir);
 			continue;
 		}
 
@@ -129,7 +152,7 @@ async function walk(
 			kinds.set(id, { id, meta, parent, group });
 		}
 
-		await walk(childDir, id, group, kinds, ontologies, issues, rootDir);
+		await walk(childDir, id, group, kinds, ontologies, relations, issues, rootDir);
 	}
 }
 
@@ -155,7 +178,7 @@ async function loadOntologyFile(
 ): Promise<Ontology> {
 	const yamlPath = join(dir, '_ontology.yaml');
 	const raw = await readOptional(yamlPath);
-	if (raw === null) return { id, title: null, description: null };
+	if (raw === null) return { id, title: null, description: null, relations: new Map() };
 
 	let parsed: unknown;
 	try {
@@ -165,7 +188,7 @@ async function loadOntologyFile(
 			kind: 'invalid-yaml',
 			detail: `${relTo(yamlPath, rootDir)}: ${err instanceof Error ? err.message : String(err)}`
 		});
-		return { id, title: null, description: null };
+		return { id, title: null, description: null, relations: new Map() };
 	}
 
 	const obj = parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : {};
@@ -181,7 +204,166 @@ async function loadOntologyFile(
 		}
 	}
 
-	return { id, title, description };
+	const relations = parseOntologyRelations(obj, id, yamlPath, rootDir, issues);
+
+	return { id, title, description, relations };
+}
+
+/**
+ * Parse the optional `relations:` block from an already-parsed `_ontology.yaml`
+ * object. Relation ids are prefixed with `<ontologyId>/` so they are globally
+ * unique. Returns an empty map when the block is absent.
+ */
+function parseOntologyRelations(
+	obj: Record<string, unknown>,
+	ontologyId: string,
+	yamlPath: string,
+	rootDir: string,
+	issues: HealthIssue[]
+): RelationRegistry {
+	const registry: RelationRegistry = new Map();
+	const raw = obj['relations'];
+	if (raw === undefined || raw === null) return registry;
+
+	if (typeof raw !== 'object' || Array.isArray(raw)) {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: `${relTo(yamlPath, rootDir)}: relations must be a mapping when present`
+		});
+		return registry;
+	}
+
+	const block = raw as Record<string, unknown>;
+
+	for (const [slug, entry] of Object.entries(block)) {
+		if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
+			issues.push({
+				kind: 'invalid-yaml',
+				detail: `${relTo(yamlPath, rootDir)}: relations.${slug} must be a mapping`
+			});
+			continue;
+		}
+		const e = entry as Record<string, unknown>;
+		const context = `${relTo(yamlPath, rootDir)}: relations.${slug}`;
+
+		const outLabel = readStringFrom(e, 'outLabel', `${context}.outLabel`, issues);
+		const inLabel = readStringFrom(e, 'inLabel', `${context}.inLabel`, issues);
+		if (!outLabel || !inLabel) {
+			issues.push({
+				kind: 'invalid-yaml',
+				detail: `${context} requires both outLabel and inLabel`
+			});
+			continue;
+		}
+
+		const schema: RelationSchema = { outLabel, inLabel };
+
+		for (const constraintKey of ['domain', 'codomain'] as const) {
+			const cv = e[constraintKey];
+			if (cv === undefined || cv === null) continue;
+			if (!Array.isArray(cv) || cv.some((v) => typeof v !== 'string')) {
+				issues.push({
+					kind: 'invalid-yaml',
+					detail: `${context}.${constraintKey} must be an array of kind ids`
+				});
+				continue;
+			}
+			schema[constraintKey] = cv as string[];
+		}
+
+		// Prefix with ontology id: "cultural/member-of".
+		const fullId = `${ontologyId}/${slug}`;
+		registry.set(fullId, schema);
+	}
+
+	return registry;
+}
+
+/**
+ * Read and parse the `relations:` block from a standalone `_ontology.yaml`
+ * path (used for the root ontology, where no ontology id prefix is applied).
+ * Returns a map of bare relation ids → schemas.
+ */
+async function readOntologyRelations(
+	yamlPath: string,
+	ontologyId: string | null,
+	rootDir: string,
+	issues: HealthIssue[]
+): Promise<RelationRegistry> {
+	const raw = await readOptional(yamlPath);
+	if (raw === null) return new Map();
+
+	let parsed: unknown;
+	try {
+		parsed = parseYaml(raw);
+	} catch (err) {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: `${relTo(yamlPath, rootDir)}: ${err instanceof Error ? err.message : String(err)}`
+		});
+		return new Map();
+	}
+
+	const obj = parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : {};
+
+	// For root ontology: ontologyId is null, so we use a sentinel that gets
+	// stripped — pass empty string and do bare-slug insertion below.
+	const registry: RelationRegistry = new Map();
+	const rawRel = obj['relations'];
+	if (rawRel === undefined || rawRel === null) return registry;
+
+	if (typeof rawRel !== 'object' || Array.isArray(rawRel)) {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: `${relTo(yamlPath, rootDir)}: relations must be a mapping when present`
+		});
+		return registry;
+	}
+
+	const block = rawRel as Record<string, unknown>;
+
+	for (const [slug, entry] of Object.entries(block)) {
+		if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
+			issues.push({
+				kind: 'invalid-yaml',
+				detail: `${relTo(yamlPath, rootDir)}: relations.${slug} must be a mapping`
+			});
+			continue;
+		}
+		const e = entry as Record<string, unknown>;
+		const context = `${relTo(yamlPath, rootDir)}: relations.${slug}`;
+
+		const outLabel = readStringFrom(e, 'outLabel', `${context}.outLabel`, issues);
+		const inLabel = readStringFrom(e, 'inLabel', `${context}.inLabel`, issues);
+		if (!outLabel || !inLabel) {
+			issues.push({
+				kind: 'invalid-yaml',
+				detail: `${context} requires both outLabel and inLabel`
+			});
+			continue;
+		}
+
+		const schema: RelationSchema = { outLabel, inLabel };
+
+		for (const constraintKey of ['domain', 'codomain'] as const) {
+			const cv = e[constraintKey];
+			if (cv === undefined || cv === null) continue;
+			if (!Array.isArray(cv) || cv.some((v) => typeof v !== 'string')) {
+				issues.push({
+					kind: 'invalid-yaml',
+					detail: `${context}.${constraintKey} must be an array of kind ids`
+				});
+				continue;
+			}
+			schema[constraintKey] = cv as string[];
+		}
+
+		// Root ontology: bare slug. Named ontology: prefixed.
+		const fullId = ontologyId !== null ? `${ontologyId}/${slug}` : slug;
+		registry.set(fullId, schema);
+	}
+
+	return registry;
 }
 
 /**
@@ -243,6 +425,22 @@ function parseKindMeta(
 	}
 
 	return meta;
+}
+
+function readStringFrom(
+	obj: Record<string, unknown>,
+	key: string,
+	path: string,
+	issues: HealthIssue[]
+): string | null {
+	const val = obj[key];
+	if (val === undefined || val === null) return null;
+	if (typeof val !== 'string') {
+		issues.push({ kind: 'invalid-yaml', detail: `${path} must be a string when present` });
+		return null;
+	}
+	const trimmed = val.trim();
+	return trimmed === '' ? null : trimmed;
 }
 
 async function readOptional(path: string): Promise<string | null> {

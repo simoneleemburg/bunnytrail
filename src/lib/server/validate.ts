@@ -12,7 +12,7 @@ export interface ValidateArgs {
 	clusterSet: Set<string>;
 	universalSet: Set<string>;
 	langCodes: Set<string>;
-	/** World-level relation registry (from world.md). Empty map = not configured. */
+	/** Merged relation registry built from all `_ontology.yaml` files. Empty map = not configured. */
 	relationRegistry: RelationRegistry;
 	/** When false, relation kinds not in the registry emit health warnings. */
 	allowUndefinedRelations: boolean;
@@ -428,10 +428,14 @@ export function validateRelationSchema(args: ValidateArgs): void {
 
 			// Check 1: undefined relation kind
 			if (!schema && !allowUndefinedRelations) {
+				const slashIdx = rel.kind.indexOf('/');
+				const ontologyFile = slashIdx !== -1
+					? `content_meta/kinds/${rel.kind.slice(0, slashIdx)}/_ontology.yaml`
+					: `content_meta/kinds/_ontology.yaml`;
 				issues.push({
 					kind: 'invalid-yaml',
 					entity: entity.id,
-					detail: `relation kind '${rel.kind}' is not defined in content_meta/world.md relations schema`
+					detail: `relation kind '${rel.kind}' is not defined in ${ontologyFile}`
 				});
 				continue; // skip constraint checks — no schema to check against
 			}

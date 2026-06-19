@@ -1,6 +1,6 @@
 import { readFile, stat } from 'node:fs/promises';
 import { parse as parseYaml } from 'yaml';
-import type { HealthIssue, PropertyRegistry, PropertySchema, RelationRegistry, RelationSchema } from '$lib/types';
+import type { HealthIssue, PropertyRegistry, PropertySchema } from '$lib/types';
 import { defaultWorldConfigPath } from './globals';
 import { splitFrontmatter } from './frontmatter';
 import { renderPlainBody } from './markdown';
@@ -72,18 +72,10 @@ export interface WorldConfig {
 	allScopeLabel: string;
 	ornament: OrnamentConfig;
 	/**
-	 * World-level relation registry parsed from the `relations:` block
-	 * in `content_meta/world.md`. Keys are relation kind ids; values
-	 * carry labels and optional domain/codomain kind constraints.
-	 * Empty map when not configured.
-	 */
-	relations: RelationRegistry;
-	/**
-	 * When `false` (the default when the `relations:` block is present),
-	 * any relation kind used in content that is NOT listed in the
-	 * registry emits a health-page warning. Set to `true` to silence
-	 * those warnings while the schema is still being built out.
-	 * Has no effect when the `relations:` block is absent entirely.
+	 * When `false` (the default), any relation kind used in content that
+	 * is NOT listed in any `_ontology.yaml` `relations:` block emits a
+	 * health-page warning. Set to `true` in `content_meta/world.md` to
+	 * silence those warnings globally while the schema is being built out.
 	 */
 	allowUndefinedRelations: boolean;
 	/**
@@ -124,7 +116,6 @@ function fallbackConfig(): WorldConfig {
 		tagline: FALLBACK_TAGLINE,
 		allScopeLabel: `All ${FALLBACK_NAME}`,
 		ornament: fallbackOrnament(),
-		relations: new Map(),
 		allowUndefinedRelations: true,
 		properties: new Map(),
 		allowUndefinedProperties: true
@@ -179,13 +170,13 @@ export async function loadWorld(
 	const shortName = readString(meta, 'shortName', issues) ?? name;
 	const allScopeLabel = readString(meta, 'allScopeLabel', issues) ?? `All ${name}`;
 	const ornament = readOrnament(meta, issues);
-	const { relations, allowUndefinedRelations } = readRelations(meta, issues);
+	const allowUndefinedRelations = readAllowUndefinedRelations(meta, issues);
 	const { properties, allowUndefinedProperties } = readProperties(meta, issues);
 
 	const ledeHtml = body.trim() === '' ? null : renderPlainBody(body);
 
 	return {
-		config: { name, shortName, tagline, allScopeLabel, ornament, relations, allowUndefinedRelations, properties, allowUndefinedProperties },
+		config: { name, shortName, tagline, allScopeLabel, ornament, allowUndefinedRelations, properties, allowUndefinedProperties },
 		ledeHtml,
 		present: true,
 		issues
@@ -249,97 +240,26 @@ function readOrnament(meta: Record<string, unknown>, issues: HealthIssue[]): Orn
 }
 
 /**
- * Parse the optional `relations:` block from world.md frontmatter.
- *
- * Expected shape:
- *
- *     relations:
- *       member-of:
- *         outLabel: Member of
- *         inLabel: Members
- *         domain: [person, character]
- *         codomain: [group, institution]
- *       related-to:
- *         outLabel: Related to
- *         inLabel: Related to
- *
- * `allowUndefinedRelations` is read from a sibling key; defaults to
- * `false` when the `relations:` block is present (strict mode), `true`
- * when the block is absent (no opinion).
+ * Read the optional `allowUndefinedRelations` boolean from world.md frontmatter.
+ * Defaults to `false` (strict) when absent — any relation kind not declared in
+ * an `_ontology.yaml` `relations:` block will produce a health-page warning.
+ * Set to `true` to silence those warnings globally while the schema is being
+ * built out.
  */
-function readRelations(
+function readAllowUndefinedRelations(
 	meta: Record<string, unknown>,
 	issues: HealthIssue[]
-): { relations: RelationRegistry; allowUndefinedRelations: boolean } {
-	const raw = meta['relations'];
-	const hasBlock = raw !== undefined && raw !== null;
-
-	// allowUndefinedRelations: explicit bool, or derived from whether block exists
-	let allowUndefinedRelations = !hasBlock;
-	const allowRaw = meta['allowUndefinedRelations'];
-	if (allowRaw !== undefined && allowRaw !== null) {
-		if (typeof allowRaw !== 'boolean') {
-			issues.push({
-				kind: 'invalid-yaml',
-				detail: 'content_meta/world.md: allowUndefinedRelations must be a boolean when present'
-			});
-		} else {
-			allowUndefinedRelations = allowRaw;
-		}
-	}
-
-	if (!hasBlock) return { relations: new Map(), allowUndefinedRelations };
-
-	if (typeof raw !== 'object' || Array.isArray(raw)) {
+): boolean {
+	const raw = meta['allowUndefinedRelations'];
+	if (raw === undefined || raw === null) return false;
+	if (typeof raw !== 'boolean') {
 		issues.push({
 			kind: 'invalid-yaml',
-			detail: 'content_meta/world.md: relations must be a mapping when present'
+			detail: 'content_meta/world.md: allowUndefinedRelations must be a boolean when present'
 		});
-		return { relations: new Map(), allowUndefinedRelations };
+		return false;
 	}
-
-	const registry: RelationRegistry = new Map();
-	const block = raw as Record<string, unknown>;
-
-	for (const [kindId, entry] of Object.entries(block)) {
-		if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
-			issues.push({
-				kind: 'invalid-yaml',
-				detail: `content_meta/world.md: relations.${kindId} must be a mapping`
-			});
-			continue;
-		}
-		const e = entry as Record<string, unknown>;
-
-		const outLabel = readStringFrom(e, 'outLabel', `relations.${kindId}.outLabel`, issues);
-		const inLabel = readStringFrom(e, 'inLabel', `relations.${kindId}.inLabel`, issues);
-		if (!outLabel || !inLabel) {
-			issues.push({
-				kind: 'invalid-yaml',
-				detail: `content_meta/world.md: relations.${kindId} requires both outLabel and inLabel`
-			});
-			continue;
-		}
-
-		const schema: RelationSchema = { outLabel, inLabel };
-
-		for (const constraintKey of ['domain', 'codomain'] as const) {
-			const cv = e[constraintKey];
-			if (cv === undefined || cv === null) continue;
-			if (!Array.isArray(cv) || cv.some((v) => typeof v !== 'string')) {
-				issues.push({
-					kind: 'invalid-yaml',
-					detail: `content_meta/world.md: relations.${kindId}.${constraintKey} must be an array of kind ids`
-				});
-				continue;
-			}
-			schema[constraintKey] = cv as string[];
-		}
-
-		registry.set(kindId, schema);
-	}
-
-	return { relations: registry, allowUndefinedRelations };
+	return raw;
 }
 
 /**

@@ -48,6 +48,12 @@ export interface LoadResult {
 	 */
 	ontologies: Map<string, Ontology>;
 	/**
+	 * Merged relation registry built from all `_ontology.yaml` files.
+	 * Keys are fully-prefixed relation ids (`<ontology-id>/<slug>` for
+	 * named ontologies, bare slug for the root ontology).
+	 */
+	relations: RelationRegistry;
+	/**
 	 * Collections discovered while walking `content/`, keyed by
 	 * folder path. Only folders that carry a `_collection.yaml`
 	 * marker (or a bare `_collection.md`) are recorded; other
@@ -91,13 +97,12 @@ export async function discoverTypes(contentDir: string = CONTENT_DIR): Promise<E
  * Delegates to:
  *   - `walker.ts`   — filesystem traversal, entity/collection construction
  *   - `validate.ts` — wikilink resolution, kind checks, health issues
- *   - `kinds.ts`    — kind registry loading
+ *   - `kinds.ts`    — kind registry loading (includes relation registry)
  *   - `wikilinks.ts`— extraction and resolution primitives
  */
 export async function loadAll(
 	contentDir: string = CONTENT_DIR,
 	opts: {
-		relationRegistry?: RelationRegistry;
 		allowUndefinedRelations?: boolean;
 		propertyRegistry?: PropertyRegistry;
 		allowUndefinedProperties?: boolean;
@@ -135,8 +140,8 @@ export async function loadAll(
 		clusterSet,
 		universalSet,
 		langCodes,
-		relationRegistry: opts.relationRegistry ?? new Map(),
-		allowUndefinedRelations: opts.allowUndefinedRelations ?? true,
+		relationRegistry: registryResult.relations,
+		allowUndefinedRelations: opts.allowUndefinedRelations ?? false,
 		propertyRegistry: opts.propertyRegistry ?? new Map(),
 		allowUndefinedProperties: opts.allowUndefinedProperties ?? true,
 		issues
@@ -161,6 +166,7 @@ export async function loadAll(
 		issues,
 		kindRegistry: registryResult.kinds,
 		ontologies: registryResult.ontologies,
+		relations: registryResult.relations,
 		collections,
 		clusters: clusterSet,
 		universalFolders: universalSet

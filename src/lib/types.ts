@@ -92,6 +92,13 @@ export interface Ontology {
 	title: string | null;
 	/** Optional short editorial description. */
 	description: string | null;
+	/**
+	 * Relation schemas declared in this ontology's `_ontology.yaml`.
+	 * Keys are the full prefixed relation ids (`<ontology-id>/<slug>` for
+	 * named ontologies, bare slug for the root ontology). Empty map when
+	 * no `relations:` block is present.
+	 */
+	relations: RelationRegistry;
 }
 
 /**

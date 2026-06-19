@@ -112,11 +112,10 @@ export class Graph {
 	async load(contentDir: string = CONTENT_DIR): Promise<void> {
 		if (this.#loading) return this.#loading;
 		this.#loading = (async () => {
-			// Load world config first so the relation registry can flow into loadAll.
+			// Load world config for identity, ornament, property registry, and global relation strictness.
 			const { config: worldConfig, issues: worldIssues } = await loadWorld();
-		const { entities, issues, kindRegistry, ontologies, collections, clusters, universalFolders } =
-			await loadAll(contentDir, {
-					relationRegistry: worldConfig.relations,
+			const { entities, issues, kindRegistry, ontologies, relations, collections, clusters, universalFolders } =
+				await loadAll(contentDir, {
 					allowUndefinedRelations: worldConfig.allowUndefinedRelations,
 					propertyRegistry: worldConfig.properties,
 					allowUndefinedProperties: worldConfig.allowUndefinedProperties
@@ -128,7 +127,7 @@ export class Graph {
 			this.#issues = [...worldIssues, ...issues];
 			this.#kindRegistry = kindRegistry;
 			this.#ontologies = ontologies;
-			this.#relationRegistry = worldConfig.relations;
+			this.#relationRegistry = relations;
 			this.#propertyRegistry = worldConfig.properties;
 			this.#collections = collections;
 			this.#clusters = clusters;
