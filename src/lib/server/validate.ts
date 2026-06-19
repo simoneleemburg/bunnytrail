@@ -423,6 +423,13 @@ export function validateRelationSchema(args: ValidateArgs): void {
 	}
 
 	for (const entity of entities.values()) {
+		// Track which relation kinds have already emitted a domain issue for this
+		// entity. The domain constraint is a source-entity-level fact (the entity's
+		// kind either satisfies the domain or it doesn't), so one issue per
+		// (entity, relation-kind) pair is sufficient regardless of how many
+		// individual relation entries share that kind.
+		const domainIssued = new Set<string>();
+
 		for (const rel of entity.meta.relations ?? []) {
 			const schema = relationRegistry.get(rel.kind);
 
@@ -442,10 +449,11 @@ export function validateRelationSchema(args: ValidateArgs): void {
 
 			if (!schema) continue;
 
-			// Check 2: domain constraint (source entity)
-			if (schema.domain && schema.domain.length > 0) {
+			// Check 2: domain constraint (source entity) — one issue per relation kind
+			if (schema.domain && schema.domain.length > 0 && !domainIssued.has(rel.kind)) {
 				const sourceKind = entity.meta.kind;
 				if (!satisfiesConstraint(sourceKind, schema.domain)) {
+					domainIssued.add(rel.kind);
 					issues.push({
 						kind: 'invalid-yaml',
 						entity: entity.id,

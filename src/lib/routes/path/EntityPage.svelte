@@ -93,6 +93,8 @@
 	};
 
 	function labelForKind(kind: string, direction: 'out' | 'in'): string {
+		const entry = data.relationLabels[kind];
+		if (entry) return direction === 'out' ? entry.out : entry.in;
 		return relationLabel(kind, direction);
 	}
 

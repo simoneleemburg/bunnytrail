@@ -159,8 +159,8 @@ export function planShims(mode: ShimMode): Shim[] {
 		// Relations schema
 		{ file: 'relations/+page.server.ts', contents: pageServer(mode, 'relations') },
 		{ file: 'relations/+page.svelte', contents: pageSvelte(mode, 'relations') },
-		{ file: 'relations/[kind]/+page.server.ts', contents: pageServer(mode, 'relations/relation') },
-		{ file: 'relations/[kind]/+page.svelte', contents: pageSvelte(mode, 'relations/relation') },
+		{ file: 'relations/[...kind]/+page.server.ts', contents: pageServer(mode, 'relations/relation') },
+		{ file: 'relations/[...kind]/+page.svelte', contents: pageSvelte(mode, 'relations/relation') },
 
 		// Properties schema
 		{ file: 'properties/+page.server.ts', contents: pageServer(mode, 'properties') },

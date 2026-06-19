@@ -111,6 +111,9 @@ export async function load() {
 		'missing-yaml',
 		'missing-md',
 		'unknown-entity-field',
+		'undefined-property',
+		'property-kind-mismatch',
+		'property-value-mismatch',
 		'orphan'
 	];
 	const groups = order.map((k) => byKind.get(k)).filter((g): g is Group => g !== undefined);

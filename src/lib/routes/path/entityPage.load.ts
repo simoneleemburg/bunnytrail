@@ -2,7 +2,7 @@ import { graph, byRankThenName } from '$lib/server/graph';
 import type { SpeciesPresenceEntry } from '$lib/server/graph';
 import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderEntityBody, renderSummary } from '$lib/server/markdown';
-import { titleCaseSlug, toRoman, type Entity, type RankDisplay, type VocabEntry } from '$lib/types';
+import { titleCaseSlug, toRoman, relationLabel, type Entity, type RankDisplay, type VocabEntry } from '$lib/types';
 
 /**
  * Build the view-model for an entity page. Returned shape is consumed
@@ -481,6 +481,23 @@ export async function loadEntityPage(entity: Entity) {
 		};
 	})();
 
+	// Pre-resolve relation labels using the world-level registry so the
+	// component doesn't need to receive the Map (which isn't serializable
+	// across the load boundary) and falls back to slug-humanisation only
+	// for kinds not declared in the registry.
+	const registry = graph.relationRegistry();
+	const allKinds = new Set([
+		...outEdges.map((e) => e.kind),
+		...inEdges.map((e) => e.kind)
+	]);
+	const relationLabels: Record<string, { out: string; in: string }> = {};
+	for (const kind of allKinds) {
+		relationLabels[kind] = {
+			out: relationLabel(kind, 'out', registry),
+			in: relationLabel(kind, 'in', registry)
+		};
+	}
+
 	return {
 		breadcrumbs,
 		kindChip,
@@ -517,7 +534,8 @@ export async function loadEntityPage(entity: Entity) {
 		roleHolders,
 		statistics,
 		vocabulary,
-		namesInOtherLanguages
+		namesInOtherLanguages,
+		relationLabels
 	};
 }
 
