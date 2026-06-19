@@ -979,3 +979,377 @@ describe('validateUnlabelledWikilinks', () => {
 		).toBe(false);
 	});
 });
+
+// ---------------------------------------------------------------------------
+// validateGovernedByConstraints
+// ---------------------------------------------------------------------------
+
+/**
+ * Seed a minimal content + kinds tree for governedBy tests.
+ *
+ * Layout:
+ *   kinds/
+ *     cultural/           ← ontology (has _ontology.yaml with governedBy)
+ *       role/
+ *       character/
+ *       cultural-group/
+ *       social-structure/
+ *   content/
+ *     people/
+ *       elfric/           ← character entity
+ *     groups/
+ *       dawncallers/      ← cultural-group entity
+ *     roles/
+ *       runtha/           ← role entity
+ */
+async function seedGovernedByFixture(opts: {
+	elfricRelations?: string;
+	runthaRelations?: string;
+}): Promise<{ contentDir: string; kindsDir: string }> {
+	const base = await mkdtemp(join(tmpdir(), 'alteria-gov-'));
+	const contentDir = join(base, 'content');
+	const kindsDir = join(base, 'kinds');
+
+	// --- kinds tree ---
+	const ontoDir = join(kindsDir, 'cultural');
+	await mkdir(ontoDir, { recursive: true });
+	await writeFile(
+		join(ontoDir, '_ontology.yaml'),
+		[
+			'title: Cultural',
+			'relations:',
+			'  role-in:',
+			'    outLabel: Role in',
+			'    inLabel: Roles',
+			'    domain: [role]',
+			'    codomain: [social-structure]',
+			'  member-of:',
+			'    outLabel: Member of',
+			'    inLabel: Members',
+			'    role: required',
+			'    governedBy: cultural/role-in',
+			'    domain: [character]',
+			'    codomain: [cultural-group]'
+		].join('\n')
+	);
+	for (const k of ['role', 'character', 'cultural-group', 'social-structure']) {
+		const kd = join(ontoDir, k);
+		await mkdir(kd, { recursive: true });
+		await writeFile(join(kd, '_kind.yaml'), `singular: ${cap(k)}\nplural: ${cap(k)}s\n`);
+	}
+	// social-structure is also the class parent of cultural-group; mark it
+	// (not strictly needed for these tests, but keeps it realistic)
+
+	// --- content ---
+	// Elfric (character)
+	await mkdir(join(contentDir, 'people', 'elfric'), { recursive: true });
+	const elfricRels = opts.elfricRelations ?? '';
+	await writeFile(
+		join(contentDir, 'people', 'elfric', 'index.yaml'),
+		['name: Old Elfric', 'kind: character', ...(elfricRels ? [elfricRels] : [])].join('\n')
+	);
+	await writeFile(join(contentDir, 'people', 'elfric', 'index.md'), '');
+
+	// The Dawncallers (cultural-group)
+	await mkdir(join(contentDir, 'groups', 'dawncallers'), { recursive: true });
+	await writeFile(
+		join(contentDir, 'groups', 'dawncallers', 'index.yaml'),
+		'name: The Dawncallers\nkind: cultural-group\n'
+	);
+	await writeFile(join(contentDir, 'groups', 'dawncallers', 'index.md'), '');
+
+	// Runtha (role)
+	await mkdir(join(contentDir, 'roles', 'runtha'), { recursive: true });
+	const runthaRels = opts.runthaRelations ?? '';
+	await writeFile(
+		join(contentDir, 'roles', 'runtha', 'index.yaml'),
+		['name: Runtha', 'kind: role', ...(runthaRels ? [runthaRels] : [])].join('\n')
+	);
+	await writeFile(join(contentDir, 'roles', 'runtha', 'index.md'), '');
+
+	return { contentDir, kindsDir };
+}
+
+describe('validateGovernedByConstraints', () => {
+	it('emits no issue when a governed relation has role + matching backing edge', async () => {
+		const { contentDir, kindsDir } = await seedGovernedByFixture({
+			runthaRelations: [
+				'relations:',
+				'  - kind: cultural/role-in',
+				'    target: groups/dawncallers'
+			].join('\n'),
+			elfricRelations: [
+				'relations:',
+				'  - kind: cultural/member-of',
+				'    target: groups/dawncallers',
+				'    role: roles/runtha'
+			].join('\n')
+		});
+		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
+		const { issues } = await loadAll(contentDir);
+		const governed = issues.filter((i) => i.detail.includes('governed'));
+		expect(governed).toEqual([]);
+	});
+
+	it('flags a governed relation that is missing its role qualifier', async () => {
+		const { contentDir, kindsDir } = await seedGovernedByFixture({
+			elfricRelations: [
+				'relations:',
+				'  - kind: cultural/member-of',
+				'    target: groups/dawncallers'
+			].join('\n')
+		});
+		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
+		const { issues } = await loadAll(contentDir);
+		const issue = issues.find(
+			(i) =>
+				i.kind === 'broken-link' &&
+				i.detail.includes("missing required 'role' qualifier") &&
+				i.entity === 'people/elfric'
+		);
+		expect(issue).toBeDefined();
+	});
+
+	it('flags a governed relation whose role has no backing edge to the target', async () => {
+		// Runtha exists but has no role-in → dawncallers (or its class)
+		const { contentDir, kindsDir } = await seedGovernedByFixture({
+			elfricRelations: [
+				'relations:',
+				'  - kind: cultural/member-of',
+				'    target: groups/dawncallers',
+				'    role: roles/runtha'
+			].join('\n')
+		});
+		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
+		const { issues } = await loadAll(contentDir);
+		const issue = issues.find(
+			(i) =>
+				i.kind === 'broken-link' &&
+				i.detail.includes("has no 'cultural/role-in'") &&
+				i.entity === 'people/elfric'
+		);
+		expect(issue).toBeDefined();
+	});
+
+	it('passes when role has a backing edge to the class of the target, not the target itself', async () => {
+		// Runtha has role-in → herd-type (a social-structure entity)
+		// The Dawncallers has class: groups/herd-type
+		// Elfric is member-of → the-dawncallers with role: runtha
+		// → should pass because dawncallers.class === herd-type and runtha has role-in → herd-type
+		const base = await mkdtemp(join(tmpdir(), 'alteria-gov-class-'));
+		const contentDir = join(base, 'content');
+		const kindsDir = join(base, 'kinds');
+
+		const ontoDir = join(kindsDir, 'cultural');
+		await mkdir(ontoDir, { recursive: true });
+		await writeFile(
+			join(ontoDir, '_ontology.yaml'),
+			[
+				'title: Cultural',
+				'relations:',
+				'  role-in:',
+				'    outLabel: Role in',
+				'    inLabel: Roles',
+				'    domain: [role]',
+				'    codomain: [social-structure]',
+				'  member-of:',
+				'    outLabel: Member of',
+				'    inLabel: Members',
+				'    role: required',
+				'    governedBy: cultural/role-in',
+				'    domain: [character]',
+				'    codomain: [cultural-group]'
+			].join('\n')
+		);
+		for (const k of ['role', 'character', 'cultural-group', 'social-structure']) {
+			const kd = join(ontoDir, k);
+			await mkdir(kd, { recursive: true });
+			await writeFile(join(kd, '_kind.yaml'), `singular: ${cap(k)}\nplural: ${cap(k)}s\n`);
+		}
+
+		// herd-type is a social-structure entity (the class)
+		await mkdir(join(contentDir, 'structures', 'herd-type'), { recursive: true });
+		await writeFile(join(contentDir, 'structures', 'herd-type', 'index.yaml'), 'name: Herd\nkind: social-structure\n');
+		await writeFile(join(contentDir, 'structures', 'herd-type', 'index.md'), '');
+
+		// the-dawncallers is a cultural-group with class: structures/herd-type
+		await mkdir(join(contentDir, 'groups', 'the-dawncallers'), { recursive: true });
+		await writeFile(join(contentDir, 'groups', 'the-dawncallers', 'index.yaml'), 'name: The Dawncallers\nkind: cultural-group\nclass: structures/herd-type\n');
+		await writeFile(join(contentDir, 'groups', 'the-dawncallers', 'index.md'), '');
+
+		// runtha has role-in → herd-type (the class, not the-dawncallers)
+		await mkdir(join(contentDir, 'roles', 'runtha'), { recursive: true });
+		await writeFile(
+			join(contentDir, 'roles', 'runtha', 'index.yaml'),
+			[
+				'name: Runtha',
+				'kind: role',
+				'relations:',
+				'  - kind: cultural/role-in',
+				'    target: structures/herd-type'
+			].join('\n')
+		);
+		await writeFile(join(contentDir, 'roles', 'runtha', 'index.md'), '');
+
+		// elfric is member-of → the-dawncallers with role: runtha
+		await mkdir(join(contentDir, 'people', 'elfric'), { recursive: true });
+		await writeFile(
+			join(contentDir, 'people', 'elfric', 'index.yaml'),
+			[
+				'name: Old Elfric',
+				'kind: character',
+				'relations:',
+				'  - kind: cultural/member-of',
+				'    target: groups/the-dawncallers',
+				'    role: roles/runtha'
+			].join('\n')
+		);
+		await writeFile(join(contentDir, 'people', 'elfric', 'index.md'), '');
+
+		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
+		const { issues } = await loadAll(contentDir);
+		const governed = issues.filter((i) => i.detail.includes('governedBy') || i.detail.includes("has no 'cultural/role-in'"));
+		expect(governed).toEqual([]);
+	});
+
+	it('does not flag a missing role when only governedBy is set (no role: required)', async () => {
+		// member-of has governedBy but NOT role: required — missing role is fine
+		const base = await mkdtemp(join(tmpdir(), 'alteria-gov-norole-'));
+		const contentDir = join(base, 'content');
+		const kindsDir = join(base, 'kinds');
+
+		const ontoDir = join(kindsDir, 'cultural');
+		await mkdir(ontoDir, { recursive: true });
+		await writeFile(
+			join(ontoDir, '_ontology.yaml'),
+			[
+				'title: Cultural',
+				'relations:',
+				'  role-in:',
+				'    outLabel: Role in',
+				'    inLabel: Roles',
+				'    domain: [role]',
+				'    codomain: [cultural-group]',
+				'  member-of:',
+				'    outLabel: Member of',
+				'    inLabel: Members',
+				'    governedBy: cultural/role-in',
+				'    domain: [character]',
+				'    codomain: [cultural-group]'
+			].join('\n')
+		);
+		for (const k of ['role', 'character', 'cultural-group']) {
+			const kd = join(ontoDir, k);
+			await mkdir(kd, { recursive: true });
+			await writeFile(join(kd, '_kind.yaml'), `singular: ${cap(k)}\nplural: ${cap(k)}s\n`);
+		}
+
+		await mkdir(join(contentDir, 'groups', 'dawncallers'), { recursive: true });
+		await writeFile(join(contentDir, 'groups', 'dawncallers', 'index.yaml'), 'name: The Dawncallers\nkind: cultural-group\n');
+		await writeFile(join(contentDir, 'groups', 'dawncallers', 'index.md'), '');
+
+		// Elfric has member-of with no role — should NOT trigger role: required
+		await mkdir(join(contentDir, 'people', 'elfric'), { recursive: true });
+		await writeFile(
+			join(contentDir, 'people', 'elfric', 'index.yaml'),
+			[
+				'name: Old Elfric',
+				'kind: character',
+				'relations:',
+				'  - kind: cultural/member-of',
+				'    target: groups/dawncallers'
+			].join('\n')
+		);
+		await writeFile(join(contentDir, 'people', 'elfric', 'index.md'), '');
+
+		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
+		const { issues } = await loadAll(contentDir);
+		const roleIssue = issues.find(
+			(i) => i.kind === 'broken-link' && i.detail.includes("missing required 'role'")
+		);
+		expect(roleIssue).toBeUndefined();
+	});
+
+	it('flags a governed relation whose role has a backing edge to a different target', async () => {
+		// Runtha has role-in → dawncallers, but elfric's member-of points somewhere else.
+		// Simulate by adding a second group and having elfric point there.
+		const base = await mkdtemp(join(tmpdir(), 'alteria-gov-mismatch-'));
+		const contentDir = join(base, 'content');
+		const kindsDir = join(base, 'kinds');
+
+		const ontoDir = join(kindsDir, 'cultural');
+		await mkdir(ontoDir, { recursive: true });
+		await writeFile(
+			join(ontoDir, '_ontology.yaml'),
+			[
+				'title: Cultural',
+				'relations:',
+				'  role-in:',
+				'    outLabel: Role in',
+				'    inLabel: Roles',
+				'    domain: [role]',
+				'    codomain: [cultural-group]',
+				'  member-of:',
+				'    outLabel: Member of',
+				'    inLabel: Members',
+				'    role: required',
+				'    governedBy: cultural/role-in',
+				'    domain: [character]',
+				'    codomain: [cultural-group]'
+			].join('\n')
+		);
+		for (const k of ['role', 'character', 'cultural-group']) {
+			const kd = join(ontoDir, k);
+			await mkdir(kd, { recursive: true });
+			await writeFile(join(kd, '_kind.yaml'), `singular: ${cap(k)}\nplural: ${cap(k)}s\n`);
+		}
+
+		// Two groups
+		for (const g of ['dawncallers', 'sunwalkers']) {
+			await mkdir(join(contentDir, 'groups', g), { recursive: true });
+			await writeFile(
+				join(contentDir, 'groups', g, 'index.yaml'),
+				`name: ${cap(g)}\nkind: cultural-group\n`
+			);
+			await writeFile(join(contentDir, 'groups', g, 'index.md'), '');
+		}
+		// Runtha has role-in → dawncallers
+		await mkdir(join(contentDir, 'roles', 'runtha'), { recursive: true });
+		await writeFile(
+			join(contentDir, 'roles', 'runtha', 'index.yaml'),
+			[
+				'name: Runtha',
+				'kind: role',
+				'relations:',
+				'  - kind: cultural/role-in',
+				'    target: groups/dawncallers'
+			].join('\n')
+		);
+		await writeFile(join(contentDir, 'roles', 'runtha', 'index.md'), '');
+		// Elfric is member-of sunwalkers (not dawncallers) but role is runtha
+		await mkdir(join(contentDir, 'people', 'elfric'), { recursive: true });
+		await writeFile(
+			join(contentDir, 'people', 'elfric', 'index.yaml'),
+			[
+				'name: Old Elfric',
+				'kind: character',
+				'relations:',
+				'  - kind: cultural/member-of',
+				'    target: groups/sunwalkers',
+				'    role: roles/runtha'
+			].join('\n')
+		);
+		await writeFile(join(contentDir, 'people', 'elfric', 'index.md'), '');
+
+		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
+		const { issues } = await loadAll(contentDir);
+		const issue = issues.find(
+			(i) =>
+				i.kind === 'broken-link' &&
+				i.detail.includes("has no 'cultural/role-in'") &&
+				i.detail.includes('groups/sunwalkers') &&
+				i.entity === 'people/elfric'
+		);
+		expect(issue).toBeDefined();
+	});
+});

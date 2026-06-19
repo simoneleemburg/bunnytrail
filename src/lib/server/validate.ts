@@ -583,6 +583,108 @@ export function validateUnlabelledWikilinks(args: ValidateArgs): void {
 }
 
 /**
+ * Validate `role: required` and `governedBy` constraints declared on relation schemas.
+ *
+ * Two independent checks, both emitting `broken-link` issues:
+ *
+ * **`role: required`** — every instance of the relation must carry a `role:`
+ * qualifier. Missing role → health warning.
+ *
+ * **`governedBy: <relation-kind>`** — when a `role:` qualifier *is* present,
+ * the role entity must hold an outgoing relation of the named kind pointing at
+ * the **same target** OR at any entity in the target's **class chain**.
+ *
+ * The class-chain resolution means: if `the-dawncallers` has `class: herd`,
+ * then a `role-in → herd` backing edge on the role entity satisfies the
+ * constraint for a `member-of → the-dawncallers` instance. This mirrors the
+ * instance/class relationship: a role defined for the class-type applies to
+ * all concrete instances of that class.
+ *
+ * Fires only when `role` is present and resolves; use alongside `role: required`
+ * when you want both guarantees.
+ */
+export function validateGovernedByConstraints(args: ValidateArgs): void {
+	const { entities, relationRegistry, issues } = args;
+
+	// Collect the two constraint sets up-front.
+	const roleRequired = new Set<string>();   // relation kinds where role: required
+	const governedKinds = new Map<string, string>(); // relation kind → governedBy kind
+
+	for (const [id, schema] of relationRegistry) {
+		if (schema.role === 'required') roleRequired.add(id);
+		if (schema.governedBy) governedKinds.set(id, schema.governedBy);
+	}
+
+	if (roleRequired.size === 0 && governedKinds.size === 0) return;
+
+	// Build the backing-edge index only when governedBy constraints exist.
+	// Index: governedBy-kind → Set<"roleEntityId|targetId">
+	const backingEdges = new Map<string, Set<string>>();
+	if (governedKinds.size > 0) {
+		const neededKinds = new Set(governedKinds.values());
+		for (const entity of entities.values()) {
+			for (const rel of entity.meta.relations ?? []) {
+				if (!neededKinds.has(rel.kind)) continue;
+				let set = backingEdges.get(rel.kind);
+				if (!set) { set = new Set(); backingEdges.set(rel.kind, set); }
+				set.add(`${entity.id}|${rel.target}`);
+			}
+		}
+	}
+
+	/**
+	 * Walk the class chain of an entity: returns the entity id itself,
+	 * then its `class`, then its class's `class`, etc. Stops at cycles
+	 * or missing entities.
+	 */
+	function classChain(entityId: string): string[] {
+		const chain: string[] = [];
+		const seen = new Set<string>();
+		let cur: string | undefined = entityId;
+		while (cur && !seen.has(cur)) {
+			chain.push(cur);
+			seen.add(cur);
+			const cls = entities.get(cur)?.meta.class;
+			cur = typeof cls === 'string' && cls ? cls : undefined;
+		}
+		return chain;
+	}
+
+	// Validate each relation instance.
+	for (const entity of entities.values()) {
+		for (const rel of entity.meta.relations ?? []) {
+			// Check 1: role: required
+			if (roleRequired.has(rel.kind) && !rel.role) {
+				issues.push({
+					kind: 'broken-link',
+					entity: entity.id,
+					detail: `relation '${rel.kind}' → ${rel.target}: missing required 'role' qualifier`
+				});
+			}
+
+			// Check 2: governedBy — only when a role is present and resolves
+			const governedByKind = governedKinds.get(rel.kind);
+			if (governedByKind && rel.role && entities.has(rel.role)) {
+				const backingSet = backingEdges.get(governedByKind);
+				// Accept a backing edge to the target itself or any entity in
+				// its class chain (e.g. role-in → herd satisfies member-of →
+				// the-dawncallers when the-dawncallers.class === herd).
+				const satisfied = classChain(rel.target).some(
+					(id) => backingSet?.has(`${rel.role}|${id}`)
+				);
+				if (!satisfied) {
+					issues.push({
+						kind: 'broken-link',
+						entity: entity.id,
+						detail: `relation '${rel.kind}' → ${rel.target}: role '${rel.role}' has no '${governedByKind}' → '${rel.target}' (or its class) (required by governedBy constraint)`
+					});
+				}
+			}
+		}
+	}
+}
+
+/**
  * Validate property keys and values on every entity against the
  * world-level property registry.
  *

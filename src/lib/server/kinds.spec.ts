@@ -114,3 +114,98 @@ describe('loadKindRegistry', () => {
 		expect(result.kinds.get('place')?.meta.singular).toBeUndefined();
 	});
 });
+
+describe('loadKindRegistry — ontology relations with governedBy', () => {
+	async function seedOntologyDir(ontologyYaml: string, kindsUnder: string[]): Promise<string> {
+		const dir = await mkdtemp(join(tmpdir(), 'alteria-kinds-onto-'));
+		const ontoDir = join(dir, 'cultural');
+		await mkdir(ontoDir, { recursive: true });
+		await import('node:fs/promises').then(({ writeFile }) =>
+			writeFile(join(ontoDir, '_ontology.yaml'), ontologyYaml)
+		);
+		for (const k of kindsUnder) {
+			const kDir = join(ontoDir, k);
+			await mkdir(kDir, { recursive: true });
+		}
+		return dir;
+	}
+
+	it('parses governedBy on a relation and stores it in the schema', async () => {
+		const yaml = [
+			'title: Cultural',
+			'relations:',
+			'  role-in:',
+			'    outLabel: Role in',
+			'    inLabel: Roles',
+			'    domain: [role]',
+			'    codomain: [social-structure]',
+			'  member-of:',
+			'    outLabel: Member of',
+			'    inLabel: Members',
+			'    role: required',
+			'    governedBy: cultural/role-in',
+			'    domain: [character]',
+			'    codomain: [cultural-group]'
+		].join('\n');
+		const dir = await seedOntologyDir(yaml, ['role', 'character', 'cultural-group', 'social-structure']);
+		const result = await loadKindRegistry(dir);
+		expect(result.issues).toEqual([]);
+		const memberOf = result.relations.get('cultural/member-of');
+		expect(memberOf?.role).toBe('required');
+		expect(memberOf?.governedBy).toBe('cultural/role-in');
+		// governedBy and role on role-in itself are absent
+		const roleIn = result.relations.get('cultural/role-in');
+		expect(roleIn?.governedBy).toBeUndefined();
+		expect(roleIn?.role).toBeUndefined();
+	});
+
+	it('parses role: required without governedBy', async () => {
+		const yaml = [
+			'title: Cultural',
+			'relations:',
+			'  member-of:',
+			'    outLabel: Member of',
+			'    inLabel: Members',
+			'    role: required',
+			'    domain: [character]',
+			'    codomain: [cultural-group]'
+		].join('\n');
+		const dir = await seedOntologyDir(yaml, ['character', 'cultural-group']);
+		const result = await loadKindRegistry(dir);
+		expect(result.issues).toEqual([]);
+		const memberOf = result.relations.get('cultural/member-of');
+		expect(memberOf?.role).toBe('required');
+		expect(memberOf?.governedBy).toBeUndefined();
+	});
+
+	it('emits an issue for role with an invalid value', async () => {
+		const yaml = [
+			'title: Cultural',
+			'relations:',
+			'  member-of:',
+			'    outLabel: Member of',
+			'    inLabel: Members',
+			'    role: optional'
+		].join('\n');
+		const dir = await seedOntologyDir(yaml, []);
+		const result = await loadKindRegistry(dir);
+		expect(result.issues.some((i) => i.detail.includes("must be 'required'"))).toBe(true);
+		expect(result.relations.get('cultural/member-of')?.role).toBeUndefined();
+	});
+
+	it('emits no issue when governedBy is absent', async () => {
+		const yaml = [
+			'title: Cultural',
+			'relations:',
+			'  member-of:',
+			'    outLabel: Member of',
+			'    inLabel: Members',
+			'    domain: [character]',
+			'    codomain: [cultural-group]'
+		].join('\n');
+		const dir = await seedOntologyDir(yaml, ['character', 'cultural-group']);
+		const result = await loadKindRegistry(dir);
+		expect(result.issues).toEqual([]);
+		expect(result.relations.get('cultural/member-of')?.governedBy).toBeUndefined();
+	});
+});

@@ -664,6 +664,29 @@ export interface RelationLabels {
 export interface RelationSchema extends RelationLabels {
 	domain?: string[];
 	codomain?: string[];
+	/**
+	 * When set to `'required'`, every instance of this relation must carry
+	 * a `role:` qualifier. Missing role emits a health-page warning.
+	 *
+	 * Orthogonal to `governedBy`: you can require a role without constraining
+	 * which backing edge it must satisfy, or constrain the backing edge without
+	 * forcing a role to be present on every instance.
+	 */
+	role?: 'required';
+	/**
+	 * When set, any instance of this relation that carries a `role:` qualifier
+	 * must have that role entity hold an outgoing relation of the kind named
+	 * here pointing at the **same target**.
+	 *
+	 * Example: `member-of` with `governedBy: cultural/role-in` requires
+	 * that the `role` entity on the `member-of` edge has a `cultural/role-in`
+	 * edge to the same institution. Violations emit a health-page warning.
+	 *
+	 * Value is the full prefixed relation id, e.g. `cultural/role-in`.
+	 * Does not imply `role: required` — set both when instances must always
+	 * carry a role AND that role must satisfy the backing-edge constraint.
+	 */
+	governedBy?: string;
 }
 
 /** The full world-level relation registry as loaded from world.md. */

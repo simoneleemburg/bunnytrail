@@ -18,6 +18,7 @@ import {
 	validateLangLinks,
 	validateUnlabelledWikilinks,
 	validateRelationSchema,
+	validateGovernedByConstraints,
 	validatePropertySchema,
 	validateUnknownEntityFields
 } from './validate';
@@ -162,6 +163,7 @@ export async function loadAll(
 	validateLangLinks(validateArgs);
 	validateUnlabelledWikilinks(validateArgs);
 	validateRelationSchema(validateArgs);
+	validateGovernedByConstraints(validateArgs);
 	validatePropertySchema(validateArgs);
 	validateUnknownEntityFields(validateArgs);
 

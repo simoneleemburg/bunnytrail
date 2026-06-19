@@ -293,6 +293,21 @@ function parseOntologyRelations(
 			schema[constraintKey] = cv as string[];
 		}
 
+		const governedBy = readStringFrom(e, 'governedBy', `${context}.governedBy`, issues);
+		if (governedBy) schema.governedBy = governedBy;
+
+		const roleVal = e['role'];
+		if (roleVal !== undefined && roleVal !== null) {
+			if (roleVal !== 'required') {
+				issues.push({
+					kind: 'invalid-yaml',
+					detail: `${context}.role must be 'required' when present`
+				});
+			} else {
+				schema.role = 'required';
+			}
+		}
+
 		// Prefix with ontology id: "cultural/member-of".
 		const fullId = `${ontologyId}/${slug}`;
 		registry.set(fullId, schema);
@@ -378,6 +393,21 @@ async function readOntologyRelations(
 				continue;
 			}
 			schema[constraintKey] = cv as string[];
+		}
+
+		const governedBy = readStringFrom(e, 'governedBy', `${context}.governedBy`, issues);
+		if (governedBy) schema.governedBy = governedBy;
+
+		const roleVal = e['role'];
+		if (roleVal !== undefined && roleVal !== null) {
+			if (roleVal !== 'required') {
+				issues.push({
+					kind: 'invalid-yaml',
+					detail: `${context}.role must be 'required' when present`
+				});
+			} else {
+				schema.role = 'required';
+			}
 		}
 
 		// Root ontology: bare slug. Named ontology: prefixed.
