@@ -248,21 +248,80 @@ export function validateCollectionWikilinks(args: ValidateArgs): void {
 }
 
 /**
- * Validate the `class` field on entities. The value must be the full
- * id of a known entity. Uses global resolution (class targets are
- * typically universal-substrate entities like `foundation/nature/…`
- * reachable from any cluster).
+ * Validate the `class` field on entities:
+ *
+ * 1. The class target must be a known entity (broken-link check).
+ * 2. Only entities whose kind (or an ancestor kind) declares a `class`
+ *    constraint in its `_kind.yaml` may carry a `class:` field. Entities
+ *    of unconstrained kinds emit a `property-kind-mismatch` issue.
+ * 3. When a kind-level `class` constraint exists, the class target entity's
+ *    own `kind` must be the constrained kind or a descendant of it.
+ *
+ * Uses global resolution (class targets are typically universal-substrate
+ * entities like `foundation/nature/…` reachable from any cluster).
  */
 export function validateClassField(args: ValidateArgs): void {
-	const { entities, issues } = args;
+	const { entities, kindRegistry, issues } = args;
+
+	// Build ancestor set for a kind: self + all parents up to root.
+	function ancestors(kindId: string): Set<string> {
+		const result = new Set<string>();
+		let cur: string | null = kindId;
+		while (cur) {
+			result.add(cur);
+			cur = kindRegistry.get(cur)?.parent ?? null;
+		}
+		return result;
+	}
+
+	// Walk a kind's ancestry to find the nearest declared class constraint.
+	function classConstraintFor(kindId: string): string | null {
+		let cur: string | null = kindId;
+		while (cur) {
+			const k = kindRegistry.get(cur);
+			if (!k) break;
+			if (k.meta.class) return k.meta.class;
+			cur = k.parent ?? null;
+		}
+		return null;
+	}
+
 	for (const entity of entities.values()) {
 		const cls = entity.meta.class;
 		if (typeof cls !== 'string' || !cls) continue;
+
+		// Check 1: target must exist.
 		if (!entities.has(cls)) {
 			issues.push({
 				kind: 'broken-link',
 				entity: entity.id,
 				detail: `class → ${cls} (not found)`
+			});
+			continue;
+		}
+
+		const entityKind = typeof entity.meta.kind === 'string' ? entity.meta.kind : null;
+		const constraint = entityKind ? classConstraintFor(entityKind) : null;
+
+		// Check 2: entity's kind must have a class constraint.
+		if (!constraint) {
+			issues.push({
+				kind: 'property-kind-mismatch',
+				entity: entity.id,
+				detail: `entity has 'class: ${cls}' but kind '${entityKind ?? '(none)'}' does not declare a class constraint`
+			});
+			continue;
+		}
+
+		// Check 3: class target's kind must satisfy the constraint.
+		const targetEntity = entities.get(cls)!;
+		const targetKind = typeof targetEntity.meta.kind === 'string' ? targetEntity.meta.kind : null;
+		const targetAncestors = targetKind ? ancestors(targetKind) : new Set<string>();
+		if (!targetAncestors.has(constraint)) {
+			issues.push({
+				kind: 'property-kind-mismatch',
+				entity: entity.id,
+				detail: `class target '${cls}' has kind '${targetKind ?? '(none)'}' which is not '${constraint}' or a descendant (required by kind '${entityKind}')`
 			});
 		}
 	}

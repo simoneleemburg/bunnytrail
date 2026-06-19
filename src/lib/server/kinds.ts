@@ -434,7 +434,7 @@ function parseKindMeta(
 
 	const meta: KindMeta = {};
 
-	for (const field of ['singular', 'plural', 'description'] as const) {
+	for (const field of ['singular', 'plural', 'description', 'class'] as const) {
 		const value = obj[field];
 		if (value === undefined) continue;
 		if (typeof value !== 'string') {

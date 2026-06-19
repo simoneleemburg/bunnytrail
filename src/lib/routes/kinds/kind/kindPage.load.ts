@@ -57,6 +57,11 @@ export interface KindPageData {
 	singular: string;
 	plural: string;
 	description: string | null;
+	/**
+	 * The class kind constraint inherited by this kind (from the kind itself or
+	 * the nearest ancestor that declares one). Null when no constraint applies.
+	 */
+	classKind: { id: string; label: string; href: string } | null;
 	slice: KindSliceNode | null;
 	direct: KindCard[];
 	kindRefSections: KindRefSection[];
@@ -138,11 +143,32 @@ export function loadKindPage(kindId: string, scope: ClusterScope): KindPageData 
 	}
 	kindRefSections.sort((a, b) => a.heading.localeCompare(b.heading));
 
+	// Resolve the class constraint: walk this kind's ancestor chain to find
+	// the nearest kind that declares `class`. The constraint is inherited —
+	// a child kind is bound by its parent's class unless it overrides it.
+	const classKind = ((): KindPageData['classKind'] => {
+		const registry = graph.kindRegistry();
+		let cur: string | null = kindId;
+		while (cur) {
+			const k = registry.get(cur);
+			if (!k) break;
+			if (k.meta.class) {
+				const classId = k.meta.class;
+				const classKindObj = registry.get(classId);
+				const label = classKindObj?.meta.singular ?? titleCase(classId);
+				return { id: classId, label, href: hrefForKind(classId) };
+			}
+			cur = k.parent ?? null;
+		}
+		return null;
+	})();
+
 	return {
 		kindId,
 		singular,
 		plural,
 		description: kind.meta.description ?? null,
+		classKind,
 		slice,
 		direct,
 		kindRefSections,

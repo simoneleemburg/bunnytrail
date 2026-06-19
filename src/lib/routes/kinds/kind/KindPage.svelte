@@ -12,6 +12,7 @@
 			singular: string;
 			plural: string;
 			description: string | null;
+			classKind: { id: string; label: string; href: string } | null;
 			slice: KindSliceNode | null;
 			direct: KindCard[];
 			kindRefSections: KindRefSection[];
@@ -26,7 +27,7 @@
 	// when its content is empty; if only one has content the strip
 	// is skipped entirely and that tab's content renders unframed.
 	const hasRefs = $derived(data.kindRefSections.length > 0 || data.backlinks.length > 0);
-	const hasAbout = $derived(Boolean(data.description) || hasRefs);
+	const hasAbout = $derived(Boolean(data.description) || hasRefs || Boolean(data.classKind));
 	const hasInstances = $derived(data.direct.length > 0);
 	const tabCount = $derived((hasAbout ? 1 : 0) + (hasInstances ? 1 : 0));
 
@@ -86,6 +87,12 @@
 {#snippet aboutPanel()}
 	<div class="about-layout" class:has-sidebar={hasRefs}>
 		<div class="about-main">
+			{#if data.classKind}
+				<div class="class-constraint">
+					<span class="class-constraint-label">Class</span>
+					<a class="class-constraint-link" href={data.classKind.href}>{data.classKind.label}</a>
+				</div>
+			{/if}
 			{#if data.description}
 				<p class="bt-lede">{data.description}</p>
 			{/if}
@@ -226,6 +233,38 @@
 		grid-template-columns: minmax(0, 1fr);
 		gap: var(--space-7);
 		align-items: start;
+	}
+
+	/* Class constraint chip row */
+	.class-constraint {
+		display: flex;
+		align-items: center;
+		gap: var(--space-3);
+		margin-bottom: var(--space-4);
+		font-size: var(--text-sm);
+	}
+
+	.class-constraint-label {
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.1em;
+		color: var(--ink-faint);
+		flex-shrink: 0;
+	}
+
+	.class-constraint-link {
+		display: inline-block;
+		padding: 0.1em 0.6em;
+		border-radius: 999px;
+		border: 1px solid var(--rule, rgba(0 0 0 / 0.15));
+		background: var(--surface-alt, #f5f3ee);
+		color: var(--ink-soft);
+		text-decoration: none;
+		font-size: 0.9em;
+	}
+
+	.class-constraint-link:hover {
+		color: var(--accent);
+		border-color: var(--accent);
 	}
 
 	.about-layout.has-sidebar {

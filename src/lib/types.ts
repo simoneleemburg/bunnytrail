@@ -61,6 +61,18 @@ export interface KindMeta {
 	 * this kind and all its descendants via the kind hierarchy.
 	 */
 	properties?: Record<string, { label: string; values?: string[] }>;
+	/**
+	 * The kind id that constrains which class entities of this kind may
+	 * be assigned. When set, every entity of this kind (or any descendant
+	 * kind) that carries a `class:` field must reference an entity whose
+	 * own `kind` is the declared class kind or a descendant of it.
+	 * Entities whose kind has no `class` constraint are not allowed to
+	 * set `class:` at all.
+	 *
+	 * Example: `class: humanoid` on the `person` kind means every
+	 * `person` entity's `class:` must point to a `humanoid`-kinded entity.
+	 */
+	class?: string;
 }
 
 /**
