@@ -1353,3 +1353,129 @@ describe('validateGovernedByConstraints', () => {
 		expect(issue).toBeDefined();
 	});
 });
+
+// ---------------------------------------------------------------------------
+// qualifierDomain validation
+// ---------------------------------------------------------------------------
+
+describe('qualifierDomain', () => {
+	/**
+	 * Seed a minimal content + kinds tree for qualifierDomain tests.
+	 *
+	 *   kinds/
+	 *     cultural/
+	 *       _ontology.yaml  (originated-on with qualifierDomain: [creation-process])
+	 *       creation-process/
+	 *       art-form/
+	 *       person/
+	 *   content/
+	 *     works/song/       ← art-form entity
+	 *     processes/ritual/ ← creation-process entity
+	 *     people/elfric/    ← person entity (wrong kind for qualifierDomain)
+	 *     authors/elfric/   ← person entity (the originator)
+	 */
+	async function seedQualifierDomainFixture(opts: {
+		elfricRelations?: string;
+	}): Promise<{ contentDir: string; kindsDir: string }> {
+		const base = await mkdtemp(join(tmpdir(), 'bt-qdomain-'));
+		const contentDir = join(base, 'content');
+		const kindsDir = join(base, 'kinds');
+
+		const ontoDir = join(kindsDir, 'cultural');
+		await mkdir(ontoDir, { recursive: true });
+		await writeFile(
+			join(ontoDir, '_ontology.yaml'),
+			[
+				'title: Cultural',
+				'relations:',
+				'  originated-on:',
+				'    outLabel: Originated on',
+				'    inLabel: Origin of',
+				'    qualifier: required',
+				'    qualifierDomain: [creation-process]'
+			].join('\n')
+		);
+		for (const k of ['creation-process', 'art-form', 'person']) {
+			const kd = join(ontoDir, k);
+			await mkdir(kd, { recursive: true });
+			await writeFile(join(kd, '_kind.yaml'), `singular: ${cap(k)}\nplural: ${cap(k)}s\n`);
+		}
+
+		// Song (art-form) — the target of originated-on
+		await mkdir(join(contentDir, 'works', 'song'), { recursive: true });
+		await writeFile(join(contentDir, 'works', 'song', 'index.yaml'), 'name: The Song\nkind: art-form\n');
+		await writeFile(join(contentDir, 'works', 'song', 'index.md'), '');
+
+		// Ritual (creation-process) — a valid qualifier
+		await mkdir(join(contentDir, 'processes', 'ritual'), { recursive: true });
+		await writeFile(join(contentDir, 'processes', 'ritual', 'index.yaml'), 'name: Ritual\nkind: creation-process\n');
+		await writeFile(join(contentDir, 'processes', 'ritual', 'index.md'), '');
+
+		// Elfric (person) — an invalid qualifier (wrong kind)
+		await mkdir(join(contentDir, 'people', 'elfric'), { recursive: true });
+		await writeFile(join(contentDir, 'people', 'elfric', 'index.yaml'), 'name: Old Elfric\nkind: person\n');
+		await writeFile(join(contentDir, 'people', 'elfric', 'index.md'), '');
+
+		// Author (person) — originator, uses originated-on
+		await mkdir(join(contentDir, 'authors', 'bard'), { recursive: true });
+		const bardRels = opts.elfricRelations ?? '';
+		await writeFile(
+			join(contentDir, 'authors', 'bard', 'index.yaml'),
+			['name: The Bard', 'kind: person', ...(bardRels ? [bardRels] : [])].join('\n')
+		);
+		await writeFile(join(contentDir, 'authors', 'bard', 'index.md'), '');
+
+		return { contentDir, kindsDir };
+	}
+
+	it('emits no issue when qualifier kind satisfies qualifierDomain', async () => {
+		const { contentDir, kindsDir } = await seedQualifierDomainFixture({
+			elfricRelations: [
+				'relations:',
+				'  - kind: cultural/originated-on',
+				'    target: works/song',
+				'    qualifier: processes/ritual'
+			].join('\n')
+		});
+		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
+		const { issues } = await loadAll(contentDir);
+		const qdIssues = issues.filter((i) => i.detail.includes('qualifierDomain'));
+		expect(qdIssues).toEqual([]);
+	});
+
+	it('flags a qualifier whose kind does not satisfy qualifierDomain', async () => {
+		const { contentDir, kindsDir } = await seedQualifierDomainFixture({
+			elfricRelations: [
+				'relations:',
+				'  - kind: cultural/originated-on',
+				'    target: works/song',
+				'    qualifier: people/elfric'
+			].join('\n')
+		});
+		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
+		const { issues } = await loadAll(contentDir);
+		const issue = issues.find(
+			(i) =>
+				i.kind === 'invalid-yaml' &&
+				i.detail.includes('qualifierDomain') &&
+				i.detail.includes('people/elfric') &&
+				i.entity === 'authors/bard'
+		);
+		expect(issue).toBeDefined();
+	});
+
+	it('does not fire when qualifier is absent (no qualifier: required firing here)', async () => {
+		// No qualifier on the relation at all — qualifierDomain should not fire
+		const { contentDir, kindsDir } = await seedQualifierDomainFixture({
+			elfricRelations: [
+				'relations:',
+				'  - kind: cultural/originated-on',
+				'    target: works/song'
+			].join('\n')
+		});
+		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
+		const { issues } = await loadAll(contentDir);
+		const qdIssues = issues.filter((i) => i.detail.includes('qualifierDomain'));
+		expect(qdIssues).toEqual([]);
+	});
+});

@@ -654,9 +654,12 @@ export interface RelationLabels {
 /**
  * Per-relation-kind schema entry authored in `content_meta/world.md`.
  *
- * `domain`    — kind ids the *source* entity must satisfy (at or below in
- *               the kind tree). Omit to allow any source.
- * `codomain`  — kind ids the *target* entity must satisfy. Omit to allow any target.
+ * `domain`          — kind ids the *source* entity must satisfy (at or below in
+ *                     the kind tree). Omit to allow any source.
+ * `codomain`        — kind ids the *target* entity must satisfy. Omit to allow any target.
+ * `qualifierDomain` — kind ids the `qualifier` entity must satisfy. Omit to allow
+ *                     any qualifier kind. Fires only when a qualifier is present and
+ *                     resolves to a known entity.
  *
  * Kind matching is hierarchical: an entity satisfies a constraint if its
  * `kind` equals the listed id OR is a descendant of it in the kind tree.
@@ -664,6 +667,16 @@ export interface RelationLabels {
 export interface RelationSchema extends RelationLabels {
 	domain?: string[];
 	codomain?: string[];
+	/**
+	 * When set, any instance of this relation that carries a `qualifier:` field
+	 * must have the qualifier entity's `kind` equal or be a descendant of at least
+	 * one of the listed kind ids.
+	 *
+	 * Fires only when the qualifier is present and resolves to a known entity;
+	 * unresolvable qualifiers are caught by the broken-link check instead.
+	 * Does not imply `qualifier: required`.
+	 */
+	qualifierDomain?: string[];
 	/**
 	 * When set to `'required'`, every instance of this relation must carry
 	 * a `qualifier:` field. Missing qualifier emits a health-page warning.

@@ -208,4 +208,37 @@ describe('loadKindRegistry — ontology relations with governedBy', () => {
 		expect(result.issues).toEqual([]);
 		expect(result.relations.get('cultural/member-of')?.governedBy).toBeUndefined();
 	});
+
+	it('parses qualifierDomain as an array of kind ids', async () => {
+		const yaml = [
+			'title: Cultural',
+			'relations:',
+			'  originated-on:',
+			'    outLabel: Originated on',
+			'    inLabel: Origin of',
+			'    qualifier: required',
+			'    qualifierDomain: [creation-process]'
+		].join('\n');
+		const dir = await seedOntologyDir(yaml, ['creation-process']);
+		const result = await loadKindRegistry(dir);
+		expect(result.issues).toEqual([]);
+		const schema = result.relations.get('cultural/originated-on');
+		expect(schema?.qualifier).toBe('required');
+		expect(schema?.qualifierDomain).toEqual(['creation-process']);
+	});
+
+	it('emits an issue when qualifierDomain is not an array', async () => {
+		const yaml = [
+			'title: Cultural',
+			'relations:',
+			'  originated-on:',
+			'    outLabel: Originated on',
+			'    inLabel: Origin of',
+			'    qualifierDomain: creation-process'
+		].join('\n');
+		const dir = await seedOntologyDir(yaml, []);
+		const result = await loadKindRegistry(dir);
+		expect(result.issues.some((i) => i.detail.includes('qualifierDomain') && i.detail.includes('array'))).toBe(true);
+		expect(result.relations.get('cultural/originated-on')?.qualifierDomain).toBeUndefined();
+	});
 });

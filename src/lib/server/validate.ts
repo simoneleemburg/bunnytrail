@@ -536,6 +536,23 @@ export function validateRelationSchema(args: ValidateArgs): void {
 				}
 				// broken target (entity not found) is already caught by validateRelations
 			}
+
+			// Check 4: qualifierDomain constraint (qualifier entity)
+			// Only fires when a qualifier is present and resolves to a known entity.
+			// Unresolvable qualifiers are already caught by validateRelations.
+			if (schema.qualifierDomain && schema.qualifierDomain.length > 0 && rel.qualifier) {
+				const qualEntity = entities.get(rel.qualifier);
+				if (qualEntity) {
+					const qualKind = qualEntity.meta.kind;
+					if (!satisfiesConstraint(qualKind, schema.qualifierDomain)) {
+						issues.push({
+							kind: 'invalid-yaml',
+							entity: entity.id,
+							detail: `relation '${rel.kind}' → ${rel.target}: qualifier '${rel.qualifier}' kind '${qualKind ?? '(none)'}' does not satisfy qualifierDomain [${schema.qualifierDomain.join(', ')}]`
+						});
+					}
+				}
+			}
 		}
 	}
 }

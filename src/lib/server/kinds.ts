@@ -280,7 +280,7 @@ function parseOntologyRelations(
 
 		const schema: RelationSchema = { outLabel, inLabel };
 
-		for (const constraintKey of ['domain', 'codomain'] as const) {
+		for (const constraintKey of ['domain', 'codomain', 'qualifierDomain'] as const) {
 			const cv = e[constraintKey];
 			if (cv === undefined || cv === null) continue;
 			if (!Array.isArray(cv) || cv.some((v) => typeof v !== 'string')) {
@@ -382,7 +382,7 @@ async function readOntologyRelations(
 
 		const schema: RelationSchema = { outLabel, inLabel };
 
-		for (const constraintKey of ['domain', 'codomain'] as const) {
+		for (const constraintKey of ['domain', 'codomain', 'qualifierDomain'] as const) {
 			const cv = e[constraintKey];
 			if (cv === undefined || cv === null) continue;
 			if (!Array.isArray(cv) || cv.some((v) => typeof v !== 'string')) {
