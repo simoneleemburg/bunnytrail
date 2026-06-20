@@ -1,4 +1,5 @@
 import { graph } from '$lib/server/graph';
+import { relationLabel } from '$lib/types';
 
 export interface GraphNode {
 	id: string;
@@ -54,6 +55,19 @@ export async function load() {
 	// expansion to only targets that the center entity itself relates to.
 	const qualifierTargets: Record<string, string[]> = {};
 
+	// Inverse of qualifierTargets: maps each target id to the source entities
+	// that reach it via a qualifier. Used to expand the ego graph when the
+	// center is the *target* of a qualified relation (e.g. Earth seeing Human).
+	const qualifierSources: Record<string, string[]> = {};
+
+	// Pre-resolved labels for holds-qualifier edges: `entityId|qualifierId` →
+	// { outLabel, inLabel } of the *original* relation kind. Lets the graph
+	// display "Originated on" instead of "Holds qualifier" on the dashed edge.
+	// When one entity uses the same qualifier for multiple relation kinds the
+	// labels are joined with " / ".
+	const qualifierEdgeLabels: Record<string, { outLabel: string; inLabel: string }> = {};
+	const registry = graph.relationRegistry();
+
 	function addEdge(source: string, target: string, kind: string) {
 		const key = `${source}|${target}|${kind}`;
 		if (edgeSet.has(key)) return;
@@ -71,10 +85,28 @@ export async function load() {
 				addEdge(e.from, e.qualifier, 'holds-qualifier');
 				addEdge(e.qualifier, e.to, 'qualifier-in');
 				// Record which targets this specific entity reaches via qualifiers.
-				// Used by the ego graph to restrict qualifier-in expansion to only
-				// the groups that the center entity itself relates to.
 				if (!qualifierTargets[e.from]) qualifierTargets[e.from] = [];
 				qualifierTargets[e.from].push(e.to);
+				// Inverse: record which sources reach this target via a qualifier.
+				if (!qualifierSources[e.to]) qualifierSources[e.to] = [];
+				qualifierSources[e.to].push(e.from);
+				// Record the resolved label for this (entity, qualifier) pair so the
+				// graph can show the original relation label instead of "Holds qualifier".
+				const labelKey    = `${e.from}|${e.qualifier}`;
+				const qualInKey   = `${e.qualifier}|${e.to}`;
+				const outLabel = relationLabel(e.kind, 'out', registry);
+				const inLabel  = relationLabel(e.kind, 'in',  registry);
+				const mergeInto = (key: string) => {
+					if (qualifierEdgeLabels[key]) {
+						const prev = qualifierEdgeLabels[key];
+						if (!prev.outLabel.includes(outLabel)) prev.outLabel += ` / ${outLabel}`;
+						if (!prev.inLabel.includes(inLabel))   prev.inLabel  += ` / ${inLabel}`;
+					} else {
+						qualifierEdgeLabels[key] = { outLabel, inLabel };
+					}
+				};
+				mergeInto(labelKey);
+				mergeInto(qualInKey);
 			} else {
 				addEdge(e.from, e.to, e.kind);
 			}
@@ -155,7 +187,7 @@ export async function load() {
 		ontologyTitles[id] = g.title ?? id;
 	}
 
-	return { nodes, edges, kindParents, kindLabels, ontologyOf, ontologyTitles, qualifierTargets };
+	return { nodes, edges, kindParents, kindLabels, ontologyOf, ontologyTitles, qualifierTargets, qualifierSources, qualifierEdgeLabels };
 }
 
 export type GraphData = Awaited<ReturnType<typeof load>>;

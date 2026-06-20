@@ -409,36 +409,46 @@
 			? new Set([...allNeighbours].filter((id) => allowedNeighbours.has(id)))
 			: allNeighbours;
 
-		// Expand one extra hop through qualifier-node neighbours: if a 1-hop
-		// neighbour is a qualifier intermediary, include its qualifier-in targets
-		// (the group side) so the full member→qualifier→group chain is always
-		// visible in ego mode. Restrict to targets that the center entity itself
-		// actually relates to — other entities sharing the same qualifier but
-		// pointing to different targets should not appear here.
+		// Outgoing qualifier expansion: center is the *source* of a qualified relation.
+		// Follow qualifier-in edges from qualifier-node neighbours, restricted to
+		// targets this center actually relates to.
 		const centerQualifierTargets = new Set(data.qualifierTargets[centerId] ?? []);
+
+		// Incoming qualifier expansion: center is the *target* of a qualified relation.
+		// Follow holds-qualifier edges back to the source entities, restricted to
+		// sources that actually point to this center via a qualifier.
+		const centerQualifierSources = new Set(data.qualifierSources[centerId] ?? []);
+
 		const expandedNeighbours = new Set(neighbours);
 		for (const nid of neighbours) {
 			const n = nodeById.get(nid);
 			if (!n?.isQualifierNode) continue;
 			for (const e of (edgesOf.get(nid) ?? [])) {
-				// Only follow qualifier-in edges where the qualifier node is the source
-				if (e.kind !== 'qualifier-in' || e.source !== nid) continue;
-				const secondHop = e.target;
-				if (secondHop === centerId) continue;
-				// Only include targets this center actually relates to via qualifiers
-				if (!centerQualifierTargets.has(secondHop)) continue;
-				if (allowedNeighbours && !allowedNeighbours.has(secondHop)) continue;
-				expandedNeighbours.add(secondHop);
+				// Outgoing: qualifier-in edges where qualifier is the source → group side
+				if (e.kind === 'qualifier-in' && e.source === nid) {
+					const secondHop = e.target;
+					if (secondHop === centerId) continue;
+					if (!centerQualifierTargets.has(secondHop)) continue;
+					if (allowedNeighbours && !allowedNeighbours.has(secondHop)) continue;
+					expandedNeighbours.add(secondHop);
+				}
+				// Incoming: holds-qualifier edges where qualifier is the target → source side
+				if (e.kind === 'holds-qualifier' && e.target === nid) {
+					const secondHop = e.source;
+					if (secondHop === centerId) continue;
+					if (!centerQualifierSources.has(secondHop)) continue;
+					if (allowedNeighbours && !allowedNeighbours.has(secondHop)) continue;
+					expandedNeighbours.add(secondHop);
+				}
 			}
 		}
 
 		const egoEdges = (edgesOf.get(centerId) ?? []).slice();
 
 		// Also collect edges that connect qualifier-node neighbours to their
-		// second-hop targets (qualifier→group edges not incident to centerId).
-		// Restrict qualifier-in edges to targets this center entity actually
-		// relates to — avoids drawing Evolution→Ashara when that edge was
-		// contributed by a different entity (e.g. Shar) that isn't in this ego.
+		// second-hop nodes (qualifier→group or source→qualifier not incident to centerId).
+		// Restrict using the center's own qualifier target/source sets to avoid
+		// drawing edges contributed by unrelated entities.
 		for (const nid of expandedNeighbours) {
 			const n = nodeById.get(nid);
 			if (!n?.isQualifierNode) continue;
@@ -446,9 +456,10 @@
 				const otherId = e.source === nid ? e.target : e.source;
 				if (otherId === centerId) continue;
 				if (!expandedNeighbours.has(otherId)) continue;
-				// For qualifier-in edges, only include if the target is one this
-				// center entity actually reaches via a qualifier.
+				// qualifier-in: only if the target is one this center reaches via a qualifier
 				if (e.kind === 'qualifier-in' && !centerQualifierTargets.has(otherId)) continue;
+				// holds-qualifier: only if the source is one that points to this center via a qualifier
+				if (e.kind === 'holds-qualifier' && !centerQualifierSources.has(otherId)) continue;
 				egoEdges.push(e);
 			}
 		}
@@ -731,10 +742,25 @@
 	/**
 	 * Returns the directional label for an edge in ego mode.
 	 * Direction is resolved relative to `centerId`.
+	 *
+	 * For `holds-qualifier` edges the raw kind would produce "Holds qualifier";
+	 * instead we look up the pre-resolved label of the original relation kind
+	 * (e.g. "Originated on") stored in `data.qualifierEdgeLabels`.
 	 */
 	function egoEdgeLabel(e: SimEdge, centerId: string): string {
 		const srcId = e.sourceNode?.id ?? (e.source as string);
-		return relationLabel(e.kind, srcId === centerId ? 'out' : 'in');
+		const tgtId = e.targetNode?.id ?? (e.target as string);
+		const dir = srcId === centerId ? 'out' : 'in';
+		if (e.kind === 'holds-qualifier') {
+			const labels = data.qualifierEdgeLabels[`${srcId}|${tgtId}`];
+			if (labels) return dir === 'out' ? labels.outLabel : labels.inLabel;
+		}
+		if (e.kind === 'qualifier-in') {
+			// Show the inLabel of the original relation (e.g. "Origin of")
+			const labels = data.qualifierEdgeLabels[`${srcId}|${tgtId}`];
+			if (labels) return labels.inLabel;
+		}
+		return relationLabel(e.kind, dir);
 	}
 
 	// ── Click handlers ────────────────────────────────────────────────────────
