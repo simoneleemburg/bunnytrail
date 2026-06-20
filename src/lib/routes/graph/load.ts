@@ -49,6 +49,11 @@ export async function load() {
 	const edgeSet = new Set<string>(); // deduplicate by "source|target|kind"
 	const edges: GraphEdge[] = [];
 
+	// Maps each entity id to the set of target ids it reaches via a qualifier.
+	// Keyed by the *source* entity so the ego graph can restrict qualifier-in
+	// expansion to only targets that the center entity itself relates to.
+	const qualifierTargets: Record<string, string[]> = {};
+
 	function addEdge(source: string, target: string, kind: string) {
 		const key = `${source}|${target}|${kind}`;
 		if (edgeSet.has(key)) return;
@@ -65,6 +70,11 @@ export async function load() {
 				qualifierNodeIds.add(e.qualifier);
 				addEdge(e.from, e.qualifier, 'holds-qualifier');
 				addEdge(e.qualifier, e.to, 'qualifier-in');
+				// Record which targets this specific entity reaches via qualifiers.
+				// Used by the ego graph to restrict qualifier-in expansion to only
+				// the groups that the center entity itself relates to.
+				if (!qualifierTargets[e.from]) qualifierTargets[e.from] = [];
+				qualifierTargets[e.from].push(e.to);
 			} else {
 				addEdge(e.from, e.to, e.kind);
 			}
@@ -145,7 +155,7 @@ export async function load() {
 		ontologyTitles[id] = g.title ?? id;
 	}
 
-	return { nodes, edges, kindParents, kindLabels, ontologyOf, ontologyTitles };
+	return { nodes, edges, kindParents, kindLabels, ontologyOf, ontologyTitles, qualifierTargets };
 }
 
 export type GraphData = Awaited<ReturnType<typeof load>>;

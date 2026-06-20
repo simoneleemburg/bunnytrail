@@ -241,4 +241,71 @@ describe('loadKindRegistry — ontology relations with governedBy', () => {
 		expect(result.issues.some((i) => i.detail.includes('qualifierDomain') && i.detail.includes('array'))).toBe(true);
 		expect(result.relations.get('cultural/originated-on')?.qualifierDomain).toBeUndefined();
 	});
+
+	it('emits an issue for an unknown field inside a relation entry', async () => {
+		const yaml = [
+			'title: Cultural',
+			'relations:',
+			'  method-of:',
+			'    outLabel: Method of',
+			'    inLabel: Methods',
+			'    domain: [method]',
+			'    codomain: [phenomenon]',
+			'    somethingSilly: here'
+		].join('\n');
+		const dir = await seedOntologyDir(yaml, ['method', 'phenomenon']);
+		const result = await loadKindRegistry(dir);
+		expect(
+			result.issues.some(
+				(i) => i.kind === 'invalid-yaml' && i.detail.includes("unknown field 'somethingSilly'")
+			)
+		).toBe(true);
+		// The relation itself still parses successfully
+		expect(result.relations.get('cultural/method-of')?.outLabel).toBe('Method of');
+	});
+
+	it('emits an issue for an unknown top-level field in _ontology.yaml', async () => {
+		const yaml = [
+			'title: Process',
+			'description: Concepts related to process.',
+			'relations:',
+			'  method-of:',
+			'    outLabel: Method of',
+			'    inLabel: Methods',
+			'someOtherStuffThatDoesntBelong:',
+			'  - foo',
+			'  - bar'
+		].join('\n');
+		const dir = await seedOntologyDir(yaml, []);
+		const result = await loadKindRegistry(dir);
+		expect(
+			result.issues.some(
+				(i) =>
+					i.kind === 'invalid-yaml' &&
+					i.detail.includes("unknown field 'someOtherStuffThatDoesntBelong'")
+			)
+		).toBe(true);
+		// title and description are still read correctly
+		// (the registry still loads what it can)
+	});
+
+	it('emits no issue for a clean _ontology.yaml with all known fields', async () => {
+		const yaml = [
+			'title: Cultural',
+			'description: Cultural relations.',
+			'relations:',
+			'  member-of:',
+			'    outLabel: Member of',
+			'    inLabel: Members',
+			'    domain: [character]',
+			'    codomain: [cultural-group]',
+			'    qualifier: required',
+			'    qualifierDomain: [role]',
+			'    governedBy: cultural/role-in'
+		].join('\n');
+		const dir = await seedOntologyDir(yaml, ['character', 'cultural-group', 'role']);
+		const result = await loadKindRegistry(dir);
+		const unknownIssues = result.issues.filter((i) => i.detail.includes('unknown field'));
+		expect(unknownIssues).toEqual([]);
+	});
 });

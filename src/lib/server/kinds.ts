@@ -189,6 +189,16 @@ async function isOntologyFolder(dir: string): Promise<boolean> {
 	return !hasKindYaml;
 }
 
+/** Known top-level keys in an `_ontology.yaml` file. */
+const KNOWN_ONTOLOGY_FIELDS = new Set(['title', 'description', 'relations']);
+
+/** Known keys inside a single relation entry in `_ontology.yaml`. */
+const KNOWN_RELATION_ENTRY_FIELDS = new Set([
+	'outLabel', 'inLabel',
+	'domain', 'codomain', 'qualifierDomain',
+	'governedBy', 'qualifier'
+]);
+
 /**
  * Load a `_ontology.yaml` file and return an `Ontology`.
  */
@@ -222,6 +232,16 @@ async function loadOntologyFile(
 			issues.push({
 				kind: 'invalid-yaml',
 				detail: `${relTo(yamlPath, rootDir)}: ${field} must be a string`
+			});
+		}
+	}
+
+	// Unknown top-level fields.
+	for (const key of Object.keys(obj)) {
+		if (!KNOWN_ONTOLOGY_FIELDS.has(key)) {
+			issues.push({
+				kind: 'invalid-yaml',
+				detail: `${relTo(yamlPath, rootDir)}: unknown field '${key}'`
 			});
 		}
 	}
@@ -308,6 +328,16 @@ function parseOntologyRelations(
 			}
 		}
 
+		// Unknown fields inside the relation entry.
+		for (const key of Object.keys(e)) {
+			if (!KNOWN_RELATION_ENTRY_FIELDS.has(key)) {
+				issues.push({
+					kind: 'invalid-yaml',
+					detail: `${context}: unknown field '${key}'`
+				});
+			}
+		}
+
 		// Prefix with ontology id: "cultural/member-of".
 		const fullId = `${ontologyId}/${slug}`;
 		registry.set(fullId, schema);
@@ -342,6 +372,16 @@ async function readOntologyRelations(
 	}
 
 	const obj = parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : {};
+
+	// Unknown top-level fields.
+	for (const key of Object.keys(obj)) {
+		if (!KNOWN_ONTOLOGY_FIELDS.has(key)) {
+			issues.push({
+				kind: 'invalid-yaml',
+				detail: `${relTo(yamlPath, rootDir)}: unknown field '${key}'`
+			});
+		}
+	}
 
 	// For root ontology: ontologyId is null, so we use a sentinel that gets
 	// stripped — pass empty string and do bare-slug insertion below.
@@ -407,6 +447,16 @@ async function readOntologyRelations(
 				});
 			} else {
 				schema.qualifier = 'required';
+			}
+		}
+
+		// Unknown fields inside the relation entry.
+		for (const key of Object.keys(e)) {
+			if (!KNOWN_RELATION_ENTRY_FIELDS.has(key)) {
+				issues.push({
+					kind: 'invalid-yaml',
+					detail: `${context}: unknown field '${key}'`
+				});
 			}
 		}
 

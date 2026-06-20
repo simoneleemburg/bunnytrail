@@ -410,14 +410,23 @@
 			: allNeighbours;
 
 		// Expand one extra hop through qualifier-node neighbours: if a 1-hop
-		// neighbour is a qualifier intermediary, include *its* neighbours too so
-		// the full member→qualifier→group chain is always visible in ego mode.
+		// neighbour is a qualifier intermediary, include its qualifier-in targets
+		// (the group side) so the full member→qualifier→group chain is always
+		// visible in ego mode. Restrict to targets that the center entity itself
+		// actually relates to — other entities sharing the same qualifier but
+		// pointing to different targets should not appear here.
+		const centerQualifierTargets = new Set(data.qualifierTargets[centerId] ?? []);
 		const expandedNeighbours = new Set(neighbours);
 		for (const nid of neighbours) {
 			const n = nodeById.get(nid);
-		if (!n?.isQualifierNode) continue;
-		for (const secondHop of (neighboursOf.get(nid) ?? new Set())) {
-				if (secondHop === centerId) continue; // don't re-add self
+			if (!n?.isQualifierNode) continue;
+			for (const e of (edgesOf.get(nid) ?? [])) {
+				// Only follow qualifier-in edges where the qualifier node is the source
+				if (e.kind !== 'qualifier-in' || e.source !== nid) continue;
+				const secondHop = e.target;
+				if (secondHop === centerId) continue;
+				// Only include targets this center actually relates to via qualifiers
+				if (!centerQualifierTargets.has(secondHop)) continue;
 				if (allowedNeighbours && !allowedNeighbours.has(secondHop)) continue;
 				expandedNeighbours.add(secondHop);
 			}
@@ -427,15 +436,20 @@
 
 		// Also collect edges that connect qualifier-node neighbours to their
 		// second-hop targets (qualifier→group edges not incident to centerId).
+		// Restrict qualifier-in edges to targets this center entity actually
+		// relates to — avoids drawing Evolution→Ashara when that edge was
+		// contributed by a different entity (e.g. Shar) that isn't in this ego.
 		for (const nid of expandedNeighbours) {
 			const n = nodeById.get(nid);
 			if (!n?.isQualifierNode) continue;
 			for (const e of (edgesOf.get(nid) ?? [])) {
-				// Only include edges where both endpoints are in the ego set
 				const otherId = e.source === nid ? e.target : e.source;
-				if (otherId !== centerId && expandedNeighbours.has(otherId)) {
-					egoEdges.push(e);
-				}
+				if (otherId === centerId) continue;
+				if (!expandedNeighbours.has(otherId)) continue;
+				// For qualifier-in edges, only include if the target is one this
+				// center entity actually reaches via a qualifier.
+				if (e.kind === 'qualifier-in' && !centerQualifierTargets.has(otherId)) continue;
+				egoEdges.push(e);
 			}
 		}
 
