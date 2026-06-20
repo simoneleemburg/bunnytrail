@@ -133,12 +133,12 @@ export async function loadEntityPage(entity: Entity) {
 	const outEdges = graph.outEdges(id).map((e) => ({
 		...e,
 		toEntity: pickCard(graph.get(e.to), cardSummaryHtml),
-		roleEntity: e.role ? pickRoleEntity(graph.get(e.role)) : null
+		qualifierEntity: e.qualifier ? pickQualifierEntity(graph.get(e.qualifier)) : null
 	}));
 	const inEdges = graph.inEdges(id).map((e) => ({
 		...e,
 		fromEntity: pickCard(graph.get(e.from), cardSummaryHtml),
-		roleEntity: e.role ? pickRoleEntity(graph.get(e.role)) : null
+		qualifierEntity: e.qualifier ? pickQualifierEntity(graph.get(e.qualifier)) : null
 	}));
 
 	// Filesystem-derived containment: entities living *inside* this
@@ -272,8 +272,8 @@ export async function loadEntityPage(entity: Entity) {
 				from: slice.speciesId,
 				to: id,
 				kind: 'inhabits',
-				fromEntity: pickCard(entity, cardSummaryHtml),
-				roleEntity: null
+			fromEntity: pickCard(entity, cardSummaryHtml),
+			qualifierEntity: null
 			});
 		}
 	}
@@ -289,7 +289,7 @@ export async function loadEntityPage(entity: Entity) {
 			to: entry.worldId,
 			kind: 'inhabits',
 			toEntity: pickCard(worldEntity, cardSummaryHtml),
-			roleEntity: null
+			qualifierEntity: null
 		});
 	}
 
@@ -379,17 +379,17 @@ export async function loadEntityPage(entity: Entity) {
 		rank: typeof e.meta.rank === 'number' ? e.meta.rank : null
 	}));
 
-	// Role holders: entities that reference this entity in the `role` field
-	// of one of their relations. Surfaces on role-kind entity pages as a
+	// Qualifier holders: entities that reference this entity in the `qualifier` field
+	// of one of their relations. Surfaces on qualifier-kind entity pages as a
 	// "Holders" tab — analogous to the "Instances" tab but driven by the
-	// role relation pattern rather than the `class:` field.
+	// qualifier relation pattern rather than the `class:` field.
 	// Each entry also carries the group the holder belongs to (the `target`
-	// of the relation that carries this role) so the tab can show
+	// of the relation that carries this qualifier) so the tab can show
 	// "Old Elfric — The Dawncallers" at a glance.
-	const roleHolders = graph.all()
+	const qualifierHolders = graph.all()
 		.flatMap((e) =>
 			(e.meta.relations ?? [])
-				.filter((rel) => rel.role === id)
+				.filter((rel) => rel.qualifier === id)
 				.map((rel) => ({ holder: e, targetId: rel.target }))
 		)
 		.map(({ holder, targetId }) => {
@@ -531,7 +531,7 @@ export async function loadEntityPage(entity: Entity) {
 		craftHref: entity.craft !== null ? `/${entity.id}/craft` : null,
 		rankNav,
 		classMates,
-		roleHolders,
+		qualifierHolders,
 		statistics,
 		vocabulary,
 		namesInOtherLanguages,
@@ -558,8 +558,8 @@ function pickCard(
 	};
 }
 
-/** Minimal role-entity shape used for sub-group headings in the relations sidebar. */
-function pickRoleEntity(e: ReturnType<typeof graph.get>): { id: string; name: string; href: string } | null {
+/** Minimal qualifier-entity shape used for sub-group headings in the relations sidebar. */
+function pickQualifierEntity(e: ReturnType<typeof graph.get>): { id: string; name: string; href: string } | null {
 	if (!e) return null;
 	return { id: e.id, name: e.meta.name, href: `/${e.id}` };
 }

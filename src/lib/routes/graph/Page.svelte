@@ -28,8 +28,8 @@
 		cluster: string;
 		degree: number;
 		isCenter?: boolean;
-		/** Mirrors GraphNode.isRoleNode — used to expand ego graphs by one extra hop. */
-		isRoleNode: boolean;
+		/** Mirrors GraphNode.isQualifierNode — used to expand ego graphs by one extra hop. */
+		isQualifierNode: boolean;
 	}
 
 	interface SimEdge extends SimulationLinkDatum<SimNode> {
@@ -387,9 +387,9 @@
 				name: n.name,
 				kind: n.kind,
 				cluster: n.cluster,
-				degree: degrees.get(n.id) ?? 0,
-				isRoleNode: n.isRoleNode,
-				x: cx0 + spiralR * Math.cos(spiralA),
+			degree: degrees.get(n.id) ?? 0,
+			isQualifierNode: n.isQualifierNode,
+			x: cx0 + spiralR * Math.cos(spiralA),
 				y: cy0 + spiralR * Math.sin(spiralA)
 			};
 			nodeMap.set(n.id, sn);
@@ -409,14 +409,14 @@
 			? new Set([...allNeighbours].filter((id) => allowedNeighbours.has(id)))
 			: allNeighbours;
 
-		// Expand one extra hop through role-node neighbours: if a 1-hop
-		// neighbour is a role intermediary, include *its* neighbours too so
-		// the full member→role→group chain is always visible in ego mode.
+		// Expand one extra hop through qualifier-node neighbours: if a 1-hop
+		// neighbour is a qualifier intermediary, include *its* neighbours too so
+		// the full member→qualifier→group chain is always visible in ego mode.
 		const expandedNeighbours = new Set(neighbours);
 		for (const nid of neighbours) {
 			const n = nodeById.get(nid);
-			if (!n?.isRoleNode) continue;
-			for (const secondHop of (neighboursOf.get(nid) ?? new Set())) {
+		if (!n?.isQualifierNode) continue;
+		for (const secondHop of (neighboursOf.get(nid) ?? new Set())) {
 				if (secondHop === centerId) continue; // don't re-add self
 				if (allowedNeighbours && !allowedNeighbours.has(secondHop)) continue;
 				expandedNeighbours.add(secondHop);
@@ -425,11 +425,11 @@
 
 		const egoEdges = (edgesOf.get(centerId) ?? []).slice();
 
-		// Also collect edges that connect role-node neighbours to their
-		// second-hop targets (role→group edges not incident to centerId).
+		// Also collect edges that connect qualifier-node neighbours to their
+		// second-hop targets (qualifier→group edges not incident to centerId).
 		for (const nid of expandedNeighbours) {
 			const n = nodeById.get(nid);
-			if (!n?.isRoleNode) continue;
+			if (!n?.isQualifierNode) continue;
 			for (const e of (edgesOf.get(nid) ?? [])) {
 				// Only include edges where both endpoints are in the ego set
 				const otherId = e.source === nid ? e.target : e.source;
@@ -467,9 +467,9 @@
 				name: n.name,
 				kind: n.kind,
 				cluster: n.cluster,
-				degree: degrees.get(n.id) ?? 0,
-				isRoleNode: n.isRoleNode,
-				isCenter,
+			degree: degrees.get(n.id) ?? 0,
+			isQualifierNode: n.isQualifierNode,
+			isCenter,
 				// Pin the center node and give it an explicit start position
 				...(isCenter ? { fx: width / 2, fy: height / 2, x: width / 2, y: height / 2 } : {})
 			};
@@ -500,26 +500,26 @@
 		const neighbourCount = isEgo ? nodes.length - 1 : 0;
 		const egoRadius = Math.max(180, 120 + neighbourCount * 18);
 
-		// Role nodes sit at ~55% of the outer radius — they're intermediaries,
+		// Qualifier nodes sit at ~55% of the outer radius — they're intermediaries,
 		// not endpoints, so they should visually bridge center and outer nodes.
-		const roleRadius = egoRadius * 0.55;
+		const qualifierRadius = egoRadius * 0.55;
 
 		// Pre-position all ego-graph nodes before forceSimulation() sees them,
 		// so D3 cannot assign its own initial positions (which start near origin).
 		//
-		// Endpoint nodes (non-role, non-center) are spaced evenly around the
-		// outer ring. Each role node is then placed at the midpoint angle
+		// Endpoint nodes (non-qualifier, non-center) are spaced evenly around the
+		// outer ring. Each qualifier node is then placed at the midpoint angle
 		// between the two endpoint nodes it bridges (the member it receives a
-		// `holds-role` edge from, and the group it points to via `role-in`),
-		// at the inner roleRadius. This makes the chain read left-to-right
+		// `holds-qualifier` edge from, and the group it points to via `qualifier-in`),
+		// at the inner qualifierRadius. This makes the chain read left-to-right
 		// (or at whatever angle its endpoints land) rather than scattering
-		// role nodes to arbitrary positions in the ring.
+		// qualifier nodes to arbitrary positions in the ring.
 		if (isEgo) {
 			const center = nodes.find((n) => n.isCenter);
 			if (center) { center.x = cx; center.y = cy; }
 
-			const endpointNodes = nodes.filter((n) => !n.isCenter && !n.isRoleNode);
-			const roleNodes     = nodes.filter((n) => !n.isCenter &&  n.isRoleNode);
+			const endpointNodes = nodes.filter((n) => !n.isCenter && !n.isQualifierNode);
+			const qualifierNodes     = nodes.filter((n) => !n.isCenter &&  n.isQualifierNode);
 
 			// Assign evenly-spaced angles to endpoint nodes only.
 			const angleOf = new Map<string, number>();
@@ -530,11 +530,11 @@
 				n.y = cy + egoRadius * Math.sin(angle);
 			});
 
-			// Place each role node at the midpoint angle of its two adjacent
-			// endpoint nodes. We look at the edge list to find which endpoint
-			// nodes surround this role node (holds-role source + role-in target).
-			for (const rn of roleNodes) {
-				// Collect endpoint neighbours of this role node from edges.
+		// Place each qualifier node at the midpoint angle of its two adjacent
+		// endpoint nodes. We look at the edge list to find which endpoint
+		// nodes surround this qualifier node (holds-qualifier source + qualifier-in target).
+		for (const rn of qualifierNodes) {
+				// Collect endpoint neighbours of this qualifier node from edges.
 				const neighbourAngles: number[] = [];
 				for (const e of edges) {
 					const src = e.source as string;
@@ -564,8 +564,8 @@
 					midAngle = -Math.PI / 2;
 				}
 
-				rn.x = cx + roleRadius * Math.cos(midAngle);
-				rn.y = cy + roleRadius * Math.sin(midAngle);
+			rn.x = cx + qualifierRadius * Math.cos(midAngle);
+			rn.y = cy + qualifierRadius * Math.sin(midAngle);
 			}
 		}
 
@@ -605,7 +605,7 @@
 			if (center2) { center2.x = cx; center2.y = cy; }
 			nonCenter2.forEach((n, i) => {
 				const angle = -Math.PI / 2 + (2 * Math.PI * i) / Math.max(nonCenter2.length, 1);
-				const r = n.isRoleNode ? roleRadius : egoRadius;
+				const r = n.isQualifierNode ? qualifierRadius : egoRadius;
 				n.x = cx + r * Math.cos(angle);
 				n.y = cy + r * Math.sin(angle);
 			});
@@ -627,8 +627,8 @@
 						.distance(egoRadius)
 						.strength(0.3)
 				)
-				.force('radial', forceRadial<SimNode>(
-					(d) => d.isCenter ? 0 : d.isRoleNode ? roleRadius : egoRadius,
+			.force('radial', forceRadial<SimNode>(
+				(d) => d.isCenter ? 0 : d.isQualifierNode ? qualifierRadius : egoRadius,
 					cx, cy
 				).strength((d) => d.isCenter ? 0 : 0.8));
 
@@ -1044,15 +1044,15 @@
 		stroke: #b8a4c4;
 	}
 
-	.graph-edge[data-kind='holds-role'],
-	.graph-edge[data-kind='role-in'] {
+	.graph-edge[data-kind='holds-qualifier'],
+	.graph-edge[data-kind='qualifier-in'] {
 		stroke: #c7a15a;
 		stroke-opacity: 0.25;
 		stroke-dasharray: 4 3;
 	}
 
-	.graph-edge--active[data-kind='holds-role'],
-	.graph-edge--active[data-kind='role-in'] {
+	.graph-edge--active[data-kind='holds-qualifier'],
+	.graph-edge--active[data-kind='qualifier-in'] {
 		stroke-opacity: 0.8;
 		stroke-width: 1.5;
 	}

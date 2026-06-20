@@ -113,11 +113,11 @@ export function validateRelations(args: ValidateArgs): void {
 					detail: `relation ${rel.kind} → ${rel.target} (not found)`
 				});
 			}
-			if (rel.role !== undefined && !entities.has(rel.role)) {
+			if (rel.qualifier !== undefined && !entities.has(rel.qualifier)) {
 				issues.push({
 					kind: 'broken-link',
 					entity: entity.id,
-					detail: `relation ${rel.kind} → ${rel.target}: role → ${rel.role} (not found)`
+					detail: `relation ${rel.kind} → ${rel.target}: qualifier → ${rel.qualifier} (not found)`
 				});
 			}
 		}
@@ -583,39 +583,39 @@ export function validateUnlabelledWikilinks(args: ValidateArgs): void {
 }
 
 /**
- * Validate `role: required` and `governedBy` constraints declared on relation schemas.
+ * Validate `qualifier: required` and `governedBy` constraints declared on relation schemas.
  *
  * Two independent checks, both emitting `broken-link` issues:
  *
- * **`role: required`** — every instance of the relation must carry a `role:`
- * qualifier. Missing role → health warning.
+ * **`qualifier: required`** — every instance of the relation must carry a `qualifier:`
+ * field. Missing qualifier → health warning.
  *
- * **`governedBy: <relation-kind>`** — when a `role:` qualifier *is* present,
- * the role entity must hold an outgoing relation of the named kind pointing at
+ * **`governedBy: <relation-kind>`** — when a `qualifier:` field *is* present,
+ * the qualifier entity must hold an outgoing relation of the named kind pointing at
  * the **same target** OR at any entity in the target's **class chain**.
  *
  * The class-chain resolution means: if `the-dawncallers` has `class: herd`,
- * then a `role-in → herd` backing edge on the role entity satisfies the
+ * then a `role-in → herd` backing edge on the qualifier entity satisfies the
  * constraint for a `member-of → the-dawncallers` instance. This mirrors the
- * instance/class relationship: a role defined for the class-type applies to
+ * instance/class relationship: a qualifier defined for the class-type applies to
  * all concrete instances of that class.
  *
- * Fires only when `role` is present and resolves; use alongside `role: required`
+ * Fires only when `qualifier` is present and resolves; use alongside `qualifier: required`
  * when you want both guarantees.
  */
 export function validateGovernedByConstraints(args: ValidateArgs): void {
 	const { entities, relationRegistry, issues } = args;
 
 	// Collect the two constraint sets up-front.
-	const roleRequired = new Set<string>();   // relation kinds where role: required
+	const qualifierRequired = new Set<string>();   // relation kinds where qualifier: required
 	const governedKinds = new Map<string, string>(); // relation kind → governedBy kind
 
 	for (const [id, schema] of relationRegistry) {
-		if (schema.role === 'required') roleRequired.add(id);
+		if (schema.qualifier === 'required') qualifierRequired.add(id);
 		if (schema.governedBy) governedKinds.set(id, schema.governedBy);
 	}
 
-	if (roleRequired.size === 0 && governedKinds.size === 0) return;
+	if (qualifierRequired.size === 0 && governedKinds.size === 0) return;
 
 	// Build the backing-edge index only when governedBy constraints exist.
 	// Index: governedBy-kind → Set<"roleEntityId|targetId">
@@ -644,7 +644,7 @@ export function validateGovernedByConstraints(args: ValidateArgs): void {
 		while (cur && !seen.has(cur)) {
 			chain.push(cur);
 			seen.add(cur);
-			const cls = entities.get(cur)?.meta.class;
+			const cls: unknown = entities.get(cur)?.meta.class;
 			cur = typeof cls === 'string' && cls ? cls : undefined;
 		}
 		return chain;
@@ -653,30 +653,30 @@ export function validateGovernedByConstraints(args: ValidateArgs): void {
 	// Validate each relation instance.
 	for (const entity of entities.values()) {
 		for (const rel of entity.meta.relations ?? []) {
-			// Check 1: role: required
-			if (roleRequired.has(rel.kind) && !rel.role) {
+			// Check 1: qualifier: required
+			if (qualifierRequired.has(rel.kind) && !rel.qualifier) {
 				issues.push({
 					kind: 'broken-link',
 					entity: entity.id,
-					detail: `relation '${rel.kind}' → ${rel.target}: missing required 'role' qualifier`
+					detail: `relation '${rel.kind}' → ${rel.target}: missing required 'qualifier' field`
 				});
 			}
 
-			// Check 2: governedBy — only when a role is present and resolves
+			// Check 2: governedBy — only when a qualifier is present and resolves
 			const governedByKind = governedKinds.get(rel.kind);
-			if (governedByKind && rel.role && entities.has(rel.role)) {
+			if (governedByKind && rel.qualifier && entities.has(rel.qualifier)) {
 				const backingSet = backingEdges.get(governedByKind);
 				// Accept a backing edge to the target itself or any entity in
 				// its class chain (e.g. role-in → herd satisfies member-of →
 				// the-dawncallers when the-dawncallers.class === herd).
 				const satisfied = classChain(rel.target).some(
-					(id) => backingSet?.has(`${rel.role}|${id}`)
+					(id) => backingSet?.has(`${rel.qualifier}|${id}`)
 				);
 				if (!satisfied) {
 					issues.push({
 						kind: 'broken-link',
 						entity: entity.id,
-						detail: `relation '${rel.kind}' → ${rel.target}: role '${rel.role}' has no '${governedByKind}' → '${rel.target}' (or its class) (required by governedBy constraint)`
+						detail: `relation '${rel.kind}' → ${rel.target}: qualifier '${rel.qualifier}' has no '${governedByKind}' → '${rel.target}' (or its class) (required by governedBy constraint)`
 					});
 				}
 			}

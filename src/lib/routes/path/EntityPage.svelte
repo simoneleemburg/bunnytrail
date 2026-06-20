@@ -36,13 +36,13 @@
 
 	// Tabs: shown when the entity has classMates (instances) and/or statistics.
 	// "About" wraps all existing page content; "Instances" lists classMates as cards;
-	// "Holders" lists roleHolders (entities holding this as a role);
+	// "Holders" lists qualifierHolders (entities holding this as a qualifier);
 	// "Statistics" shows structured statistics blocks; "Vocabulary" shows language words.
 	const hasClassMates = $derived(data.classMates.length > 0);
-	const hasRoleHolders = $derived(data.roleHolders.length > 0);
+	const hasQualifierHolders = $derived(data.qualifierHolders.length > 0);
 	const hasStatistics = $derived(data.statistics.length > 0);
 	const hasVocabulary = $derived(data.vocabulary.length > 0);
-	const hasTabs = $derived(hasClassMates || hasRoleHolders || hasStatistics || hasVocabulary);
+	const hasTabs = $derived(hasClassMates || hasQualifierHolders || hasStatistics || hasVocabulary);
 	const VALID_TABS = ['about', 'instances', 'holders', 'statistics', 'vocabulary'] as const;
 	type TabId = (typeof VALID_TABS)[number];
 
@@ -54,7 +54,7 @@
 
 	const effectiveTab = $derived.by(() => {
 		if (activeTab === 'instances' && !hasClassMates) return 'about';
-		if (activeTab === 'holders' && !hasRoleHolders) return 'about';
+		if (activeTab === 'holders' && !hasQualifierHolders) return 'about';
 		if (activeTab === 'statistics' && !hasStatistics) return 'about';
 		if (activeTab === 'vocabulary' && !hasVocabulary) return 'about';
 		return activeTab;
@@ -82,7 +82,7 @@
 		kind: string;
 		direction: 'out' | 'in';
 		note?: string;
-		roleEntity: { id: string; name: string; href: string } | null;
+		qualifierEntity: { id: string; name: string; href: string } | null;
 		entity: {
 			id: string;
 			name: string;
@@ -154,8 +154,8 @@
 	 * reads as "Includes". The user shouldn't have to think about which
 	 * way the underlying edge points.
 	 *
-	 * Within a group, edges that carry a `roleEntity` are sub-grouped
-	 * by that role. Edges without a role form an implicit final sub-group
+	 * Within a group, edges that carry a `qualifierEntity` are sub-grouped
+	 * by that qualifier. Edges without a qualifier form an implicit final sub-group
 	 * with no heading, so untagged members still appear.
 	 */
 	const relationGroups = $derived.by(() => {
@@ -165,7 +165,7 @@
 					kind: e.kind,
 					direction: 'out' as const,
 					note: e.note,
-					roleEntity: e.roleEntity ?? null,
+					qualifierEntity: e.qualifierEntity ?? null,
 					entity: e.toEntity
 				})
 			),
@@ -174,7 +174,7 @@
 					kind: e.kind,
 					direction: 'in' as const,
 					note: e.note,
-					roleEntity: e.roleEntity ?? null,
+					qualifierEntity: e.qualifierEntity ?? null,
 					entity: e.fromEntity
 				})
 			)
@@ -216,48 +216,48 @@
 			return true;
 		});
 
-		type RoleSubGroup = {
-			roleId: string | null; // null = no role (plain members)
-			roleEntity: { id: string; name: string; href: string } | null;
+		type QualifierSubGroup = {
+			qualifierId: string | null; // null = no qualifier (plain members)
+			qualifierEntity: { id: string; name: string; href: string } | null;
 			items: EdgeWithEntity[];
 		};
 		type Group = {
 			key: string;
 			label: string;
 			kind: string;
-			/** Present when all items share a single flat list (no role sub-grouping). */
+			/** Present when all items share a single flat list (no qualifier sub-grouping). */
 			items: EdgeWithEntity[];
-			/** Present when at least one item carries a roleEntity — mutually exclusive with flat items. */
-			roleSubGroups: RoleSubGroup[] | null;
+			/** Present when at least one item carries a qualifierEntity — mutually exclusive with flat items. */
+			qualifierSubGroups: QualifierSubGroup[] | null;
 		};
 
 		const groups = new Map<string, Group>();
 		for (const edge of deduped) {
 			const label = labelForKind(edge.kind, edge.direction);
 			const key = `${edge.direction}:${edge.kind}`;
-			if (!groups.has(key)) groups.set(key, { key, label, kind: edge.kind, items: [], roleSubGroups: null });
+			if (!groups.has(key)) groups.set(key, { key, label, kind: edge.kind, items: [], qualifierSubGroups: null });
 			groups.get(key)!.items.push(edge);
 		}
 
-		// For groups that contain any role-annotated edge, convert to
-		// sub-group structure. Roles are ordered by first appearance;
-		// un-roled items collect at the end under a null key.
+		// For groups that contain any qualifier-annotated edge, convert to
+		// sub-group structure. Qualifiers are ordered by first appearance;
+		// un-qualified items collect at the end under a null key.
 		for (const group of groups.values()) {
-			const hasRoles = group.items.some((e) => e.roleEntity !== null);
-			if (!hasRoles) continue;
+			const hasQualifiers = group.items.some((e) => e.qualifierEntity !== null);
+			if (!hasQualifiers) continue;
 
-			const subMap = new Map<string | null, RoleSubGroup>();
+			const subMap = new Map<string | null, QualifierSubGroup>();
 			for (const edge of group.items) {
-				const roleId = edge.roleEntity?.id ?? null;
-				if (!subMap.has(roleId)) {
-					subMap.set(roleId, { roleId, roleEntity: edge.roleEntity, items: [] });
+				const qualifierId = edge.qualifierEntity?.id ?? null;
+				if (!subMap.has(qualifierId)) {
+					subMap.set(qualifierId, { qualifierId, qualifierEntity: edge.qualifierEntity, items: [] });
 				}
-				subMap.get(roleId)!.items.push(edge);
+				subMap.get(qualifierId)!.items.push(edge);
 			}
-			// Named roles first (insertion order), then null (plain members).
+			// Named qualifiers first (insertion order), then null (plain members).
 			const named = [...subMap.entries()].filter(([k]) => k !== null).map(([, v]) => v);
 			const plain = subMap.get(null);
-			group.roleSubGroups = plain ? [...named, plain] : named;
+			group.qualifierSubGroups = plain ? [...named, plain] : named;
 		}
 
 		// Typed relations first (the structured signal), then wikilink
@@ -316,7 +316,7 @@
 					Instances
 				</button>
 			{/if}
-			{#if hasRoleHolders}
+			{#if hasQualifierHolders}
 				<button
 					type="button"
 					role="tab"
@@ -524,19 +524,19 @@
 									<a class="graph-link" href={'/graph?node=' + encodeURIComponent(data.entity.id)}>Graph →</a>
 								{/if}
 							</div>
-							{#if group.roleSubGroups}
-								{#each group.roleSubGroups as sub (sub.roleId ?? '__plain__')}
-									{@const subKey = group.key + ':' + (sub.roleId ?? '__plain__')}
-									{@const isExpanded = expanded.has(subKey)}
-									{@const visible =
-										sub.items.length > COLLAPSE_AT && !isExpanded
-											? sub.items.slice(0, COLLAPSE_AT)
-											: sub.items}
-									{#if sub.roleEntity}
-										<div class="role-sub-label">
-											<a href={sub.roleEntity.href}>{sub.roleEntity.name}</a>
-										</div>
-									{/if}
+						{#if group.qualifierSubGroups}
+							{#each group.qualifierSubGroups as sub (sub.qualifierId ?? '__plain__')}
+								{@const subKey = group.key + ':' + (sub.qualifierId ?? '__plain__')}
+								{@const isExpanded = expanded.has(subKey)}
+								{@const visible =
+									sub.items.length > COLLAPSE_AT && !isExpanded
+										? sub.items.slice(0, COLLAPSE_AT)
+										: sub.items}
+								{#if sub.qualifierEntity}
+									<div class="qualifier-sub-label">
+										<a href={sub.qualifierEntity.href}>{sub.qualifierEntity.name}</a>
+									</div>
+								{/if}
 									<ul>
 										{#each visible as item, i (item.entity?.id ?? i)}
 											{#if item.entity}
@@ -627,10 +627,10 @@
 		</div>
 	{/if}
 
-	{#if hasRoleHolders && effectiveTab === 'holders'}
+	{#if hasQualifierHolders && effectiveTab === 'holders'}
 		<div role="tabpanel" class="instances-panel">
 			<div class="grid">
-				{#each data.roleHolders as card (card.id)}
+				{#each data.qualifierHolders as card (card.id)}
 					<EntityCard
 						id={card.id}
 						name={card.name}
@@ -1048,10 +1048,10 @@
 		font-style: italic;
 	}
 
-	/* Role sub-group heading inside a relation group. Shown as a quiet
-	   small-caps label linking to the role entity's own page. Appears
-	   only when at least one member of the group carries a role. */
-	.role-sub-label {
+	/* Qualifier sub-group heading inside a relation group. Shown as a quiet
+	   small-caps label linking to the qualifier entity's own page. Appears
+	   only when at least one member of the group carries a qualifier. */
+	.qualifier-sub-label {
 		font-size: var(--text-xs);
 		font-variant-caps: all-small-caps;
 		letter-spacing: 0.08em;
@@ -1060,16 +1060,16 @@
 		margin-bottom: var(--space-1);
 	}
 
-	.role-sub-label:first-child {
+	.qualifier-sub-label:first-child {
 		margin-top: 0;
 	}
 
-	.role-sub-label a {
+	.qualifier-sub-label a {
 		color: inherit;
 		text-decoration: none;
 	}
 
-	.role-sub-label a:hover {
+	.qualifier-sub-label a:hover {
 		color: var(--accent);
 	}
 

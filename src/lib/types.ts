@@ -360,15 +360,15 @@ export interface Relation {
 	 */
 	order?: number;
 	/**
-	 * Optional role qualifier — the entity id of a role or position
+	 * Optional qualifier — the entity id of a role or position
 	 * the source entity holds *within* the target. For example, a
 	 * `member-of` relation from a person to a group can carry
-	 * `role: <path>/runtha` to express that the person is the herd
+	 * `qualifier: <path>/runtha` to express that the person is the herd
 	 * leader, not just a plain member. Multiple members of the same
-	 * group with different roles can then be sub-grouped by role on
+	 * group with different qualifiers can then be sub-grouped by qualifier on
 	 * the group's entity page.
 	 */
-	role?: EntityId;
+	qualifier?: EntityId;
 }
 
 /** Meta loaded from the YAML sidecar. */
@@ -618,8 +618,8 @@ export interface Edge {
 	note?: string;
 	/** See `Relation.order`. */
 	order?: number;
-	/** See `Relation.role`. */
-	role?: EntityId;
+	/** See `Relation.qualifier`. */
+	qualifier?: EntityId;
 }
 
 /** Health-check problems detected at load time. */
@@ -666,25 +666,25 @@ export interface RelationSchema extends RelationLabels {
 	codomain?: string[];
 	/**
 	 * When set to `'required'`, every instance of this relation must carry
-	 * a `role:` qualifier. Missing role emits a health-page warning.
+	 * a `qualifier:` field. Missing qualifier emits a health-page warning.
 	 *
-	 * Orthogonal to `governedBy`: you can require a role without constraining
+	 * Orthogonal to `governedBy`: you can require a qualifier without constraining
 	 * which backing edge it must satisfy, or constrain the backing edge without
-	 * forcing a role to be present on every instance.
+	 * forcing a qualifier to be present on every instance.
 	 */
-	role?: 'required';
+	qualifier?: 'required';
 	/**
-	 * When set, any instance of this relation that carries a `role:` qualifier
-	 * must have that role entity hold an outgoing relation of the kind named
+	 * When set, any instance of this relation that carries a `qualifier:` field
+	 * must have that qualifier entity hold an outgoing relation of the kind named
 	 * here pointing at the **same target**.
 	 *
 	 * Example: `member-of` with `governedBy: cultural/role-in` requires
-	 * that the `role` entity on the `member-of` edge has a `cultural/role-in`
+	 * that the `qualifier` entity on the `member-of` edge has a `cultural/role-in`
 	 * edge to the same institution. Violations emit a health-page warning.
 	 *
 	 * Value is the full prefixed relation id, e.g. `cultural/role-in`.
-	 * Does not imply `role: required` — set both when instances must always
-	 * carry a role AND that role must satisfy the backing-edge constraint.
+	 * Does not imply `qualifier: required` — set both when instances must always
+	 * carry a qualifier AND that qualifier must satisfy the backing-edge constraint.
 	 */
 	governedBy?: string;
 }

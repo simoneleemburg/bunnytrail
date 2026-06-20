@@ -1023,14 +1023,14 @@ async function seedGovernedByFixture(opts: {
 			'    inLabel: Roles',
 			'    domain: [role]',
 			'    codomain: [social-structure]',
-			'  member-of:',
-			'    outLabel: Member of',
-			'    inLabel: Members',
-			'    role: required',
-			'    governedBy: cultural/role-in',
-			'    domain: [character]',
-			'    codomain: [cultural-group]'
-		].join('\n')
+		'  member-of:',
+		'    outLabel: Member of',
+		'    inLabel: Members',
+		'    qualifier: required',
+		'    governedBy: cultural/role-in',
+		'    domain: [character]',
+		'    codomain: [cultural-group]'
+	].join('\n')
 	);
 	for (const k of ['role', 'character', 'cultural-group', 'social-structure']) {
 		const kd = join(ontoDir, k);
@@ -1071,7 +1071,7 @@ async function seedGovernedByFixture(opts: {
 }
 
 describe('validateGovernedByConstraints', () => {
-	it('emits no issue when a governed relation has role + matching backing edge', async () => {
+	it('emits no issue when a governed relation has qualifier + matching backing edge', async () => {
 		const { contentDir, kindsDir } = await seedGovernedByFixture({
 			runthaRelations: [
 				'relations:',
@@ -1082,7 +1082,7 @@ describe('validateGovernedByConstraints', () => {
 				'relations:',
 				'  - kind: cultural/member-of',
 				'    target: groups/dawncallers',
-				'    role: roles/runtha'
+				'    qualifier: roles/runtha'
 			].join('\n')
 		});
 		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
@@ -1091,7 +1091,7 @@ describe('validateGovernedByConstraints', () => {
 		expect(governed).toEqual([]);
 	});
 
-	it('flags a governed relation that is missing its role qualifier', async () => {
+	it('flags a governed relation that is missing its qualifier field', async () => {
 		const { contentDir, kindsDir } = await seedGovernedByFixture({
 			elfricRelations: [
 				'relations:',
@@ -1104,20 +1104,20 @@ describe('validateGovernedByConstraints', () => {
 		const issue = issues.find(
 			(i) =>
 				i.kind === 'broken-link' &&
-				i.detail.includes("missing required 'role' qualifier") &&
+				i.detail.includes("missing required 'qualifier' field") &&
 				i.entity === 'people/elfric'
 		);
 		expect(issue).toBeDefined();
 	});
 
-	it('flags a governed relation whose role has no backing edge to the target', async () => {
+	it('flags a governed relation whose qualifier has no backing edge to the target', async () => {
 		// Runtha exists but has no role-in → dawncallers (or its class)
 		const { contentDir, kindsDir } = await seedGovernedByFixture({
 			elfricRelations: [
 				'relations:',
 				'  - kind: cultural/member-of',
 				'    target: groups/dawncallers',
-				'    role: roles/runtha'
+				'    qualifier: roles/runtha'
 			].join('\n')
 		});
 		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
@@ -1131,10 +1131,10 @@ describe('validateGovernedByConstraints', () => {
 		expect(issue).toBeDefined();
 	});
 
-	it('passes when role has a backing edge to the class of the target, not the target itself', async () => {
+	it('passes when qualifier has a backing edge to the class of the target, not the target itself', async () => {
 		// Runtha has role-in → herd-type (a social-structure entity)
 		// The Dawncallers has class: groups/herd-type
-		// Elfric is member-of → the-dawncallers with role: runtha
+		// Elfric is member-of → the-dawncallers with qualifier: runtha
 		// → should pass because dawncallers.class === herd-type and runtha has role-in → herd-type
 		const base = await mkdtemp(join(tmpdir(), 'alteria-gov-class-'));
 		const contentDir = join(base, 'content');
@@ -1155,7 +1155,7 @@ describe('validateGovernedByConstraints', () => {
 				'  member-of:',
 				'    outLabel: Member of',
 				'    inLabel: Members',
-				'    role: required',
+				'    qualifier: required',
 				'    governedBy: cultural/role-in',
 				'    domain: [character]',
 				'    codomain: [cultural-group]'
@@ -1191,7 +1191,7 @@ describe('validateGovernedByConstraints', () => {
 		);
 		await writeFile(join(contentDir, 'roles', 'runtha', 'index.md'), '');
 
-		// elfric is member-of → the-dawncallers with role: runtha
+		// elfric is member-of → the-dawncallers with qualifier: runtha
 		await mkdir(join(contentDir, 'people', 'elfric'), { recursive: true });
 		await writeFile(
 			join(contentDir, 'people', 'elfric', 'index.yaml'),
@@ -1201,7 +1201,7 @@ describe('validateGovernedByConstraints', () => {
 				'relations:',
 				'  - kind: cultural/member-of',
 				'    target: groups/the-dawncallers',
-				'    role: roles/runtha'
+				'    qualifier: roles/runtha'
 			].join('\n')
 		);
 		await writeFile(join(contentDir, 'people', 'elfric', 'index.md'), '');
@@ -1212,8 +1212,8 @@ describe('validateGovernedByConstraints', () => {
 		expect(governed).toEqual([]);
 	});
 
-	it('does not flag a missing role when only governedBy is set (no role: required)', async () => {
-		// member-of has governedBy but NOT role: required — missing role is fine
+	it('does not flag a missing qualifier when only governedBy is set (no qualifier: required)', async () => {
+		// member-of has governedBy but NOT qualifier: required — missing qualifier is fine
 		const base = await mkdtemp(join(tmpdir(), 'alteria-gov-norole-'));
 		const contentDir = join(base, 'content');
 		const kindsDir = join(base, 'kinds');
@@ -1248,7 +1248,7 @@ describe('validateGovernedByConstraints', () => {
 		await writeFile(join(contentDir, 'groups', 'dawncallers', 'index.yaml'), 'name: The Dawncallers\nkind: cultural-group\n');
 		await writeFile(join(contentDir, 'groups', 'dawncallers', 'index.md'), '');
 
-		// Elfric has member-of with no role — should NOT trigger role: required
+		// Elfric has member-of with no qualifier — should NOT trigger qualifier: required
 		await mkdir(join(contentDir, 'people', 'elfric'), { recursive: true });
 		await writeFile(
 			join(contentDir, 'people', 'elfric', 'index.yaml'),
@@ -1264,13 +1264,13 @@ describe('validateGovernedByConstraints', () => {
 
 		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
 		const { issues } = await loadAll(contentDir);
-		const roleIssue = issues.find(
-			(i) => i.kind === 'broken-link' && i.detail.includes("missing required 'role'")
+		const qualifierIssue = issues.find(
+			(i) => i.kind === 'broken-link' && i.detail.includes("missing required 'qualifier'")
 		);
-		expect(roleIssue).toBeUndefined();
+		expect(qualifierIssue).toBeUndefined();
 	});
 
-	it('flags a governed relation whose role has a backing edge to a different target', async () => {
+	it('flags a governed relation whose qualifier has a backing edge to a different target', async () => {
 		// Runtha has role-in → dawncallers, but elfric's member-of points somewhere else.
 		// Simulate by adding a second group and having elfric point there.
 		const base = await mkdtemp(join(tmpdir(), 'alteria-gov-mismatch-'));
@@ -1289,16 +1289,16 @@ describe('validateGovernedByConstraints', () => {
 				'    inLabel: Roles',
 				'    domain: [role]',
 				'    codomain: [cultural-group]',
-				'  member-of:',
-				'    outLabel: Member of',
-				'    inLabel: Members',
-				'    role: required',
-				'    governedBy: cultural/role-in',
-				'    domain: [character]',
-				'    codomain: [cultural-group]'
-			].join('\n')
-		);
-		for (const k of ['role', 'character', 'cultural-group']) {
+			'  member-of:',
+			'    outLabel: Member of',
+			'    inLabel: Members',
+			'    qualifier: required',
+			'    governedBy: cultural/role-in',
+			'    domain: [character]',
+			'    codomain: [cultural-group]'
+		].join('\n')
+	);
+	for (const k of ['role', 'character', 'cultural-group']) {
 			const kd = join(ontoDir, k);
 			await mkdir(kd, { recursive: true });
 			await writeFile(join(kd, '_kind.yaml'), `singular: ${cap(k)}\nplural: ${cap(k)}s\n`);
@@ -1326,7 +1326,7 @@ describe('validateGovernedByConstraints', () => {
 			].join('\n')
 		);
 		await writeFile(join(contentDir, 'roles', 'runtha', 'index.md'), '');
-		// Elfric is member-of sunwalkers (not dawncallers) but role is runtha
+		// Elfric is member-of sunwalkers (not dawncallers) but qualifier is runtha
 		await mkdir(join(contentDir, 'people', 'elfric'), { recursive: true });
 		await writeFile(
 			join(contentDir, 'people', 'elfric', 'index.yaml'),
@@ -1336,7 +1336,7 @@ describe('validateGovernedByConstraints', () => {
 				'relations:',
 				'  - kind: cultural/member-of',
 				'    target: groups/sunwalkers',
-				'    role: roles/runtha'
+				'    qualifier: roles/runtha'
 			].join('\n')
 		);
 		await writeFile(join(contentDir, 'people', 'elfric', 'index.md'), '');

@@ -139,11 +139,11 @@ describe('loadKindRegistry — ontology relations with governedBy', () => {
 			'    inLabel: Roles',
 			'    domain: [role]',
 			'    codomain: [social-structure]',
-			'  member-of:',
-			'    outLabel: Member of',
-			'    inLabel: Members',
-			'    role: required',
-			'    governedBy: cultural/role-in',
+		'  member-of:',
+		'    outLabel: Member of',
+		'    inLabel: Members',
+		'    qualifier: required',
+		'    governedBy: cultural/role-in',
 			'    domain: [character]',
 			'    codomain: [cultural-group]'
 		].join('\n');
@@ -151,22 +151,22 @@ describe('loadKindRegistry — ontology relations with governedBy', () => {
 		const result = await loadKindRegistry(dir);
 		expect(result.issues).toEqual([]);
 		const memberOf = result.relations.get('cultural/member-of');
-		expect(memberOf?.role).toBe('required');
+		expect(memberOf?.qualifier).toBe('required');
 		expect(memberOf?.governedBy).toBe('cultural/role-in');
-		// governedBy and role on role-in itself are absent
+		// governedBy and qualifier on role-in itself are absent
 		const roleIn = result.relations.get('cultural/role-in');
 		expect(roleIn?.governedBy).toBeUndefined();
-		expect(roleIn?.role).toBeUndefined();
+		expect(roleIn?.qualifier).toBeUndefined();
 	});
 
-	it('parses role: required without governedBy', async () => {
+	it('parses qualifier: required without governedBy', async () => {
 		const yaml = [
 			'title: Cultural',
 			'relations:',
 			'  member-of:',
 			'    outLabel: Member of',
 			'    inLabel: Members',
-			'    role: required',
+			'    qualifier: required',
 			'    domain: [character]',
 			'    codomain: [cultural-group]'
 		].join('\n');
@@ -174,23 +174,23 @@ describe('loadKindRegistry — ontology relations with governedBy', () => {
 		const result = await loadKindRegistry(dir);
 		expect(result.issues).toEqual([]);
 		const memberOf = result.relations.get('cultural/member-of');
-		expect(memberOf?.role).toBe('required');
+		expect(memberOf?.qualifier).toBe('required');
 		expect(memberOf?.governedBy).toBeUndefined();
 	});
 
-	it('emits an issue for role with an invalid value', async () => {
+	it('emits an issue for qualifier with an invalid value', async () => {
 		const yaml = [
 			'title: Cultural',
 			'relations:',
 			'  member-of:',
 			'    outLabel: Member of',
 			'    inLabel: Members',
-			'    role: optional'
+			'    qualifier: optional'
 		].join('\n');
 		const dir = await seedOntologyDir(yaml, []);
 		const result = await loadKindRegistry(dir);
 		expect(result.issues.some((i) => i.detail.includes("must be 'required'"))).toBe(true);
-		expect(result.relations.get('cultural/member-of')?.role).toBeUndefined();
+		expect(result.relations.get('cultural/member-of')?.qualifier).toBeUndefined();
 	});
 
 	it('emits no issue when governedBy is absent', async () => {

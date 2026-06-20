@@ -296,15 +296,15 @@ function parseOntologyRelations(
 		const governedBy = readStringFrom(e, 'governedBy', `${context}.governedBy`, issues);
 		if (governedBy) schema.governedBy = governedBy;
 
-		const roleVal = e['role'];
-		if (roleVal !== undefined && roleVal !== null) {
-			if (roleVal !== 'required') {
+		const qualifierVal = e['qualifier'];
+		if (qualifierVal !== undefined && qualifierVal !== null) {
+			if (qualifierVal !== 'required') {
 				issues.push({
 					kind: 'invalid-yaml',
-					detail: `${context}.role must be 'required' when present`
+					detail: `${context}.qualifier must be 'required' when present`
 				});
 			} else {
-				schema.role = 'required';
+				schema.qualifier = 'required';
 			}
 		}
 
@@ -398,15 +398,15 @@ async function readOntologyRelations(
 		const governedBy = readStringFrom(e, 'governedBy', `${context}.governedBy`, issues);
 		if (governedBy) schema.governedBy = governedBy;
 
-		const roleVal = e['role'];
-		if (roleVal !== undefined && roleVal !== null) {
-			if (roleVal !== 'required') {
+		const qualifierVal = e['qualifier'];
+		if (qualifierVal !== undefined && qualifierVal !== null) {
+			if (qualifierVal !== 'required') {
 				issues.push({
 					kind: 'invalid-yaml',
-					detail: `${context}.role must be 'required' when present`
+					detail: `${context}.qualifier must be 'required' when present`
 				});
 			} else {
-				schema.role = 'required';
+				schema.qualifier = 'required';
 			}
 		}
 
