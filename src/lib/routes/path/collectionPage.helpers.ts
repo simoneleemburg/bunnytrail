@@ -178,6 +178,10 @@ export function buildSubcollectionEntry(path: string, tree: KindTree) {
 	const kindCounts: Record<string, number> = {};
 	const tagCounts = new Map<string, number>();
 	const tagsByKind: Record<string, Map<string, number>> = {};
+	// era ref → count of entities carrying that era (explicit or defaulted).
+	const eraCounts: Record<string, number> = {};
+	// Track whether any entity has no era at all (always-visible entities).
+	let noEraCount = 0;
 
 	for (const e of subEntities) {
 		const direct = typeof e.meta.kind === 'string' ? e.meta.kind : '—';
@@ -203,6 +207,14 @@ export function buildSubcollectionEntry(path: string, tree: KindTree) {
 		for (const t of e.meta.tags ?? []) {
 			tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
 		}
+		// Era counts: each era ref the entity belongs to gets a tally.
+		if (e.meta.era && e.meta.era.length > 0) {
+			for (const ref of e.meta.era) {
+				eraCounts[ref] = (eraCounts[ref] ?? 0) + 1;
+			}
+		} else {
+			noEraCount++;
+		}
 	}
 
 	const col = graph.collection(path);
@@ -215,6 +227,8 @@ export function buildSubcollectionEntry(path: string, tree: KindTree) {
 		kindCounts,
 		tags: rankTags(tagCounts),
 		tagsByKind: Object.fromEntries(Object.entries(tagsByKind).map(([k, m]) => [k, rankTags(m)])),
+		eraCounts,
+		noEraCount,
 		// Always present; aggregate loaders override this to `true` for cluster tiles.
 		isCluster: false as boolean
 	};

@@ -110,6 +110,8 @@ export function loadAggregateSubShelfPage(shelf: string, subShelf: string) {
 				kindCounts: combined.kindCounts,
 				tags,
 				tagsByKind: {} as Record<string, Array<{ label: string; count: number }>>,
+				eraCounts: {} as Record<string, number>,
+				noEraCount: 0,
 				isCluster: false as const
 			};
 		})

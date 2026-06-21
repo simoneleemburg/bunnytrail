@@ -117,7 +117,8 @@ export class Graph {
 			const { entities, issues, kindRegistry, ontologies, relations, properties, collections, clusters, universalFolders } =
 				await loadAll(contentDir, {
 					allowUndefinedRelations: worldConfig.allowUndefinedRelations,
-					allowUndefinedProperties: worldConfig.allowUndefinedProperties
+					allowUndefinedProperties: worldConfig.allowUndefinedProperties,
+					eraConfig: worldConfig.eras
 				});
 			const edges = buildEdges(entities);
 			this.#entities = entities;

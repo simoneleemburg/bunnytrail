@@ -375,6 +375,12 @@
 					// Don't repeat active tags inside the tile.
 					displayTags = baseTags.filter((t) => !activeTags.has(t.label));
 				}
+				// Era filter: hide the tile when the active era has zero
+				// matching entities AND no era-less (always-visible) entities.
+				if (activeEra !== null && filteredCount > 0) {
+					const eraCount = (sub.eraCounts?.[activeEra] ?? 0) + (sub.noEraCount ?? 0);
+					if (eraCount === 0) filteredCount = 0;
+				}
 				return {
 					...sub,
 					visibleCount: filteredCount,

@@ -73,6 +73,18 @@ export interface KindMeta {
 	 * `person` entity's `class:` must point to a `humanoid`-kinded entity.
 	 */
 	class?: string;
+	/**
+	 * When `true`, entities of this kind (and any descendant kind) that
+	 * carry no explicit `era:` field are assigned the cluster's default
+	 * era at load time. This means they are included in (and filtered by)
+	 * the era picker rather than always being visible regardless of the
+	 * active era filter.
+	 *
+	 * Example: `eraBounded: true` on the `character` kind means every
+	 * character without an explicit era is implicitly in the cluster's
+	 * default era (e.g. `current`).
+	 */
+	eraBounded?: boolean;
 }
 
 /**

@@ -533,6 +533,19 @@ function parseKindMeta(
 		}
 	}
 
+	// eraBounded is a boolean flag.
+	const eraBounded = obj['eraBounded'];
+	if (eraBounded !== undefined && eraBounded !== null) {
+		if (typeof eraBounded !== 'boolean') {
+			issues.push({
+				kind: 'invalid-yaml',
+				detail: `${relTo(yamlPath, rootDir)}: eraBounded must be a boolean`
+			});
+		} else if (eraBounded) {
+			meta.eraBounded = true;
+		}
+	}
+
 	// Parse optional properties block.
 	const rawProps = obj['properties'];
 	if (rawProps !== undefined && rawProps !== null) {

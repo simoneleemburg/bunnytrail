@@ -40,6 +40,15 @@ export async function load({ url }: { url: URL }) {
 	const selectedCluster = readScope(url.pathname, searchParams, ctx);
 	const activeEra = building ? null : (searchParams.get('era') ?? null);
 
+	// Helper: true if the entity is visible under the active era filter.
+	// Mirrors the matchesEra logic in CollectionPage.svelte:
+	// no era field → always visible; explicit era → must include activeEra.
+	const entityMatchesEra = (e: { meta: { era?: string[] } }): boolean => {
+		if (!activeEra) return true;
+		if (!e.meta.era || e.meta.era.length === 0) return true;
+		return e.meta.era.includes(activeEra);
+	};
+
 	// In All scope, shelf links go to cross-cluster aggregates; we
 	// don't paint ?scope=all on these because aggregate URLs already
 	// *are* All-scope URLs by construction.
@@ -59,24 +68,19 @@ export async function load({ url }: { url: URL }) {
 			const shelfPaths = graph.allShelfPaths(shelf);
 			const labelSourcePath = shelfPaths.find((p) => graph.collection(p)) ?? shelfPaths[0];
 			const label = graph.folderLabels(labelSourcePath ?? shelf).plural;
-			// In cluster scope: link to the cluster's own shelf when it
-			// exists there; otherwise fall through to the aggregate/direct
-			// path (universal-only shelves like `fabric` link directly to
-			// their real folder).
-			// In All scope: if the shelf exists in exactly one root send
-			// the nav link directly to that root's shelf — no need for the
-			// aggregate route that would just show one tile anyway.
 			const clusterHasShelf = selectedCluster && graph.isFolder(`${selectedCluster}/${shelf}`);
 			const href = clusterHasShelf
 				? `/${selectedCluster}/${shelf}`
 				: shelfPaths.length === 1
 					? `/${shelfPaths[0]}`
 					: `/${shelf}`;
-			const count = clusterHasShelf
-				? graph.byFolderRecursive(`${selectedCluster}/${shelf}`).length
-				: graph.entitiesByShelfAll(shelf).length;
+			const allEntities = clusterHasShelf
+				? graph.byFolderRecursive(`${selectedCluster}/${shelf}`)
+				: graph.entitiesByShelfAll(shelf);
+			const count = allEntities.filter(entityMatchesEra).length;
 			return { href, label, count };
-		});
+		})
+		.filter((item) => !activeEra || item.count > 0);
 
 	// Universal-substrate shelves (e.g. `foundation/fabric`) that do NOT
 	// already appear in the union-shelf set above are shown as direct links
@@ -88,12 +92,14 @@ export async function load({ url }: { url: URL }) {
 		.filter(({ shelf }) => !unionShelves.includes(shelf))
 		.map(({ root, shelf }) => {
 			const path = `${root}/${shelf}`;
+			const count = graph.byFolderRecursive(path).filter(entityMatchesEra).length;
 			return {
 				href: `/${path}`,
 				label: graph.folderLabels(path).plural,
-				count: graph.byFolderRecursive(path).length
+				count
 			};
-		});
+		})
+		.filter((item) => !activeEra || item.count > 0);
 
 	const worldConfig = world.config();
 	// Optional bespoke wordmark SVG. When `ornament.wordmark` is declared

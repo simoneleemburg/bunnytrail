@@ -1,6 +1,6 @@
 import { readdir } from 'node:fs/promises';
 import type { Dirent } from 'node:fs';
-import type { Edge, Entity, EntityId, EntityType, HealthIssue, Kind, Ontology, Collection, PropertyRegistry, RelationRegistry } from '$lib/types';
+import type { Edge, Entity, EntityId, EntityType, EraConfig, HealthIssue, Kind, Ontology, Collection, PropertyRegistry, RelationRegistry } from '$lib/types';
 import { loadKindRegistry } from './kinds';
 import { CONTENT_DIR } from './globals';
 import { walk, readDirents } from './walker';
@@ -111,6 +111,7 @@ export async function loadAll(
 	opts: {
 		allowUndefinedRelations?: boolean;
 		allowUndefinedProperties?: boolean;
+		eraConfig?: EraConfig | null;
 	} = {}
 ): Promise<LoadResult> {
 	const entities = new Map<EntityId, Entity>();
@@ -152,6 +153,12 @@ export async function loadAll(
 		issues
 	};
 
+	// Era defaulting: for eraBounded kinds, fill in the cluster's default
+	// era on entities that have no explicit era field.
+	if (opts.eraConfig) {
+		applyEraDefaults(entities, registryResult.kinds, opts.eraConfig);
+	}
+
 	validateEntityWikilinks(validateArgs);
 	validateRelations(validateArgs);
 	validateKindLinks(validateArgs);
@@ -178,6 +185,50 @@ export async function loadAll(
 		clusters: clusterSet,
 		universalFolders: universalSet
 	};
+}
+
+/**
+ * For every entity whose kind (or any ancestor in the kind hierarchy) has
+ * `eraBounded: true`, and which has no explicit `era` field, fill in the
+ * cluster's default era from the era config.
+ *
+ * "Cluster" is the first path segment of the entity id. Mutates `meta.era`
+ * in place (the same way the walker normalises it).
+ */
+function applyEraDefaults(
+	entities: Map<EntityId, Entity>,
+	kindRegistry: Map<string, Kind>,
+	eraConfig: EraConfig
+): void {
+	// Pre-build a lookup: kindId → true if this kind or any ancestor is eraBounded.
+	// Walk the parent chain and cache results.
+	const eraBoundedCache = new Map<string, boolean>();
+
+	function isEraBounded(kindId: string | undefined): boolean {
+		if (!kindId) return false;
+		if (eraBoundedCache.has(kindId)) return eraBoundedCache.get(kindId)!;
+		const kind = kindRegistry.get(kindId);
+		if (!kind) { eraBoundedCache.set(kindId, false); return false; }
+		if (kind.meta.eraBounded) { eraBoundedCache.set(kindId, true); return true; }
+		const result = isEraBounded(kind.parent ?? undefined);
+		eraBoundedCache.set(kindId, result);
+		return result;
+	}
+
+	for (const entity of entities.values()) {
+		// Skip entities that already have an era.
+		if (entity.meta.era !== undefined) continue;
+		// Skip entities with no kind, or whose kind is not era-bounded.
+		const kindId = typeof entity.meta.kind === 'string' ? entity.meta.kind : undefined;
+		if (!isEraBounded(kindId)) continue;
+		// Determine the cluster from the entity id (first path segment).
+		const cluster = entity.id.split('/')[0];
+		if (!cluster) continue;
+		const clusterEras = eraConfig.perCluster[cluster];
+		if (!clusterEras?.default) continue;
+		// Apply the default era as a single-element array (same shape as explicit eras).
+		(entity.meta as Record<string, unknown>)['era'] = [clusterEras.default];
+	}
 }
 
 /** Build a forward + reverse edge index from a set of entities. */
