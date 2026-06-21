@@ -196,7 +196,7 @@ const KNOWN_ONTOLOGY_FIELDS = new Set(['title', 'description', 'relations']);
 const KNOWN_RELATION_ENTRY_FIELDS = new Set([
 	'outLabel', 'inLabel',
 	'domain', 'codomain', 'qualifierDomain',
-	'governedBy', 'qualifier'
+	'governedBy', 'qualifierGovernedBy', 'qualifier'
 ]);
 
 /**
@@ -315,6 +315,9 @@ function parseOntologyRelations(
 
 		const governedBy = readStringFrom(e, 'governedBy', `${context}.governedBy`, issues);
 		if (governedBy) schema.governedBy = governedBy;
+
+		const qualifierGovernedBy1 = readStringFrom(e, 'qualifierGovernedBy', `${context}.qualifierGovernedBy`, issues);
+		if (qualifierGovernedBy1) schema.qualifierGovernedBy = qualifierGovernedBy1;
 
 		const qualifierVal = e['qualifier'];
 		if (qualifierVal !== undefined && qualifierVal !== null) {
@@ -437,6 +440,9 @@ async function readOntologyRelations(
 
 		const governedBy = readStringFrom(e, 'governedBy', `${context}.governedBy`, issues);
 		if (governedBy) schema.governedBy = governedBy;
+
+		const qualifierGovernedBy2 = readStringFrom(e, 'qualifierGovernedBy', `${context}.qualifierGovernedBy`, issues);
+		if (qualifierGovernedBy2) schema.qualifierGovernedBy = qualifierGovernedBy2;
 
 		const qualifierVal = e['qualifier'];
 		if (qualifierVal !== undefined && qualifierVal !== null) {

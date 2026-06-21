@@ -1009,11 +1009,11 @@ describe('validateUnlabelledWikilinks', () => {
 // ---------------------------------------------------------------------------
 
 /**
- * Seed a minimal content + kinds tree for governedBy tests.
+ * Seed a minimal content + kinds tree for qualifierGovernedBy tests.
  *
  * Layout:
  *   kinds/
- *     cultural/           ← ontology (has _ontology.yaml with governedBy)
+ *     cultural/           ← ontology (has _ontology.yaml with qualifierGovernedBy)
  *       role/
  *       character/
  *       cultural-group/
@@ -1051,7 +1051,7 @@ async function seedGovernedByFixture(opts: {
 		'    outLabel: Member of',
 		'    inLabel: Members',
 		'    qualifier: required',
-		'    governedBy: cultural/role-in',
+		'    qualifierGovernedBy: cultural/role-in',
 		'    domain: [character]',
 		'    codomain: [cultural-group]'
 	].join('\n')
@@ -1104,6 +1104,8 @@ describe('validateGovernedByConstraints', () => {
 			].join('\n'),
 			elfricRelations: [
 				'relations:',
+				'  - kind: cultural/role-in',
+				'    target: groups/dawncallers',
 				'  - kind: cultural/member-of',
 				'    target: groups/dawncallers',
 				'    qualifier: roles/runtha'
@@ -1180,7 +1182,7 @@ describe('validateGovernedByConstraints', () => {
 				'    outLabel: Member of',
 				'    inLabel: Members',
 				'    qualifier: required',
-				'    governedBy: cultural/role-in',
+				'    qualifierGovernedBy: cultural/role-in',
 				'    domain: [character]',
 				'    codomain: [cultural-group]'
 			].join('\n')
@@ -1216,6 +1218,7 @@ describe('validateGovernedByConstraints', () => {
 		await writeFile(join(contentDir, 'roles', 'runtha', 'index.md'), '');
 
 		// elfric is member-of → the-dawncallers with qualifier: runtha
+		// elfric also has role-in → herd-type (satisfies source check via class chain)
 		await mkdir(join(contentDir, 'people', 'elfric'), { recursive: true });
 		await writeFile(
 			join(contentDir, 'people', 'elfric', 'index.yaml'),
@@ -1223,6 +1226,8 @@ describe('validateGovernedByConstraints', () => {
 				'name: Old Elfric',
 				'kind: character',
 				'relations:',
+				'  - kind: cultural/role-in',
+				'    target: structures/herd-type',
 				'  - kind: cultural/member-of',
 				'    target: groups/the-dawncallers',
 				'    qualifier: roles/runtha'
@@ -1232,12 +1237,12 @@ describe('validateGovernedByConstraints', () => {
 
 		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
 		const { issues } = await loadAll(contentDir);
-		const governed = issues.filter((i) => i.detail.includes('governedBy') || i.detail.includes("has no 'cultural/role-in'"));
+		const governed = issues.filter((i) => i.detail.includes('qualifierGovernedBy') || i.detail.includes("has no 'cultural/role-in'"));
 		expect(governed).toEqual([]);
 	});
 
-	it('does not flag a missing qualifier when only governedBy is set (no qualifier: required)', async () => {
-		// member-of has governedBy but NOT qualifier: required — missing qualifier is fine
+	it('does not flag a missing qualifier when only qualifierGovernedBy is set (no qualifier: required)', async () => {
+		// member-of has qualifierGovernedBy but NOT qualifier: required — missing qualifier is fine
 		const base = await mkdtemp(join(tmpdir(), 'alteria-gov-norole-'));
 		const contentDir = join(base, 'content');
 		const kindsDir = join(base, 'kinds');
@@ -1257,7 +1262,7 @@ describe('validateGovernedByConstraints', () => {
 				'  member-of:',
 				'    outLabel: Member of',
 				'    inLabel: Members',
-				'    governedBy: cultural/role-in',
+				'    qualifierGovernedBy: cultural/role-in',
 				'    domain: [character]',
 				'    codomain: [cultural-group]'
 			].join('\n')
@@ -1291,8 +1296,7 @@ describe('validateGovernedByConstraints', () => {
 		const qualifierIssue = issues.find(
 			(i) => i.kind === 'broken-link' && i.detail.includes("missing required 'qualifier'")
 		);
-		expect(qualifierIssue).toBeUndefined();
-	});
+		expect(qualifierIssue).toBeUndefined();	});
 
 	it('flags a governed relation whose qualifier has a backing edge to a different target', async () => {
 		// Runtha has role-in → dawncallers, but elfric's member-of points somewhere else.
@@ -1317,7 +1321,7 @@ describe('validateGovernedByConstraints', () => {
 			'    outLabel: Member of',
 			'    inLabel: Members',
 			'    qualifier: required',
-			'    governedBy: cultural/role-in',
+			'    qualifierGovernedBy: cultural/role-in',
 			'    domain: [character]',
 			'    codomain: [cultural-group]'
 		].join('\n')
@@ -1379,8 +1383,215 @@ describe('validateGovernedByConstraints', () => {
 });
 
 // ---------------------------------------------------------------------------
-// qualifierDomain validation
+// governedBy — source-mediated mode (no qualifier)
 // ---------------------------------------------------------------------------
+
+describe('governedBy without qualifier', () => {
+	/**
+	 * Mirrors the part-of-group / part-of-structure pattern:
+	 *
+	 *   kinds/cultural/
+	 *     _ontology.yaml
+	 *       part-of-structure: outLabel / inLabel   (backing relation)
+	 *       part-of-group:     outLabel / inLabel
+	 *                          governedBy: cultural/part-of-structure
+	 *                          domain: [cultural-group]
+	 *                          codomain: [cultural-group]
+	 *     cultural-group/
+	 *     social-structure/
+	 *
+	 *   content/
+	 *     groups/ascent/   ← cultural-group, class: structures/path
+	 *     groups/herd/     ← cultural-group
+	 *     structures/path/ ← social-structure
+	 *     structures/step/ ← social-structure
+	 */
+	async function seedSourceGoverned(opts: {
+		ascentRelations?: string;
+	}): Promise<{ contentDir: string; kindsDir: string }> {
+		const base = await mkdtemp(join(tmpdir(), 'bt-srcgov-'));
+		const contentDir = join(base, 'content');
+		const kindsDir = join(base, 'kinds');
+
+		const ontoDir = join(kindsDir, 'cultural');
+		await mkdir(ontoDir, { recursive: true });
+		await writeFile(
+			join(ontoDir, '_ontology.yaml'),
+			[
+				'title: Cultural',
+				'relations:',
+				'  part-of-structure:',
+				'    outLabel: Part of structure',
+				'    inLabel: Structure parts',
+				'    domain: [social-structure]',
+				'    codomain: [social-structure]',
+				'  part-of-group:',
+				'    outLabel: Part of',
+				'    inLabel: Parts',
+				'    governedBy: cultural/part-of-structure',
+				'    domain: [cultural-group]',
+				'    codomain: [cultural-group]'
+			].join('\n')
+		);
+		for (const k of ['cultural-group', 'social-structure']) {
+			const kd = join(ontoDir, k);
+			await mkdir(kd, { recursive: true });
+			await writeFile(join(kd, '_kind.yaml'), `singular: ${cap(k)}\nplural: ${cap(k)}s\n`);
+		}
+
+		// Structures
+		await mkdir(join(contentDir, 'structures', 'path'), { recursive: true });
+		await writeFile(join(contentDir, 'structures', 'path', 'index.yaml'), 'name: The Path\nkind: social-structure\n');
+		await writeFile(join(contentDir, 'structures', 'path', 'index.md'), '');
+
+		await mkdir(join(contentDir, 'structures', 'step'), { recursive: true });
+		await writeFile(join(contentDir, 'structures', 'step', 'index.yaml'), 'name: The Step\nkind: social-structure\n');
+		await writeFile(join(contentDir, 'structures', 'step', 'index.md'), '');
+
+		// Herd — plain group, no structure membership
+		await mkdir(join(contentDir, 'groups', 'herd'), { recursive: true });
+		await writeFile(join(contentDir, 'groups', 'herd', 'index.yaml'), 'name: The Herd\nkind: cultural-group\nclass: structures/step\n');
+		await writeFile(join(contentDir, 'groups', 'herd', 'index.md'), '');
+
+		// Ascent — group with configurable relations
+		await mkdir(join(contentDir, 'groups', 'ascent'), { recursive: true });
+		const ascentRels = opts.ascentRelations ?? '';
+		await writeFile(
+			join(contentDir, 'groups', 'ascent', 'index.yaml'),
+			['name: The Ascent', 'kind: cultural-group', 'class: structures/path', ...(ascentRels ? [ascentRels] : [])].join('\n')
+		);
+		await writeFile(join(contentDir, 'groups', 'ascent', 'index.md'), '');
+
+		return { contentDir, kindsDir };
+	}
+
+	it('passes when source\'s class holds the backing edge (class-chain check)', async () => {
+		// Real-world pattern: ascent (cultural-group) has class: structures/ascent-type
+		// ascent-type (social-structure) has part-of-structure → step
+		// herd (cultural-group) has class: structures/step
+		// ascent has part-of-group → herd
+		// → satisfied: source class chain [ascent, ascent-type] contains ascent-type
+		//   which has part-of-structure → step, and step is in herd's class chain
+		const { contentDir, kindsDir } = await seedSourceGoverned({
+			ascentRelations: [
+				// ascent itself has no part-of-structure — only its class does
+				'relations:',
+				'  - kind: cultural/part-of-group',
+				'    target: groups/herd'
+			].join('\n')
+		});
+		// Add ascent-type (social-structure) with part-of-structure → step
+		await mkdir(join(contentDir, 'structures', 'ascent-type'), { recursive: true });
+		await writeFile(join(contentDir, 'structures', 'ascent-type', 'index.yaml'), [
+			'name: Ascent Type',
+			'kind: social-structure',
+			'relations:',
+			'  - kind: cultural/part-of-structure',
+			'    target: structures/step'
+		].join('\n'));
+		await writeFile(join(contentDir, 'structures', 'ascent-type', 'index.md'), '');
+		// Override ascent to have class: structures/ascent-type
+		await writeFile(join(contentDir, 'groups', 'ascent', 'index.yaml'), [
+			'name: The Ascent',
+			'kind: cultural-group',
+			'class: structures/ascent-type',
+			'relations:',
+			'  - kind: cultural/part-of-group',
+			'    target: groups/herd'
+		].join('\n'));
+		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
+		const { issues } = await loadAll(contentDir);
+		const governed = issues.filter((i) => i.detail.includes("has no 'cultural/part-of-structure'"));
+		expect(governed).toEqual([]);
+	});
+
+	it('passes when source itself (no class) holds the backing edge directly', async () => {
+		// ascent has part-of-structure → step directly (no class needed)
+		// herd.class = structures/step → class chain includes step → satisfied
+		const { contentDir, kindsDir } = await seedSourceGoverned({
+			ascentRelations: [
+				'relations:',
+				'  - kind: cultural/part-of-structure',
+				'    target: structures/step',
+				'  - kind: cultural/part-of-group',
+				'    target: groups/herd'
+			].join('\n')
+		});
+		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
+		const { issues } = await loadAll(contentDir);
+		const governed = issues.filter((i) => i.detail.includes("has no 'cultural/part-of-structure'"));
+		expect(governed).toEqual([]);
+	});
+
+	it('passes via class chain: source has backing edge to target\'s class', async () => {
+		// ascent has part-of-structure → path
+		// herd has class: structures/step  (not path)
+		// ascent has part-of-group → herd — should fail (step ≠ path)
+		// ... unless herd.class === path. Let's set herd.class = structures/path here.
+		const { contentDir, kindsDir } = await seedSourceGoverned({
+			ascentRelations: [
+				'relations:',
+				'  - kind: cultural/part-of-structure',
+				'    target: structures/path',
+				'  - kind: cultural/part-of-group',
+				'    target: groups/herd'
+			].join('\n')
+		});
+		// Override herd to have class: structures/path (matches ascent's backing edge)
+		await writeFile(join(contentDir, 'groups', 'herd', 'index.yaml'), 'name: The Herd\nkind: cultural-group\nclass: structures/path\n');
+		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
+		const { issues } = await loadAll(contentDir);
+		const governed = issues.filter((i) => i.detail.includes("has no 'cultural/part-of-structure'"));
+		expect(governed).toEqual([]);
+	});
+
+	it('flags source missing the backing edge entirely', async () => {
+		// ascent has NO part-of-structure relation but tries part-of-group → herd
+		const { contentDir, kindsDir } = await seedSourceGoverned({
+			ascentRelations: [
+				'relations:',
+				'  - kind: cultural/part-of-group',
+				'    target: groups/herd'
+			].join('\n')
+		});
+		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
+		const { issues } = await loadAll(contentDir);
+		const issue = issues.find(
+			(i) =>
+				i.kind === 'broken-link' &&
+				i.detail.includes("has no 'cultural/part-of-structure'") &&
+				i.entity === 'groups/ascent'
+		);
+		expect(issue).toBeDefined();
+	});
+
+	it('flags source with a backing edge to the wrong structure', async () => {
+		// ascent has part-of-structure → step (wrong), but part-of-group → herd
+		// herd.class = structures/step — so step is in the class chain → should PASS
+		// Let's use herd.class = structures/path to make it fail
+		const { contentDir, kindsDir } = await seedSourceGoverned({
+			ascentRelations: [
+				'relations:',
+				'  - kind: cultural/part-of-structure',
+				'    target: structures/step',
+				'  - kind: cultural/part-of-group',
+				'    target: groups/herd'
+			].join('\n')
+		});
+		// herd.class = structures/path (doesn't match ascent's backing edge to step)
+		await writeFile(join(contentDir, 'groups', 'herd', 'index.yaml'), 'name: The Herd\nkind: cultural-group\nclass: structures/path\n');
+		process.env.BUNNYTRAIL_KINDS_DIR = kindsDir;
+		const { issues } = await loadAll(contentDir);
+		const issue = issues.find(
+			(i) =>
+				i.kind === 'broken-link' &&
+				i.detail.includes("has no 'cultural/part-of-structure'") &&
+				i.detail.includes('groups/herd') &&
+				i.entity === 'groups/ascent'
+		);
+		expect(issue).toBeDefined();
+	});
+});
 
 describe('qualifierDomain', () => {
 	/**

@@ -605,45 +605,48 @@ export function validateUnlabelledWikilinks(args: ValidateArgs): void {
 }
 
 /**
- * Validate `qualifier: required` and `governedBy` constraints declared on relation schemas.
- *
- * Two independent checks, both emitting `broken-link` issues:
+ * Validate `qualifier: required`, `governedBy`, and `qualifierGovernedBy`
+ * constraints declared on relation schemas.
  *
  * **`qualifier: required`** — every instance of the relation must carry a `qualifier:`
  * field. Missing qualifier → health warning.
  *
- * **`governedBy: <relation-kind>`** — when a `qualifier:` field *is* present,
- * the qualifier entity must hold an outgoing relation of the named kind pointing at
- * the **same target** OR at any entity in the target's **class chain**.
+ * **`governedBy: <relation-kind>`** — an entity in the **source's class chain**
+ * must hold an outgoing relation of the named kind pointing at the **same target**
+ * OR at any entity in the target's **class chain**. Walking the class chain means
+ * the structural pre-condition lives on the *type* (social-structure) rather than
+ * on every individual instance (cultural-group): e.g. a group may only use
+ * `part-of-group → X` if its class (social-structure) has a `part-of-structure`
+ * edge to X's structure.
+ *
+ * **`qualifierGovernedBy: <relation-kind>`** — when a `qualifier:` field is present
+ * and resolves, the qualifier entity must hold an outgoing relation of the named kind
+ * pointing at the **same target** OR its class chain. Fires only when a qualifier is
+ * present; does not imply `qualifier: required`.
  *
  * The class-chain resolution means: if `the-dawncallers` has `class: herd`,
- * then a `role-in → herd` backing edge on the qualifier entity satisfies the
- * constraint for a `member-of → the-dawncallers` instance. This mirrors the
- * instance/class relationship: a qualifier defined for the class-type applies to
- * all concrete instances of that class.
- *
- * Fires only when `qualifier` is present and resolves; use alongside `qualifier: required`
- * when you want both guarantees.
+ * then a backing edge to `herd` satisfies a constraint against `the-dawncallers`.
  */
 export function validateGovernedByConstraints(args: ValidateArgs): void {
 	const { entities, relationRegistry, issues } = args;
 
-	// Collect the two constraint sets up-front.
-	const qualifierRequired = new Set<string>();   // relation kinds where qualifier: required
-	const governedKinds = new Map<string, string>(); // relation kind → governedBy kind
+	const qualifierRequired = new Set<string>();
+	const governedKinds = new Map<string, string>();           // relation kind → governedBy kind (source chain)
+	const qualifierGovernedKinds = new Map<string, string>(); // relation kind → qualifierGovernedBy kind (qualifier)
 
 	for (const [id, schema] of relationRegistry) {
 		if (schema.qualifier === 'required') qualifierRequired.add(id);
 		if (schema.governedBy) governedKinds.set(id, schema.governedBy);
+		if (schema.qualifierGovernedBy) qualifierGovernedKinds.set(id, schema.qualifierGovernedBy);
 	}
 
-	if (qualifierRequired.size === 0 && governedKinds.size === 0) return;
+	if (qualifierRequired.size === 0 && governedKinds.size === 0 && qualifierGovernedKinds.size === 0) return;
 
-	// Build the backing-edge index only when governedBy constraints exist.
-	// Index: governedBy-kind → Set<"roleEntityId|targetId">
+	// Build a shared backing-edge index for all needed relation kinds.
+	// Index: relation-kind → Set<"sourceId|targetId">
 	const backingEdges = new Map<string, Set<string>>();
-	if (governedKinds.size > 0) {
-		const neededKinds = new Set(governedKinds.values());
+	const neededKinds = new Set([...governedKinds.values(), ...qualifierGovernedKinds.values()]);
+	if (neededKinds.size > 0) {
 		for (const entity of entities.values()) {
 			for (const rel of entity.meta.relations ?? []) {
 				if (!neededKinds.has(rel.kind)) continue;
@@ -684,21 +687,40 @@ export function validateGovernedByConstraints(args: ValidateArgs): void {
 				});
 			}
 
-			// Check 2: governedBy — only when a qualifier is present and resolves
+			// Check 2: governedBy — source class chain must have the backing edge.
+			// Any entity in [source, source.class, source.class.class, …] must hold
+			// a `governedBy`-kind edge pointing at the target or its class chain.
 			const governedByKind = governedKinds.get(rel.kind);
-			if (governedByKind && rel.qualifier && entities.has(rel.qualifier)) {
+			if (governedByKind) {
 				const backingSet = backingEdges.get(governedByKind);
-				// Accept a backing edge to the target itself or any entity in
-				// its class chain (e.g. role-in → herd satisfies member-of →
-				// the-dawncallers when the-dawncallers.class === herd).
-				const satisfied = classChain(rel.target).some(
-					(id) => backingSet?.has(`${rel.qualifier}|${id}`)
+				const targetChain = classChain(rel.target);
+				const sourceSatisfied = classChain(entity.id).some(
+					(srcId) => targetChain.some((tgtId) => backingSet?.has(`${srcId}|${tgtId}`))
 				);
-				if (!satisfied) {
+				if (!sourceSatisfied) {
 					issues.push({
 						kind: 'broken-link',
 						entity: entity.id,
-						detail: `relation '${rel.kind}' → ${rel.target}: qualifier '${rel.qualifier}' has no '${governedByKind}' → '${rel.target}' (or its class) (required by governedBy constraint)`
+						detail: `relation '${rel.kind}' → ${rel.target}: source has no '${governedByKind}' → '${rel.target}' (or its class) (required by governedBy constraint)`
+					});
+				}
+			}
+
+			// Check 3: qualifierGovernedBy — only when a qualifier is present and resolves.
+			// The qualifier entity must hold a `qualifierGovernedBy`-kind edge pointing
+			// at the target or its class chain.
+			const qualifierGovernedByKind = qualifierGovernedKinds.get(rel.kind);
+			if (qualifierGovernedByKind && rel.qualifier && entities.has(rel.qualifier)) {
+				const backingSet = backingEdges.get(qualifierGovernedByKind);
+				const targetChain = classChain(rel.target);
+				const qualifierSatisfied = targetChain.some(
+					(id) => backingSet?.has(`${rel.qualifier}|${id}`)
+				);
+				if (!qualifierSatisfied) {
+					issues.push({
+						kind: 'broken-link',
+						entity: entity.id,
+						detail: `relation '${rel.kind}' → ${rel.target}: qualifier '${rel.qualifier}' has no '${qualifierGovernedByKind}' → '${rel.target}' (or its class) (required by qualifierGovernedBy constraint)`
 					});
 				}
 			}

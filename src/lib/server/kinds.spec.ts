@@ -115,7 +115,7 @@ describe('loadKindRegistry', () => {
 	});
 });
 
-describe('loadKindRegistry — ontology relations with governedBy', () => {
+describe('loadKindRegistry — ontology relations with qualifierGovernedBy', () => {
 	async function seedOntologyDir(ontologyYaml: string, kindsUnder: string[]): Promise<string> {
 		const dir = await mkdtemp(join(tmpdir(), 'alteria-kinds-onto-'));
 		const ontoDir = join(dir, 'cultural');
@@ -130,7 +130,7 @@ describe('loadKindRegistry — ontology relations with governedBy', () => {
 		return dir;
 	}
 
-	it('parses governedBy on a relation and stores it in the schema', async () => {
+	it('parses qualifierGovernedBy on a relation and stores it in the schema', async () => {
 		const yaml = [
 			'title: Cultural',
 			'relations:',
@@ -143,7 +143,7 @@ describe('loadKindRegistry — ontology relations with governedBy', () => {
 		'    outLabel: Member of',
 		'    inLabel: Members',
 		'    qualifier: required',
-		'    governedBy: cultural/role-in',
+		'    qualifierGovernedBy: cultural/role-in',
 			'    domain: [character]',
 			'    codomain: [cultural-group]'
 		].join('\n');
@@ -152,14 +152,14 @@ describe('loadKindRegistry — ontology relations with governedBy', () => {
 		expect(result.issues).toEqual([]);
 		const memberOf = result.relations.get('cultural/member-of');
 		expect(memberOf?.qualifier).toBe('required');
-		expect(memberOf?.governedBy).toBe('cultural/role-in');
-		// governedBy and qualifier on role-in itself are absent
+		expect(memberOf?.qualifierGovernedBy).toBe('cultural/role-in');
+		// qualifierGovernedBy and qualifier on role-in itself are absent
 		const roleIn = result.relations.get('cultural/role-in');
-		expect(roleIn?.governedBy).toBeUndefined();
+		expect(roleIn?.qualifierGovernedBy).toBeUndefined();
 		expect(roleIn?.qualifier).toBeUndefined();
 	});
 
-	it('parses qualifier: required without governedBy', async () => {
+	it('parses qualifier: required without qualifierGovernedBy', async () => {
 		const yaml = [
 			'title: Cultural',
 			'relations:',
@@ -175,7 +175,7 @@ describe('loadKindRegistry — ontology relations with governedBy', () => {
 		expect(result.issues).toEqual([]);
 		const memberOf = result.relations.get('cultural/member-of');
 		expect(memberOf?.qualifier).toBe('required');
-		expect(memberOf?.governedBy).toBeUndefined();
+		expect(memberOf?.qualifierGovernedBy).toBeUndefined();
 	});
 
 	it('emits an issue for qualifier with an invalid value', async () => {
@@ -193,7 +193,7 @@ describe('loadKindRegistry — ontology relations with governedBy', () => {
 		expect(result.relations.get('cultural/member-of')?.qualifier).toBeUndefined();
 	});
 
-	it('emits no issue when governedBy is absent', async () => {
+	it('emits no issue when qualifierGovernedBy is absent', async () => {
 		const yaml = [
 			'title: Cultural',
 			'relations:',
@@ -206,7 +206,7 @@ describe('loadKindRegistry — ontology relations with governedBy', () => {
 		const dir = await seedOntologyDir(yaml, ['character', 'cultural-group']);
 		const result = await loadKindRegistry(dir);
 		expect(result.issues).toEqual([]);
-		expect(result.relations.get('cultural/member-of')?.governedBy).toBeUndefined();
+		expect(result.relations.get('cultural/member-of')?.qualifierGovernedBy).toBeUndefined();
 	});
 
 	it('parses qualifierDomain as an array of kind ids', async () => {
@@ -301,7 +301,7 @@ describe('loadKindRegistry — ontology relations with governedBy', () => {
 			'    codomain: [cultural-group]',
 			'    qualifier: required',
 			'    qualifierDomain: [role]',
-			'    governedBy: cultural/role-in'
+			'    qualifierGovernedBy: cultural/role-in'
 		].join('\n');
 		const dir = await seedOntologyDir(yaml, ['character', 'cultural-group', 'role']);
 		const result = await loadKindRegistry(dir);

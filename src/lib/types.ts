@@ -681,23 +681,34 @@ export interface RelationSchema extends RelationLabels {
 	 * When set to `'required'`, every instance of this relation must carry
 	 * a `qualifier:` field. Missing qualifier emits a health-page warning.
 	 *
-	 * Orthogonal to `governedBy`: you can require a qualifier without constraining
-	 * which backing edge it must satisfy, or constrain the backing edge without
-	 * forcing a qualifier to be present on every instance.
+	 * Orthogonal to `qualifierGovernedBy`: you can require a qualifier without
+	 * constraining which backing edge it must satisfy, or constrain the backing
+	 * edge without forcing a qualifier to be present on every instance.
 	 */
 	qualifier?: 'required';
 	/**
 	 * When set, any instance of this relation that carries a `qualifier:` field
 	 * must have that qualifier entity hold an outgoing relation of the kind named
-	 * here pointing at the **same target**.
+	 * here pointing at the **same target** (or its class chain).
 	 *
-	 * Example: `member-of` with `governedBy: cultural/role-in` requires
+	 * Example: `member-of` with `qualifierGovernedBy: cultural/role-in` requires
 	 * that the `qualifier` entity on the `member-of` edge has a `cultural/role-in`
 	 * edge to the same institution. Violations emit a health-page warning.
 	 *
 	 * Value is the full prefixed relation id, e.g. `cultural/role-in`.
 	 * Does not imply `qualifier: required` — set both when instances must always
 	 * carry a qualifier AND that qualifier must satisfy the backing-edge constraint.
+	 */
+	qualifierGovernedBy?: string;
+	/**
+	 * When set, the source entity's **class chain** must contain an entity that
+	 * holds an outgoing relation of the kind named here pointing at the target
+	 * (or its class chain). This expresses a structural pre-condition on the
+	 * relation: e.g. `part-of-group` with `governedBy: cultural/part-of-structure`
+	 * requires that the source group's structure (its `class:`) already has a
+	 * `part-of-structure` edge to the target group's structure.
+	 *
+	 * Value is the full prefixed relation id, e.g. `cultural/part-of-structure`.
 	 */
 	governedBy?: string;
 }
