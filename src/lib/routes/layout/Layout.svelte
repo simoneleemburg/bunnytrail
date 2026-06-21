@@ -158,16 +158,33 @@
 			bypassScopePaint = false;
 			return;
 		}
-		if (data.selectedCluster !== null) return;
 		if (!nav.to) return;
 		if (nav.to.url.origin !== nav.from?.url.origin) return;
 		// Don't paint API routes — they're never user destinations.
 		if (nav.to.url.pathname.startsWith('/api/')) return;
 
-		const painted = paintAllScope(nav.to.url, data.scopeContext);
-		if (painted.href === nav.to.url.href) return;
+		// Determine what the destination URL should look like after
+		// applying both the scope paint and the era carry-forward.
+		let target = nav.to.url;
+
+		// Scope paint: in All scope, paint ?scope=all onto cluster-prefixed URLs.
+		if (data.selectedCluster === null) {
+			target = paintAllScope(target, data.scopeContext);
+		}
+
+		// Era carry-forward: if an era is active and the destination
+		// doesn't already carry ?era=, inject it so the filter persists
+		// across navigations. Skipped when era is being explicitly cleared
+		// (switchEra already sets the param correctly).
+		if (data.activeEra && !target.searchParams.has('era')) {
+			const out = new URL(target.href);
+			out.searchParams.set('era', data.activeEra);
+			target = out;
+		}
+
+		if (target.href === nav.to.url.href) return;
 		nav.cancel();
-		goto(painted.href, { replaceState: false, keepFocus: true });
+		goto(target.href, { replaceState: false, keepFocus: true });
 	});
 
 	function switchCluster(value: string) {
