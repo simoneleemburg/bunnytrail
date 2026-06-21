@@ -52,6 +52,11 @@
 	// switch.
 	let bypassScopePaint = false;
 
+	// Set to true while switchEra is navigating, so that the
+	// beforeNavigate hook doesn't re-inject the old era param onto
+	// the destination URL (which would prevent clearing the era).
+	let bypassEraCarry = false;
+
 	// Expose a setter so deeply nested components (e.g. PageHeader's
 	// "focus on <cluster>" link) can trigger a cluster-switch
 	// navigation without going through the masthead selector. The
@@ -61,22 +66,17 @@
 		bypassScopePaint = true;
 	});
 
-	// Mobile nav drawer open state + cluster picker open state.
+	// Mobile nav drawer open state + filter panel open state.
 	// Both are auto-closed on route change and on Escape; the
-	// cluster picker also closes on outside click.
+	// filter panel also closes on outside click.
 	let drawerOpen = $state(false);
-	let clusterOpen = $state(false);
-	let eraOpen = $state(false);
+	let filtersOpen = $state(false);
 	let metaOpen = $state(false);
 
-	// Active label for the cluster trigger. Falls back to the world
-	// "all" label when nothing's flagged selected (defensive — the
-	// loader always marks one).
-	let clusterLabel = $derived(
-		data.clusterOptions.find((o) => o.selected)?.label ?? data.world.allScopeLabel
-	);
+	// Keep these for backward-compat with switchCluster/switchEra which
+	// reference filtersOpen directly.
 
-	// Ordered list of EraDef objects for the era picker. When a
+	// Ordered list of EraDef objects for the filters panel era section.
 	// cluster is active and has a perCluster entry, use that
 	// cluster's era order; otherwise use all definitions.
 	const eraOptions = $derived.by(() => {
@@ -89,11 +89,6 @@
 			.map((ref) => cfg.definitions.find((d) => d.ref === ref))
 			.filter(Boolean) as EraDef[];
 	});
-
-	// Human-readable label for the active era, or a fallback.
-	const eraLabel = $derived(
-		data.world.eras?.definitions.find((d) => d.ref === data.activeEra)?.title ?? 'Era'
-	);
 
 	// Path-derived hooks for world CSS. `data-bt-path` carries the
 	// full pathname (sans leading slash); `data-bt-section` carries
@@ -147,11 +142,8 @@
 	// — that's intentional. In those cases the URL alone determines
 	// scope, which is the honest behaviour for a brand-new context.
 	beforeNavigate((nav) => {
-		// Always shut both menus on a navigation; the new page
-		// shouldn't inherit the previous chrome state.
 		drawerOpen = false;
-		clusterOpen = false;
-		eraOpen = false;
+		filtersOpen = false;
 		metaOpen = false;
 
 		if (bypassScopePaint) {
@@ -172,15 +164,15 @@
 			target = paintAllScope(target, data.scopeContext);
 		}
 
-		// Era carry-forward: if an era is active and the destination
-		// doesn't already carry ?era=, inject it so the filter persists
-		// across navigations. Skipped when era is being explicitly cleared
-		// (switchEra already sets the param correctly).
-		if (data.activeEra && !target.searchParams.has('era')) {
+		// Era carry-forward: inject the active era onto destinations that
+		// don't already carry ?era=. Skipped when switchEra is navigating
+		// (it already set the param correctly, including deleting it for "All eras").
+		if (!bypassEraCarry && data.activeEra && !target.searchParams.has('era')) {
 			const out = new URL(target.href);
 			out.searchParams.set('era', data.activeEra);
 			target = out;
 		}
+		bypassEraCarry = false;
 
 		if (target.href === nav.to.url.href) return;
 		nav.cancel();
@@ -199,7 +191,7 @@
 			data.scopeContext
 		);
 		bypassScopePaint = true;
-		clusterOpen = false;
+		filtersOpen = false;
 		drawerOpen = false;
 		goto(target);
 	}
@@ -208,7 +200,8 @@
 		const u = new URL($page.url);
 		if (ref) u.searchParams.set('era', ref);
 		else u.searchParams.delete('era');
-		eraOpen = false;
+		bypassEraCarry = true;
+		filtersOpen = false;
 		drawerOpen = false;
 		goto(u.toString());
 	}
@@ -217,41 +210,22 @@
 	// since it's the inner-most layer).
 	function onKeydown(e: KeyboardEvent) {
 		if (e.key !== 'Escape') return;
-		if (clusterOpen) clusterOpen = false;
-		else if (eraOpen) eraOpen = false;
+		if (filtersOpen) filtersOpen = false;
 		else if (metaOpen) metaOpen = false;
 		else if (drawerOpen) drawerOpen = false;
 	}
 
-	// Close the cluster picker when a click lands outside it. The
-	// listener is only attached while it's open; the picker itself
-	// stops propagation on its trigger so the toggle click doesn't
-	// immediately re-close it.
-	function onDocumentClick(e: MouseEvent) {
+	function onDocumentClickFilters(e: MouseEvent) {
 		const target = e.target as Element | null;
-		if (target?.closest('[data-cluster-picker]')) return;
-		clusterOpen = false;
+		if (target?.closest('[data-filters-picker]')) return;
+		filtersOpen = false;
 	}
 
 	$effect(() => {
 		if (!browser) return;
-		if (!clusterOpen) return;
-		document.addEventListener('click', onDocumentClick);
-		return () => document.removeEventListener('click', onDocumentClick);
-	});
-
-	// Close the era picker when a click lands outside it.
-	function onDocumentClickEra(e: MouseEvent) {
-		const target = e.target as Element | null;
-		if (target?.closest('[data-era-picker]')) return;
-		eraOpen = false;
-	}
-
-	$effect(() => {
-		if (!browser) return;
-		if (!eraOpen) return;
-		document.addEventListener('click', onDocumentClickEra);
-		return () => document.removeEventListener('click', onDocumentClickEra);
+		if (!filtersOpen) return;
+		document.addEventListener('click', onDocumentClickFilters);
+		return () => document.removeEventListener('click', onDocumentClickFilters);
 	});
 
 	function onDocumentClickMeta(e: MouseEvent) {
@@ -284,6 +258,11 @@
 			/^\/[^/]+\/kinds(\/|$)/.test(current)
 		);
 	});
+
+	// True when any filter is actively set — drives the active indicator on the Filters button.
+	const filtersActive = $derived(
+		data.activeEra !== null || (data.selectedCluster !== null)
+	);
 </script>
 
 <svelte:head>
@@ -399,78 +378,70 @@
 					{/if}
 				</div>
 
-				{#if eraOptions.length > 0}
-					<div class="era-picker era-picker-desktop" data-era-picker>
-						<button
-							type="button"
-							class="era-trigger"
-							aria-haspopup="listbox"
-							aria-expanded={eraOpen}
-							onclick={() => (eraOpen = !eraOpen)}
-						>
-							<span class="era-eyebrow">Era</span>
-							<span class="era-current">{eraLabel}</span>
-							<span class="era-caret" aria-hidden="true">▾</span>
-						</button>
-						{#if eraOpen}
-							<ul class="era-menu" role="listbox">
-								<li>
-									<button
-										type="button"
-										role="option"
-										aria-selected={data.activeEra === null}
-										class:selected={data.activeEra === null}
-										onclick={() => switchEra(null)}
-									>All eras</button>
-								</li>
-								{#each eraOptions as opt (opt.ref)}
-									<li>
-										<button
-											type="button"
-											role="option"
-											aria-selected={data.activeEra === opt.ref}
-											class:selected={data.activeEra === opt.ref}
-											onclick={() => switchEra(opt.ref)}
-										>{opt.title}</button>
-									</li>
-								{/each}
-							</ul>
-						{/if}
-					</div>
-				{/if}
-
-				{#if data.clusterOptions.length > 1}
-					<div class="cluster-picker cluster-picker-desktop" data-cluster-picker>
-						<button
-							type="button"
-							class="cluster-trigger"
-							aria-haspopup="listbox"
-							aria-expanded={clusterOpen}
-							onclick={() => (clusterOpen = !clusterOpen)}
-						>
-							<span class="cluster-eyebrow">Cluster</span>
-							<span class="cluster-current">{clusterLabel}</span>
-							<span class="cluster-caret" aria-hidden="true">▾</span>
-						</button>
-						{#if clusterOpen}
-							<ul class="cluster-menu" role="listbox">
-								{#each data.clusterOptions as opt (opt.value)}
-									<li>
-										<button
-											type="button"
-											role="option"
-											aria-selected={opt.selected}
-											class:selected={opt.selected}
-											onclick={() => switchCluster(opt.value)}
-										>
-											{opt.label}
-										</button>
-									</li>
-								{/each}
-							</ul>
-						{/if}
-					</div>
-				{/if}
+			{#if eraOptions.length > 0 || data.clusterOptions.length > 1}
+				<div class="filters-picker" data-filters-picker>
+					<button
+						type="button"
+						class="filters-trigger"
+						aria-haspopup="true"
+						aria-expanded={filtersOpen}
+						class:active={filtersActive}
+						onclick={() => (filtersOpen = !filtersOpen)}
+					>
+						<span class="filters-label">Filters</span>
+						<span class="filters-caret" aria-hidden="true">▾</span>
+					</button>
+					{#if filtersOpen}
+						<div class="filters-panel">
+							{#if eraOptions.length > 0}
+								<section class="filters-section">
+									<p class="filters-eyebrow">Era</p>
+									<ul class="filters-list" role="listbox">
+										<li>
+											<button
+												type="button"
+												role="option"
+												aria-selected={data.activeEra === null}
+												class:selected={data.activeEra === null}
+												onclick={() => switchEra(null)}
+											>All eras</button>
+										</li>
+										{#each eraOptions as opt (opt.ref)}
+											<li>
+												<button
+													type="button"
+													role="option"
+													aria-selected={data.activeEra === opt.ref}
+													class:selected={data.activeEra === opt.ref}
+													onclick={() => switchEra(opt.ref)}
+												>{opt.title}</button>
+											</li>
+										{/each}
+									</ul>
+								</section>
+							{/if}
+							{#if data.clusterOptions.length > 1}
+								<section class="filters-section">
+									<p class="filters-eyebrow">Cluster</p>
+									<ul class="filters-list" role="listbox">
+										{#each data.clusterOptions as opt (opt.value)}
+											<li>
+												<button
+													type="button"
+													role="option"
+													aria-selected={opt.selected}
+													class:selected={opt.selected}
+													onclick={() => switchCluster(opt.value)}
+												>{opt.label}</button>
+											</li>
+										{/each}
+									</ul>
+								</section>
+							{/if}
+						</div>
+					{/if}
+				</div>
+			{/if}
 
 				<button
 					type="button"
@@ -846,18 +817,17 @@
 		gap: var(--space-4);
 	}
 
-	/* ── Custom cluster picker ─────────────────────────────────
-	   Replaces the native <select>. Trigger is a quiet pill that
-	   carries both the eyebrow ("Cluster") and the current value;
-	   click opens a small parchment menu of all options. */
-	.cluster-picker {
+	/* ── Filters picker ──────────────────────────────────────────
+	   Single "Filters" button that opens a panel containing Era
+	   and Cluster sections. Replaces the old separate pickers. */
+	.filters-picker {
 		position: relative;
 	}
 
-	.cluster-trigger {
+	.filters-trigger {
 		display: inline-flex;
-		align-items: baseline;
-		gap: var(--space-3);
+		align-items: center;
+		gap: var(--space-2);
 		font: inherit;
 		color: var(--ink-soft);
 		background: transparent;
@@ -871,70 +841,85 @@
 			color 120ms;
 	}
 
-	.cluster-trigger:hover,
-	.cluster-trigger:focus-visible {
+	.filters-trigger:hover,
+	.filters-trigger:focus-visible {
 		background: var(--paper-warm);
 		border-color: var(--rule);
 		outline: none;
 	}
 
-	.cluster-trigger[aria-expanded='true'] {
+	.filters-trigger[aria-expanded='true'] {
 		background: var(--paper-warm);
 		border-color: var(--rule);
 	}
 
-	.cluster-eyebrow {
-		font-family: var(--font-serif);
-		font-style: italic;
-		font-size: var(--text-sm);
-		letter-spacing: 0;
-		color: var(--ink-faint);
+	.filters-trigger.active {
+		border-color: var(--rule);
+		background: var(--paper-warm);
 	}
 
-	.cluster-current {
-		font-family: var(--font-display);
-		font-size: var(--text-sm);
-		letter-spacing: 0.02em;
-		color: var(--ink);
+	.filters-trigger.active .filters-label {
+		color: var(--accent);
 	}
 
-	.cluster-caret {
+	.filters-caret {
 		font-size: 0.7em;
 		color: var(--ink-faint);
 		transition: transform 120ms;
 	}
 
-	.cluster-trigger[aria-expanded='true'] .cluster-caret {
+	.filters-trigger[aria-expanded='true'] .filters-caret {
 		transform: rotate(180deg);
 	}
 
-	.cluster-menu {
+	.filters-panel {
 		position: absolute;
 		top: calc(100% + var(--space-2));
 		right: 0;
-		min-width: 12rem;
-		margin: 0;
-		padding: var(--space-2);
-		list-style: none;
+		min-width: 14rem;
+		padding: var(--space-3);
 		background: var(--vellum);
 		border: 1px solid var(--rule);
 		border-radius: var(--radius-md);
 		box-shadow: var(--shadow-hover);
 		z-index: 20;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
 	}
 
-	.cluster-menu li {
+	.filters-section {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+	}
+
+	.filters-eyebrow {
+		margin: 0 0 var(--space-1);
+		padding: 0 var(--space-3);
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-sm);
+		color: var(--ink-faint);
+	}
+
+	.filters-list {
+		list-style: none;
 		margin: 0;
+		padding: 0;
+	}
+
+	.filters-list li {
 		border-radius: 6px;
 		transition: background-color 120ms;
 	}
 
-	.cluster-menu li:has(button:hover),
-	.cluster-menu li:has(button:focus-visible) {
+	.filters-list li:has(button:hover),
+	.filters-list li:has(button:focus-visible) {
 		background-color: var(--paper-warm);
 	}
 
-	.cluster-menu button {
+	.filters-list button {
 		width: 100%;
 		text-align: left;
 		font-family: var(--font-display);
@@ -960,14 +945,14 @@
 		cursor: pointer;
 	}
 
-	.cluster-menu button:hover,
-	.cluster-menu button:focus-visible {
+	.filters-list button:hover,
+	.filters-list button:focus-visible {
 		color: var(--accent);
 		outline: none;
-		animation: cluster-item-gleam 400ms ease-out;
+		animation: filter-item-gleam 400ms ease-out;
 	}
 
-	@keyframes cluster-item-gleam {
+	@keyframes filter-item-gleam {
 		0% {
 			background-position: 130% 0;
 			-webkit-text-fill-color: currentColor;
@@ -982,155 +967,11 @@
 		}
 	}
 
-	.cluster-menu button.selected {
+	.filters-list button.selected {
 		color: var(--accent);
 	}
 
-	.cluster-menu button.selected::before {
-		content: '· ';
-		color: var(--accent);
-	}
-
-	/* ── Custom era picker ─────────────────────────────────────
-	   Mirrors the cluster picker's structure and visual language.
-	   Placed before the cluster picker in the masthead chrome. */
-	.era-picker {
-		position: relative;
-	}
-
-	.era-trigger {
-		display: inline-flex;
-		align-items: baseline;
-		gap: var(--space-3);
-		font: inherit;
-		color: var(--ink-soft);
-		background: transparent;
-		border: 1px solid transparent;
-		border-radius: var(--radius-md);
-		padding: var(--space-2) var(--space-3);
-		cursor: pointer;
-		transition:
-			background-color 120ms,
-			border-color 120ms,
-			color 120ms;
-	}
-
-	.era-trigger:hover,
-	.era-trigger:focus-visible {
-		background: var(--paper-warm);
-		border-color: var(--rule);
-		outline: none;
-	}
-
-	.era-trigger[aria-expanded='true'] {
-		background: var(--paper-warm);
-		border-color: var(--rule);
-	}
-
-	.era-eyebrow {
-		font-family: var(--font-serif);
-		font-style: italic;
-		font-size: var(--text-sm);
-		letter-spacing: 0;
-		color: var(--ink-faint);
-	}
-
-	.era-current {
-		font-family: var(--font-display);
-		font-size: var(--text-sm);
-		letter-spacing: 0.02em;
-		color: var(--ink);
-	}
-
-	.era-caret {
-		font-size: 0.7em;
-		color: var(--ink-faint);
-		transition: transform 120ms;
-	}
-
-	.era-trigger[aria-expanded='true'] .era-caret {
-		transform: rotate(180deg);
-	}
-
-	.era-menu {
-		position: absolute;
-		top: calc(100% + var(--space-2));
-		right: 0;
-		min-width: 12rem;
-		margin: 0;
-		padding: var(--space-2);
-		list-style: none;
-		background: var(--vellum);
-		border: 1px solid var(--rule);
-		border-radius: var(--radius-md);
-		box-shadow: var(--shadow-hover);
-		z-index: 20;
-	}
-
-	.era-menu li {
-		margin: 0;
-		border-radius: 6px;
-		transition: background-color 120ms;
-	}
-
-	.era-menu li:has(button:hover),
-	.era-menu li:has(button:focus-visible) {
-		background-color: var(--paper-warm);
-	}
-
-	.era-menu button {
-		width: 100%;
-		text-align: left;
-		font-family: var(--font-display);
-		font-size: var(--text-sm);
-		letter-spacing: 0.02em;
-		color: var(--ink-soft);
-		background-image: linear-gradient(
-			100deg,
-			currentColor 0%,
-			currentColor 42%,
-			var(--accent-warm) 50%,
-			currentColor 58%,
-			currentColor 100%
-		);
-		background-size: 250% 100%;
-		background-position: 130% 0;
-		background-clip: text;
-		-webkit-background-clip: text;
-		background-color: transparent;
-		border: 0;
-		border-radius: 6px;
-		padding: var(--space-2) var(--space-3);
-		cursor: pointer;
-	}
-
-	.era-menu button:hover,
-	.era-menu button:focus-visible {
-		color: var(--accent);
-		outline: none;
-		animation: era-item-gleam 400ms ease-out;
-	}
-
-	@keyframes era-item-gleam {
-		0% {
-			background-position: 130% 0;
-			-webkit-text-fill-color: currentColor;
-		}
-		15%,
-		85% {
-			-webkit-text-fill-color: transparent;
-		}
-		100% {
-			background-position: -30% 0;
-			-webkit-text-fill-color: currentColor;
-		}
-	}
-
-	.era-menu button.selected {
-		color: var(--accent);
-	}
-
-	.era-menu button.selected::before {
+	.filters-list button.selected::before {
 		content: '· ';
 		color: var(--accent);
 	}
@@ -1324,8 +1165,7 @@
 		}
 
 		.nav-desktop,
-		.cluster-picker-desktop,
-		.era-picker-desktop,
+		.filters-picker,
 		.meta-picker {
 			display: none;
 		}
