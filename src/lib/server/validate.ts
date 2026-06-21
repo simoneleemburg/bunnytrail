@@ -361,12 +361,17 @@ export function validateLangLinks(args: ValidateArgs): void {
 			// entity wikilink — skip.
 			const r = resolveWikilink(raw, entities, fromCluster, clusterSet, universalSet);
 			if (r.id !== null) continue;
+			// If it's ambiguous, the wikilink validator already emits that error —
+			// don't also emit a spurious "unknown language code" on top of it.
+			if (r.reason === 'ambiguous' || r.reason === 'ambiguous-in-cluster') continue;
 			// For missing-in-cluster, do a global check: if the slug suffix-
 			// matches any entity anywhere in the graph, treat it as a
 			// cross-cluster entity wikilink and defer to validateEntityWikilinks.
 			if (r.reason === 'missing-in-cluster') {
 				const global = resolveWikilink(raw, entities, null, clusterSet, universalSet);
 				if (global.id !== null) continue;
+				// Also skip if globally ambiguous — wikilink validator handles it.
+				if (global.reason === 'ambiguous') continue;
 			}
 			issues.push({
 				kind: 'broken-link',

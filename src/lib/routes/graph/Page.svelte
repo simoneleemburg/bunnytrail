@@ -243,6 +243,42 @@
 	let width = $state(800);
 	let height = $state(600);
 
+	// ── Highlight set ─────────────────────────────────────────────────────────
+	// Direct 1-hop neighbours of the hovered node, plus 2-hop qualifier-chain
+	// nodes: outgoing (hovered → qualifier → target) and incoming
+	// (source → qualifier → hovered). Uses the same provenance maps as the
+	// ego graph so only nodes that are genuinely part of the hovered entity's
+	// qualifier chains are included — not unrelated co-holders.
+	const highlightedNeighbours = $derived.by(() => {
+		if (!hoveredId) return new Set<string>();
+		const result = new Set<string>();
+		// 1-hop direct neighbours
+		for (const nid of (neighboursOf.get(hoveredId) ?? [])) result.add(nid);
+		// 2-hop outgoing: hovered → qualifier → target
+		const qTargets = new Set(data.qualifierTargets[hoveredId] ?? []);
+		for (const nid of result) {
+			const n = nodeById.get(nid);
+			if (!n?.isQualifierNode) continue;
+			for (const e of (edgesOf.get(nid) ?? [])) {
+				if (e.kind === 'qualifier-in' && e.source === nid && qTargets.has(e.target)) {
+					result.add(e.target);
+				}
+			}
+		}
+		// 2-hop incoming: source → qualifier → hovered
+		const qSources = new Set(data.qualifierSources[hoveredId] ?? []);
+		for (const nid of [...result]) {
+			const n = nodeById.get(nid);
+			if (!n?.isQualifierNode) continue;
+			for (const e of (edgesOf.get(nid) ?? [])) {
+				if (e.kind === 'holds-qualifier' && e.target === nid && qSources.has(e.source)) {
+					result.add(e.source);
+				}
+			}
+		}
+		return result;
+	});
+
 	// Degree threshold for always-on labels in full graph mode.
 	// Top ~15% of nodes by degree, minimum 3.
 	let prominentDegree = $derived.by(() => {
@@ -325,11 +361,7 @@
 
 	function isNeighbour(nodeId: string): boolean {
 		if (!hoveredId) return false;
-		return simEdges.some(
-			(e) =>
-				(e.sourceNode?.id === hoveredId && e.targetNode?.id === nodeId) ||
-				(e.targetNode?.id === hoveredId && e.sourceNode?.id === nodeId)
-		);
+		return highlightedNeighbours.has(nodeId);
 	}
 
 	function edgeIsActive(e: SimEdge): boolean {
@@ -337,7 +369,16 @@
 		// In ego mode: only activate edges touching a *neighbour*, not the
 		// centre — hovering the centre would light every edge simultaneously.
 		if (focusId && hoveredId === focusId) return false;
-		return e.sourceNode?.id === hoveredId || e.targetNode?.id === hoveredId;
+		const srcId = e.sourceNode?.id;
+		const tgtId = e.targetNode?.id;
+		// Direct edge touching the hovered node
+		if (srcId === hoveredId || tgtId === hoveredId) return true;
+		// Qualifier chain edge: active when both endpoints are in the highlight set
+		// (covers holds-qualifier and qualifier-in edges in the chain)
+		if (srcId && tgtId && highlightedNeighbours.has(srcId) && highlightedNeighbours.has(tgtId)) {
+			if (e.kind === 'holds-qualifier' || e.kind === 'qualifier-in') return true;
+		}
+		return false;
 	}
 
 	// ── Simulation management ─────────────────────────────────────────────────

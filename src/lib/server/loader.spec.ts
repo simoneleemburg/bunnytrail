@@ -945,6 +945,30 @@ describe('validateLangLinks', () => {
 		);
 		expect(langIssues.some((i) => i.detail.includes('[[naya]]'))).toBe(false);
 	});
+
+	it('does not emit "unknown language code" when the slug resolves ambiguously', async () => {
+		// Two entities share the slug "bu" — the token is ambiguous, not a broken
+		// lang code. Only the wikilink ambiguity issue should fire, not a duplicate
+		// "unknown language code" issue.
+		const base = await mkdtemp(join(tmpdir(), 'alteria-lang-ambig-'));
+		// Two entities both resolvable as "bu"
+		await mkdir(join(base, 'languages', 'buunhic'), { recursive: true });
+		await writeFile(join(base, 'languages', 'buunhic', 'index.yaml'), 'name: Buunhic\nkind: language\n');
+		await writeFile(join(base, 'languages', 'buunhic', 'index.md'), '');
+		await mkdir(join(base, 'groups', 'buunhic'), { recursive: true });
+		await writeFile(join(base, 'groups', 'buunhic', 'index.yaml'), 'name: Buunhic People\nkind: group\n');
+		await writeFile(join(base, 'groups', 'buunhic', 'index.md'), '');
+		// Author uses [[buunhic]] — matches both, so ambiguous; also matches lang-tag shape
+		await mkdir(join(base, 'characters', 'freya'), { recursive: true });
+		await writeFile(join(base, 'characters', 'freya', 'index.yaml'), 'name: Freya\nkind: character\n');
+		await writeFile(join(base, 'characters', 'freya', 'index.md'), 'Freya speaks [[buunhic]].');
+		const { issues } = await loadAll(base);
+		// Should NOT emit a spurious "unknown language code" — it's an ambiguous entity wikilink
+		const langCodeIssues = issues.filter(
+			(i) => i.kind === 'broken-link' && i.detail.includes('unknown language code')
+		);
+		expect(langCodeIssues).toEqual([]);
+	});
 });
 
 describe('validateUnlabelledWikilinks', () => {
