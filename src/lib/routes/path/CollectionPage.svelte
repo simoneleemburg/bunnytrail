@@ -96,6 +96,8 @@
 	let activeTags = $state<Set<string>>(new Set());
 	let showAllTags = $state(false);
 
+	const activeEra = $derived((page.data as { activeEra?: string | null }).activeEra ?? null);
+
 	const hasContainers = $derived(data.containers.length > 0);
 	const hasSubcollections = $derived(data.subcollections.length > 0);
 	const hasOrbits = $derived(data.orbits.length > 0);
@@ -248,14 +250,21 @@
 		return fp === activeFolder || fp.startsWith(`${activeFolder}/`);
 	}
 
+	function matchesEra(card: { era?: string[] | null }): boolean {
+		if (activeEra === null) return true; // no filter active
+		if (!card.era || card.era.length === 0) return true; // no era = always visible
+		return card.era.includes(activeEra);
+	}
+
 	function matchesFilters(card: {
 		kind: string | null;
 		classId?: string | null;
 		tags: string[];
 		folderPath?: string;
 		id: string;
+		era?: string[] | null;
 	}): boolean {
-		return matchesKind(card) && matchesTags(card) && matchesFolder(card);
+		return matchesKind(card) && matchesTags(card) && matchesFolder(card) && matchesEra(card);
 	}
 
 	// Tags available for the page-level filter row: aggregated from

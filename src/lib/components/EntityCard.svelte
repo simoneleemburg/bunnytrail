@@ -16,7 +16,7 @@
 		 */
 		summaryHtml?: string | null;
 		tags?: string[];
-		era?: string | null;
+		era?: string[] | null;
 		/** Optional sigil glyph rendered before the name. */
 		sigil?: string | null;
 		/** When set, replaces kind in the eyebrow with a linked class label (e.g. "Human"). */
@@ -58,9 +58,9 @@
 		{/if}{#if rank != null && rankDisplay !== 'none'}<span
 				class="sep">·</span
 			><span class="rank">{rankDisplay === 'roman' ? toRoman(rank) : rank}</span>{/if}
-		{#if era}
+		{#if era && era.length > 0}
 			<span class="sep">·</span>
-			<span class="era">{era}</span>
+			<span class="era">{era.join(' / ')}</span>
 		{/if}
 	</div>
 	<h3 class="name">

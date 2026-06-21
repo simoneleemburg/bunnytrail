@@ -235,6 +235,24 @@ export async function walk(args: WalkArgs): Promise<void> {
 		const craft = (await exists(craftMdPath)) ? await readFile(craftMdPath, 'utf8') : null;
 
 		if (meta && !conflict) {
+			// Normalise `era`: YAML string → [string], array → validated string[].
+			// Non-string / non-array values are dropped with a warning.
+			if (meta.era !== undefined) {
+				const rawEra = meta.era as unknown;
+				if (typeof rawEra === 'string') {
+					(meta as Record<string, unknown>)['era'] = [rawEra];
+				} else if (Array.isArray(rawEra)) {
+					const valid = rawEra.filter((v): v is string => typeof v === 'string');
+					if (valid.length !== rawEra.length) {
+						issues.push({ kind: 'invalid-yaml', entity: id, detail: `era array contains non-string values — only strings are accepted` });
+					}
+					(meta as Record<string, unknown>)['era'] = valid.length > 0 ? valid : undefined;
+				} else {
+					issues.push({ kind: 'invalid-yaml', entity: id, detail: `era must be a string or array of strings` });
+					(meta as Record<string, unknown>)['era'] = undefined;
+				}
+			}
+
 			entities.set(id, {
 				id,
 				type: entityType,

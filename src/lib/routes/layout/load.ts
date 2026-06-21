@@ -38,6 +38,7 @@ export async function load({ url }: { url: URL }) {
 	// implies, which is what we want for static output.
 	const searchParams = building ? new URLSearchParams() : url.searchParams;
 	const selectedCluster = readScope(url.pathname, searchParams, ctx);
+	const activeEra = building ? null : (searchParams.get('era') ?? null);
 
 	// In All scope, shelf links go to cross-cluster aggregates; we
 	// don't paint ?scope=all on these because aggregate URLs already
@@ -153,24 +154,16 @@ export async function load({ url }: { url: URL }) {
 
 	return {
 		nav: [...nav, ...universalNav],
-		// Kinds is its own destination (taxonomy), separate from the
-		// content shelves above. In a cluster scope it points at the
-		// per-cluster filtered view.
 		kindsHref: selectedCluster ? `/${selectedCluster}/kinds` : '/kinds',
 		clusterOptions,
 		selectedCluster,
-		// World identity (name, tagline, shortName, allScopeLabel),
-		// inherited by every page via `$page.data.world`. Sourced from
-		// `content_meta/world.md`; falls back to "Bunnytrail" defaults
-		// if the file is absent.
+		activeEra,
 		world: worldConfig,
 		wordmark,
 		ornament,
 		ornamentGlyphStyle,
 		worldMarkStyle,
 		navSep,
-		// Surface the scope context to the client so the navigation
-		// hook can rewrite outgoing links without re-deriving it.
 		scopeContext: { clusters, unionShelves, clusterAwarePaths } satisfies ScopeContext
 	};
 }

@@ -9,6 +9,7 @@
 	import { paintAllScope, translateUrl, type ScopeContext } from '$lib/cluster';
 	import SvgLightbox from '$lib/components/SvgLightbox.svelte';
 	import type { Snippet } from 'svelte';
+	import type { EraDef, EraConfig } from '$lib/types';
 
 	interface Props {
 		data: {
@@ -16,7 +17,8 @@
 			kindsHref: string;
 			clusterOptions: { value: string; label: string; selected: boolean }[];
 			selectedCluster: string | null;
-			world: { name: string; shortName: string; tagline: string; allScopeLabel: string };
+			activeEra: string | null;
+			world: { name: string; shortName: string; tagline: string; allScopeLabel: string; eras: EraConfig | null };
 			wordmark: string | null;
 			ornament: {
 				glyph: string | null;
@@ -64,6 +66,7 @@
 	// cluster picker also closes on outside click.
 	let drawerOpen = $state(false);
 	let clusterOpen = $state(false);
+	let eraOpen = $state(false);
 	let metaOpen = $state(false);
 
 	// Active label for the cluster trigger. Falls back to the world
@@ -71,6 +74,25 @@
 	// loader always marks one).
 	let clusterLabel = $derived(
 		data.clusterOptions.find((o) => o.selected)?.label ?? data.world.allScopeLabel
+	);
+
+	// Ordered list of EraDef objects for the era picker. When a
+	// cluster is active and has a perCluster entry, use that
+	// cluster's era order; otherwise use all definitions.
+	const eraOptions = $derived.by(() => {
+		const cfg = data.world.eras;
+		if (!cfg) return [];
+		const cluster = data.selectedCluster;
+		const pc = cluster ? cfg.perCluster[cluster] : null;
+		const refs = pc ? pc.eras : cfg.definitions.map((d) => d.ref);
+		return refs
+			.map((ref) => cfg.definitions.find((d) => d.ref === ref))
+			.filter(Boolean) as EraDef[];
+	});
+
+	// Human-readable label for the active era, or a fallback.
+	const eraLabel = $derived(
+		data.world.eras?.definitions.find((d) => d.ref === data.activeEra)?.title ?? 'Era'
 	);
 
 	// Path-derived hooks for world CSS. `data-bt-path` carries the
@@ -129,6 +151,7 @@
 		// shouldn't inherit the previous chrome state.
 		drawerOpen = false;
 		clusterOpen = false;
+		eraOpen = false;
 		metaOpen = false;
 
 		if (bypassScopePaint) {
@@ -164,11 +187,21 @@
 		goto(target);
 	}
 
+	function switchEra(ref: string | null) {
+		const u = new URL($page.url);
+		if (ref) u.searchParams.set('era', ref);
+		else u.searchParams.delete('era');
+		eraOpen = false;
+		drawerOpen = false;
+		goto(u.toString());
+	}
+
 	// Escape closes whichever menu is open (cluster picker first
 	// since it's the inner-most layer).
 	function onKeydown(e: KeyboardEvent) {
 		if (e.key !== 'Escape') return;
 		if (clusterOpen) clusterOpen = false;
+		else if (eraOpen) eraOpen = false;
 		else if (metaOpen) metaOpen = false;
 		else if (drawerOpen) drawerOpen = false;
 	}
@@ -188,6 +221,20 @@
 		if (!clusterOpen) return;
 		document.addEventListener('click', onDocumentClick);
 		return () => document.removeEventListener('click', onDocumentClick);
+	});
+
+	// Close the era picker when a click lands outside it.
+	function onDocumentClickEra(e: MouseEvent) {
+		const target = e.target as Element | null;
+		if (target?.closest('[data-era-picker]')) return;
+		eraOpen = false;
+	}
+
+	$effect(() => {
+		if (!browser) return;
+		if (!eraOpen) return;
+		document.addEventListener('click', onDocumentClickEra);
+		return () => document.removeEventListener('click', onDocumentClickEra);
 	});
 
 	function onDocumentClickMeta(e: MouseEvent) {
@@ -335,6 +382,46 @@
 					{/if}
 				</div>
 
+				{#if eraOptions.length > 0}
+					<div class="era-picker era-picker-desktop" data-era-picker>
+						<button
+							type="button"
+							class="era-trigger"
+							aria-haspopup="listbox"
+							aria-expanded={eraOpen}
+							onclick={() => (eraOpen = !eraOpen)}
+						>
+							<span class="era-eyebrow">Era</span>
+							<span class="era-current">{eraLabel}</span>
+							<span class="era-caret" aria-hidden="true">▾</span>
+						</button>
+						{#if eraOpen}
+							<ul class="era-menu" role="listbox">
+								<li>
+									<button
+										type="button"
+										role="option"
+										aria-selected={data.activeEra === null}
+										class:selected={data.activeEra === null}
+										onclick={() => switchEra(null)}
+									>All eras</button>
+								</li>
+								{#each eraOptions as opt (opt.ref)}
+									<li>
+										<button
+											type="button"
+											role="option"
+											aria-selected={data.activeEra === opt.ref}
+											class:selected={data.activeEra === opt.ref}
+											onclick={() => switchEra(opt.ref)}
+										>{opt.title}</button>
+									</li>
+								{/each}
+							</ul>
+						{/if}
+					</div>
+				{/if}
+
 				{#if data.clusterOptions.length > 1}
 					<div class="cluster-picker cluster-picker-desktop" data-cluster-picker>
 						<button
@@ -412,6 +499,34 @@
 									>
 										{opt.label}
 									</button>
+								</li>
+							{/each}
+						</ul>
+					</div>
+				{/if}
+
+				{#if eraOptions.length > 0}
+					<div class="drawer-era">
+						<p class="drawer-era-eyebrow">Era</p>
+						<ul class="drawer-era-list" role="listbox">
+							<li>
+								<button
+									type="button"
+									role="option"
+									aria-selected={data.activeEra === null}
+									class:selected={data.activeEra === null}
+									onclick={() => switchEra(null)}
+								>All eras</button>
+							</li>
+							{#each eraOptions as opt (opt.ref)}
+								<li>
+									<button
+										type="button"
+										role="option"
+										aria-selected={data.activeEra === opt.ref}
+										class:selected={data.activeEra === opt.ref}
+										onclick={() => switchEra(opt.ref)}
+									>{opt.title}</button>
 								</li>
 							{/each}
 						</ul>
@@ -859,6 +974,150 @@
 		color: var(--accent);
 	}
 
+	/* ── Custom era picker ─────────────────────────────────────
+	   Mirrors the cluster picker's structure and visual language.
+	   Placed before the cluster picker in the masthead chrome. */
+	.era-picker {
+		position: relative;
+	}
+
+	.era-trigger {
+		display: inline-flex;
+		align-items: baseline;
+		gap: var(--space-3);
+		font: inherit;
+		color: var(--ink-soft);
+		background: transparent;
+		border: 1px solid transparent;
+		border-radius: var(--radius-md);
+		padding: var(--space-2) var(--space-3);
+		cursor: pointer;
+		transition:
+			background-color 120ms,
+			border-color 120ms,
+			color 120ms;
+	}
+
+	.era-trigger:hover,
+	.era-trigger:focus-visible {
+		background: var(--paper-warm);
+		border-color: var(--rule);
+		outline: none;
+	}
+
+	.era-trigger[aria-expanded='true'] {
+		background: var(--paper-warm);
+		border-color: var(--rule);
+	}
+
+	.era-eyebrow {
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-sm);
+		letter-spacing: 0;
+		color: var(--ink-faint);
+	}
+
+	.era-current {
+		font-family: var(--font-display);
+		font-size: var(--text-sm);
+		letter-spacing: 0.02em;
+		color: var(--ink);
+	}
+
+	.era-caret {
+		font-size: 0.7em;
+		color: var(--ink-faint);
+		transition: transform 120ms;
+	}
+
+	.era-trigger[aria-expanded='true'] .era-caret {
+		transform: rotate(180deg);
+	}
+
+	.era-menu {
+		position: absolute;
+		top: calc(100% + var(--space-2));
+		right: 0;
+		min-width: 12rem;
+		margin: 0;
+		padding: var(--space-2);
+		list-style: none;
+		background: var(--vellum);
+		border: 1px solid var(--rule);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-hover);
+		z-index: 20;
+	}
+
+	.era-menu li {
+		margin: 0;
+		border-radius: 6px;
+		transition: background-color 120ms;
+	}
+
+	.era-menu li:has(button:hover),
+	.era-menu li:has(button:focus-visible) {
+		background-color: var(--paper-warm);
+	}
+
+	.era-menu button {
+		width: 100%;
+		text-align: left;
+		font-family: var(--font-display);
+		font-size: var(--text-sm);
+		letter-spacing: 0.02em;
+		color: var(--ink-soft);
+		background-image: linear-gradient(
+			100deg,
+			currentColor 0%,
+			currentColor 42%,
+			var(--accent-warm) 50%,
+			currentColor 58%,
+			currentColor 100%
+		);
+		background-size: 250% 100%;
+		background-position: 130% 0;
+		background-clip: text;
+		-webkit-background-clip: text;
+		background-color: transparent;
+		border: 0;
+		border-radius: 6px;
+		padding: var(--space-2) var(--space-3);
+		cursor: pointer;
+	}
+
+	.era-menu button:hover,
+	.era-menu button:focus-visible {
+		color: var(--accent);
+		outline: none;
+		animation: era-item-gleam 400ms ease-out;
+	}
+
+	@keyframes era-item-gleam {
+		0% {
+			background-position: 130% 0;
+			-webkit-text-fill-color: currentColor;
+		}
+		15%,
+		85% {
+			-webkit-text-fill-color: transparent;
+		}
+		100% {
+			background-position: -30% 0;
+			-webkit-text-fill-color: currentColor;
+		}
+	}
+
+	.era-menu button.selected {
+		color: var(--accent);
+	}
+
+	.era-menu button.selected::before {
+		content: '· ';
+		color: var(--accent);
+	}
+
 	/* ── Hamburger ───────────────────────────────────────────── */
 	.hamburger {
 		display: none;
@@ -985,6 +1244,58 @@
 		color: var(--accent);
 	}
 
+	.drawer-era {
+		border-top: var(--rule-thin);
+		padding-top: var(--space-4);
+	}
+
+	.drawer-era-eyebrow {
+		margin: 0 0 var(--space-3);
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-sm);
+		color: var(--ink-faint);
+	}
+
+	.drawer-era-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+	}
+
+	.drawer-era-list button {
+		width: 100%;
+		text-align: left;
+		font-family: var(--font-display);
+		font-size: var(--text-base);
+		letter-spacing: 0.02em;
+		color: var(--ink-soft);
+		background: transparent;
+		border: 0;
+		border-radius: var(--radius-sm);
+		padding: var(--space-2) var(--space-3);
+		cursor: pointer;
+	}
+
+	.drawer-era-list button:hover,
+	.drawer-era-list button:focus-visible {
+		background: var(--paper-warm);
+		color: var(--accent);
+		outline: none;
+	}
+
+	.drawer-era-list button.selected {
+		color: var(--accent);
+	}
+
+	.drawer-era-list button.selected::before {
+		content: '· ';
+		color: var(--accent);
+	}
+
 	/* ── Responsive collapse ─────────────────────────────────── */
 	@media (max-width: 760px) {
 		.masthead {
@@ -997,6 +1308,7 @@
 
 		.nav-desktop,
 		.cluster-picker-desktop,
+		.era-picker-desktop,
 		.meta-picker {
 			display: none;
 		}

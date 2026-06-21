@@ -1,6 +1,6 @@
 import { readFile, stat } from 'node:fs/promises';
 import { parse as parseYaml } from 'yaml';
-import type { HealthIssue } from '$lib/types';
+import type { EraConfig, EraDef, ClusterEras, HealthIssue } from '$lib/types';
 import { defaultWorldConfigPath } from './globals';
 import { splitFrontmatter } from './frontmatter';
 import { renderPlainBody } from './markdown';
@@ -85,6 +85,11 @@ export interface WorldConfig {
 	 * silence those warnings globally while the schema is being built out.
 	 */
 	allowUndefinedProperties: boolean;
+	/**
+	 * Optional era configuration. When present, enables the era picker
+	 * in the masthead and the `era` field on entity cards.
+	 */
+	eras: EraConfig | null;
 }
 
 const FALLBACK_NAME = 'Bunnytrail';
@@ -109,7 +114,8 @@ function fallbackConfig(): WorldConfig {
 		allScopeLabel: `All ${FALLBACK_NAME}`,
 		ornament: fallbackOrnament(),
 		allowUndefinedRelations: true,
-		allowUndefinedProperties: true
+		allowUndefinedProperties: true,
+		eras: null
 	};
 }
 
@@ -163,11 +169,12 @@ export async function loadWorld(
 	const ornament = readOrnament(meta, issues);
 	const allowUndefinedRelations = readAllowUndefinedRelations(meta, issues);
 	const allowUndefinedProperties = readAllowUndefinedProperties(meta, issues);
+	const eras = readEras(meta, issues);
 
 	const ledeHtml = body.trim() === '' ? null : renderPlainBody(body);
 
 	return {
-		config: { name, shortName, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties },
+		config: { name, shortName, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties, eras },
 		ledeHtml,
 		present: true,
 		issues
@@ -274,6 +281,89 @@ function readAllowUndefinedProperties(
 		return false;
 	}
 	return raw;
+}
+
+/**
+ * Parse the optional `eras:` block from world.md frontmatter.
+ * Returns null when absent or malformed.
+ */
+function readEras(meta: Record<string, unknown>, issues: HealthIssue[]): EraConfig | null {
+	const raw = meta['eras'];
+	if (raw === undefined || raw === null) return null;
+	if (typeof raw !== 'object' || Array.isArray(raw)) {
+		issues.push({ kind: 'invalid-yaml', detail: 'content_meta/world.md: eras must be a mapping' });
+		return null;
+	}
+	const o = raw as Record<string, unknown>;
+
+	// --- definitions ---
+	const defsRaw = o['definitions'];
+	if (!Array.isArray(defsRaw)) {
+		issues.push({ kind: 'invalid-yaml', detail: 'content_meta/world.md: eras.definitions must be an array' });
+		return null;
+	}
+	const definitions: EraDef[] = [];
+	const knownRefs = new Set<string>();
+	for (let i = 0; i < defsRaw.length; i++) {
+		const item = defsRaw[i];
+		if (!item || typeof item !== 'object' || Array.isArray(item)) {
+			issues.push({ kind: 'invalid-yaml', detail: `content_meta/world.md: eras.definitions[${i}] must be a mapping` });
+			continue;
+		}
+		const d = item as Record<string, unknown>;
+		const ref = typeof d['ref'] === 'string' ? d['ref'].trim() : null;
+		const title = typeof d['title'] === 'string' ? d['title'].trim() : null;
+		if (!ref || !title) {
+			issues.push({ kind: 'invalid-yaml', detail: `content_meta/world.md: eras.definitions[${i}] requires both ref and title` });
+			continue;
+		}
+		if (knownRefs.has(ref)) {
+			issues.push({ kind: 'invalid-yaml', detail: `content_meta/world.md: eras.definitions: duplicate ref '${ref}'` });
+			continue;
+		}
+		knownRefs.add(ref);
+		const description = typeof d['description'] === 'string' ? d['description'].trim() : undefined;
+		definitions.push({ ref, title, ...(description ? { description } : {}) });
+	}
+
+	// --- perCluster ---
+	const perClusterRaw = o['perCluster'];
+	const perCluster: Record<string, ClusterEras> = {};
+	if (perClusterRaw !== undefined && perClusterRaw !== null) {
+		if (typeof perClusterRaw !== 'object' || Array.isArray(perClusterRaw)) {
+			issues.push({ kind: 'invalid-yaml', detail: 'content_meta/world.md: eras.perCluster must be a mapping' });
+		} else {
+			for (const [clusterId, clusterRaw] of Object.entries(perClusterRaw as Record<string, unknown>)) {
+				if (!clusterRaw || typeof clusterRaw !== 'object' || Array.isArray(clusterRaw)) {
+					issues.push({ kind: 'invalid-yaml', detail: `content_meta/world.md: eras.perCluster.${clusterId} must be a mapping` });
+					continue;
+				}
+				const c = clusterRaw as Record<string, unknown>;
+				const defaultRef = typeof c['default'] === 'string' ? c['default'].trim() : null;
+				if (!defaultRef) {
+					issues.push({ kind: 'invalid-yaml', detail: `content_meta/world.md: eras.perCluster.${clusterId}.default must be a string era ref` });
+					continue;
+				}
+				if (!knownRefs.has(defaultRef)) {
+					issues.push({ kind: 'invalid-yaml', detail: `content_meta/world.md: eras.perCluster.${clusterId}.default '${defaultRef}' is not a defined era ref` });
+				}
+				const erasRaw = c['eras'];
+				if (!Array.isArray(erasRaw) || erasRaw.some((v) => typeof v !== 'string')) {
+					issues.push({ kind: 'invalid-yaml', detail: `content_meta/world.md: eras.perCluster.${clusterId}.eras must be an array of era refs` });
+					continue;
+				}
+				const eraRefs = erasRaw as string[];
+				for (const ref of eraRefs) {
+					if (!knownRefs.has(ref)) {
+						issues.push({ kind: 'invalid-yaml', detail: `content_meta/world.md: eras.perCluster.${clusterId}.eras: unknown era ref '${ref}'` });
+					}
+				}
+				perCluster[clusterId] = { default: defaultRef, eras: eraRefs };
+			}
+		}
+	}
+
+	return { definitions, perCluster };
 }
 
 function readStringFrom(

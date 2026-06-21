@@ -120,6 +120,34 @@ export interface Ontology {
 	relations: RelationRegistry;
 }
 
+/** A single named era defined in `content_meta/world.md`. */
+export interface EraDef {
+	/** Short identifier used in entity frontmatter and URL params, e.g. `'mythic'`. */
+	ref: string;
+	/** Human-readable title shown in the UI, e.g. `'The Mythic Age'`. */
+	title: string;
+	/** Optional editorial description. */
+	description?: string;
+}
+
+/** Per-cluster era configuration defined in `content_meta/world.md`. */
+export interface ClusterEras {
+	/** Ref of the era that entities without an explicit era belong to. */
+	default: string;
+	/** Ordered list of era refs to show in the era picker for this cluster. */
+	eras: string[];
+}
+
+/**
+ * The full era configuration from `content_meta/world.md`.
+ * Controls the era picker in the masthead.
+ */
+export interface EraConfig {
+	definitions: EraDef[];
+	/** Map from cluster id → per-cluster era config. */
+	perCluster: Record<string, ClusterEras>;
+}
+
 /**
  * Editorial metadata for a content collection — a folder under
  * `content/` that groups entities together for browsing. Loaded
@@ -381,8 +409,8 @@ export interface EntityMeta {
 	summary?: string;
 	/** Free-form tags. */
 	tags?: string[];
-	/** Era / period label (purely a string for now). */
-	era?: string;
+	/** Era / period label(s). Normalised from YAML (string → [string]) at load time. */
+	era?: string[];
 	/**
 	 * The kind of this entity — the primary semantic classification.
 	 * Must match an id in the central registry (`content_meta/kinds/`) to

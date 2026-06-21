@@ -12,7 +12,7 @@ export interface KindCard {
 	typeLabel: string | null;
 	summaryHtml: string | null;
 	tags: string[];
-	era: string | null;
+	era: string[] | null;
 	sigil: string | null;
 	rank: number | null;
 }
