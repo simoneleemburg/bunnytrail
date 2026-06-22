@@ -605,17 +605,19 @@ blockquote {
 
 /* ── Formula display block ─────────────────────────────────────
    Rendered from ```formula fenced blocks in entity prose.
-   Treated as an inscribed display element — large, centred,
-   italic display face with generous vertical breathing room and
-   a modest horizontal indent so it sits inset from the prose
-   column edges. Worlds can re-dress via theme.css. */
+   Treated as an inscribed display element — large, left-aligned,
+   italic display face with generous vertical breathing room.
+   On wide screens the block sits inset with generous padding so the
+   lines read as a left-anchored column of notation rather than a
+   centred ornament. Worlds can re-dress via theme.css. */
 .bt-formula {
 	position: relative;
 	font-family: var(--font-display);
 	font-style: italic;
 	font-size: var(--text-2xl);
 	line-height: var(--leading-tight);
-	text-align: center;
+	text-align: left;
+	white-space: pre-wrap; /* preserve newlines from the fenced block */
 	font-feature-settings: 'onum' 0; /* lining numerals — the 1 reads as numeric */
 	letter-spacing: 0.04em;
 }
@@ -628,6 +630,12 @@ blockquote {
 	padding: var(--space-6) var(--space-8);
 	margin: var(--space-7) auto;
 	max-width: var(--prose-max);
+}
+
+@media (min-width: 600px) {
+	:where(.bt-formula) {
+		padding-inline: clamp(var(--space-8), 15%, 8rem);
+	}
 }
 
 @media (max-width: 600px) {
