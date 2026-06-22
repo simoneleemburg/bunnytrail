@@ -673,7 +673,8 @@ export interface HealthIssue {
 		| 'undefined-property'
 		| 'property-kind-mismatch'
 		| 'property-value-mismatch'
-		| 'unknown-entity-field';
+		| 'unknown-entity-field'
+		| 'unknown-kind-ref';
 	entity?: EntityId;
 	detail: string;
 }

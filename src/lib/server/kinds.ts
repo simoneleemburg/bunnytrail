@@ -74,6 +74,23 @@ export async function loadKindRegistry(
 
 	await walk(kindsDir, null, null, kinds, ontologies, relations, properties, issues, kindsDir);
 
+	// Validate that every kind id referenced in relation domain / codomain /
+	// qualifierDomain constraints actually exists in the registry.
+	for (const [relId, schema] of relations) {
+		for (const constraintKey of ['domain', 'codomain', 'qualifierDomain'] as const) {
+			const ids = schema[constraintKey];
+			if (!ids) continue;
+			for (const kindId of ids) {
+				if (!kinds.has(kindId)) {
+					issues.push({
+						kind: 'unknown-kind-ref',
+						detail: `relation '${relId}': ${constraintKey} references unknown kind '${kindId}'`
+					});
+				}
+			}
+		}
+	}
+
 	return { kinds, ontologies, relations, properties, issues };
 }
 

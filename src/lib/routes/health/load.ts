@@ -73,6 +73,10 @@ export async function load() {
 		'unknown-entity-field': {
 			label: 'Unknown entity fields',
 			blurb: "Top-level frontmatter field not in the EntityMeta contract — likely a lingering old-style custom field that should be moved under 'properties:'."
+		},
+		'unknown-kind-ref': {
+			label: 'Unknown kind references',
+			blurb: "Relation schema domain, codomain, or qualifierDomain lists a kind id that is not registered in content_meta/kinds/."
 		}
 	};
 
@@ -108,6 +112,7 @@ export async function load() {
 	const order: HealthIssue['kind'][] = [
 		'broken-link',
 		'invalid-yaml',
+		'unknown-kind-ref',
 		'missing-yaml',
 		'missing-md',
 		'unknown-entity-field',
