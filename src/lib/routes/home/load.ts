@@ -110,6 +110,12 @@ export async function load() {
 	const entities = graph.all();
 	const entitiesWithProse = entities.filter((e) => e.body.trim().length > 0).length;
 	const entitiesStub = entities.length - entitiesWithProse;
+	const totalWords = entities.reduce((n, e) => {
+		const bodyWords = e.body.trim() ? e.body.trim().split(/\s+/).length : 0;
+		const summaryWords =
+			e.meta.summary?.trim() ? e.meta.summary.trim().split(/\s+/).length : 0;
+		return n + bodyWords + summaryWords;
+	}, 0);
 
 	// Entities carrying a chapters/ subfolder — "works" in the
 	// generic sense (a record bearing fragments, a future codex,
@@ -163,6 +169,7 @@ export async function load() {
 		totalEntities: entities.length,
 		entitiesWithProse,
 		entitiesStub,
+		totalWords,
 		totalChapters,
 		workCount: worksWithChapters.length,
 		kindCount: kinds.length,

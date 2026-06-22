@@ -8,6 +8,8 @@
 
 	const world = $derived($page.data.world);
 	const ornament = $derived($page.data.ornament);
+
+	const wordCount = $derived(data.totalWords.toLocaleString());
 </script>
 
 <svelte:head>
@@ -73,7 +75,7 @@
 		of zeros.
 	-->
 	<p class="colophon">
-		{data.totalEntities} entities&ensp;&middot;&ensp;{data.entitiesWithProse} with prose&ensp;&middot;&ensp;{data.entitiesStub} stubs{#if data.issues > 0}
+		{data.totalEntities} entities&ensp;&middot;&ensp;{data.entitiesWithProse} with prose&ensp;&middot;&ensp;{data.entitiesStub} stubs&ensp;&middot;&ensp;{wordCount} words{#if data.issues > 0}
 			&ensp;&middot;&ensp;<a class="issues-link" href="/health"
 				>{data.issues} {data.issues === 1 ? 'issue' : 'issues'}</a
 			>{/if}
