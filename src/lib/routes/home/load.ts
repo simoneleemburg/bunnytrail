@@ -109,6 +109,7 @@ export async function load() {
 
 	const entities = graph.all();
 	const entitiesWithProse = entities.filter((e) => e.body.trim().length > 0).length;
+	const entitiesStub = entities.length - entitiesWithProse;
 
 	// Entities carrying a chapters/ subfolder — "works" in the
 	// generic sense (a record bearing fragments, a future codex,
@@ -161,6 +162,7 @@ export async function load() {
 		collectionCount: folders.length,
 		totalEntities: entities.length,
 		entitiesWithProse,
+		entitiesStub,
 		totalChapters,
 		workCount: worksWithChapters.length,
 		kindCount: kinds.length,
