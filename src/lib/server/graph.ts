@@ -101,6 +101,10 @@ export class Graph {
 	#universalFolders: Set<string> = new Set();
 	#loaded = false;
 	#loading: Promise<void> | null = null;
+	/** Monotonically incrementing counter; bumped after every successful load(). */
+	#version = 0;
+	/** Listeners notified after each successful reload. Used by the SSE endpoint. */
+	#reloadListeners: Set<() => void> = new Set();
 	/** Lazily built on first call to `speciesPresence()`. */
 	#speciesPopulationIndex: Map<EntityId, SpeciesPresenceEntry[]> | null = null;
 	/** Lazily built alongside #speciesPopulationIndex: worldId → WorldSubGroup[]. */
@@ -138,6 +142,8 @@ export class Graph {
 		this.#speciesPopulationIndex = null;
 		this.#worldSubGroupsIndex = null;
 		this.#vocabIndex = null;
+		this.#version++;
+		for (const fn of this.#reloadListeners) fn();
 		})();
 		try {
 			await this.#loading;
@@ -148,6 +154,26 @@ export class Graph {
 
 	async ready(): Promise<void> {
 		if (!this.#loaded) await this.load();
+	}
+
+	/**
+	 * Monotonically incrementing load counter. Starts at 0 (never
+	 * loaded) and increments after every successful `load()`. Dev-mode
+	 * tooling can poll this to detect when the graph has been reloaded
+	 * and trigger a client-side `invalidateAll()`.
+	 */
+	get version(): number {
+		return this.#version;
+	}
+
+	/** Register a callback to fire after each successful `load()`. */
+	onReload(fn: () => void): void {
+		this.#reloadListeners.add(fn);
+	}
+
+	/** Deregister a reload callback. */
+	offReload(fn: () => void): void {
+		this.#reloadListeners.delete(fn);
 	}
 
 	get(id: EntityId): Entity | undefined {

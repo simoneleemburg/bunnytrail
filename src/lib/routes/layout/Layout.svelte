@@ -2,7 +2,7 @@
 	import '$lib/styles/global.css';
 
 	import { page } from '$app/stores';
-	import { beforeNavigate, goto } from '$app/navigation';
+	import { beforeNavigate, goto, invalidateAll } from '$app/navigation';
 	import { browser, dev } from '$app/environment';
 	import { onMount, setContext } from 'svelte';
 	import { injectAnalytics } from '@vercel/analytics/sveltekit';
@@ -43,6 +43,27 @@
 	onMount(() => {
 		if (!browser) return;
 		injectAnalytics({ mode: dev ? 'development' : 'production' });
+
+		// In dev, subscribe to the graph-reload SSE stream so that any
+		// file change picked up by the watcher (content, kinds, world.md,
+		// etc.) triggers a SvelteKit invalidation — causing all active
+		// load() functions to re-run and the page data to refresh without
+		// a manual browser reload.
+		if (dev) {
+			let knownVersion: number | null = null;
+			const es = new EventSource('/api/graph-reload');
+			es.onmessage = (event) => {
+				const v = parseInt(event.data, 10);
+				if (Number.isNaN(v)) return;
+				if (knownVersion === null) {
+					knownVersion = v; // baseline — don't invalidate on first message
+				} else if (v !== knownVersion) {
+					knownVersion = v;
+					void invalidateAll();
+				}
+			};
+			return () => es.close();
+		}
 	});
 
 	// Set to true while the user-initiated cluster switch is

@@ -124,6 +124,10 @@ export function planShims(mode: ShimMode): Shim[] {
 			file: 'api/influence-assets/[slug]/[filename]/+server.ts',
 			contents: server(mode, 'api/influenceAssets', { extraExports: ['prerender', 'entries'] })
 		},
+		{
+			file: 'api/graph-reload/+server.ts',
+			contents: server(mode, 'api/graphReload')
+		},
 
 		// Blog
 		{
