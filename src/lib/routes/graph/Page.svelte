@@ -801,6 +801,9 @@
 			const labels = data.qualifierEdgeLabels[`${srcId}|${tgtId}`];
 			if (labels) return labels.inLabel;
 		}
+		// Use the world-level registry labels when available.
+		const worldLabels = data.relationLabels[e.kind];
+		if (worldLabels) return dir === 'out' ? worldLabels.outLabel : worldLabels.inLabel;
 		return relationLabel(e.kind, dir);
 	}
 

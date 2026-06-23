@@ -7,50 +7,41 @@ import { graph } from './graph';
 /**
  * Inline rendered `<img>` references to SVG files so they paint as
  * fully styled, interactive figures rather than opaque raster
- * embeds.
+ * embeds, and wrap raster images served from `/api/…` endpoints in
+ * a `<figure class="bt-inline-img">` with an expand button that
+ * opens a simple full-viewport lightbox.
  *
- * Operates on HTML already produced by `renderBody`, which has
- * rewritten author-side `![alt](foo.svg)` and `![alt](assets/foo.svg)`
- * into `<img src="/api/entity-assets/…">` and `<img src="/api/assets/…">`
- * respectively. This pass walks those `<img>` tags, reads the SVG
- * payload off disk, and replaces them with:
+ * **SVG path** — reads the SVG payload off disk and replaces the
+ * `<img>` with:
  *
  *   <figure class="bt-inline-svg">
  *     <button type="button" class="bt-inline-svg__expand"
- *             data-bt-svg-expand aria-label="View full size">⤢</button>
+ *             data-bt-svg-expand aria-label="Open map">⤢</button>
  *     <svg …>…</svg>
  *     <figcaption>{alt}</figcaption>   ← only when alt is non-empty
  *   </figure>
  *
- * The `[data-bt-svg-expand]` button is the lightbox trigger; a
- * single global listener (mounted in `Layout.svelte` via the
- * `SvgLightbox` component) picks it up, clones the sibling SVG,
- * and renders it full-viewport in a `<dialog>`. The button is
- * server-rendered so it works without JS as a no-op (the browser's
- * default action is nothing); progressive enhancement attaches
- * the lightbox handler on mount.
+ * **Raster path** — wraps the `<img>` tag with:
  *
- * The wrapper carries two classes: the generic `bt-inline-svg`
- * (styled by the engine: figure chrome, lightbox handler hooks,
- * container query for `cqw`) and a per-figure modifier
- * `bt-inline-svg--<base>` where `<base>` is the SVG filename minus
- * extension. The engine auto-bundles every `<base>.css` next to a
- * `<base>.svg` in the world's assets dir into
- * `/api/assets/inline-svg.css`, wrapping each file's rules in
- * `.bt-inline-svg--<base> { ... }` so they only apply inside the
- * matching figure. World authors don't need to write `svg.<map>`
- * scoping selectors.
+ *   <figure class="bt-inline-img">
+ *     <button type="button" class="bt-inline-img__expand"
+ *             data-bt-img-expand aria-label="View full size">⤢</button>
+ *     <img src="…" alt="…">
+ *     <figcaption>{alt}</figcaption>   ← only when alt is non-empty
+ *   </figure>
  *
- * Non-SVG images and any `<img>` whose `src` we don't recognise are
- * left untouched — they keep working as ordinary raster embeds.
+ * The `[data-bt-svg-expand]` / `[data-bt-img-expand]` buttons are
+ * lightbox triggers handled by `SvgLightbox.svelte` (mounted once
+ * from `Layout.svelte`). Buttons are server-rendered no-ops without
+ * JS; the handler attaches on mount.
  *
- * If the SVG file can't be read (deleted, renamed, broken), the
- * original `<img>` tag is left in place so the gap surfaces as a
- * standard broken-image rather than vanishing silently.
+ * Any `<img>` whose `src` is not under `/api/…` is left untouched.
+ * If an SVG file can't be read the original `<img>` is left in
+ * place so the gap surfaces as a broken-image rather than vanishing.
  */
 export async function inlineSvgFigures(html: string): Promise<string> {
 	const pattern =
-		/<img\b([^>]*?)\ssrc="(\/api\/(?:assets|entity-assets|guide-assets|influence-assets)\/[^"]+\.svg)"([^>]*)>/gi;
+		/<img\b([^>]*?)\ssrc="(\/api\/(?:assets|entity-assets|guide-assets|influence-assets)\/[^"]+)"([^>]*)>/gi;
 	const matches: Array<{ whole: string; pre: string; src: string; post: string; index: number }> =
 		[];
 	for (const m of html.matchAll(pattern)) {
@@ -80,16 +71,45 @@ export async function inlineSvgFigures(html: string): Promise<string> {
 	return out;
 }
 
+const RASTER_EXTENSIONS = new Set(['png', 'jpg', 'jpeg', 'gif', 'webp', 'avif']);
+
+function isSvgSrc(src: string): boolean {
+	return src.toLowerCase().endsWith('.svg');
+}
+
+function isRasterSrc(src: string): boolean {
+	const dot = src.lastIndexOf('.');
+	if (dot < 0) return false;
+	return RASTER_EXTENSIONS.has(src.slice(dot + 1).toLowerCase());
+}
+
 async function buildReplacement(
 	original: string,
 	pre: string,
 	src: string,
 	post: string
 ): Promise<string> {
+	const alt = extractAttr(`${pre} ${post}`, 'alt');
+
+	if (isSvgSrc(src)) {
+		return buildSvgReplacement(original, pre, src, post, alt);
+	}
+	if (isRasterSrc(src)) {
+		return buildRasterReplacement(original, src, alt);
+	}
+	return original;
+}
+
+async function buildSvgReplacement(
+	original: string,
+	pre: string,
+	src: string,
+	post: string,
+	alt: string | null
+): Promise<string> {
 	const svg = await loadSvg(src);
 	if (!svg) return original; // leave broken <img> visible
 
-	const alt = extractAttr(`${pre} ${post}`, 'alt');
 	const captionHtml = alt ? `<figcaption>${escapeHtml(alt)}</figcaption>` : '';
 	const expandBtn =
 		`<button type="button" class="bt-inline-svg__expand" data-bt-svg-expand ` +
@@ -105,13 +125,23 @@ async function buildReplacement(
 	// `inline-svg.css` wrapped in `.bt-inline-svg--<base> { ... }`,
 	// so its rules only apply inside the matching figure. Author
 	// CSS no longer needs manual `svg.<map>` scoping selectors.
-	const base = svgBasename(src);
+	const base = figureBasename(src);
 	const cls = base ? `bt-inline-svg bt-inline-svg--${base}` : 'bt-inline-svg';
 	return `<figure class="${cls}">${expandBtn}${svgStripped}${captionHtml}</figure>`;
 }
 
+function buildRasterReplacement(original: string, src: string, alt: string | null): string {
+	const captionHtml = alt ? `<figcaption>${escapeHtml(alt)}</figcaption>` : '';
+	const altAttr = alt !== null ? ` alt="${escapeHtml(alt)}"` : '';
+	const expandBtn =
+		`<button type="button" class="bt-inline-img__expand" data-bt-img-expand ` +
+		`aria-label="View full size"><span aria-hidden="true">⤢</span></button>`;
+	const imgTag = `<img src="${src}"${altAttr}>`;
+	return `<figure class="bt-inline-img">${expandBtn}${imgTag}${captionHtml}</figure>`;
+}
+
 /**
- * Derive the CSS modifier identifier from an SVG `src` URL.
+ * Derive the CSS modifier identifier from a figure `src` URL.
  *
  * For `/api/assets/<base>.svg`          → `<base>`
  *   (flat assets dir, no collision risk)
@@ -131,7 +161,7 @@ async function buildReplacement(
  * Returns null if the resulting identifier isn't CSS-class-safe
  * (`[A-Za-z0-9_-]+`).
  */
-function svgBasename(src: string): string | null {
+function figureBasename(src: string): string | null {
 	let pathPart: string;
 
 	if (src.startsWith('/api/assets/')) {

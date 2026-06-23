@@ -377,6 +377,83 @@ blockquote {
 	--bt-text-cap: 2;
 }
 
+/* ── Raster image inline figure ────────────────────────────────
+   Wraps PNG/JPG/etc images authored as `![alt](file.png)` in prose.
+   Mirrors the bt-inline-svg figure chrome: same margins, max-width,
+   expand-button placement, and figcaption style. Clicking anywhere
+   on the figure (or the explicit expand button) opens the image in
+   the bt-img-lightbox dialog for viewing at its natural resolution. */
+.bt-inline-img {
+	position: relative;
+	margin: var(--space-6) auto;
+	padding: 0;
+	max-width: var(--figure-max-width);
+	cursor: zoom-in;
+}
+
+.bt-inline-img img {
+	display: block;
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: var(--figure-max-height);
+	margin: 0 auto;
+}
+
+.bt-inline-img figcaption {
+	max-width: var(--prose-max);
+	margin: var(--space-4) auto 0;
+	text-align: center;
+	font-style: italic;
+	color: var(--ink-soft);
+	font-size: var(--text-sm);
+	line-height: var(--leading-normal);
+}
+
+.bt-inline-img__expand {
+	position: absolute;
+	top: var(--space-2);
+	right: var(--space-2);
+	width: 2.25rem;
+	height: 2.25rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.1rem;
+	line-height: 1;
+	color: var(--bt-expand-color, var(--ink-soft));
+	background: var(--bt-expand-bg, rgba(244, 236, 220, 0.85));
+	border: 1px solid var(--bt-expand-border, var(--rule));
+	border-radius: var(--radius-md);
+	cursor: pointer;
+	opacity: 0.4;
+	transition:
+		opacity 160ms,
+		color 120ms,
+		background-color 120ms;
+	z-index: 1;
+}
+
+.bt-inline-img:hover .bt-inline-img__expand,
+.bt-inline-img:focus-within .bt-inline-img__expand,
+.bt-inline-img__expand:focus-visible {
+	opacity: 1;
+}
+
+.bt-inline-img__expand:hover,
+.bt-inline-img__expand:focus-visible {
+	color: var(--bt-expand-hover-color, var(--accent));
+	background: var(--bt-expand-hover-bg, var(--vellum));
+	border-color: var(--bt-expand-hover-border, var(--bt-expand-border, var(--rule)));
+	outline: none;
+}
+
+@media (hover: none) {
+	.bt-inline-img__expand {
+		opacity: 1;
+	}
+}
+
 /* Fleuron — shared ornamental chapter-mark used on the home hero,
    collection, entity, and guide pages. All layout and decorative
    properties live here so every page gets them from a single

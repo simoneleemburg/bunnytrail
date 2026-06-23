@@ -1,5 +1,5 @@
 import { graph } from '$lib/server/graph';
-import { relationLabel } from '$lib/types';
+import { relationLabel, type RelationLabels } from '$lib/types';
 
 export interface GraphNode {
 	id: string;
@@ -187,7 +187,15 @@ export async function load() {
 		ontologyTitles[id] = g.title ?? id;
 	}
 
-	return { nodes, edges, kindParents, kindLabels, ontologyOf, ontologyTitles, qualifierTargets, qualifierSources, qualifierEdgeLabels };
+	// ── Relation labels (for ego-graph edge labels) ───────────────
+	// Serialise only the out/in label pair — domain constraints are not
+	// needed client-side.
+	const relationLabels: Record<string, RelationLabels> = {};
+	for (const [id, schema] of registry) {
+		relationLabels[id] = { outLabel: schema.outLabel, inLabel: schema.inLabel };
+	}
+
+	return { nodes, edges, kindParents, kindLabels, ontologyOf, ontologyTitles, qualifierTargets, qualifierSources, qualifierEdgeLabels, relationLabels };
 }
 
 export type GraphData = Awaited<ReturnType<typeof load>>;

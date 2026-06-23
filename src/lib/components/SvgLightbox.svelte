@@ -44,6 +44,10 @@
 	let stage: HTMLDivElement | null = $state(null);
 	let captionText = $state('');
 
+	let imgDialog: HTMLDialogElement | null = $state(null);
+	let imgSrc = $state('');
+	let imgAlt = $state('');
+
 	// Zoom + pan are driven by manipulating the cloned SVG's
 	// `viewBox` attribute directly rather than wrapping the SVG in
 	// a CSS `transform: scale()` div. CSS-transformed SVG triggers
@@ -80,6 +84,15 @@
 		if (dialog?.open) {
 			dialog.close();
 			clearHeldKeys();
+		}
+	});
+
+	// Close the image lightbox on navigation.
+	$effect(() => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		page.url.href;
+		if (imgDialog?.open) {
+			imgDialog.close();
 		}
 	});
 
@@ -535,6 +548,7 @@
 			const target = event.target as Element | null;
 			if (!target) return;
 
+			// ── SVG lightbox ────────────────────────────────────────────
 			// Two entry points:
 			//   1. Explicit click on the [data-bt-svg-expand] button
 			//      (keyboard-accessible, visible on touch).
@@ -544,73 +558,99 @@
 			// The lightbox clone itself is `.bt-inline-svg--lightbox`;
 			// excluding it prevents the in-lightbox SVG from
 			// re-triggering open on every pan/click.
-			const trigger = target.closest('[data-bt-svg-expand]');
-			const figure = trigger
-				? trigger.closest('figure.bt-inline-svg:not(.bt-inline-svg--lightbox)')
+			const svgTrigger = target.closest('[data-bt-svg-expand]');
+			const svgFigure = svgTrigger
+				? svgTrigger.closest('figure.bt-inline-svg:not(.bt-inline-svg--lightbox)')
 				: target.closest('figure.bt-inline-svg:not(.bt-inline-svg--lightbox)');
-			if (!figure) return;
-			if (!trigger) {
-				// Background-click path: bail out on figcaption (selectable text)
-				// and on non-primary/modifier-key clicks (open-in-new-tab, context
-				// menu). Links inside the inline SVG no longer navigate directly —
-				// the user must open the lightbox first, where the map is readable.
-				if (target.closest('button, figcaption')) return;
+			if (svgFigure) {
+				if (!svgTrigger) {
+					// Background-click path: bail out on figcaption (selectable text)
+					// and on non-primary/modifier-key clicks (open-in-new-tab, context
+					// menu). Links inside the inline SVG no longer navigate directly —
+					// the user must open the lightbox first, where the map is readable.
+					if (target.closest('button, figcaption')) return;
+					if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey) return;
+				}
+				const svg = svgFigure.querySelector('svg');
+				if (!svg || !dialog || !zoomTarget) return;
+
+				event.preventDefault();
+				const clone = svg.cloneNode(true) as SVGSVGElement;
+				clone.removeAttribute('width');
+				clone.removeAttribute('height');
+
+				// Capture the original viewBox so reset/zoom math has a
+				// stable reference. Prefer an explicit `viewBox`; fall
+				// back to width/height (in user units) if absent, which
+				// covers SVGs authored without an explicit viewBox.
+				const vbAttr = svg.getAttribute('viewBox');
+				let parsedVb = vbAttr
+					?.trim()
+					.split(/[\s,]+/)
+					.map(Number);
+				if (!parsedVb || parsedVb.length !== 4 || parsedVb.some((n) => Number.isNaN(n))) {
+					const w = svg.viewBox.baseVal.width || (svg as SVGSVGElement).width.baseVal.value || 0;
+					const h = svg.viewBox.baseVal.height || (svg as SVGSVGElement).height.baseVal.value || 0;
+					parsedVb = [0, 0, w, h];
+				}
+				origVb = { x: parsedVb[0], y: parsedVb[1], w: parsedVb[2], h: parsedVb[3] };
+				vb = { ...origVb };
+				scale = 1;
+				minScale = 1;
+				activeSvg = clone;
+				textBaseSizes = new WeakMap();
+
+				// World CSS targets the auto-scoped wrapper
+				// `.bt-inline-svg--<svg-basename>`. We copy every
+				// modifier class off the source figure so the clone
+				// keeps the same per-figure styles applied, then add
+				// `--lightbox` for rules scoped to the expanded view.
+				const ctx = document.createElement('div');
+				const sourceClasses = [...svgFigure.classList].filter((c) =>
+					c.startsWith('bt-inline-svg--')
+				);
+				ctx.className = ['bt-inline-svg', ...sourceClasses, 'bt-inline-svg--lightbox'].join(' ');
+				ctx.dataset.btZoomLevel = 'min';
+				ctx.setAttribute('data-bt-zoom-min', '');
+				ctx.style.setProperty('--bt-zoom', '1');
+				if (parsedVb[2] > 0 && parsedVb[3] > 0) {
+					ctx.style.setProperty('--bt-svg-aspect', String(parsedVb[2] / parsedVb[3]));
+				}
+				ctx.appendChild(clone);
+				zoomTarget.replaceChildren(ctx);
+
+				const cap = svgFigure.querySelector('figcaption');
+				captionText = cap?.textContent?.trim() ?? '';
+				dialog.showModal();
+				showHintBriefly();
+				// Stage layout settles after showModal + caption render.
+				// Wait one frame so the grid row sizing is final before
+				// we measure.
+				requestAnimationFrame(() => sizeWrapperToStage());
+				return;
+			}
+
+			// ── Raster image lightbox ────────────────────────────────────
+			// Entry points mirror the SVG path:
+			//   1. Explicit click on a [data-bt-img-expand] button.
+			//   2. Bare click anywhere inside a figure.bt-inline-img that
+			//      isn't on an interactive descendant or figcaption.
+			const imgTrigger = target.closest('[data-bt-img-expand]');
+			const imgFigure = imgTrigger
+				? imgTrigger.closest('figure.bt-inline-img')
+				: target.closest('figure.bt-inline-img');
+			if (!imgFigure) return;
+			if (!imgTrigger) {
+				if (target.closest('button, figcaption, a, input, select, textarea')) return;
 				if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey) return;
 			}
-			const svg = figure.querySelector('svg');
-			if (!svg || !dialog || !zoomTarget) return;
+			const img = imgFigure.querySelector('img');
+			if (!img || !imgDialog) return;
 
 			event.preventDefault();
-			const clone = svg.cloneNode(true) as SVGSVGElement;
-			clone.removeAttribute('width');
-			clone.removeAttribute('height');
-
-			// Capture the original viewBox so reset/zoom math has a
-			// stable reference. Prefer an explicit `viewBox`; fall
-			// back to width/height (in user units) if absent, which
-			// covers SVGs authored without an explicit viewBox.
-			const vbAttr = svg.getAttribute('viewBox');
-			let parsedVb = vbAttr
-				?.trim()
-				.split(/[\s,]+/)
-				.map(Number);
-			if (!parsedVb || parsedVb.length !== 4 || parsedVb.some((n) => Number.isNaN(n))) {
-				const w = svg.viewBox.baseVal.width || (svg as SVGSVGElement).width.baseVal.value || 0;
-				const h = svg.viewBox.baseVal.height || (svg as SVGSVGElement).height.baseVal.value || 0;
-				parsedVb = [0, 0, w, h];
-			}
-			origVb = { x: parsedVb[0], y: parsedVb[1], w: parsedVb[2], h: parsedVb[3] };
-			vb = { ...origVb };
-			scale = 1;
-			minScale = 1;
-			activeSvg = clone;
-			textBaseSizes = new WeakMap();
-
-			// World CSS targets the auto-scoped wrapper
-			// `.bt-inline-svg--<svg-basename>`. We copy every
-			// modifier class off the source figure so the clone
-			// keeps the same per-figure styles applied, then add
-			// `--lightbox` for rules scoped to the expanded view.
-			const ctx = document.createElement('div');
-			const sourceClasses = [...figure.classList].filter((c) => c.startsWith('bt-inline-svg--'));
-			ctx.className = ['bt-inline-svg', ...sourceClasses, 'bt-inline-svg--lightbox'].join(' ');
-			ctx.dataset.btZoomLevel = 'min';
-			ctx.setAttribute('data-bt-zoom-min', '');
-			ctx.style.setProperty('--bt-zoom', '1');
-			if (parsedVb[2] > 0 && parsedVb[3] > 0) {
-				ctx.style.setProperty('--bt-svg-aspect', String(parsedVb[2] / parsedVb[3]));
-			}
-			ctx.appendChild(clone);
-			zoomTarget.replaceChildren(ctx);
-
-			const cap = figure.querySelector('figcaption');
-			captionText = cap?.textContent?.trim() ?? '';
-			dialog.showModal();
-			showHintBriefly();
-			// Stage layout settles after showModal + caption render.
-			// Wait one frame so the grid row sizing is final before
-			// we measure.
-			requestAnimationFrame(() => sizeWrapperToStage());
+			imgSrc = img.src;
+			imgAlt = img.alt;
+			imgDialog.showModal();
 		}
 
 		document.addEventListener('click', onTriggerClick);
@@ -645,6 +685,10 @@
 			clearTimeout(hintTimer);
 			hintTimer = null;
 		}
+	}
+
+	function closeImg() {
+		imgDialog?.close();
 	}
 
 	// Debug HUD: semantic level derived from the same threshold table
@@ -763,6 +807,19 @@
 		{#if captionText}
 			<p class="caption">{captionText}</p>
 		{/if}
+	</div>
+</dialog>
+
+<dialog
+	bind:this={imgDialog}
+	class="bt-img-lightbox"
+	onclick={(event) => {
+		if (event.target === imgDialog) imgDialog?.close();
+	}}
+>
+	<div class="frame">
+		<button type="button" class="close" onclick={closeImg} aria-label="Close">✕</button>
+		<img src={imgSrc} alt={imgAlt} />
 	</div>
 </dialog>
 
@@ -1064,5 +1121,94 @@
 		font-size: var(--text-sm);
 		color: var(--ink-soft);
 		text-align: center;
+	}
+
+	/* ── Raster image lightbox ────────────────────────────────────── */
+
+	.bt-img-lightbox {
+		width: 100vw;
+		max-width: 100vw;
+		height: 100vh;
+		max-height: 100vh;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: var(--parchment);
+		color: var(--ink);
+		opacity: 1;
+		transition:
+			opacity 220ms ease,
+			display 220ms ease allow-discrete,
+			overlay 220ms ease allow-discrete;
+	}
+
+	@starting-style {
+		.bt-img-lightbox[open] {
+			opacity: 0;
+		}
+	}
+
+	.bt-img-lightbox:not([open]) {
+		opacity: 0;
+	}
+
+	.bt-img-lightbox::backdrop {
+		background: rgba(20, 16, 12, 0.65);
+		opacity: 1;
+		transition:
+			opacity 220ms ease,
+			display 220ms ease allow-discrete,
+			overlay 220ms ease allow-discrete;
+	}
+
+	@starting-style {
+		.bt-img-lightbox[open]::backdrop {
+			opacity: 0;
+		}
+	}
+
+	.bt-img-lightbox:not([open])::backdrop {
+		opacity: 0;
+	}
+
+	.bt-img-lightbox .frame {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		overflow: auto;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.bt-img-lightbox .frame img {
+		max-width: none;
+		max-height: none;
+		display: block;
+	}
+
+	.bt-img-lightbox .close {
+		position: absolute;
+		top: var(--space-3);
+		right: var(--space-3);
+		width: 2.5rem;
+		height: 2.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--bt-lightbox-chrome-bg, var(--vellum));
+		color: var(--bt-lightbox-chrome-color, var(--ink-soft));
+		border: 1px solid var(--bt-lightbox-chrome-border, var(--rule));
+		border-radius: var(--radius-md);
+		font-size: 1.1rem;
+		cursor: pointer;
+		z-index: 2;
+	}
+
+	.bt-img-lightbox .close:hover,
+	.bt-img-lightbox .close:focus-visible {
+		color: var(--bt-lightbox-chrome-hover-color, var(--accent));
+		background: var(--bt-lightbox-chrome-hover-bg, var(--parchment-soft));
+		outline: none;
 	}
 </style>
