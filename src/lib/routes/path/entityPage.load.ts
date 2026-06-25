@@ -3,12 +3,13 @@ import type { SpeciesPresenceEntry } from '$lib/server/graph';
 import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderEntityBody, renderSummary } from '$lib/server/markdown';
 import { titleCaseSlug, toRoman, relationLabel, type Entity, type RankDisplay, type VocabEntry } from '$lib/types';
+import type { ViewMode } from '$lib/cluster';
 
 /**
  * Build the view-model for an entity page. Returned shape is consumed
  * by `EntityPage.svelte`.
  */
-export async function loadEntityPage(entity: Entity) {
+export async function loadEntityPage(entity: Entity, mode: ViewMode = 'visitor') {
 	const id = entity.id;
 	const type = entity.type;
 
@@ -498,6 +499,20 @@ export async function loadEntityPage(entity: Entity) {
 		};
 	}
 
+	// ── Dev info ─────────────────────────────────────────────────────────
+	// Only populated in dev mode. Surfaces health issues for this entity,
+	// file paths for copy buttons, and a stub flag (no prose body).
+	const devInfo = mode === 'dev'
+		? {
+				issues: graph.issues().filter((i) => i.entity === entity.id),
+				yamlPath: entity.yamlPath,
+				mdPath: entity.mdPath,
+				isStub: !entity.body.trim(),
+				kind: kindId ?? null,
+				classId: classId ?? null
+			}
+		: null;
+
 	return {
 		breadcrumbs,
 		kindChip,
@@ -537,7 +552,8 @@ export async function loadEntityPage(entity: Entity) {
 		statistics,
 		vocabulary,
 		namesInOtherLanguages,
-		relationLabels
+		relationLabels,
+		devInfo
 	};
 }
 

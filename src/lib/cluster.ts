@@ -182,3 +182,35 @@ export function paintAllScope(targetUrl: URL, ctx: ScopeContext): URL {
 	out.searchParams.set('scope', 'all');
 	return out;
 }
+
+// ── View mode ─────────────────────────────────────────────────────────────
+
+export type ViewMode = 'visitor' | 'dev';
+
+/**
+ * Read the current view mode from a URL's query string.
+ * Defaults to `'visitor'` when the param is absent or invalid.
+ */
+export function readMode(searchParams: URLSearchParams): ViewMode {
+	const raw = searchParams.get('mode');
+	if (raw === 'dev') return 'dev';
+	return 'visitor';
+}
+
+/**
+ * Paint `?mode=dev` onto a URL, preserving all other params.
+ * Returns a new URL; the original is not mutated.
+ * Omits the param entirely when `mode === 'visitor'` (the default).
+ */
+export function paintMode(targetUrl: URL, mode: ViewMode): URL {
+	const already = targetUrl.searchParams.get('mode') ?? 'visitor';
+	const target = mode === 'visitor' ? 'visitor' : 'dev';
+	if (already === target) return targetUrl;
+	const out = new URL(targetUrl.href);
+	if (mode === 'visitor') {
+		out.searchParams.delete('mode');
+	} else {
+		out.searchParams.set('mode', mode);
+	}
+	return out;
+}

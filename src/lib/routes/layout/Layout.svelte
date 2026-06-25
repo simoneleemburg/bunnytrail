@@ -6,7 +6,7 @@
 	import { browser, dev } from '$app/environment';
 	import { onMount, setContext } from 'svelte';
 	import { injectAnalytics } from '@vercel/analytics/sveltekit';
-	import { paintAllScope, translateUrl, type ScopeContext } from '$lib/cluster';
+	import { paintAllScope, paintMode, translateUrl, type ScopeContext, type ViewMode } from '$lib/cluster';
 	import SvgLightbox from '$lib/components/SvgLightbox.svelte';
 	import type { Snippet } from 'svelte';
 	import type { EraDef, EraConfig } from '$lib/types';
@@ -17,8 +17,10 @@
 			kindsHref: string;
 			clusterOptions: { value: string; label: string; selected: boolean }[];
 			selectedCluster: string | null;
-			activeEra: string | null;
-			world: { name: string; shortName: string; tagline: string; allScopeLabel: string; eras: EraConfig | null };
+		activeEra: string | null;
+		activeMode: ViewMode;
+		issueCount: number;
+		world: { name: string; shortName: string; tagline: string; allScopeLabel: string; eras: EraConfig | null };
 			wordmark: string | null;
 			ornament: {
 				glyph: string | null;
@@ -77,6 +79,11 @@
 	// beforeNavigate hook doesn't re-inject the old era param onto
 	// the destination URL (which would prevent clearing the era).
 	let bypassEraCarry = false;
+
+	// Set to true while switchMode is navigating, so that the
+	// beforeNavigate hook doesn't re-paint ?mode=dev onto a URL that
+	// is intentionally clearing or changing the mode.
+	let bypassModeCarry = false;
 
 	// Expose a setter so deeply nested components (e.g. PageHeader's
 	// "focus on <cluster>" link) can trigger a cluster-switch
@@ -195,6 +202,12 @@
 		}
 		bypassEraCarry = false;
 
+		// Mode carry-forward: paint ?mode=dev onto every destination when dev mode is active.
+		if (!bypassModeCarry && data.activeMode === 'dev' && !target.searchParams.has('mode')) {
+			target = paintMode(target, 'dev');
+		}
+		bypassModeCarry = false;
+
 		if (target.href === nav.to.url.href) return;
 		nav.cancel();
 		goto(target.href, { replaceState: false, keepFocus: true });
@@ -222,6 +235,19 @@
 		if (ref) u.searchParams.set('era', ref);
 		else u.searchParams.delete('era');
 		bypassEraCarry = true;
+		filtersOpen = false;
+		drawerOpen = false;
+		goto(u.toString());
+	}
+
+	function switchMode(mode: ViewMode) {
+		const u = new URL($page.url);
+		if (mode === 'visitor') {
+			u.searchParams.delete('mode');
+		} else {
+			u.searchParams.set('mode', mode);
+		}
+		bypassModeCarry = true;
 		filtersOpen = false;
 		drawerOpen = false;
 		goto(u.toString());
@@ -282,8 +308,56 @@
 
 	// True when any filter is actively set — drives the active indicator on the Filters button.
 	const filtersActive = $derived(
-		data.activeEra !== null || (data.selectedCluster !== null)
+		data.activeEra !== null || data.selectedCluster !== null || data.activeMode === 'dev'
 	);
+
+	// Dev bar: shown below the masthead in dev mode on entity and collection pages.
+	// Reads from $page.data which merges layout + route data.
+	const devBar = $derived.by(() => {
+		if (data.activeMode !== 'dev') return null;
+		const pd = $page.data as Record<string, unknown>;
+		if (pd.kind === 'entity') {
+			const devInfo = pd.devInfo as {
+				issues: { kind: string; detail: string }[];
+				mdPath: string;
+				isStub: boolean;
+				kind: string | null;
+				classId: string | null;
+			} | null;
+			if (!devInfo) return null;
+			const entityId = (pd.entity as { id: string } | undefined)?.id ?? null;
+			return {
+				path: entityId,
+				issues: devInfo.issues,
+				isStub: devInfo.isStub,
+				kind: devInfo.kind,
+				classId: devInfo.classId
+			};
+		}
+		if (pd.kind === 'collection') {
+			const collectionPath = pd.type as string | undefined ?? null;
+			return {
+				path: collectionPath,
+				issues: [] as { kind: string; detail: string }[],
+				isStub: false,
+				kind: null as string | null,
+				classId: null as string | null
+			};
+		}
+		return null;
+	});
+
+	async function copyPath() {
+		if (devBar?.path) await navigator.clipboard.writeText(devBar.path);
+	}
+
+	async function copyKind() {
+		if (devBar?.kind) await navigator.clipboard.writeText(devBar.kind);
+	}
+
+	async function copyClassId() {
+		if (devBar?.classId) await navigator.clipboard.writeText(devBar.classId);
+	}
 </script>
 
 <svelte:head>
@@ -325,6 +399,12 @@
 					<a href={item.href} aria-current={navAriaCurrent(item.href)}>{item.label}</a>
 				{/each}
 			</nav>
+
+			{#if data.activeMode === 'dev' && data.issueCount > 0}
+				<a class="health-badge" href="/health" title="{data.issueCount} health issue{data.issueCount === 1 ? '' : 's'}">
+					{data.issueCount}
+				</a>
+			{/if}
 
 			<div class="chrome-end">
 				<div class="meta-picker" data-meta-picker>
@@ -399,7 +479,6 @@
 					{/if}
 				</div>
 
-			{#if eraOptions.length > 0 || data.clusterOptions.length > 1}
 				<div class="filters-picker" data-filters-picker>
 					<button
 						type="button"
@@ -413,8 +492,8 @@
 						<span class="filters-caret" aria-hidden="true">▾</span>
 					</button>
 					{#if filtersOpen}
-						<div class="filters-panel">
-							{#if eraOptions.length > 0}
+					<div class="filters-panel">
+						{#if eraOptions.length > 0}
 								<section class="filters-section">
 									<p class="filters-eyebrow">Era</p>
 									<ul class="filters-list" role="listbox">
@@ -458,11 +537,21 @@
 										{/each}
 									</ul>
 								</section>
-							{/if}
+						{/if}
+						<div class="filters-dev-toggle">
+							<button
+								type="button"
+								class="dev-toggle-btn"
+								class:active={data.activeMode === 'dev'}
+								onclick={() => switchMode(data.activeMode === 'dev' ? 'visitor' : 'dev')}
+							>
+								<span class="dev-toggle-indicator" aria-hidden="true"></span>
+								{data.activeMode === 'dev' ? 'Disable dev mode' : 'Enable dev mode'}
+							</button>
 						</div>
+					</div>
 					{/if}
 				</div>
-			{/if}
 
 				<button
 					type="button"
@@ -544,6 +633,47 @@
 			</div>
 		{/if}
 	</header>
+
+	{#if devBar}
+		<div class="dev-bar">
+			{#if devBar.isStub}<span class="dev-bar-stub">stub</span>{/if}
+			<code class="dev-bar-path">{devBar.path}</code>
+			<button type="button" class="dev-bar-copy" onclick={copyPath} title="Copy path" aria-label="Copy path">
+				<svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+					<rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+					<path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+				</svg>
+			</button>
+			{#if devBar.kind}
+				<span class="dev-bar-sep" aria-hidden="true">·</span>
+				<code class="dev-bar-path">{devBar.kind}</code>
+				<button type="button" class="dev-bar-copy" onclick={copyKind} title="Copy kind" aria-label="Copy kind">
+					<svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+						<rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+						<path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+					</svg>
+				</button>
+			{/if}
+			{#if devBar.classId}
+				<span class="dev-bar-sep" aria-hidden="true">·</span>
+				<code class="dev-bar-path">{devBar.classId}</code>
+				<button type="button" class="dev-bar-copy" onclick={copyClassId} title="Copy class" aria-label="Copy class">
+					<svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+						<rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+						<path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+					</svg>
+				</button>
+			{/if}
+			{#if devBar.issues.length > 0}
+				<a class="dev-bar-issues" href="/health" title="View all health issues">{devBar.issues.length} issue{devBar.issues.length === 1 ? '' : 's'}</a>
+				<ul class="dev-bar-issue-list">
+					{#each devBar.issues as issue (issue.kind + issue.detail)}
+						<li><span class="dev-bar-issue-kind">{issue.kind}</span> {issue.detail}</li>
+					{/each}
+				</ul>
+			{/if}
+		</div>
+	{/if}
 
 	<main data-bt-path={pathAttrs.path} data-bt-section={pathAttrs.section}>
 		{@render children()}
@@ -997,6 +1127,52 @@
 		color: var(--accent);
 	}
 
+	.filters-dev-toggle {
+		border-top: 1px solid var(--rule);
+		padding-top: var(--space-3);
+		margin-top: var(--space-1);
+	}
+
+	.dev-toggle-btn {
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
+		width: 100%;
+		text-align: left;
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-sm);
+		color: var(--ink-faint);
+		background: transparent;
+		border: 0;
+		border-radius: var(--radius-sm);
+		padding: var(--space-2) var(--space-3);
+		cursor: pointer;
+	}
+
+	.dev-toggle-btn:hover {
+		color: var(--ink-soft);
+	}
+
+	.dev-toggle-btn.active {
+		color: var(--accent);
+	}
+
+	/* Small pill indicator: off = hollow, on = filled */
+	.dev-toggle-indicator {
+		display: inline-block;
+		width: 0.55em;
+		height: 0.55em;
+		border-radius: 99px;
+		border: 1px solid currentColor;
+		flex-shrink: 0;
+		transition: background-color 120ms;
+	}
+
+	.dev-toggle-btn.active .dev-toggle-indicator {
+		background: currentColor;
+	}
+
 	/* ── Hamburger ───────────────────────────────────────────── */
 	.hamburger {
 		display: none;
@@ -1243,5 +1419,114 @@
 
 	.footer-inner p {
 		margin: 0;
+	}
+
+	/* ── Health badge (dev mode) ─────────────────────────────── */
+	.health-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 1.4em;
+		height: 1.4em;
+		padding: 0 0.35em;
+		font-family: var(--font-serif);
+		font-size: var(--text-xs, 0.7rem);
+		font-weight: 600;
+		line-height: 1;
+		color: var(--vellum);
+		background: var(--accent-warn, #b45309);
+		border-radius: 99px;
+		text-decoration: none;
+		letter-spacing: 0;
+	}
+
+	.health-badge:hover {
+		background: var(--accent);
+	}
+
+	/* ── Dev bar ─────────────────────────────────────────────── */
+	.dev-bar {
+		display: flex;
+		align-items: baseline;
+		flex-wrap: wrap;
+		gap: var(--space-2) var(--space-4);
+		padding: var(--space-2) var(--space-8);
+		background: var(--paper-warm);
+		border-bottom: 1px solid var(--rule);
+		font-family: var(--font-mono, monospace);
+		font-size: 0.72rem;
+		color: var(--ink-faint);
+		line-height: 1.4;
+	}
+
+	.dev-bar-stub {
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-xs, 0.7rem);
+		color: var(--ink-faint);
+		border: 1px dashed var(--rule);
+		border-radius: 3px;
+		padding: 0 0.4em;
+	}
+
+	.dev-bar-path {
+		color: var(--ink-soft);
+		letter-spacing: 0;
+	}
+
+	.dev-bar-sep {
+		color: var(--ink-faint);
+		font-size: var(--text-xs, 0.7rem);
+		user-select: none;
+	}
+
+	.dev-bar-copy {
+		display: inline-flex;
+		align-items: center;
+		padding: 0;
+		background: transparent;
+		border: 0;
+		color: var(--ink-faint);
+		cursor: pointer;
+		line-height: 1;
+		margin-top: 0.1em;
+	}
+
+	.dev-bar-copy:hover {
+		color: var(--accent);
+	}
+
+	.dev-bar-issues {
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-xs, 0.7rem);
+		color: var(--accent-warn, #b45309);
+		text-decoration: none;
+		white-space: nowrap;
+	}
+
+	.dev-bar-issues:hover {
+		text-decoration: underline;
+	}
+
+	.dev-bar-issue-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: contents;
+	}
+
+	.dev-bar-issue-list li {
+		color: var(--ink-faint);
+		font-size: 0.7rem;
+	}
+
+	.dev-bar-issue-list li::before {
+		content: '· ';
+		color: var(--accent-warn, #b45309);
+	}
+
+	.dev-bar-issue-kind {
+		color: var(--accent-warn, #b45309);
 	}
 </style>

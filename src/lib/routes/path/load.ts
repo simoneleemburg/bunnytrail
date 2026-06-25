@@ -1,5 +1,6 @@
 import { error, redirect } from '@sveltejs/kit';
 import { graph } from '$lib/server/graph';
+import { readMode } from '$lib/cluster';
 import { loadEntityPage } from './entityPage.load';
 import { loadCollectionPage } from './collectionPage.load';
 import { loadAggregateShelfPage } from './aggregateShelfPage.load';
@@ -36,11 +37,13 @@ import { loadSymbologyPage } from '../symbology/load';
  * folder's children. Real folders take precedence over aggregate
  * shelves with the same name.
  */
-export async function load({ params }: { params: { path: string } }) {
+export async function load({ params, url }: { params: { path: string }; url: URL }) {
 	await graph.ready();
 
 	const path = params.path;
 	if (!path) error(404, 'Missing path');
+
+	const mode = readMode(url.searchParams);
 
 	// Cluster-scoped /kinds: `<cluster>/kinds` and
 	// `<cluster>/kinds/<kind-id>`. Filters the global kinds tree /
@@ -71,7 +74,7 @@ export async function load({ params }: { params: { path: string } }) {
 
 	const entity = graph.get(path);
 	if (entity) {
-		return { kind: 'entity' as const, ...(await loadEntityPage(entity)) };
+		return { kind: 'entity' as const, ...(await loadEntityPage(entity, mode)) };
 	}
 
 	// Chapter dispatch: split off a trailing `/chapters/<slug>` and

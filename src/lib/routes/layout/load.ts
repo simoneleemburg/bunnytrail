@@ -2,7 +2,7 @@ import { building } from '$app/environment';
 import { graph } from '$lib/server/graph';
 import { world } from '$lib/server/world';
 import { assets } from '$lib/server/assets';
-import { readScope, type ScopeContext } from '$lib/cluster';
+import { readScope, readMode, type ScopeContext, type ViewMode } from '$lib/cluster';
 
 /**
  * Cluster scope for the masthead nav.
@@ -39,6 +39,7 @@ export async function load({ url }: { url: URL }) {
 	const searchParams = building ? new URLSearchParams() : url.searchParams;
 	const selectedCluster = readScope(url.pathname, searchParams, ctx);
 	const activeEra = building ? null : (searchParams.get('era') ?? null);
+	const activeMode: ViewMode = building ? 'visitor' : readMode(searchParams);
 
 	// Helper: true if the entity is visible under the active era filter.
 	// Mirrors the matchesEra logic in CollectionPage.svelte:
@@ -164,6 +165,8 @@ export async function load({ url }: { url: URL }) {
 		clusterOptions,
 		selectedCluster,
 		activeEra,
+		activeMode,
+		issueCount: graph.issues().length,
 		world: worldConfig,
 		wordmark,
 		ornament,

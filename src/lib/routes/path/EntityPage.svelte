@@ -670,6 +670,7 @@
 			<VocabularyTable entries={data.vocabulary} />
 		</div>
 	{/if}
+
 </article>
 
 <style>
@@ -1287,4 +1288,5 @@
 		color: var(--ink-soft);
 		margin-top: 0.1em;
 	}
+
 </style>
