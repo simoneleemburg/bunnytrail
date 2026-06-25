@@ -145,6 +145,16 @@
 		}
 	});
 
+	// activeEra is read from the live URL for the same reason — layout
+	// data is prerendered as null and won't reflect ?era= on the client.
+	const activeEra = $derived.by((): string | null => {
+		try {
+			return $page.url.searchParams.get('era') ?? null;
+		} catch {
+			return null;
+		}
+	});
+
 	// Active-state for primary nav links. Returns:
 	//   'page'  — link's href matches the current path exactly
 	//   true    — current path is under the link's href (descendant)
@@ -207,9 +217,9 @@
 		// Era carry-forward: inject the active era onto destinations that
 		// don't already carry ?era=. Skipped when switchEra is navigating
 		// (it already set the param correctly, including deleting it for "All eras").
-		if (!bypassEraCarry && data.activeEra && !target.searchParams.has('era')) {
+		if (!bypassEraCarry && activeEra && !target.searchParams.has('era')) {
 			const out = new URL(target.href);
-			out.searchParams.set('era', data.activeEra);
+			out.searchParams.set('era', activeEra);
 			target = out;
 		}
 		bypassEraCarry = false;
@@ -320,7 +330,7 @@
 
 	// True when any filter is actively set — drives the active indicator on the Filters button.
 	const filtersActive = $derived(
-		data.activeEra !== null || data.selectedCluster !== null || activeMode === 'dev'
+		activeEra !== null || data.selectedCluster !== null || activeMode === 'dev'
 	);
 
 	// Dev bar: shown below the masthead in dev mode on entity and collection pages.
@@ -513,8 +523,8 @@
 											<button
 												type="button"
 												role="option"
-												aria-selected={data.activeEra === null}
-												class:selected={data.activeEra === null}
+												aria-selected={activeEra === null}
+												class:selected={activeEra === null}
 												onclick={() => switchEra(null)}
 											>All eras</button>
 										</li>
@@ -523,8 +533,8 @@
 												<button
 													type="button"
 													role="option"
-													aria-selected={data.activeEra === opt.ref}
-													class:selected={data.activeEra === opt.ref}
+													aria-selected={activeEra === opt.ref}
+													class:selected={activeEra === opt.ref}
 													onclick={() => switchEra(opt.ref)}
 												>{opt.title}</button>
 											</li>
@@ -623,8 +633,8 @@
 								<button
 									type="button"
 									role="option"
-									aria-selected={data.activeEra === null}
-									class:selected={data.activeEra === null}
+									aria-selected={activeEra === null}
+									class:selected={activeEra === null}
 									onclick={() => switchEra(null)}
 								>All eras</button>
 							</li>
@@ -633,8 +643,8 @@
 									<button
 										type="button"
 										role="option"
-										aria-selected={data.activeEra === opt.ref}
-										class:selected={data.activeEra === opt.ref}
+										aria-selected={activeEra === opt.ref}
+										class:selected={activeEra === opt.ref}
 										onclick={() => switchEra(opt.ref)}
 									>{opt.title}</button>
 								</li>
