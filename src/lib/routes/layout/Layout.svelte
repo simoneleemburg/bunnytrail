@@ -666,7 +666,8 @@
 	</header>
 
 	{#if devBar}
-		<div class="dev-bar">
+		<div class="dev-bar-wrap">
+			<div class="dev-bar">
 			{#if devBar.isStub}<span class="dev-bar-stub">stub</span>{/if}
 			<code class="dev-bar-path">{devBar.path}</code>
 			<button type="button" class="dev-bar-copy" onclick={copyPath} title="Copy path" aria-label="Copy path">
@@ -704,10 +705,10 @@
 				</ul>
 			{/if}
 		</div>
-	{/if}
-
-	{#if toast}
-		<div class="dev-toast" aria-live="polite">{toast}</div>
+		{#if toast}
+			<div class="dev-toast" aria-live="polite">{toast}</div>
+		{/if}
+		</div>
 	{/if}
 
 	<main data-bt-path={pathAttrs.path} data-bt-section={pathAttrs.section}>
@@ -1480,6 +1481,10 @@
 	}
 
 	/* ── Dev bar ─────────────────────────────────────────────── */
+	.dev-bar-wrap {
+		position: relative;
+	}
+
 	.dev-bar {
 		display: flex;
 		align-items: baseline;
@@ -1532,16 +1537,17 @@
 	}
 
 	.dev-toast {
-		position: fixed;
-		bottom: var(--space-6, 1.5rem);
-		left: 50%;
-		transform: translateX(-50%);
-		background: var(--surface-raised, #1a1a1a);
-		color: var(--ink-soft, #ccc);
+		position: absolute;
+		top: 100%;
+		left: var(--space-8);
+		background: var(--ink-faint);
+		color: #f0e8e0;
+		border: 1px solid var(--rule);
 		font-family: var(--font-mono, monospace);
-		font-size: var(--text-xs, 0.7rem);
-		padding: 0.35em 0.8em;
-		border-radius: 4px;
+		font-size: 0.72rem;
+		padding: 0.25em 0.6em;
+		border-radius: 0 0 3px 3px;
+		border-top: none;
 		white-space: nowrap;
 		pointer-events: none;
 		z-index: 9999;
