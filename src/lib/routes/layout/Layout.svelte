@@ -6,7 +6,7 @@
 	import { browser, dev } from '$app/environment';
 	import { onMount, setContext } from 'svelte';
 	import { injectAnalytics } from '@vercel/analytics/sveltekit';
-	import { paintAllScope, paintMode, translateUrl, type ScopeContext, type ViewMode } from '$lib/cluster';
+	import { paintAllScope, paintMode, readMode, translateUrl, type ScopeContext, type ViewMode } from '$lib/cluster';
 	import SvgLightbox from '$lib/components/SvgLightbox.svelte';
 	import type { Snippet } from 'svelte';
 	import type { EraDef, EraConfig } from '$lib/types';
@@ -133,6 +133,18 @@
 		return { path: raw, section };
 	});
 
+	// activeMode is read from the live URL rather than from layout data.
+	// Layout data is baked in at prerender time (always 'visitor'), so
+	// reading from $page.url.searchParams here is the only way ?mode=dev
+	// works on a fully-prerendered site like production.
+	const activeMode = $derived.by((): ViewMode => {
+		try {
+			return readMode($page.url.searchParams);
+		} catch {
+			return 'visitor';
+		}
+	});
+
 	// Active-state for primary nav links. Returns:
 	//   'page'  — link's href matches the current path exactly
 	//   true    — current path is under the link's href (descendant)
@@ -203,7 +215,7 @@
 		bypassEraCarry = false;
 
 		// Mode carry-forward: paint ?mode=dev onto every destination when dev mode is active.
-		if (!bypassModeCarry && data.activeMode === 'dev' && !target.searchParams.has('mode')) {
+		if (!bypassModeCarry && activeMode === 'dev' && !target.searchParams.has('mode')) {
 			target = paintMode(target, 'dev');
 		}
 		bypassModeCarry = false;
@@ -308,13 +320,13 @@
 
 	// True when any filter is actively set — drives the active indicator on the Filters button.
 	const filtersActive = $derived(
-		data.activeEra !== null || data.selectedCluster !== null || data.activeMode === 'dev'
+		data.activeEra !== null || data.selectedCluster !== null || activeMode === 'dev'
 	);
 
 	// Dev bar: shown below the masthead in dev mode on entity and collection pages.
 	// Reads from $page.data which merges layout + route data.
 	const devBar = $derived.by(() => {
-		if (data.activeMode !== 'dev') return null;
+		if (activeMode !== 'dev') return null;
 		const pd = $page.data as Record<string, unknown>;
 		if (pd.kind === 'entity') {
 			const devInfo = pd.devInfo as {
@@ -400,7 +412,7 @@
 				{/each}
 			</nav>
 
-			{#if data.activeMode === 'dev' && data.issueCount > 0}
+			{#if activeMode === 'dev' && data.issueCount > 0}
 				<a class="health-badge" href="/health" title="{data.issueCount} health issue{data.issueCount === 1 ? '' : 's'}">
 					{data.issueCount}
 				</a>
@@ -542,11 +554,11 @@
 							<button
 								type="button"
 								class="dev-toggle-btn"
-								class:active={data.activeMode === 'dev'}
-								onclick={() => switchMode(data.activeMode === 'dev' ? 'visitor' : 'dev')}
+								class:active={activeMode === 'dev'}
+								onclick={() => switchMode(activeMode === 'dev' ? 'visitor' : 'dev')}
 							>
 								<span class="dev-toggle-indicator" aria-hidden="true"></span>
-								{data.activeMode === 'dev' ? 'Disable dev mode' : 'Enable dev mode'}
+								{activeMode === 'dev' ? 'Disable dev mode' : 'Enable dev mode'}
 							</button>
 						</div>
 					</div>
