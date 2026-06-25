@@ -43,7 +43,16 @@ export async function load({ params, url }: { params: { path: string }; url: URL
 	const path = params.path;
 	if (!path) error(404, 'Missing path');
 
-	const mode = readMode(url.searchParams);
+	// During prerendering SvelteKit forbids accessing url.searchParams.
+	// Mode and scope are query-string concerns only — prerendered pages
+	// always render in the default ('visitor') mode with no scope.
+	let searchParams: URLSearchParams;
+	try {
+		searchParams = url.searchParams;
+	} catch {
+		searchParams = new URLSearchParams();
+	}
+	const mode = readMode(searchParams);
 
 	// Cluster-scoped /kinds: `<cluster>/kinds` and
 	// `<cluster>/kinds/<kind-id>`. Filters the global kinds tree /
