@@ -370,15 +370,24 @@
 	});
 
 	async function copyPath() {
-		if (devBar?.path) await navigator.clipboard.writeText(devBar.path);
+		if (devBar?.path) { await navigator.clipboard.writeText(devBar.path); showToast(devBar.path); }
 	}
 
 	async function copyKind() {
-		if (devBar?.kind) await navigator.clipboard.writeText(devBar.kind);
+		if (devBar?.kind) { await navigator.clipboard.writeText(devBar.kind); showToast(devBar.kind); }
 	}
 
 	async function copyClassId() {
-		if (devBar?.classId) await navigator.clipboard.writeText(devBar.classId);
+		if (devBar?.classId) { await navigator.clipboard.writeText(devBar.classId); showToast(devBar.classId); }
+	}
+
+	let toast = $state<string | null>(null);
+	let toastTimer: ReturnType<typeof setTimeout> | null = null;
+
+	function showToast(text: string) {
+		toast = text;
+		if (toastTimer) clearTimeout(toastTimer);
+		toastTimer = setTimeout(() => { toast = null; }, 1500);
 	}
 </script>
 
@@ -695,6 +704,10 @@
 				</ul>
 			{/if}
 		</div>
+	{/if}
+
+	{#if toast}
+		<div class="dev-toast" aria-live="polite">{toast}</div>
 	{/if}
 
 	<main data-bt-path={pathAttrs.path} data-bt-section={pathAttrs.section}>
@@ -1516,6 +1529,29 @@
 
 	.dev-bar-copy:hover {
 		color: var(--accent);
+	}
+
+	.dev-toast {
+		position: fixed;
+		bottom: var(--space-6, 1.5rem);
+		left: 50%;
+		transform: translateX(-50%);
+		background: var(--surface-raised, #1a1a1a);
+		color: var(--ink-soft, #ccc);
+		font-family: var(--font-mono, monospace);
+		font-size: var(--text-xs, 0.7rem);
+		padding: 0.35em 0.8em;
+		border-radius: 4px;
+		white-space: nowrap;
+		pointer-events: none;
+		z-index: 9999;
+		animation: dev-toast-fade 1.5s ease forwards;
+	}
+
+	@keyframes dev-toast-fade {
+		0%   { opacity: 1; }
+		60%  { opacity: 1; }
+		100% { opacity: 0; }
 	}
 
 	.dev-bar-issues {
