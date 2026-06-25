@@ -41,7 +41,9 @@
 	// ── Mode ─────────────────────────────────────────────────────────────────
 
 	// When ?node=<id> is set we show the ego-graph for that node.
-	let focusId = $derived(page.url.searchParams.get('node'));
+	let focusId = $derived.by(() => {
+		try { return page.url.searchParams.get('node'); } catch { return null; }
+	});
 
 	// ── Filter state ─────────────────────────────────────────────────────────
 

@@ -55,7 +55,8 @@
 	type TabId = (typeof VALID_TABS)[number];
 
 	const activeTab = $derived.by((): TabId => {
-		const param = page.url.searchParams.get('tab');
+		let param: string | null = null;
+		try { param = page.url.searchParams.get('tab'); } catch { /* prerender */ }
 		if (param && (VALID_TABS as readonly string[]).includes(param)) return param as TabId;
 		return 'about';
 	});
