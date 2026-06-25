@@ -142,3 +142,63 @@ export async function load({ params, url }: { params: { path: string }; url: URL
 }
 
 export type PathPageData = Awaited<ReturnType<typeof load>>;
+
+/**
+ * Enumerate every path that this catch-all route handles so that
+ * SvelteKit's prerenderer knows which pages to generate.
+ *
+ * Covers: entity ids, browseable folder paths, chapter sub-pages,
+ * craft sub-pages, cluster-scoped /kinds and /symbology, and
+ * cross-cluster aggregate shelf / sub-shelf paths.
+ */
+export async function entries(): Promise<{ path: string }[]> {
+	await graph.ready();
+
+	const paths = new Set<string>();
+
+	// Every entity
+	for (const entity of graph.all()) {
+		paths.add(entity.id);
+		// Chapter sub-pages
+		for (const chapter of entity.chapters) {
+			paths.add(`${entity.id}/chapters/${chapter.slug}`);
+		}
+		// Craft sub-page
+		if (entity.craft !== null) {
+			paths.add(`${entity.id}/craft`);
+		}
+	}
+
+	// Every browseable folder
+	for (const entity of graph.all()) {
+		// Walk ancestor folder segments
+		const segs = entity.id.split('/');
+		for (let i = 1; i < segs.length; i++) {
+			const folder = segs.slice(0, i).join('/');
+			if (graph.isFolder(folder)) paths.add(folder);
+		}
+	}
+
+	// Cluster-scoped /kinds and /kinds/<id>, /symbology
+	for (const cluster of graph.clusters()) {
+		paths.add(`${cluster}/kinds`);
+		paths.add(`${cluster}/symbology`);
+		for (const kind of graph.kindIds()) {
+			paths.add(`${cluster}/kinds/${kind}`);
+		}
+	}
+	// Universal-folder /symbology
+	for (const uf of graph.universalFolders()) {
+		paths.add(`${uf}/symbology`);
+	}
+
+	// Cross-cluster aggregate shelves and sub-shelves
+	for (const shelf of graph.unionShelves()) {
+		paths.add(shelf);
+		for (const sub of graph.subShelvesAll(shelf)) {
+			paths.add(`${shelf}/${sub}`);
+		}
+	}
+
+	return [...paths].map((p) => ({ path: p }));
+}

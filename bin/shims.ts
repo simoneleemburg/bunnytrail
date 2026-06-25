@@ -104,7 +104,7 @@ export function planShims(mode: ShimMode): Shim[] {
 		{ file: '+page.svelte', contents: pageSvelte(mode, 'home') },
 
 		// [...path] catch-all
-		{ file: '[...path]/+page.server.ts', contents: pageServer(mode, 'path') },
+		{ file: '[...path]/+page.server.ts', contents: pageServer(mode, 'path', { extraExports: ['entries'] }) },
 		{ file: '[...path]/+page.svelte', contents: pageSvelte(mode, 'path') },
 
 		// API endpoints

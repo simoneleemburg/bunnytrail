@@ -1,1 +1,1 @@
-export { load } from '$lib/routes/path/load';
+export { load, entries } from '$lib/routes/path/load';
