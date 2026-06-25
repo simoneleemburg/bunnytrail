@@ -34,6 +34,14 @@
 			: data.kindChip
 	);
 
+	const displayTitle = $derived(
+		data.entity.entityType === 'class'
+			? data.entity.plural
+				? data.entity.name + ' / ' + data.entity.plural
+				: data.entity.name + ' (class)'
+			: data.entity.name
+	);
+
 	// Tabs: shown when the entity has classMates (instances) and/or statistics.
 	// "About" wraps all existing page content; "Instances" lists classMates as cards;
 	// "Holders" lists qualifierHolders (entities holding this as a qualifier);
@@ -275,14 +283,14 @@
 </script>
 
 <svelte:head>
-	<title>{data.entity.name} · {page.data.world.shortName}</title>
+	<title>{displayTitle} · {page.data.world.shortName}</title>
 </svelte:head>
 
 <article class="entity">
 	<PageHeader
 		breadcrumbs={data.breadcrumbs}
 		kindChip={effectiveKindChip}
-		title={data.entity.name}
+		title={displayTitle}
 		subtitleHtml={data.entity.summaryHtml}
 		language={data.language ?? undefined}
 		sigil={data.entity.sigil}

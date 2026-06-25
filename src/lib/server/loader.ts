@@ -20,7 +20,8 @@ import {
 	validateRelationSchema,
 	validateGovernedByConstraints,
 	validatePropertySchema,
-	validateUnknownEntityFields
+	validateUnknownEntityFields,
+	validateEntityTypeFields
 } from './validate';
 
 // Re-export symbols that external callers (graph.ts, guides.ts, specs)
@@ -173,6 +174,7 @@ export async function loadAll(
 	validateGovernedByConstraints(validateArgs);
 	validatePropertySchema(validateArgs);
 	validateUnknownEntityFields(validateArgs);
+	validateEntityTypeFields(validateArgs);
 
 	return {
 		entities,

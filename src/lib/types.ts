@@ -411,10 +411,36 @@ export interface Relation {
 	qualifier?: EntityId;
 }
 
+/**
+ * Whether an entity is a class definition or a concrete instance.
+ * Defaults to `'instance'` when omitted.
+ *
+ * - `'class'` — a category or type that other entities can be instances of.
+ *   Accepts `plural:`, and may be referenced via `class:` by instance entities.
+ * - `'instance'` — a concrete entity. May carry `class:` to point at a class
+ *   entity; `plural:` is not meaningful here.
+ */
+export type EntityKind = 'class' | 'instance';
+
 /** Meta loaded from the YAML sidecar. */
 export interface EntityMeta {
 	/** Display name. */
 	name: string;
+	/**
+	 * Whether this entity is a class definition or a concrete instance.
+	 * Defaults to `'instance'` when omitted.
+	 * - `'class'`: a category/type; accepts `plural:`. Instance entities may
+	 *   reference it via `class: <id>`.
+	 * - `'instance'`: a concrete entity; may carry `class:`. `plural:` is
+	 *   not accepted.
+	 */
+	type?: EntityKind;
+	/**
+	 * Plural form of the entity name. Only valid on `type: class` entities.
+	 * Displayed in the page title alongside the singular name when present:
+	 * "Human / Humans". When absent the title falls back to "Human (class)".
+	 */
+	plural?: string;
 	/** Optional shorter name / nickname / honorific. */
 	aliases?: string[];
 	/** One-line summary for cards and lists. */

@@ -508,7 +508,9 @@ export async function loadEntityPage(entity: Entity) {
 			summaryHtml: summaryHtml(entity.meta.summary),
 			aliases: entity.meta.aliases ?? [],
 			tags: entity.meta.tags ?? [],
-			sigil: typeof entity.meta.sigil === 'string' ? entity.meta.sigil : null
+			sigil: typeof entity.meta.sigil === 'string' ? entity.meta.sigil : null,
+			entityType: (entity.meta.type === 'class' ? 'class' : 'instance') as 'class' | 'instance',
+			plural: typeof entity.meta.plural === 'string' ? entity.meta.plural : null
 		},
 		extra,
 		kindRefs,

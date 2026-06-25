@@ -753,6 +753,8 @@ const KNOWN_ENTITY_META_FIELDS = new Set([
 	'tags',
 	'era',
 	'kind',
+	'type',
+	'plural',
 	'status',
 	'rank',
 	'rankDisplay',
@@ -786,6 +788,61 @@ export function validateUnknownEntityFields(args: ValidateArgs): void {
 					detail: `unknown top-level field '${key}' — move it under 'properties:' if it is a custom attribute`
 				});
 			}
+		}
+	}
+}
+
+/**
+ * Validates the `type` and `plural` fields and their interaction with `class`:
+ *
+ * 1. `plural:` is only meaningful on `type: class` entities. On any other
+ *    entity it is reported as a health issue.
+ * 2. `class:` is only meaningful on `type: instance` (the default) entities.
+ *    On a `type: class` entity it is ignored and reported.
+ * 3. A `class:` field that resolves to a `type: instance` target is invalid —
+ *    only `type: class` entities may be referenced via `class:`. This is
+ *    reported in addition to (and independently of) the kind-constraint check
+ *    in `validateClassField`.
+ */
+export function validateEntityTypeFields(args: ValidateArgs): void {
+	const { entities, issues } = args;
+
+	for (const entity of entities.values()) {
+		const entityType = entity.meta.type ?? 'instance';
+
+		// Rule 1: `plural:` only on type:class
+		if (typeof entity.meta.plural === 'string' && entity.meta.plural && entityType !== 'class') {
+			issues.push({
+				kind: 'unknown-entity-field',
+				entity: entity.id,
+				detail: `'plural' is only valid on 'type: class' entities; this entity is 'type: instance'`
+			});
+		}
+
+		// Rule 2: `class:` only on type:instance
+		const cls = entity.meta.class;
+		if (typeof cls === 'string' && cls && entityType !== 'instance') {
+			issues.push({
+				kind: 'property-kind-mismatch',
+				entity: entity.id,
+				detail: `'class:' is only valid on 'type: instance' entities; this entity is 'type: ${entityType}'`
+			});
+		}
+
+		// Rule 3: a `class:` target must itself be `type: class`
+		if (typeof cls === 'string' && cls && entityType === 'instance') {
+			const target = entities.get(cls);
+			if (target) {
+				const targetType = target.meta.type ?? 'instance';
+				if (targetType !== 'class') {
+					issues.push({
+						kind: 'property-kind-mismatch',
+						entity: entity.id,
+						detail: `class target '${cls}' is 'type: instance'; only 'type: class' entities may be referenced via 'class:'`
+					});
+				}
+			}
+			// Missing target is already caught by validateClassField (broken-link).
 		}
 	}
 }
