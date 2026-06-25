@@ -500,18 +500,18 @@ export async function loadEntityPage(entity: Entity, mode: ViewMode = 'visitor')
 	}
 
 	// ── Dev info ─────────────────────────────────────────────────────────
-	// Only populated in dev mode. Surfaces health issues for this entity,
-	// file paths for copy buttons, and a stub flag (no prose body).
-	const devInfo = mode === 'dev'
-		? {
-				issues: graph.issues().filter((i) => i.entity === entity.id),
-				yamlPath: entity.yamlPath,
-				mdPath: entity.mdPath,
-				isStub: !entity.body.trim(),
-				kind: kindId ?? null,
-				classId: classId ?? null
-			}
-		: null;
+	// Always populated — the dev bar is shown/hidden client-side based on
+	// ?mode=dev, and on a prerendered site the server load always runs in
+	// visitor mode. None of this data is sensitive (it's all already public
+	// through the page content).
+	const devInfo = {
+		issues: graph.issues().filter((i) => i.entity === entity.id),
+		yamlPath: entity.yamlPath,
+		mdPath: entity.mdPath,
+		isStub: !entity.body.trim(),
+		kind: kindId ?? null,
+		classId: classId ?? null
+	};
 
 	return {
 		breadcrumbs,
