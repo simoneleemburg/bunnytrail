@@ -381,9 +381,197 @@ const LIVE_SWAP_MIDDLEWARE = `
   var _path2 = require('path');
 
   var _worldDir = process.env.BUNNYTRAIL_WORLD_DIR || _path2.resolve(__dirname, '..');
+  var _contentDir = _path2.join(_worldDir, 'content');
   var _prerenderedDir = _path2.join(__dirname, 'prerendered');
   // Template entity: a stable minimal entity used for new (unbuilt) entities
   var _templatePath = _path2.join(_prerenderedDir, 'foundation', 'fabric', 'phenomena', 'veil-collapse.html');
+
+  // ── B'': filesystem-backed wikilink suffix resolver ───────────────────────
+  // The real engine resolves \`[[slug]]\` via graph.resolveLink (exact + suffix
+  // match against all entity ids). The engine renderer is tree-shaken out of
+  // this bundle, so we replicate the *global* branch of resolveWikilink
+  // (src/lib/server/wikilinks.ts resolveGlobal) directly against the content
+  // tree: every directory holding an index.md is an entity whose id mirrors its
+  // path under content/. We walk it once, lazily, and cache.
+  //
+  //   exact id            → use it
+  //   unique suffix match → use it   (covers bare \`[[naya]]\` + partial
+  //                                    \`[[characters/freya]]\`)
+  //   zero / ambiguous    → broken   (safe failure: we never guess wrong)
+  //
+  // Limitations vs the engine: cluster-local resolution (which can pick a
+  // different in-cluster winner when a slug is globally ambiguous) is not
+  // reproduced — we only do the global pass, so a globally-ambiguous slug
+  // renders broken here even if it would have resolved cluster-locally.
+  // Language-code tags are not indexed (they render broken). Kinds ARE indexed
+  // (from each index.md \`kind:\` frontmatter) so the bt-link--kind-<kind>
+  // theming hook matches the engine.
+  var _entityIds = null;  // string[] of all entity ids, lazily built
+  var _entityKind = null; // { [id]: kind } from frontmatter
+  var _langCodes = null;  // { [code]: id } from \`kind: language\` + \`code:\` frontmatter
+  function _ensureEntityIndex() {
+    if (_entityIds) return _entityIds;
+    var ids = [];
+    var kinds = {};
+    var langs = {};
+    var stack = [''];
+    while (stack.length) {
+      var rel = stack.pop();
+      var abs = rel ? _path2.join(_contentDir, rel) : _contentDir;
+      var ents;
+      try { ents = _fs2.readdirSync(abs, { withFileTypes: true }); } catch (_) { continue; }
+      var hasIndex = false;
+      for (var i = 0; i < ents.length; i++) {
+        var e = ents[i];
+        if (e.isDirectory()) {
+          stack.push(rel ? rel + '/' + e.name : e.name);
+        } else if (e.name === 'index.md') {
+          hasIndex = true;
+        }
+      }
+      if (hasIndex && rel) {
+        ids.push(rel);
+        try {
+          var src = _fs2.readFileSync(_path2.join(abs, 'index.md'), 'utf8');
+          var head = src.split(/\\n---/, 1)[0]; // frontmatter region
+          var km = head.match(/^kind:\\s*(.+)$/m);
+          var kind = km ? km[1].trim().replace(/^['"]|['"]$/g, '') : '';
+          if (kind) kinds[rel] = kind;
+          var cm = head.match(/^code:\\s*(.+)$/m);
+          if (kind === 'language' && cm) {
+            langs[cm[1].trim().replace(/^['"]|['"]$/g, '')] = rel;
+          }
+        } catch (_) {}
+      }
+    }
+    _entityIds = ids;
+    _entityKind = kinds;
+    _langCodes = langs;
+    return ids;
+  }
+
+  // Mirror resolveGlobal: exact, then unique suffix match. Returns the entity
+  // id (which equals the URL path) or null when missing/ambiguous.
+  function _resolveWikilinkTarget(rawPath) {
+    var ids = _ensureEntityIndex();
+    if (ids.indexOf(rawPath) !== -1) return rawPath;
+    var suffix = '/' + rawPath;
+    var match = null;
+    for (var i = 0; i < ids.length; i++) {
+      if (ids[i].length > suffix.length && ids[i].slice(-suffix.length) === suffix) {
+        if (match !== null) return null; // ambiguous → broken
+        match = ids[i];
+      }
+    }
+    return match;
+  }
+
+  // Rewrite \`[[...]]\` into Markdown link syntax (or inline HTML for lang
+  // tags) for marked to render. This ports the decision order of the engine's
+  // rewriteBrackets (src/lib/server/markdown.ts) as closely as a graph-less
+  // pass can: same step order, same broken-link sentinel, same lang-tag <sup>
+  // markup. Resolution uses the FS suffix index instead of graph.resolveLink.
+  //
+  //   (0) [[#anchor|label]]            → same-page anchor
+  //   (1) [[kinds/<id>|label]]         → /kinds/<id>
+  //   (2) [[a/b/c|label]]              → path with slash → entity wikilink
+  //   (3) [[xx]] where xx is a code:   → <sup class="lang-tag"> language tag
+  //   (4) [[slug|label]] resolvable    → bare suffix-match wikilink
+  //   (5) [[xx]] code-shape but unknown→ broken lang tag
+  //   (6) [[slug]] sluglike unresolved → broken wikilink (loud)
+  //   collection: directive            → left verbatim (needs the graph)
+  function _rewriteWikilinks(text) {
+    _ensureEntityIndex();
+    var wikiPath = /^[a-z][a-z0-9-]*(?:\\/[a-z0-9-]+)+$/;
+    var slugOnly = /^[a-z][a-z0-9-]*$/;
+    var langShape = /^[a-z]{2,8}$/;
+    var anchorFrag = /^[a-z0-9][a-z0-9-]*$/;
+
+    return text.replace(/\\[\\[([^\\]|]+?)(?:\\|([^\\]]+))?\\]\\]/g, function (whole, inner, label) {
+      if (inner.indexOf('collection:') === 0) return whole;
+
+      var hashIdx = inner.indexOf('#');
+      var path = hashIdx >= 0 ? inner.slice(0, hashIdx) : inner;
+      var anchor = hashIdx >= 0 ? inner.slice(hashIdx + 1) : '';
+      var anchorSuffix = anchor && anchorFrag.test(anchor) ? '#' + anchor : '';
+
+      function fallbackLabel(forPath) {
+        var slug = forPath.slice(forPath.lastIndexOf('/') + 1);
+        return slug.replace(/-/g, ' ') || anchor.replace(/-/g, ' ');
+      }
+      function renderWikilink(forPath) {
+        var textOut = label != null ? label : fallbackLabel(forPath);
+        var resolved = _resolveWikilinkTarget(forPath);
+        if (resolved) return '[' + textOut + '](/' + resolved + anchorSuffix + ')';
+        return '[' + textOut + '](/' + forPath + anchorSuffix + ' "broken-link")';
+      }
+
+      // (0) same-page anchor
+      if (path === '' && anchor) {
+        var t0 = label != null ? label : anchor.replace(/-/g, ' ');
+        if (!anchorSuffix) return '[' + t0 + '](/' + path + ' "broken-link")';
+        return '[' + t0 + '](' + anchorSuffix + ')';
+      }
+      // (1) kinds/<id>
+      if (path.indexOf('kinds/') === 0) {
+        var kindId = path.slice('kinds/'.length);
+        var lastSeg = kindId.split('/').pop() || '';
+        if (kindId && slugOnly.test(lastSeg)) {
+          var tk = label != null ? label : fallbackLabel(kindId);
+          // We don't index the kind registry; assume valid (matches the common
+          // case). Broken kind links are rare and a rebuild will flag them.
+          return '[' + tk + '](/kinds/' + kindId + anchorSuffix + ')';
+        }
+      }
+      // (2) path with slash → entity wikilink
+      if (wikiPath.test(path)) return renderWikilink(path);
+      // (3) lang-code shape, no anchor, registered → lang tag
+      if (!anchor && langShape.test(inner) && _langCodes[inner]) {
+        return '<sup class="lang-tag"><a href="/' + _langCodes[inner] +
+          '" title="language: ' + inner + '">' + inner + '</a></sup>';
+      }
+      // (4) sluglike + resolvable → bare wikilink
+      if (slugOnly.test(path) && _resolveWikilinkTarget(path)) return renderWikilink(path);
+      // (5) lang-code shape but unknown → broken lang tag
+      if (!anchor && langShape.test(inner)) {
+        return '<sup class="lang-tag" data-broken="true" title="unknown language code: ' +
+          inner + '">' + inner + '</sup>';
+      }
+      // (6) sluglike but unresolved → broken wikilink (loud)
+      if (slugOnly.test(path)) return renderWikilink(path);
+      // anything else — leave as-is
+      return whole;
+    });
+  }
+
+  // Post-marked pass: convert the \`title="broken-link"\` sentinel into
+  // \`data-broken="true"\` and attach the engine's per-wikilink theming hooks
+  // (\`class="bt-link"\`, \`data-bt-slug\`, and \`data-bt-kind\` +
+  // \`bt-link--kind-<kind>\` when the resolved id has a known kind).
+  // Mirrors decorateEntityLinks.
+  function _decorateLinks(html) {
+    _ensureEntityIndex();
+    return html.replace(
+      /<a href="(\\/[^"#]*)(#[^"]*)?"( title="broken-link")?>/g,
+      function (whole, href, anchor, brokenAttr) {
+        var path = href.slice(1);
+        var slug = path.slice(path.lastIndexOf('/') + 1);
+        var isEngineRoute = path.indexOf('kinds/') === 0;
+        var classes = ['bt-link'];
+        var attrs = '';
+        if (!isEngineRoute) {
+          if (slug) attrs += ' data-bt-slug="' + slug + '"';
+          var kind = _entityKind && _entityKind[path];
+          if (kind) {
+            attrs += ' data-bt-kind="' + kind + '"';
+            classes.push('bt-link--kind-' + kind);
+          }
+        }
+        if (brokenAttr) attrs += ' data-broken="true"';
+        return '<a href="' + href + (anchor || '') + '" class="' + classes.join(' ') + '"' + attrs + '>';
+      }
+    );
+  }
 
   function _parseFrontmatter(src) {
     // Normalise line endings (iOS git checkouts may have CRLF)
@@ -406,16 +594,21 @@ const LIVE_SWAP_MIDDLEWARE = `
   }
 
   function _renderMarkdown(text) {
+    // B'': resolve wikilinks against the content tree before marked runs, so
+    // live-edited \`[[slug]]\` prose links work (bare slugs + partial paths via
+    // suffix match). See _rewriteWikilinks / _resolveWikilinkTarget above.
+    var pre = _rewriteWikilinks(text);
     // Use the bundle's own marked function (declared in the same CJS scope).
     // By the time any request arrives, all __esm blocks have initialized via
     // Patch 9's get_hooks() call, so marked/markedInstance are ready.
-    try { return marked(text, { async: false }); } catch (_) {}
+    try { return _decorateLinks(marked(pre, { async: false })); } catch (_) {}
     // Fallback: wrap in a paragraph if marked not yet available
     return '<p>' + text.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</p>';
   }
 
   function _renderInline(text) {
-    try { return marked.parseInline(text, { async: false }); } catch (_) {}
+    var pre = _rewriteWikilinks(text);
+    try { return _decorateLinks(marked.parseInline(pre, { async: false })); } catch (_) {}
     return text.replace(/&/g,'&amp;').replace(/</g,'&lt;');
   }
 
@@ -443,10 +636,17 @@ const LIVE_SWAP_MIDDLEWARE = `
       html = html.replace(/<p class="subtitle[^"]*">[\\s\\S]*?<\\/p>/, '');
     }
 
-    // 4. Prose body — from after class="prose ..." opening comment to:
-    //    <hr class="prose-end, <section class="chapters, <section class="children,
-    //    or the Svelte cleanup tail (<!---->  <!--[-1--><!--]--> ... </div>)
-    var proseMatch = html.match(/(class="prose [^"]*">)(<!--[\\w-]+-->)?/);
+    // 4. Prose body — from after class="prose ..." opening Svelte comment(s)
+    //    to one of: <hr class="prose-end">, <section class="chapters">,
+    //    <section class="children">, the prose </div> that opens the sidebar
+    //    (</div> <aside class="sidebar), or the Svelte cleanup tail.
+    //    NB: Svelte emits an empty \`<!---->\` (zero chars) right after the
+    //    opening tag, plus more \`<!---->\` between paragraphs. The opener match
+    //    must consume the *leading* comment run (\`[\\w-]*\` incl. empty, repeated)
+    //    so proseTagEnd lands on real content — otherwise the end-heuristic's
+    //    \`indexOf('<!---->')\` matches the opener at position 0 and the original
+    //    prose is duplicated instead of replaced.
+    var proseMatch = html.match(/(class="prose [^"]*">)((?:<!--[\\w-]*-->\\s*)*)/);
     if (proseMatch) {
       var proseTagEnd = html.indexOf(proseMatch[0]) + proseMatch[0].length;
       var tail = html.slice(proseTagEnd);
@@ -456,6 +656,7 @@ const LIVE_SWAP_MIDDLEWARE = `
         '<hr class="prose-end',
         '<section class="chapters',
         '<section class="children',
+        '</div> <aside class="sidebar',
       ];
       for (var i = 0; i < endMarkers.length; i++) {
         var idx = tail.indexOf(endMarkers[i]);
@@ -595,6 +796,7 @@ const _verifyPatches = {
   'Patch 19 (Body Uint8Array)': 'Patch 19: vm2-proxied Uint8Array',
   'Patch 20 (live swap wired)': 'globalThis.__btLiveSwap, serve_prerendered',
   'Patch 20 (bootstrap strip)': 'kit\\.start\\(',
+  'Patch 20 (wikilink resolve)': '_resolveWikilinkTarget',
 };
 let _patchFailed = false;
 for (const [name, marker] of Object.entries(_verifyPatches)) {
