@@ -88,21 +88,20 @@ patchedIndex = patchedIndex.replace(
 writeOut('index.js', patchedIndex);
 
 // ── Patch 3: utils.js — `await import(...)` in module-scope try{} ────────────
-// This is a dev-only stack-trace helper. In CJS, require() is synchronous
-// and always available — replace the dynamic imports with require().
+// This is a dev-only stack-trace helper that only appears when the app is built
+// with dev=true. In CJS, require() is synchronous — replace the dynamic imports.
+// When absent (production build without dev=true), skip silently.
 const dynamicImportTryBlock =
   /^try \{\n\tconst path = await import\('node:path'\);\n\tconst process = await import\('node:process'\);\n\trelative = \(file\) => path\.relative\(process\.cwd\(\), file\);\n\} catch \{\}/m;
 
-if (!dynamicImportTryBlock.test(origUtils)) {
-  writeOut(handlerChunk, origHandler);
-  writeOut('index.js', origIndex);
-  throw new Error('bundle-cjs: await import block not found in utils chunk — SvelteKit may have changed');
+if (dynamicImportTryBlock.test(origUtils)) {
+  const patchedUtils = origUtils.replace(
+    dynamicImportTryBlock,
+    `try {\n\tconst path = require('node:path');\n\tconst process = require('node:process');\n\trelative = (file) => path.relative(process.cwd(), file);\n} catch {}`
+  );
+  writeOut(utilsChunk, patchedUtils);
 }
-const patchedUtils = origUtils.replace(
-  dynamicImportTryBlock,
-  `try {\n\tconst path = require('node:path');\n\tconst process = require('node:process');\n\trelative = (file) => path.relative(process.cwd(), file);\n} catch {}`
-);
-writeOut(utilsChunk, patchedUtils);
+// (if the block is absent, origUtils is used as-is — no write needed)
 
 // ── Patch 4: env.js — `fileURLToPath(import.meta.url)` → `__filename` ────────
 // In CJS, __dirname is the directory of the current file — exactly what
