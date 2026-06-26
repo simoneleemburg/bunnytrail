@@ -34,7 +34,7 @@ const SERVER_CJS = path.join(cwd, 'ipad-build', 'server.cjs');
 
 // Locate vm2 via require.resolve so it works whether it's hoisted or nested
 const vm2MainPath = require.resolve('vm2');
-const VM2_SETUP_SANDBOX = path.join(path.dirname(path.dirname(vm2MainPath)), 'lib', 'setup-sandbox.js');
+const VM2_SETUP_SANDBOX = path.join(path.dirname(vm2MainPath), 'lib', 'setup-sandbox.js');
 
 if (!fs.existsSync(SERVER_CJS)) {
   console.error(`[vm2-test] ${SERVER_CJS} not found — run "bunnytrail build-ipad" first`);
