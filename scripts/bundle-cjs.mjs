@@ -539,10 +539,7 @@ const LIVE_SWAP_MIDDLEWARE = `
 // Use a replacer function to avoid $1/$2 in LIVE_SWAP_MIDDLEWARE being
 // interpreted as regex capture-group back-references by String.replace().
 const ORIGIN_LINE = `if (!process.env.ORIGIN) process.env.ORIGIN = "http://localhost:3000";\n\n`;
-console.log('[debug] ORIGIN_LINE in cjsBundle:', cjsBundle.includes(ORIGIN_LINE));
-const _before = cjsBundle.length;
 cjsBundle = cjsBundle.replace(ORIGIN_LINE, () => ORIGIN_LINE + LIVE_SWAP_MIDDLEWARE + '\n');
-console.log('[debug] cjsBundle grew by:', cjsBundle.length - _before);
 
 // Wire the middleware into the polka sequence array, before serve_prerendered
 cjsBundle = cjsBundle.replace(
