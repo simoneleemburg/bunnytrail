@@ -3,9 +3,11 @@
 // `src/hooks.server.ts` during dogfooding):
 //
 //     import 'bunnytrail/hooks';
+//     export { init } from 'bunnytrail/hooks';
 //
-// SvelteKit awaits the hooks module before serving the first request,
-// so the top-level await here blocks until the graph is loaded.
+// SvelteKit calls `init` before serving the first request, so it is
+// safe to rely on the graph being ready by the time any load function
+// runs.
 import { BLOG_DIR, CONTENT_DIR, GUIDES_DIR, KINDS_DIR, SOURCES_DIR } from './server/globals';
 import { graph } from './server/graph';
 import { world } from './server/world';
@@ -15,6 +17,8 @@ console.log(
 	`[bunnytrail] booting with: ${CONTENT_DIR}, ${KINDS_DIR}, ${BLOG_DIR}, ${GUIDES_DIR}, and ${SOURCES_DIR}`
 );
 
-await graph.load();
-await world.load();
-startWatcher();
+export const init = async () => {
+	await graph.load();
+	await world.load();
+	startWatcher();
+};
