@@ -272,10 +272,19 @@ cjsBundle = cjsBundle.replace(
 // a string via TextDecoder (available in sandbox via Patch 7's globalThis injection).
 // TextDecoder.decode() also rejects vm2-proxied TypedArrays, so we must first spread
 // the chunk into a real Uint8Array using Uint8Array.from(Array.from(chunk)).
-cjsBundle = cjsBundle.replace(
-  `  const reader = response.body.getReader();\n  if (res.destroyed) {\n    void reader.cancel();\n    return;\n  }\n  const cancel = (error2) => {\n    res.off("close", cancel);\n    res.off("error", cancel);\n    reader.cancel(error2).catch(noop5);\n    if (error2) res.destroy(error2);\n  };\n  res.on("close", cancel);\n  res.on("error", cancel);\n  void next2();\n  async function next2() {\n    try {\n      for (; ; ) {\n        const { done, value } = await reader.read();\n        if (done) break;\n        if (!res.write(value)) {\n          res.once("drain", next2);\n          return;\n        }\n      }\n      res.end();\n    } catch (error2) {\n      cancel(error2 instanceof Error ? error2 : new Error(String(error2)));\n    }\n  }`,
-  `  // [bundle-cjs] Patch 13: manual pipe with chunk conversion for vm2 compatibility.\n  // response.body is a node-fetch Node Readable (no getReader). Chunks are Uint8Array\n  // but arrive at res.write() as vm2-proxied plain Objects. Convert via Uint8Array.from\n  // + TextDecoder so they cross the vm2→host boundary as plain UTF-8 strings.\n  const body = response.body;\n  const _bodyDec = new TextDecoder();\n  const _writeChunk = (chunk) => {\n    try {\n      const u = Uint8Array.from(Array.from(chunk));\n      const s = _bodyDec.decode(u, {stream: true});\n      if (s) res.write(s);\n    } catch(_) {\n      // fallback: try writing directly\n      if (chunk) try { res.write(chunk); } catch(__) {}\n    }\n  };\n  if (res.destroyed) { body.destroy?.(); return; }\n  body.on('error', (e) => res.destroy(e));\n  body.on('data', _writeChunk);\n  body.on('end', () => { const _tail = _bodyDec.decode(); if (_tail) res.write(_tail); res.end(); });`
-);
+//
+// The noop function name (noop4/noop5/...) varies with esbuild output. Normalise it
+// to a stable placeholder before matching, then restore it after.
+{
+  const noopMatch = cjsBundle.match(/reader\.cancel\(error2\)\.catch\((noop\d+)\)/);
+  const noopName = noopMatch ? noopMatch[1] : 'noop5';
+  const target = `  const reader = response.body.getReader();\n  if (res.destroyed) {\n    void reader.cancel();\n    return;\n  }\n  const cancel = (error2) => {\n    res.off("close", cancel);\n    res.off("error", cancel);\n    reader.cancel(error2).catch(${noopName});\n    if (error2) res.destroy(error2);\n  };\n  res.on("close", cancel);\n  res.on("error", cancel);\n  void next2();\n  async function next2() {\n    try {\n      for (; ; ) {\n        const { done, value } = await reader.read();\n        if (done) break;\n        if (!res.write(value)) {\n          res.once("drain", next2);\n          return;\n        }\n      }\n      res.end();\n    } catch (error2) {\n      cancel(error2 instanceof Error ? error2 : new Error(String(error2)));\n    }\n  }`;
+  cjsBundle = cjsBundle.replace(
+    target,
+    `  // [bundle-cjs] Patch 13: manual pipe with chunk conversion for vm2 compatibility.\n  // response.body is a node-fetch Node Readable (no getReader). Chunks are Uint8Array\n  // but arrive at res.write() as vm2-proxied plain Objects. Convert via Uint8Array.from\n  // + TextDecoder so they cross the vm2→host boundary as plain UTF-8 strings.\n  const body = response.body;\n  const _bodyDec = new TextDecoder();\n  const _writeChunk = (chunk) => {\n    try {\n      const u = Uint8Array.from(Array.from(chunk));\n      const s = _bodyDec.decode(u, {stream: true});\n      if (s) res.write(s);\n    } catch(_) {\n      // fallback: try writing directly\n      if (chunk) try { res.write(chunk); } catch(__) {}\n    }\n  };\n  if (res.destroyed) { body.destroy?.(); return; }\n  body.on('error', (e) => res.destroy(e));\n  body.on('data', _writeChunk);\n  body.on('end', () => { const _tail = _bodyDec.decode(); if (_tail) res.write(_tail); res.end(); });`
+  );
+  if (!cjsBundle.includes('_bodyDec')) throw new Error('bundle-cjs: Patch 13 (setResponse) did not apply — esbuild output may have changed');
+}
 
 // ── Patch 14: strip node: prefix and fix vm2-incompatible requires ───────────
 // vm2 doesn't recognise the `node:` protocol prefix on builtin module names.
@@ -546,6 +555,22 @@ cjsBundle = cjsBundle.replace(
   `[serve(import_node_path8.default.join(dir, "client"), true), serve_prerendered(), ssr]`,
   `[serve(import_node_path8.default.join(dir, "client"), true), globalThis.__btLiveSwap, serve_prerendered(), ssr]`
 );
+
+// ── Verify critical patches applied ──────────────────────────────────────────
+const _verifyPatches = {
+  'Patch 13 (setResponse body)': '_bodyDec',
+  'Patch 17 (Headers Proxy)': 'Patch 17: bind to target',
+  'Patch 19 (Body Uint8Array)': 'Patch 19: vm2-proxied Uint8Array',
+  'Patch 20 (live swap)': '__btLiveSwap',
+};
+let _patchFailed = false;
+for (const [name, marker] of Object.entries(_verifyPatches)) {
+  if (!cjsBundle.includes(marker)) {
+    console.warn(`[bt-build-ipad] WARNING: ${name} did not apply — esbuild output may have changed`);
+    _patchFailed = true;
+  }
+}
+if (_patchFailed) console.warn('[bt-build-ipad] Some patches failed. SSR in vm2 may not work correctly.');
 
 writeOut('server.cjs', cjsBundle);
 console.log('[bt-build-ipad] done → server.cjs');
