@@ -45,7 +45,13 @@
 	// against a real Vercel project keeps working.
 	onMount(() => {
 		if (!browser) return;
-		injectAnalytics({ mode: dev ? 'development' : 'production' });
+		// Skip Vercel Analytics in iPad/offline builds — the script endpoint
+		// isn't available and generates noisy 404s. VITE_IPAD_BUILD is defined
+		// as '1' by vite.ipad.config.ts; undefined in all other builds.
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		if (!(import.meta as any).env?.VITE_IPAD_BUILD) {
+			injectAnalytics({ mode: dev ? 'development' : 'production' });
+		}
 
 		// In dev, subscribe to the graph-reload SSE stream so that any
 		// file change picked up by the watcher (content, kinds, world.md,
