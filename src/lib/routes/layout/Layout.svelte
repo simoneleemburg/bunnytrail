@@ -21,7 +21,7 @@
 		activeEra: string | null;
 		activeMode: ViewMode;
 		issueCount: number;
-		world: { name: string; shortName: string; tagline: string; allScopeLabel: string; eras: EraConfig | null };
+		world: { name: string; shortName: string; tagline: string; allScopeLabel: string; disableScopePainting: boolean; eras: EraConfig | null };
 			wordmark: string | null;
 			ornament: {
 				glyph: string | null;
@@ -213,7 +213,8 @@
 		let target = nav.to.url;
 
 		// Scope paint: in All scope, paint ?scope=all onto cluster-prefixed URLs.
-		if (data.selectedCluster === null) {
+		// Skipped when world.disableScopePainting is true (e.g. iPad offline build).
+		if (data.selectedCluster === null && !data.world.disableScopePainting) {
 			target = paintAllScope(target, data.scopeContext);
 		}
 

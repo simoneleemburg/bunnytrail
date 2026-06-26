@@ -86,6 +86,14 @@ export interface WorldConfig {
 	 */
 	allowUndefinedProperties: boolean;
 	/**
+	 * When `true`, the client-side `beforeNavigate` hook skips painting
+	 * `?scope=all` onto outgoing links. Useful for offline/static-served
+	 * builds (e.g. Node.js Lab on iPad) where `?scope=all` triggers an SSR
+	 * round-trip that is unnecessary and slow. Set `disableScopePainting: true`
+	 * in `content_meta/world.md`.
+	 */
+	disableScopePainting: boolean;
+	/**
 	 * Optional era configuration. When present, enables the era picker
 	 * in the masthead and the `era` field on entity cards.
 	 */
@@ -115,6 +123,7 @@ function fallbackConfig(): WorldConfig {
 		ornament: fallbackOrnament(),
 		allowUndefinedRelations: true,
 		allowUndefinedProperties: true,
+		disableScopePainting: false,
 		eras: null
 	};
 }
@@ -169,12 +178,13 @@ export async function loadWorld(
 	const ornament = readOrnament(meta, issues);
 	const allowUndefinedRelations = readAllowUndefinedRelations(meta, issues);
 	const allowUndefinedProperties = readAllowUndefinedProperties(meta, issues);
+	const disableScopePainting = readBooleanFlag(meta, 'disableScopePainting', issues);
 	const eras = readEras(meta, issues);
 
 	const ledeHtml = body.trim() === '' ? null : renderPlainBody(body);
 
 	return {
-		config: { name, shortName, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties, eras },
+		config: { name, shortName, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties, disableScopePainting, eras },
 		ledeHtml,
 		present: true,
 		issues
@@ -237,6 +247,23 @@ function readOrnament(meta: Record<string, unknown>, issues: HealthIssue[]): Orn
 	return { wordmark, worldMark, navSep, glyph, svg, guides };
 }
 
+function readBooleanFlag(
+	meta: Record<string, unknown>,
+	key: string,
+	issues: HealthIssue[]
+): boolean {
+	const raw = meta[key];
+	if (raw === undefined || raw === null) return false;
+	if (typeof raw !== 'boolean') {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: `content_meta/world.md: ${key} must be a boolean when present`
+		});
+		return false;
+	}
+	return raw;
+}
+
 /**
  * Read the optional `allowUndefinedRelations` boolean from world.md frontmatter.
  * Defaults to `false` (strict) when absent — any relation kind not declared in
@@ -248,39 +275,18 @@ function readAllowUndefinedRelations(
 	meta: Record<string, unknown>,
 	issues: HealthIssue[]
 ): boolean {
-	const raw = meta['allowUndefinedRelations'];
-	if (raw === undefined || raw === null) return false;
-	if (typeof raw !== 'boolean') {
-		issues.push({
-			kind: 'invalid-yaml',
-			detail: 'content_meta/world.md: allowUndefinedRelations must be a boolean when present'
-		});
-		return false;
-	}
-	return raw;
+	return readBooleanFlag(meta, 'allowUndefinedRelations', issues);
 }
 
 /**
  * Read the optional `allowUndefinedProperties` boolean from world.md frontmatter.
- * Defaults to `false` (strict) when absent — any property key not declared in
- * any `_kind.yaml` `properties:` block will produce a health-page warning.
- * Set to `true` to silence those warnings globally while the schema is being
- * built out.
+ * Defaults to `false` (strict) when absent.
  */
 function readAllowUndefinedProperties(
 	meta: Record<string, unknown>,
 	issues: HealthIssue[]
 ): boolean {
-	const raw = meta['allowUndefinedProperties'];
-	if (raw === undefined || raw === null) return false;
-	if (typeof raw !== 'boolean') {
-		issues.push({
-			kind: 'invalid-yaml',
-			detail: 'content_meta/world.md: allowUndefinedProperties must be a boolean when present'
-		});
-		return false;
-	}
-	return raw;
+	return readBooleanFlag(meta, 'allowUndefinedProperties', issues);
 }
 
 /**
