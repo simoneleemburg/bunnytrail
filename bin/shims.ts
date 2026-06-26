@@ -41,7 +41,7 @@ function importBase(mode: ShimMode): string {
 	return mode === 'engine' ? '$lib/routes' : 'bunnytrail/routes';
 }
 
-/** Whether to bake `export const prerender = true` into the root layout. */
+/** Whether to bake a prerender export into the root layout. */
 function prerender(mode: ShimMode): boolean {
 	return mode === 'consumer';
 }
@@ -93,7 +93,7 @@ const server = (mode: ShimMode, lib: string, opts: RouteShimOpts = {}, verb = 'G
 
 export function planShims(mode: ShimMode): Shim[] {
 	const rootLayoutExtras = prerender(mode)
-		? `\n// Prerender every page at build time. adapter-vercel's serverless\n// functions can't read arbitrary files at runtime, and bunnytrail's\n// loader walks \`content/\` recursively — so we prerender the whole\n// site instead.\nexport const prerender = true;\n`
+		? `\n// Prerender every page at build time. adapter-vercel's serverless\n// functions can't read arbitrary files at runtime, and bunnytrail's\n// loader walks \`content/\` recursively — so we prerender the whole\n// site instead.\n// Set BUNNYTRAIL_NEVER_PRERENDER=1 at build time to disable this\n// (e.g. for a local SSR server where content is read at request time).\nexport const prerender = !process.env.BUNNYTRAIL_NEVER_PRERENDER;\n`
 		: '';
 
 	const out: Shim[] = [
