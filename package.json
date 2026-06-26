@@ -75,6 +75,7 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^7.0.1",
+		"vm2": "^3.11.5",
 		"@sveltejs/kit": "^2.57.0",
 		"@sveltejs/package": "^2.5.7",
 		"@sveltejs/vite-plugin-svelte": "^7.0.0",
@@ -98,6 +99,7 @@
 		"d3-zoom": "^3.0.0",
 		"dotenv": "^17.4.2",
 		"marked": "^15.0.0",
+		"node-fetch": "^3.3.2",
 		"tsx": "^4.22.3",
 		"yaml": "^2.6.0"
 	}

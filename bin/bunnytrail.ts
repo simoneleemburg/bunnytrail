@@ -4,6 +4,7 @@
 // `run(argv: string[]): Promise<number>` and add the case below.
 import { init } from './init';
 import { sync } from './sync';
+import { buildIpad } from './build-ipad';
 
 const [, , cmd, ...rest] = process.argv;
 
@@ -13,6 +14,8 @@ async function main(): Promise<number> {
 			return init(rest);
 		case 'sync':
 			return sync(rest);
+		case 'build-ipad':
+			return buildIpad(rest);
 		case undefined:
 		case '-h':
 		case '--help':
@@ -30,10 +33,13 @@ function printHelp(): void {
 	console.log(`bunnytrail — knowledge-graph engine
 
 Usage:
-  bunnytrail init [dir]    scaffold a new world repo in <dir> (default: .)
-  bunnytrail sync          regenerate src/routes/ shims against the
-                           currently-installed engine version
-  bunnytrail help          show this message`);
+  bunnytrail init [dir]          scaffold a new world repo in <dir> (default: .)
+  bunnytrail sync                regenerate src/routes/ shims against the
+                                 currently-installed engine version
+  bunnytrail build-ipad          post-process adapter-node output into a
+           [--out-dir <dir>]     single server.cjs for Node.js Lab on iPad
+           [--test]              (--test also runs the vm2 smoke test)
+  bunnytrail help                show this message`);
 }
 
 main().then(
