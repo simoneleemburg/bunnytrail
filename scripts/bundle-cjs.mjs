@@ -472,15 +472,6 @@ const LIVE_SWAP_MIDDLEWARE = `
       }
     }
 
-    // Strip Svelte hydration comment markers so the browser treats this as
-    // plain static HTML rather than attempting to hydrate against stale data.
-    // The markers (<!--[0--> <!--]--> <!--f6pclp--> etc.) are only meaningful
-    // when the HTML exactly matches the SSR output — after our prose swap they
-    // don't, causing hydration_mismatch errors. Removing them is safe: the page
-    // still renders and links work; only fine-grained reactivity is lost, which
-    // was never available on static-served pages anyway.
-    html = html.replace(/<!--\\[[-\\d]*-->/g, '').replace(/<!--\\]-->/g, '').replace(/<!--[a-z0-9]{6,}-->/g, '');
-
     return html;
   }
 
