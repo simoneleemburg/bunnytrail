@@ -20,7 +20,9 @@ console.log(
 );
 
 // Kick off loading immediately — don't wait for SvelteKit to call init().
-const bootPromise = graph.load().then(() => world.load());
+const bootPromise = graph.load().then(() => world.load()).then(() => {
+	console.log('[bunnytrail] graph ready');
+});
 
 export const init = async () => {
 	await bootPromise;
