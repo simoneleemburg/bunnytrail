@@ -11,7 +11,8 @@
 	},
 	"files": [
 		"dist",
-		"bin"
+		"bin",
+		"scripts"
 	],
 	"bin": {
 		"bunnytrail": "./bin/bunnytrail.ts"
