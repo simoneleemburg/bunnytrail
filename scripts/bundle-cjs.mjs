@@ -336,6 +336,229 @@ cjsBundle = cjsBundle.replace(
   `        } else if (body !== null && typeof body === 'object' && typeof body.length === 'number' && body.length > 0 && typeof body[0] === 'number') {\n          // [bundle-cjs] Patch 19: vm2-proxied Uint8Array/Buffer — numeric keys + length but fails ArrayBuffer.isView.\n          const _arr = new Array(body.length);\n          for (let _i = 0; _i < body.length; _i++) _arr[_i] = body[_i];\n          body = import_node_buffer.Buffer.from(_arr);\n        } else {\n          body = import_node_buffer.Buffer.from(String(body));\n        }`
 );
 
+// ── Patch 20: live markdown swap middleware ───────────────────────────────────
+// Intercepts requests for content entity paths at serve time. For each request:
+//
+//   1. If content/<path>/index.md exists on disk:
+//      a. Parse the frontmatter (name, summary) and markdown body
+//      b. Re-render the body with marked (no wikilink resolution — plain prose only)
+//      c. If ipad-build/prerendered/<path>.html exists: load it and swap
+//         title / h1 / subtitle / prose with fresh content, serve it
+//      d. If no prerendered file (new entity added after build): load the
+//         template entity HTML instead and do the same swap — sidebar will
+//         show the template entity's data until the next full rebuild
+//
+//   2. Otherwise: call next() and fall through to the normal prerendered/SSR stack
+//
+// This gives instant page loads for all entities that existed at build time
+// (pure static HTML + a cheap fs read + regex swap, no vm2 SSR overhead), while
+// still serving new entities added on the iPad via the template fast-path.
+//
+// The template entity is foundation/fabric/phenomena/veil-collapse — a stable
+// cosmological concept with a minimal sidebar (no relations, no tags).
+//
+// Limitations:
+//   - Wikilinks in the body are NOT re-resolved. Links from the prerendered
+//     version remain. Newly added wikilinks will render as plain text until
+//     the next full rebuild (which re-resolves them into <a> tags).
+//   - Sidebar content (relations, kind chip, tags) always reflects build-time
+//     state. New relations / tag changes require a rebuild.
+//   - New entity pages served via the template will have the template entity's
+//     kind chip, breadcrumbs, and empty sidebar until rebuilt.
+
+const LIVE_SWAP_MIDDLEWARE = `
+(function () {
+  'use strict';
+  var _fs2 = require('fs');
+  var _path2 = require('path');
+  var _marked2;
+  function _getMarked() {
+    if (!_marked2) {
+      try { _marked2 = require('marked'); } catch (_) {}
+    }
+    return _marked2;
+  }
+
+  var _worldDir = process.env.BUNNYTRAIL_WORLD_DIR || _path2.resolve(__dirname, '..');
+  var _prerenderedDir = _path2.join(__dirname, 'prerendered');
+  // Template entity: a stable minimal entity used for new (unbuilt) entities
+  var _templatePath = _path2.join(_prerenderedDir, 'foundation', 'fabric', 'phenomena', 'veil-collapse.html');
+
+  function _parseFrontmatter(src) {
+    var m = src.match(/^---\\n([\\s\\S]*?)\\n---\\n?([\\s\\S]*)$/);
+    if (!m) return { name: '', summary: '', body: src };
+    var yaml = m[1], body = m[2].trim();
+    var name = '', summary = '';
+    var nameM = yaml.match(/^name:\\s*(.+)$/m);
+    if (nameM) name = nameM[1].trim().replace(/^['"]|['"]$/g, '');
+    // summary may be multiline (block scalar) or inline
+    var summaryM = yaml.match(/^summary:\\s*>?-?\\s*\\n((?:[ \\t]+.+\\n?)+)/m);
+    if (summaryM) {
+      summary = summaryM[1].replace(/^[ \\t]+/gm, '').trim();
+    } else {
+      var inlineM = yaml.match(/^summary:\\s*(.+)$/m);
+      if (inlineM) summary = inlineM[1].trim().replace(/^['"]|['"]$/g, '');
+    }
+    return { name: name, summary: summary, body: body };
+  }
+
+  function _renderMarkdown(text) {
+    var m = _getMarked();
+    if (!m) return '<p>' + text.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</p>';
+    var parse = m.parse || m.marked || (m.default && (m.default.parse || m.default));
+    if (typeof parse === 'function') return parse(text, { async: false });
+    return '<p>' + text + '</p>';
+  }
+
+  function _renderInline(text) {
+    var m = _getMarked();
+    if (!m) return text.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    var parseInline = m.parseInline || (m.default && m.default.parseInline);
+    if (typeof parseInline === 'function') return parseInline(text, { async: false });
+    return text;
+  }
+
+  function _escapeHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function _swapHtml(html, name, summaryHtml, bodyHtml) {
+    // 1. <title>
+    html = html.replace(/<title>[^<]*<\\/title>/, '<title>' + _escapeHtml(name) + ' \\u00b7 Alteria</title>');
+
+    // 2. <h1 ...> ... </h1>  — replace inner content, preserve tag + attributes
+    html = html.replace(/(<h1[^>]*>)[\\s\\S]*?(<\\/h1>)/, '$1' + _escapeHtml(name) + '$2');
+
+    // 3. <p class="subtitle ..."> ... </p>  — replace or remove
+    var hasSubtitle = /<p class="subtitle[^"]*"/.test(html);
+    if (summaryHtml && summaryHtml.trim()) {
+      if (hasSubtitle) {
+        html = html.replace(/(<p class="subtitle[^"]*">)[\\s\\S]*?(<\\/p>)/, '$1' + summaryHtml + '$2');
+      } else {
+        // insert subtitle after closing </header>
+        html = html.replace('</header>', '</header><p class="subtitle">' + summaryHtml + '</p>');
+      }
+    } else if (hasSubtitle) {
+      html = html.replace(/<p class="subtitle[^"]*">[\\s\\S]*?<\\/p>/, '');
+    }
+
+    // 4. Prose body — from after class="prose ..." opening comment to:
+    //    <hr class="prose-end, <section class="chapters, <section class="children,
+    //    or the Svelte cleanup tail (<!---->  <!--[-1--><!--]--> ... </div>)
+    var proseMatch = html.match(/(class="prose [^"]*">)(<!--[\\w-]+-->)?/);
+    if (proseMatch) {
+      var proseTagEnd = html.indexOf(proseMatch[0]) + proseMatch[0].length;
+      var tail = html.slice(proseTagEnd);
+      // Find the end of the body section
+      var endIdx = -1;
+      var endMarkers = [
+        '<hr class="prose-end',
+        '<section class="chapters',
+        '<section class="children',
+      ];
+      for (var i = 0; i < endMarkers.length; i++) {
+        var idx = tail.indexOf(endMarkers[i]);
+        if (idx >= 0 && (endIdx < 0 || idx < endIdx)) endIdx = idx;
+      }
+      if (endIdx < 0) {
+        // No structural sections — body ends before the Svelte cleanup comments
+        // Pattern: content <!----> <!--[-1--><!--]--> ... </div>
+        var cleanupIdx = tail.indexOf('<!---->', 0);
+        if (cleanupIdx >= 0) endIdx = cleanupIdx;
+      }
+      if (endIdx >= 0) {
+        html = html.slice(0, proseTagEnd) + bodyHtml + '\\n' + tail.slice(endIdx);
+      }
+    }
+
+    return html;
+  }
+
+  globalThis.__btLiveSwap = function (req, res, next) {
+    var pathname;
+    try {
+      pathname = decodeURIComponent(req.url.split('?')[0]);
+    } catch (_) {
+      return next();
+    }
+
+    // Skip non-entity paths
+    if (!pathname || pathname === '/'
+        || pathname.startsWith('/_app')
+        || pathname.startsWith('/api')
+        || /\\.[a-zA-Z0-9]+$/.test(pathname)  // has file extension
+        || pathname.startsWith('/kinds')
+        || pathname.startsWith('/blog')
+        || pathname.startsWith('/guides')
+        || pathname.startsWith('/graph')
+        || pathname.startsWith('/tags')
+        || pathname.startsWith('/sources')
+        || pathname.startsWith('/relations')
+        || pathname.startsWith('/properties')
+        || pathname.startsWith('/influences')
+        || pathname.startsWith('/symbology')
+        || pathname.startsWith('/health')
+    ) {
+      return next();
+    }
+
+    // Map URL path to content file: /aurethia/nature/beings/nguwari → content/aurethia/nature/beings/nguwari/index.md
+    var entityPath = pathname.replace(/^\\//, '');
+    var contentFile = _path2.join(_worldDir, 'content', entityPath, 'index.md');
+
+    if (!_fs2.existsSync(contentFile)) {
+      return next(); // not a content entity — fall through to prerendered/SSR
+    }
+
+    var src;
+    try { src = _fs2.readFileSync(contentFile, 'utf8'); } catch (_) { return next(); }
+
+    var fm = _parseFrontmatter(src);
+    if (!fm.name) return next(); // no name = not a valid entity
+
+    var bodyHtml = _renderMarkdown(fm.body);
+    var summaryHtml = fm.summary ? _renderInline(fm.summary) : '';
+
+    // Find prerendered HTML or fall back to template
+    var htmlFile = _path2.join(_prerenderedDir, entityPath + '.html');
+    var isTemplate = false;
+    if (!_fs2.existsSync(htmlFile)) {
+      htmlFile = _templatePath;
+      isTemplate = true;
+    }
+
+    var html;
+    try { html = _fs2.readFileSync(htmlFile, 'utf8'); } catch (_) { return next(); }
+
+    // Skip redirect stubs (96-byte redirect pages)
+    if (html.length < 500) return next();
+
+    html = _swapHtml(html, fm.name, summaryHtml, bodyHtml);
+
+    res.writeHead(200, {
+      'content-type': 'text/html; charset=utf-8',
+      'cache-control': isTemplate ? 'no-store' : 'public, max-age=0, must-revalidate',
+    });
+    res.end(html);
+  };
+})();
+`;
+
+// Inject the middleware code at the top (after the "use strict" injection)
+// Use a replacer function to avoid $1/$2 in LIVE_SWAP_MIDDLEWARE being
+// interpreted as regex capture-group back-references by String.replace().
+const ORIGIN_LINE = `if (!process.env.ORIGIN) process.env.ORIGIN = "http://localhost:3000";\n\n`;
+console.log('[debug] ORIGIN_LINE in cjsBundle:', cjsBundle.includes(ORIGIN_LINE));
+const _before = cjsBundle.length;
+cjsBundle = cjsBundle.replace(ORIGIN_LINE, () => ORIGIN_LINE + LIVE_SWAP_MIDDLEWARE + '\n');
+console.log('[debug] cjsBundle grew by:', cjsBundle.length - _before);
+
+// Wire the middleware into the polka sequence array, before serve_prerendered
+cjsBundle = cjsBundle.replace(
+  `[serve(import_node_path8.default.join(dir, "client"), true), serve_prerendered(), ssr]`,
+  `[serve(import_node_path8.default.join(dir, "client"), true), globalThis.__btLiveSwap, serve_prerendered(), ssr]`
+);
+
 writeOut('server.cjs', cjsBundle);
 console.log('[bt-build-ipad] done → server.cjs');
 
