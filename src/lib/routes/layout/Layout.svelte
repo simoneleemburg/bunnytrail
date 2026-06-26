@@ -2,7 +2,7 @@
 	import '$lib/styles/global.css';
 
 	import { page } from '$app/stores';
-	import { beforeNavigate, goto, invalidateAll } from '$app/navigation';
+	import { beforeNavigate, afterNavigate, goto, invalidateAll } from '$app/navigation';
 	import { browser, dev } from '$app/environment';
 	import { onMount, setContext } from 'svelte';
 	import { injectAnalytics } from '@vercel/analytics/sveltekit';
@@ -109,6 +109,14 @@
 	let metaOpen = $state(false);
 	let searchOpen = $state(false);
 
+	// Navigation loading state — drives a subtle fade on <main> so the
+	// user gets visual feedback that a page transition is in progress.
+	let navigating = $state(false);
+
+	afterNavigate(() => {
+		navigating = false;
+	});
+
 	// Keep these for backward-compat with switchCluster/switchEra which
 	// reference filtersOpen directly.
 
@@ -204,6 +212,7 @@
 		filtersOpen = false;
 		metaOpen = false;
 		searchOpen = false;
+		navigating = true;
 
 		if (bypassScopePaint) {
 			bypassScopePaint = false;
@@ -746,7 +755,7 @@
 		</div>
 	{/if}
 
-	<main data-bt-path={pathAttrs.path} data-bt-section={pathAttrs.section}>
+	<main data-bt-path={pathAttrs.path} data-bt-section={pathAttrs.section} class:navigating>
 		{@render children()}
 	</main>
 
@@ -1501,6 +1510,15 @@
 		max-width: var(--page-max);
 		margin: 0 auto;
 		padding: var(--space-7) var(--space-6);
+		/* Fade out slightly when a navigation is in progress.
+		   The 80ms delay means instant navigations (prerendered pages)
+		   never visibly dim — only slower loads show the indicator. */
+		transition: opacity 200ms ease 80ms;
+	}
+
+	main.navigating {
+		opacity: 0.4;
+		transition: opacity 150ms ease 0ms;
 	}
 
 	footer {
