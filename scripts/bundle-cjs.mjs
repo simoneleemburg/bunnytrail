@@ -472,6 +472,19 @@ const LIVE_SWAP_MIDDLEWARE = `
       }
     }
 
+    // 5. Strip the SvelteKit hydration bootstrap.
+    //    The prerendered page ships an inline <script> that runs kit.start()
+    //    with a build-time \`data:[...]\` payload. On a live-swapped page the DOM
+    //    no longer matches that payload, so the client reconciler throws
+    //    hydration_mismatch on every (re)load. Since the iPad build is a
+    //    read-only static notebook, we drop the whole bootstrap: no client JS
+    //    boots, nothing hydrates, no mismatch. Client-side nav / search /
+    //    lightboxes become inert on swapped pages (plain links full-reload),
+    //    which is the intended lightweight trade-off.
+    //    Match any inline <script> whose body invokes kit.start( — that is the
+    //    SvelteKit start block and nothing else in these pages.
+    html = html.replace(/<script>(?:(?!<\\/script>)[\\s\\S])*?kit\\.start\\((?:(?!<\\/script>)[\\s\\S])*?<\\/script>/g, '');
+
     return html;
   }
 
@@ -581,6 +594,7 @@ const _verifyPatches = {
   'Patch 17 (Headers Proxy)': 'Patch 17: bind to target',
   'Patch 19 (Body Uint8Array)': 'Patch 19: vm2-proxied Uint8Array',
   'Patch 20 (live swap wired)': 'globalThis.__btLiveSwap, serve_prerendered',
+  'Patch 20 (bootstrap strip)': 'kit\\.start\\(',
 };
 let _patchFailed = false;
 for (const [name, marker] of Object.entries(_verifyPatches)) {
