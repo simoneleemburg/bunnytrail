@@ -386,8 +386,10 @@ const LIVE_SWAP_MIDDLEWARE = `
   var _templatePath = _path2.join(_prerenderedDir, 'foundation', 'fabric', 'phenomena', 'veil-collapse.html');
 
   function _parseFrontmatter(src) {
-    var m = src.match(/^---\\n([\\s\\S]*?)\\n---\\n?([\\s\\S]*)$/);
-    if (!m) return { name: '', summary: '', body: src };
+    // Normalise line endings (iOS git checkouts may have CRLF)
+    var s = src.replace(/\\r\\n/g, '\\n').replace(/\\r/g, '\\n').replace(/^\\uFEFF/, '');
+    var m = s.match(/^---\\n([\\s\\S]*?)\\n---\\n?([\\s\\S]*)$/);
+    if (!m) return { name: '', summary: '', body: s };
     var yaml = m[1], body = m[2].trim();
     var name = '', summary = '';
     var nameM = yaml.match(/^name:\\s*(.+)$/m);
@@ -549,18 +551,29 @@ const LIVE_SWAP_MIDDLEWARE = `
 const ORIGIN_LINE = `if (!process.env.ORIGIN) process.env.ORIGIN = "http://localhost:3000";\n\n`;
 cjsBundle = cjsBundle.replace(ORIGIN_LINE, () => ORIGIN_LINE + LIVE_SWAP_MIDDLEWARE + '\n');
 
-// Wire the middleware into the polka sequence array, before serve_prerendered
-cjsBundle = cjsBundle.replace(
-  `[serve(import_node_path8.default.join(dir, "client"), true), serve_prerendered(), ssr]`,
-  `[serve(import_node_path8.default.join(dir, "client"), true), globalThis.__btLiveSwap, serve_prerendered(), ssr]`
-);
+// Wire the middleware into the polka sequence array, before serve_prerendered.
+// The path import alias (import_node_pathN) varies with each esbuild output —
+// use a regex replace to match any numbered alias.
+{
+  const seqMatch = cjsBundle.match(
+    /\[serve\((import_node_path\d+\.default\.join\(dir, "client"\)), true\), serve_prerendered\(\), ssr\]/
+  );
+  if (seqMatch) {
+    cjsBundle = cjsBundle.replace(
+      seqMatch[0],
+      `[serve(${seqMatch[1]}, true), globalThis.__btLiveSwap, serve_prerendered(), ssr]`
+    );
+  } else {
+    console.warn('[bt-build-ipad] WARNING: polka sequence array not found — live swap middleware not wired');
+  }
+}
 
 // ── Verify critical patches applied ──────────────────────────────────────────
 const _verifyPatches = {
   'Patch 13 (setResponse body)': '_bodyDec',
   'Patch 17 (Headers Proxy)': 'Patch 17: bind to target',
   'Patch 19 (Body Uint8Array)': 'Patch 19: vm2-proxied Uint8Array',
-  'Patch 20 (live swap)': '__btLiveSwap',
+  'Patch 20 (live swap wired)': 'globalThis.__btLiveSwap, serve_prerendered',
 };
 let _patchFailed = false;
 for (const [name, marker] of Object.entries(_verifyPatches)) {
