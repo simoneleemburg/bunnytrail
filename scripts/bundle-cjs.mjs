@@ -483,6 +483,13 @@ const LIVE_SWAP_MIDDLEWARE = `
       return next();
     }
 
+    // SvelteKit client-side navigations set x-sveltekit-pathname on the fetch
+    // request. For those we skip the swap and let SSR handle it — the swap is
+    // only for full browser navigations where the static HTML is the response.
+    if (req.headers && req.headers['x-sveltekit-pathname']) {
+      return next();
+    }
+
     // Skip non-entity paths
     if (!pathname || pathname === '/'
         || pathname.startsWith('/_app')
