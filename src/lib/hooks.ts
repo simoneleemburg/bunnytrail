@@ -5,9 +5,11 @@
 //     import 'bunnytrail/hooks';
 //     export { init } from 'bunnytrail/hooks';
 //
-// SvelteKit calls `init` before serving the first request, so it is
-// safe to rely on the graph being ready by the time any load function
-// runs.
+// Loading is kicked off eagerly at module import time so it runs in
+// parallel with the rest of server startup. SvelteKit's `init` hook
+// then just awaits the already-in-flight promise — meaning the graph
+// is ready (or nearly so) by the time the first request arrives,
+// rather than making the first request pay the full load cost.
 import { BLOG_DIR, CONTENT_DIR, GUIDES_DIR, KINDS_DIR, SOURCES_DIR } from './server/globals';
 import { graph } from './server/graph';
 import { world } from './server/world';
@@ -17,8 +19,10 @@ console.log(
 	`[bunnytrail] booting with: ${CONTENT_DIR}, ${KINDS_DIR}, ${BLOG_DIR}, ${GUIDES_DIR}, and ${SOURCES_DIR}`
 );
 
+// Kick off loading immediately — don't wait for SvelteKit to call init().
+const bootPromise = graph.load().then(() => world.load());
+
 export const init = async () => {
-	await graph.load();
-	await world.load();
+	await bootPromise;
 	startWatcher();
 };
