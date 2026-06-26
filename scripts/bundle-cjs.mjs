@@ -371,13 +371,6 @@ const LIVE_SWAP_MIDDLEWARE = `
   'use strict';
   var _fs2 = require('fs');
   var _path2 = require('path');
-  var _marked2;
-  function _getMarked() {
-    if (!_marked2) {
-      try { _marked2 = require('marked'); } catch (_) {}
-    }
-    return _marked2;
-  }
 
   var _worldDir = process.env.BUNNYTRAIL_WORLD_DIR || _path2.resolve(__dirname, '..');
   var _prerenderedDir = _path2.join(__dirname, 'prerendered');
@@ -403,19 +396,17 @@ const LIVE_SWAP_MIDDLEWARE = `
   }
 
   function _renderMarkdown(text) {
-    var m = _getMarked();
-    if (!m) return '<p>' + text.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</p>';
-    var parse = m.parse || m.marked || (m.default && (m.default.parse || m.default));
-    if (typeof parse === 'function') return parse(text, { async: false });
-    return '<p>' + text + '</p>';
+    // Use the bundle's own marked function (declared in the same CJS scope).
+    // By the time any request arrives, all __esm blocks have initialized via
+    // Patch 9's get_hooks() call, so marked/markedInstance are ready.
+    try { return marked(text, { async: false }); } catch (_) {}
+    // Fallback: wrap in a paragraph if marked not yet available
+    return '<p>' + text.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</p>';
   }
 
   function _renderInline(text) {
-    var m = _getMarked();
-    if (!m) return text.replace(/&/g,'&amp;').replace(/</g,'&lt;');
-    var parseInline = m.parseInline || (m.default && m.default.parseInline);
-    if (typeof parseInline === 'function') return parseInline(text, { async: false });
-    return text;
+    try { return marked.parseInline(text, { async: false }); } catch (_) {}
+    return text.replace(/&/g,'&amp;').replace(/</g,'&lt;');
   }
 
   function _escapeHtml(s) {
