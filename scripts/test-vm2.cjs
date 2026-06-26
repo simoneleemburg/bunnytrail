@@ -32,9 +32,9 @@ const fs = require('fs');
 const cwd = process.cwd();
 const SERVER_CJS = path.join(cwd, 'ipad-build', 'server.cjs');
 
-// vm2 is a devDep of bunnytrail — resolve it from bunnytrail's own node_modules
-const BUNNYTRAIL_ROOT = path.resolve(__dirname, '..');
-const VM2_SETUP_SANDBOX = path.join(BUNNYTRAIL_ROOT, 'node_modules', 'vm2', 'lib', 'setup-sandbox.js');
+// Locate vm2 via require.resolve so it works whether it's hoisted or nested
+const vm2MainPath = require.resolve('vm2');
+const VM2_SETUP_SANDBOX = path.join(path.dirname(path.dirname(vm2MainPath)), 'lib', 'setup-sandbox.js');
 
 if (!fs.existsSync(SERVER_CJS)) {
   console.error(`[vm2-test] ${SERVER_CJS} not found — run "bunnytrail build-ipad" first`);
@@ -55,10 +55,10 @@ if (!origSandbox.includes(PROXY_STRIPPED)) {
 // Clear vm2 from require cache so the patched version is loaded fresh
 Object.keys(require.cache).forEach((k) => { if (k.includes('vm2')) delete require.cache[k]; });
 
-// Resolve vm2 from bunnytrail's node_modules, not the consumer's
+// Use require.resolve to find vm2 regardless of hoisting
 let vm;
 try {
-  const { NodeVM } = require(path.join(BUNNYTRAIL_ROOT, 'node_modules', 'vm2'));
+  const { NodeVM } = require('vm2');
   vm = new NodeVM({
     console: 'inherit',
     sandbox: {},
