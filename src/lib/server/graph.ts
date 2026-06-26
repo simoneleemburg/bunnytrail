@@ -12,10 +12,25 @@ import type {
 	RelationRegistry,
 	VocabEntry
 } from '$lib/types';
-import { folderLabels } from '$lib/types';
+import { folderLabels, titleCaseSlug } from '$lib/types';
 import { CONTENT_DIR } from './globals';
 import { buildEdges, loadAll, resolveWikilink } from './loader';
 import { loadWorld } from './world';
+
+/**
+ * A single result returned by `graph.searchForUI()`. Both entity and
+ * collection results share this shape; consumers discriminate via `type`.
+ */
+export interface SearchResult {
+	type: 'entity' | 'collection';
+	id: string;
+	name: string;
+	/** Kind id for entities, null for collections. */
+	kind: string | null;
+	summary: string | null;
+	url: string;
+	score: number;
+}
 
 /**
  * Compare two entities: ranked entities sort first (ascending), unranked
@@ -1127,6 +1142,199 @@ export class Graph {
 			(a, b) => b.score - a.score || a.entity.meta.name.localeCompare(b.entity.meta.name)
 		);
 		return scored.map((s) => s.entity);
+	}
+
+	// ── UI search ─────────────────────────────────────────────────────────
+
+	/**
+	 * Smart search for the UI overlay.
+	 *
+	 * Query understanding:
+	 *   • Single token — scored name/alias/tag/summary search over all entities
+	 *     and collections. Returns the 1–3 best results.
+	 *   • Multi-token — checks whether any token matches a known kind (by id,
+	 *     singular, or plural label). If so, that token becomes a kind filter and
+	 *     the remaining tokens form the name query, scoped to entities of that kind.
+	 *     Falls back to plain multi-token AND search (entity must score on every token).
+	 *
+	 * Collection collapse:
+	 *   If all entity results share the same direct-parent collection path AND
+	 *   that collection contains no more members than the result count, the entire
+	 *   result set is replaced with a single collection result.
+	 *
+	 * Score threshold: results with score < 15 are discarded (suppresses body-text
+	 * noise for vague queries).
+	 */
+	searchForUI(rawQuery: string): SearchResult[] {
+		const q = rawQuery.trim();
+		if (!q) return [];
+
+		const tokens = q
+			.toLowerCase()
+			.split(/\s+/)
+			.filter(Boolean);
+
+		// Build kind lookup tables once.
+		const allKinds = [...this.#kindRegistry.values()];
+
+		/** Returns a kind id if the token strongly matches a kind label. */
+		function matchKindToken(token: string): string | null {
+			for (const k of allKinds) {
+				const id = k.id.toLowerCase();
+				const singular = (k.meta.singular ?? '').toLowerCase();
+				const plural = (k.meta.plural ?? (k.meta.singular ? k.meta.singular + 's' : '')).toLowerCase();
+				if (token === id || token === singular || token === plural) return k.id;
+				// Accept trailing 's' added to the id, e.g. "persons" → "person"
+				if (id && token === id + 's') return k.id;
+			}
+			return null;
+		}
+
+		let kindFilter: string | null = null;
+		let nameTokens: string[] = tokens;
+
+		if (tokens.length > 1) {
+			for (const token of tokens) {
+				const kid = matchKindToken(token);
+				if (kid) {
+					kindFilter = kid;
+					nameTokens = tokens.filter((t) => t !== token);
+					break;
+				}
+			}
+		}
+
+		const MIN_SCORE = 15;
+		const MAX_CANDIDATES = 5;
+
+		// ── Score entities ──────────────────────────────────────────────────
+		const scored: { entity: Entity; score: number }[] = [];
+
+		for (const entity of this.all()) {
+			if (kindFilter && entity.meta.kind !== kindFilter) continue;
+
+			const name = entity.meta.name.toLowerCase();
+			const summary = (entity.meta.summary ?? '').toLowerCase();
+			const body = entity.body.toLowerCase();
+			const aliases = (entity.meta.aliases ?? []).map((a) => a.toLowerCase());
+			const tags = (entity.meta.tags ?? []).map((t) => t.toLowerCase());
+
+			// Score each name-token independently; require all to score.
+			let totalScore = 0;
+			for (const token of nameTokens) {
+				let s = 0;
+				if (name === token) s += 100;
+				else if (name.startsWith(token)) s += 50;
+				else if (name.includes(token)) s += 25;
+
+				if (aliases.some((a) => a === token)) s += 40;
+				else if (aliases.some((a) => a.includes(token))) s += 15;
+
+				if (tags.includes(token)) s += 30;
+				if (summary.includes(token)) s += 10;
+				if (body.includes(token)) s += 5;
+
+				if (s === 0) {
+					// This token scored nothing — fail the whole entity for AND semantics.
+					totalScore = 0;
+					break;
+				}
+				totalScore += s;
+			}
+
+			// When a kind filter is active, boost score so kind-scoped results
+			// surface clearly above non-kind alternatives.
+			if (kindFilter && totalScore > 0) totalScore += 20;
+
+			if (totalScore >= MIN_SCORE) scored.push({ entity, score: totalScore });
+		}
+
+		scored.sort(
+			(a, b) => b.score - a.score || a.entity.meta.name.localeCompare(b.entity.meta.name)
+		);
+		const topEntities = scored.slice(0, MAX_CANDIDATES).map((s) => s.entity);
+
+		if (topEntities.length === 0) {
+			// ── No entity hits — try collections ───────────────────────────
+			return this._scoreCollections(nameTokens, MIN_SCORE, 3);
+		}
+
+		// ── Collection collapse ─────────────────────────────────────────────
+		// If all top entity results share the same direct-parent collection,
+		// and that collection's direct membership equals the number of results
+		// (i.e. we matched the whole collection), return the collection instead.
+		if (topEntities.length > 1) {
+			const parentPaths = topEntities.map((e) => {
+				const parts = e.id.split('/');
+				parts.pop();
+				return parts.join('/');
+			});
+			const sharedParent = parentPaths[0];
+			const allSameParent = parentPaths.every((p) => p === sharedParent);
+			if (allSameParent && sharedParent) {
+				const coll = this.#collections.get(sharedParent);
+				if (coll) {
+					const memberCount = this.byFolder(sharedParent).length;
+					if (memberCount <= topEntities.length) {
+						return [
+							{
+								type: 'collection',
+								id: coll.path,
+								name: coll.meta.title ?? titleCaseSlug(coll.path.split('/').at(-1) ?? coll.path),
+								kind: null,
+								summary: coll.meta.description ?? null,
+								url: `/${coll.path}`,
+								score: scored[0].score
+							}
+						];
+					}
+				}
+			}
+		}
+
+		// ── Return entity results (max 3) ───────────────────────────────────
+		return topEntities.slice(0, 3).map((e) => ({
+			type: 'entity' as const,
+			id: e.id,
+			name: e.meta.name,
+			kind: e.meta.kind ?? null,
+			summary: e.meta.summary ?? null,
+			url: `/${e.id}`,
+			score: scored.find((s) => s.entity === e)!.score
+		}));
+	}
+
+	/** Score collections by title/description match. */
+	private _scoreCollections(tokens: string[], minScore: number, max: number): SearchResult[] {
+		const scored: { coll: Collection; score: number }[] = [];
+		for (const coll of this.#collections.values()) {
+			const title = (
+				coll.meta.title ?? titleCaseSlug(coll.path.split('/').at(-1) ?? coll.path)
+			).toLowerCase();
+			const desc = (coll.meta.description ?? '').toLowerCase();
+
+			let totalScore = 0;
+			for (const token of tokens) {
+				let s = 0;
+				if (title === token) s += 100;
+				else if (title.startsWith(token)) s += 50;
+				else if (title.includes(token)) s += 25;
+				if (desc.includes(token)) s += 10;
+				if (s === 0) { totalScore = 0; break; }
+				totalScore += s;
+			}
+			if (totalScore >= minScore) scored.push({ coll, score: totalScore });
+		}
+		scored.sort((a, b) => b.score - a.score || (a.coll.meta.title ?? '').localeCompare(b.coll.meta.title ?? ''));
+		return scored.slice(0, max).map((s) => ({
+			type: 'collection' as const,
+			id: s.coll.path,
+			name: s.coll.meta.title ?? titleCaseSlug(s.coll.path.split('/').at(-1) ?? s.coll.path),
+			kind: null,
+			summary: s.coll.meta.description ?? null,
+			url: `/${s.coll.path}`,
+			score: s.score
+		}));
 	}
 
 	/** All tags used anywhere, sorted by frequency desc. */

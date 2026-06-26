@@ -8,6 +8,7 @@
 	import { injectAnalytics } from '@vercel/analytics/sveltekit';
 	import { paintAllScope, paintMode, readMode, translateUrl, type ScopeContext, type ViewMode } from '$lib/cluster';
 	import SvgLightbox from '$lib/components/SvgLightbox.svelte';
+	import SearchOverlay from '$lib/components/SearchOverlay.svelte';
 	import type { Snippet } from 'svelte';
 	import type { EraDef, EraConfig } from '$lib/types';
 
@@ -100,6 +101,7 @@
 	let drawerOpen = $state(false);
 	let filtersOpen = $state(false);
 	let metaOpen = $state(false);
+	let searchOpen = $state(false);
 
 	// Keep these for backward-compat with switchCluster/switchEra which
 	// reference filtersOpen directly.
@@ -195,6 +197,7 @@
 		drawerOpen = false;
 		filtersOpen = false;
 		metaOpen = false;
+		searchOpen = false;
 
 		if (bypassScopePaint) {
 			bypassScopePaint = false;
@@ -278,8 +281,21 @@
 	// Escape closes whichever menu is open (cluster picker first
 	// since it's the inner-most layer).
 	function onKeydown(e: KeyboardEvent) {
+		// '/' opens search unless the user is typing in an input/textarea.
+		if (
+			e.key === '/' &&
+			!searchOpen &&
+			!(e.target instanceof HTMLInputElement) &&
+			!(e.target instanceof HTMLTextAreaElement) &&
+			!(e.target instanceof HTMLElement && e.target.isContentEditable)
+		) {
+			e.preventDefault();
+			searchOpen = true;
+			return;
+		}
 		if (e.key !== 'Escape') return;
-		if (filtersOpen) filtersOpen = false;
+		if (searchOpen) searchOpen = false;
+		else if (filtersOpen) filtersOpen = false;
 		else if (metaOpen) metaOpen = false;
 		else if (drawerOpen) drawerOpen = false;
 	}
@@ -438,6 +454,18 @@
 			{/if}
 
 			<div class="chrome-end">
+				<button
+					type="button"
+					class="search-trigger"
+					aria-label="Search"
+					onclick={() => (searchOpen = true)}
+				>
+					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+						<circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/>
+						<path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+					</svg>
+				</button>
+
 				<div class="meta-picker" data-meta-picker>
 					<button
 						type="button"
@@ -724,6 +752,7 @@
 	</footer>
 </div>
 
+<SearchOverlay open={searchOpen} onclose={() => (searchOpen = false)} />
 <SvgLightbox />
 
 <style>
@@ -1002,6 +1031,33 @@
 		display: flex;
 		align-items: center;
 		gap: var(--space-4);
+	}
+
+	/* ── Search trigger ──────────────────────────────────────── */
+	.search-trigger {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.25rem;
+		height: 2.25rem;
+		padding: 0.5rem;
+		background: transparent;
+		border: 1px solid transparent;
+		border-radius: var(--radius-md);
+		cursor: pointer;
+		color: var(--ink-soft);
+		transition:
+			background-color 120ms,
+			border-color 120ms,
+			color 120ms;
+	}
+
+	.search-trigger:hover,
+	.search-trigger:focus-visible {
+		background: var(--paper-warm);
+		border-color: var(--rule);
+		color: var(--ink);
+		outline: none;
 	}
 
 	/* ── Filters picker ──────────────────────────────────────────

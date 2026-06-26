@@ -128,6 +128,10 @@ export function planShims(mode: ShimMode): Shim[] {
 			file: 'api/graph-reload/+server.ts',
 			contents: server(mode, 'api/graphReload')
 		},
+		{
+			file: 'api/search/+server.ts',
+			contents: server(mode, 'api/search')
+		},
 
 		// Blog
 		{
