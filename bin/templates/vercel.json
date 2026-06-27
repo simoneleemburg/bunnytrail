@@ -1,4 +1,9 @@
 {
 	"$schema": "https://openapi.vercel.sh/vercel.json",
-	"installCommand": "rm -rf node_modules/bunnytrail && npm ci"
+	"installCommand": "rm -rf node_modules/bunnytrail && npm ci",
+	"functions": {
+		"**": {
+			"includeFiles": "content/**,content_meta/**,assets/**"
+		}
+	}
 }

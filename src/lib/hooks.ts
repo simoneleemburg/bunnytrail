@@ -13,6 +13,10 @@
 import { BLOG_DIR, CONTENT_DIR, GUIDES_DIR, KINDS_DIR, SOURCES_DIR } from './server/globals';
 import { graph } from './server/graph';
 import { world } from './server/world';
+import { blog } from './server/blog';
+import { guides } from './server/guides';
+import { sources } from './server/sources';
+import { influences } from './server/influences';
 import { startWatcher } from './server/watcher';
 import { isGateEnabled, isValidSession, SESSION_COOKIE } from './server/auth';
 import type { Handle } from '@sveltejs/kit';
@@ -23,9 +27,19 @@ console.log(
 );
 
 // Kick off loading immediately — don't wait for SvelteKit to call init().
-const bootPromise = graph.load().then(() => world.load()).then(() => {
-	console.log('[bunnytrail] graph ready');
-});
+// graph must complete before world (world reads eraConfig from the graph),
+// then blog/guides/sources/influences can all boot in parallel.
+const bootPromise = graph.load()
+	.then(() => Promise.all([
+		world.load(),
+		blog.load(),
+		guides.load(),
+		sources.load(),
+		influences.load(),
+	]))
+	.then(() => {
+		console.log('[bunnytrail] graph ready');
+	});
 
 export const init = async () => {
 	await bootPromise;
