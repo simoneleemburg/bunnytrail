@@ -29,6 +29,13 @@
 		}
 	});
 
+	// Focus the first gate box when it mounts (replaces autofocus attribute).
+	$effect(() => {
+		if (!data.authed && boxEls[0]) {
+			boxEls[0].focus();
+		}
+	});
+
 	const secretValue = $derived(chars.join(''));
 
 	function showToast() {
@@ -174,10 +181,19 @@
 {#if !data.authed}
 	<section
 		class="gate"
+		role="group"
+		aria-label="Secret passphrase entry"
 		onclick={() => {
 			const nextEmpty = chars.findIndex((c) => !c);
 			const idx = nextEmpty === -1 ? secretLength - 1 : nextEmpty;
 			boxEls[idx]?.focus();
+		}}
+		onkeydown={(e) => {
+			if (e.key === 'Enter' || e.key === ' ') {
+				const nextEmpty = chars.findIndex((c) => !c);
+				const idx = nextEmpty === -1 ? secretLength - 1 : nextEmpty;
+				boxEls[idx]?.focus();
+			}
 		}}
 	>
 		<div class="gate-form">
@@ -196,9 +212,8 @@
 							value={ch}
 							autocomplete="off"
 							aria-label="Character {i + 1} of {data.secretLength}"
-							bind:this={boxEls[i]}
-							autofocus={i === 0}
-							oninput={(e) => onBoxInput(i, e)}
+						bind:this={boxEls[i]}
+						oninput={(e) => onBoxInput(i, e)}
 							onkeydown={(e) => onBoxKeydown(i, e)}
 							onpaste={onBoxPaste}
 							onfocus={() => (focusedIdx = i)}
@@ -373,13 +388,14 @@
 
 	.hero-title {
 		font-family: var(--font-display);
-		font-size: clamp(2rem, 10vw, var(--text-4xl));
+		font-size: clamp(2rem, 6vw, var(--text-4xl));
 		font-weight: 400;
 		letter-spacing: 0.18em;
 		text-transform: uppercase;
 		text-indent: 0.18em; /* compensate for the trailing tracking */
+		padding-right: 0.18em; /* prevent background-clip from cropping the last glyph */
 		margin: 0;
-		line-height: 1.05;
+		line-height: 1.15;
 		max-width: 100%;
 		background: linear-gradient(
 			180deg,
@@ -974,14 +990,6 @@
 		background-clip: text;
 		color: transparent;
 		text-align: center;
-	}
-
-	.gate-error {
-		font-size: var(--text-sm);
-		color: var(--ink-soft);
-		text-align: center;
-		margin: 0;
-		font-style: italic;
 	}
 
 	.gate-toast {
