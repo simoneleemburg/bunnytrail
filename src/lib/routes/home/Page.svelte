@@ -18,21 +18,15 @@
 	// ── Auth check on mount ───────────────────────────────────
 	// The home page is prerendered with authed=false. On mount we
 	// ask the server whether the current session cookie is valid.
-	// If so, navigate to the first nav item (the world's entry point)
-	// so the user lands on actual content instead of the gate.
+	// If so, reload in place so the authenticated view renders —
+	// the user stays on / rather than being pushed to the first nav item.
 	$effect(() => {
 		if (!browser || data.authed) return;
 		if (!data.secretLength) return; // gate not enabled
 		fetch('/api/auth/check')
 			.then((r) => r.json())
 			.then(({ authed }: { authed: boolean }) => {
-				if (authed) {
-					// Navigate to the first nav item if available,
-					// otherwise stay on home (gate will show but that's ok —
-					// the user can re-enter or the session was just cleared).
-					const firstNav = $page.data.nav?.[0]?.href;
-					if (firstNav) window.location.href = firstNav;
-				}
+				if (authed) window.location.reload();
 			})
 			.catch(() => {}); // silently ignore network errors
 	});
