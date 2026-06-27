@@ -205,7 +205,7 @@
 							onblur={() => (focusedIdx = -1)}
 						/>
 						{#if ch}
-							<span class="gate-glyph" aria-hidden="true">{ornament.glyph ?? '✦'}</span>
+							<span class="gate-glyph" aria-hidden="true">{ornament.glyph ?? '✶'}</span>
 						{/if}
 					</div>
 				{/each}
