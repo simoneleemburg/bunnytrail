@@ -1,15 +1,15 @@
 import { error } from '@sveltejs/kit';
 import { blog, formatPostDate } from '$lib/server/blog';
 import { renderPlainBody } from '$lib/server/markdown';
-import { isGateEnabled } from '$lib/server/auth';
 
 /**
  * Tell the prerender crawler exactly which blog slugs to render.
- * Returns empty when the gate is active so posts are served via SSR
- * and protected by the session cookie check in the handle hook.
+ * The masthead doesn't link to /blog and the home-page Journal
+ * callout is the only inbound — that's enough for the crawler to
+ * find /blog itself, but enumerating slugs here removes the
+ * dependency on the index page successfully linking to every post.
  */
 export async function entries(): Promise<Array<{ slug: string }>> {
-	if (isGateEnabled()) return [];
 	await blog.ready();
 	return blog.all().map((post) => ({ slug: post.slug }));
 }
