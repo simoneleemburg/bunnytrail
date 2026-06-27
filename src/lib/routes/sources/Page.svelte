@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { t } from '$lib/i18n';
 	import type { SourcesData } from './load';
 	import EntityLink from '$lib/components/EntityLink.svelte';
 
 	let { data }: { data: SourcesData } = $props();
+
+	const ui = $derived(t(page.data.world.language));
 </script>
 
 <svelte:head>
@@ -20,16 +23,15 @@
 -->
 <section class="bt-journal">
 	<header class="head">
-		<p class="bt-journal__eyebrow">Workbench</p>
-		<h1 class="bt-journal__title">Source projects</h1>
+		<p class="bt-journal__eyebrow">{ui.sources_eyebrow}</p>
+		<h1 class="bt-journal__title">{ui.sources_title}</h1>
 		<p class="sub">
-			The feeder works being absorbed into {page.data.world.name}. Out-of-world; ordered newest
-			first.
+			{ui.sources_sub(page.data.world.name)}
 		</p>
 	</header>
 
 	{#if data.projects.length === 0}
-		<p class="empty">No source projects yet.</p>
+		<p class="empty">{ui.sources_empty}</p>
 	{:else}
 		<ul class="projects">
 			{#each data.projects as p (p.slug)}
@@ -48,8 +50,8 @@
 						</div>
 						<p class="catchline">{p.catchline}</p>
 						{#if p.entity}
-							<p class="entity-link-row">
-								In {page.data.world.name}: <EntityLink
+					<p class="entity-link-row">
+							{ui.sources_entity_in(page.data.world.name)} <EntityLink
 									id={p.entity.id}
 									name={p.entity.name}
 									summary={p.entity.summary}
@@ -60,11 +62,11 @@
 							</p>
 						{/if}
 					</div>
-					<div
-						class="integration"
-						title={`${p.integration}% integrated into ${page.data.world.name}`}
-						aria-label={`${p.integration}% integrated`}
-					>
+				<div
+					class="integration"
+					title={ui.sources_integration_title(p.integration, page.data.world.name)}
+					aria-label={ui.sources_integration_aria(p.integration)}
+				>
 						<div class="bar" aria-hidden="true">
 							<div class="fill" style:width={`${p.integration}%`}></div>
 						</div>

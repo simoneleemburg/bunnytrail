@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { t } from '$lib/i18n';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 
 	interface SymbolEntry {
@@ -24,16 +25,18 @@
 	);
 
 	const showHeadings = $derived(data.scope === null && data.groups.length > 1);
+
+	const ui = $derived(t(page.data.world.language));
 </script>
 
 <svelte:head>
 	<title>Symbology · {page.data.world.shortName}</title>
 </svelte:head>
 
-<PageHeader title="Symbology" />
+<PageHeader title={ui.symbology_title} />
 
 {#if isEmpty}
-	<p class="empty"><em>No entities with a sigil glyph have been recorded yet.</em></p>
+	<p class="empty"><em>{ui.symbology_empty}</em></p>
 {:else}
 	{#each data.groups as group, i (group.cluster ?? '__ungrouped__')}
 		{#if group.entries.length > 0}

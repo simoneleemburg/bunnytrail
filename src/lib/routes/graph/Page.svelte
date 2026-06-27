@@ -2,6 +2,7 @@
 	import { onMount, untrack } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
+	import { t } from '$lib/i18n';
 	import {
 		forceSimulation,
 		forceManyBody,
@@ -811,6 +812,8 @@
 
 	// ── Click handlers ────────────────────────────────────────────────────────
 
+	const ui = $derived(t(page.data.world.language));
+
 	function handleNodeClick(node: SimNode) {
 		if (focusId) {
 			// Ego mode: center → entity page; neighbour → new ego graph
@@ -835,7 +838,7 @@
 	bind:this={svgEl}
 	class="graph-canvas"
 	role="img"
-	aria-label="Entity relationship graph"
+	aria-label={ui.graph_aria}
 	onmouseleave={() => (hoveredId = null)}
 >
 	<defs>
@@ -979,13 +982,13 @@
 {#if focusId}
 	{@const centerNode = nodeById.get(focusId)}
 	<nav class="graph-overlay">
-		<a class="overlay-btn" href="/graph">← All</a>
+		<a class="overlay-btn" href="/graph">{ui.graph_ego_back}</a>
 		{#if centerNode?.kindLabel}
 			<span class="overlay-sep">·</span>
 			<span class="overlay-name">{centerNode.kindLabel}</span>
 		{/if}
 		<span class="overlay-sep">·</span>
-		<a class="overlay-btn" href={'/' + focusId}>Open →</a>
+		<a class="overlay-btn" href={'/' + focusId}>{ui.graph_ego_open}</a>
 	</nav>
 {/if}
 
@@ -997,7 +1000,7 @@
 	class:filter-toggle--active={selectedKinds.size > 0}
 	onclick={() => (filterOpen = !filterOpen)}
 	aria-expanded={filterOpen}
-	aria-label="Filter by kind"
+	aria-label={ui.graph_filter_aria}
 >
 	<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
 		<path d="M1 3h12M3 7h8M5 11h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
@@ -1012,9 +1015,9 @@
 		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 		<aside class="filter-panel" onmouseenter={() => {}} onmouseleave={() => {}}>
 			<header class="filter-header">
-				<span class="filter-title">Filter by kind</span>
+				<span class="filter-title">{ui.graph_filter_heading}</span>
 				{#if selectedKinds.size > 0}
-					<button class="filter-clear" onclick={clearFilter}>Clear</button>
+					<button class="filter-clear" onclick={clearFilter}>{ui.graph_filter_clear}</button>
 				{/if}
 			</header>
 			<ul class="filter-list">
@@ -1032,7 +1035,7 @@
 									class="filter-collapse"
 									class:filter-collapse--open={expandedKinds.has(row.id)}
 									onclick={() => toggleCollapse(row.id)}
-									aria-label={expandedKinds.has(row.id) ? 'Collapse' : 'Expand'}
+									aria-label={expandedKinds.has(row.id) ? ui.graph_collapse_aria : ui.graph_expand_aria}
 								>▶</button>
 								<label class="filter-row-inner">
 									<input

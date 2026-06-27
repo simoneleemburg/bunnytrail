@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { t } from '$lib/i18n';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import type { PropertyDetailPageData } from './load';
 
@@ -29,6 +30,8 @@
 					s.values!.every((v, i) => v === schemasWithValues[0].values![i])
 			)
 	);
+
+	const ui = $derived(t(page.data.world.language));
 </script>
 
 <svelte:head>
@@ -38,18 +41,18 @@
 <PageHeader
 	title={data.schemas[0].label}
 	eyebrow="Properties"
-	breadcrumbs={[{ href: '/properties', label: 'Properties' }]}
+	breadcrumbs={[{ href: '/properties', label: ui.property_breadcrumb }]}
 />
 
 {#if showSchemaCard}
 	<div class="schema-card">
 		<div class="schema-row">
-			<span class="schema-label">Id</span>
+			<span class="schema-label">{ui.property_schema_id}</span>
 			<code class="kind-mono">{data.kindId}</code>
 		</div>
 		{#if declaringKinds.length > 0}
 			<div class="schema-row">
-				<span class="schema-label">Kind</span>
+				<span class="schema-label">{ui.property_schema_kind}</span>
 				<span class="pill-group">
 					{#each declaringKinds as k (k)}
 						<span class="pill">{k}</span>
@@ -60,7 +63,7 @@
 		{#if schemasWithValues.length > 0}
 			{#if singleValuesRow}
 				<div class="schema-row">
-					<span class="schema-label">Values</span>
+					<span class="schema-label">{ui.property_schema_values}</span>
 					<span class="pill-group">
 						{#each schemasWithValues[0].values! as v (v)}
 							<span class="pill">{v}</span>
@@ -70,7 +73,7 @@
 			{:else}
 				{#each schemasWithValues as s (s.declaringKind ?? s.values![0])}
 					<div class="schema-row">
-						<span class="schema-label">{s.declaringKind ?? 'Values'}</span>
+						<span class="schema-label">{s.declaringKind ?? ui.property_schema_values}</span>
 						<span class="pill-group">
 							{#each s.values! as v (v)}
 								<span class="pill">{v}</span>
@@ -84,11 +87,11 @@
 {/if}
 
 {#if !hasEntries}
-	<p class="empty"><em>No entities carry this property.</em></p>
+	<p class="empty"><em>{ui.property_empty}</em></p>
 {:else}
 	<section class="entries-section">
 		<h2 class="section-heading">
-			Entities
+			{ui.property_entities_heading}
 			<span class="section-count">{data.entries.length}</span>
 		</h2>
 		<ul class="entry-list" role="list">

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { t } from '$lib/i18n';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import type { RelationsIndexPageData } from './load';
 
@@ -7,22 +8,24 @@
 
 	const hasEntries = $derived(data.entries.length > 0);
 	const hasPropertyEntries = $derived(data.propertyEntries.length > 0);
+
+	const ui = $derived(t(page.data.world.language));
 </script>
 
 <svelte:head>
 	<title>Relations · {page.data.world.shortName}</title>
 </svelte:head>
 
-<PageHeader title="Relations" />
+<PageHeader title={ui.relations_title} />
 
 <p class="lede">
-	Relation types defined in the world schema. Click a kind to see all its edges.
+	{ui.relations_lede}
 </p>
 
 {#if !data.hasSchema}
-	<p class="notice"><em>No relations schema defined in world.md.</em></p>
+	<p class="notice"><em>{ui.relations_no_schema}</em></p>
 {:else if !hasEntries}
-	<p class="empty"><em>No relation kinds defined yet.</em></p>
+	<p class="empty"><em>{ui.relations_empty}</em></p>
 {:else}
 	{#snippet kindChips(kinds: string[], prefix: string)}
 		{#if kinds.length > 0}
@@ -48,7 +51,7 @@
 					{@render kindChips(entry.domain, 'from:')}
 					{@render kindChips(entry.codomain, 'to:')}
 				</span>
-				<span class="count" aria-label="{entry.count} edges">{entry.count}</span>
+				<span class="count" aria-label={ui.relations_edges(entry.count)}>{entry.count}</span>
 			</li>
 		{/each}
 	</ul>
@@ -56,8 +59,8 @@
 
 {#if data.undefinedKinds.length > 0}
 	<section class="undefined-section">
-		<h2 class="section-heading">Undefined kinds</h2>
-		<p class="section-blurb">Used in content but not in world schema.</p>
+		<h2 class="section-heading">{ui.relations_undefined_heading}</h2>
+		<p class="section-blurb">{ui.relations_undefined_blurb}</p>
 		<ul class="undefined-list" role="list">
 			{#each data.undefinedKinds as item (item.kind)}
 				<li class="undefined-row">
@@ -71,17 +74,17 @@
 
 {#if data.hasPropertySchema}
 	<section class="properties-section">
-		<h2 class="section-heading">Properties</h2>
-		<p class="section-blurb">Property types defined in the world schema.</p>
+		<h2 class="section-heading">{ui.relations_properties_heading}</h2>
+		<p class="section-blurb">{ui.relations_properties_blurb}</p>
 		{#if !hasPropertyEntries}
-			<p class="empty"><em>No property kinds defined yet.</em></p>
+			<p class="empty"><em>{ui.relations_no_properties}</em></p>
 		{:else}
 			<ul class="property-list" role="list">
 				{#each data.propertyEntries as entry (entry.id)}
 					<li class="property-row">
 						<a class="kind-id" href={entry.href}>{entry.id}</a>
 						<span class="label">{entry.label}</span>
-						<span class="count" aria-label="{entry.count} entities">{entry.count}</span>
+						<span class="count" aria-label={ui.relations_entities(entry.count)}>{entry.count}</span>
 					</li>
 				{/each}
 			</ul>

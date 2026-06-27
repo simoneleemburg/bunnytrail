@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { t } from '$lib/i18n';
 	import type { CraftPageData } from './craftPage.load';
 
 	let { data }: { data: CraftPageData } = $props();
+
+	const ui = $derived(t(page.data.world.language));
 </script>
 
 <svelte:head>
@@ -17,14 +20,14 @@
 	prose, without needing it spelled out.
 -->
 <article class="bt-journal">
-	<nav class="bt-journal__frame" aria-label="Subject navigation">
+	<nav class="bt-journal__frame" aria-label={ui.craft_nav_aria}>
 		<a class="back" href={data.entity.href}>↩&#xFE0E; {data.entity.name}</a>
 	</nav>
 
 	<header class="head">
-		<h1 class="bt-journal__title">Craft sheet</h1>
+		<h1 class="bt-journal__title">{ui.craft_title}</h1>
 		<p class="subject">
-			Companion notes for <a href={data.entity.href}>{data.entity.name}</a>.
+			{ui.craft_companion} <a href={data.entity.href}>{data.entity.name}</a>.
 		</p>
 	</header>
 

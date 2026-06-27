@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { t } from '$lib/i18n';
 	import type { ChapterPageData } from './chapterPage.load';
 
 	let { data }: { data: ChapterPageData } = $props();
 
-	const unitSingular = $derived(data.book?.unitSingular ?? 'Chapter');
+	const ui = $derived(t(page.data.world.language));
+	const unitSingular = $derived(data.book?.unitSingular ?? ui.chapter_unit_default);
 	const format = $derived(data.book?.format ?? 'book');
 
 	function romanise(n: number): string {
@@ -41,13 +43,13 @@
 </svelte:head>
 
 <article class="book" data-book-format={format}>
-	<nav class="frame frame-top" aria-label="{unitSingular} navigation">
+	<nav class="frame frame-top" aria-label={ui.chapter_nav_aria(unitSingular)}>
 		<a class="back" href={data.work.href}>↩&#xFE0E; {data.work.name}</a>
 		<span class="folio">{romanise(data.chapter.order)}</span>
 	</nav>
 
 	<header class="chapter-head">
-		<p class="eyebrow">{unitSingular} {romanise(data.chapter.order)}</p>
+		<p class="eyebrow">{ui.chapter_eyebrow(unitSingular, romanise(data.chapter.order))}</p>
 		<h1 class="title">{data.chapter.title}</h1>
 	</header>
 
@@ -55,22 +57,22 @@
 		{@html data.html}
 	</div>
 
-	<nav class="frame frame-bottom" aria-label="{unitSingular} navigation">
+	<nav class="frame frame-bottom" aria-label={ui.chapter_nav_aria(unitSingular)}>
 		<span class="prev">
 			{#if data.prev}
 				<a href={data.prev.href}>
-					<span class="frame-label">Previous</span>
+					<span class="frame-label">{ui.chapter_prev}</span>
 					<span class="frame-title">
 						← {romanise(data.prev.order)} · {data.prev.title}
 					</span>
 				</a>
 			{/if}
 		</span>
-		<a class="cover" href={data.work.href}>Contents</a>
+		<a class="cover" href={data.work.href}>{ui.chapter_contents}</a>
 		<span class="next">
 			{#if data.next}
 				<a href={data.next.href}>
-					<span class="frame-label">Next</span>
+					<span class="frame-label">{ui.chapter_next}</span>
 					<span class="frame-title">
 						{romanise(data.next.order)} · {data.next.title} →
 					</span>

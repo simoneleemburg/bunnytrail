@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { page } from '$app/stores';
+	import { t } from '$lib/i18n';
 	import EntityCard from '$lib/components/EntityCard.svelte';
 	import EntityLink from '$lib/components/EntityLink.svelte';
 	import type { KindCard, KindRefSection, KindSliceNode } from './load';
@@ -39,6 +41,8 @@
 		if (activeTab === 'instances' && !hasInstances && hasAbout) return 'about';
 		return activeTab;
 	});
+
+	const ui = $derived(t($page.data.world.language));
 </script>
 
 {#snippet branch(node: KindSliceNode)}
@@ -73,8 +77,8 @@
 {/snippet}
 
 <header class="kind-header">
-	<a class="up-link" href={upHref} aria-label="Up to Kinds">
-		<span class="up-arrow" aria-hidden="true">↑</span>Kinds
+	<a class="up-link" href={upHref} aria-label={ui.kind_up_aria}>
+		<span class="up-arrow" aria-hidden="true">↑</span>{ui.kind_up_label}
 	</a>
 	{#if data.slice && (data.slice.children.length > 0 || !data.slice.isCurrent)}
 		<ul class="tree">
@@ -89,7 +93,7 @@
 		<div class="about-main">
 			{#if data.classKind}
 				<div class="class-constraint">
-					<span class="class-constraint-label">Class</span>
+					<span class="class-constraint-label">{ui.kind_class_label}</span>
 					<a class="class-constraint-link" href={data.classKind.href}>{data.classKind.label}</a>
 				</div>
 			{/if}
@@ -115,8 +119,8 @@
 				{/each}
 
 				{#if data.backlinks.length > 0}
-					<section class="ref-block">
-						<h2 class="ref-heading">Mentioned in</h2>
+				<section class="ref-block">
+					<h2 class="ref-heading">{ui.kind_mentioned_in}</h2>
 						<ul class="ref-list">
 							{#each data.backlinks as card (card.id)}
 								<li>
@@ -155,7 +159,7 @@
 {/snippet}
 
 {#if tabCount > 1}
-	<div class="tabs" role="tablist" aria-label="Kind sections">
+	<div class="tabs" role="tablist" aria-label={ui.kind_sections_aria}>
 		<button
 			type="button"
 			role="tab"
@@ -164,7 +168,7 @@
 			class:active={currentTab === 'about'}
 			onclick={() => (activeTab = 'about')}
 		>
-			About
+			{ui.kind_tab_about}
 		</button>
 		<button
 			type="button"
@@ -174,7 +178,7 @@
 			class:active={currentTab === 'instances'}
 			onclick={() => (activeTab = 'instances')}
 		>
-			Instances
+			{ui.kind_tab_instances}
 		</button>
 	</div>
 

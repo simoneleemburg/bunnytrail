@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { page } from '$app/stores';
+	import { t } from '$lib/i18n';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import type { KindNode, OntologySection } from './load';
 
@@ -11,9 +13,11 @@
 	const isGrouped = $derived(
 		data.sections.length > 1 || (data.sections.length === 1 && data.sections[0].ontologyId !== null)
 	);
+
+	const ui = $derived(t($page.data.world.language));
 </script>
 
-<PageHeader title="Kinds" />
+<PageHeader title={ui.kinds_title} />
 
 {#snippet branch(node: KindNode)}
 	<li class="kind" class:linked={node.href !== null}>
@@ -39,7 +43,7 @@
 {/snippet}
 
 {#if data.sections.every((s) => s.roots.length === 0)}
-	<p class="empty"><em>No kinds have been registered yet.</em></p>
+	<p class="empty"><em>{ui.kinds_empty}</em></p>
 {:else if isGrouped}
 	{#each data.sections as section (section.ontologyId ?? '__ungrouped__')}
 		<section class="kind-group">
@@ -65,7 +69,7 @@
 
 {#if data.unregistered.length > 0}
 	<section class="unregistered">
-		<h2 class="section-heading">Unregistered</h2>
+		<h2 class="section-heading">{ui.kinds_unregistered}</h2>
 		<ul class="unregistered-list">
 			{#each data.unregistered as item (item.kind)}
 				<li>

@@ -1,32 +1,35 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { t } from '$lib/i18n';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import type { PropertiesIndexPageData } from './load';
 
 	let { data }: { data: PropertiesIndexPageData } = $props();
 
 	const hasEntries = $derived(data.entries.length > 0);
+
+	const ui = $derived(t(page.data.world.language));
 </script>
 
 <svelte:head>
 	<title>Properties · {page.data.world.shortName}</title>
 </svelte:head>
 
-<PageHeader title="Properties" />
+<PageHeader title={ui.properties_title} />
 
-<p class="lede">Property types defined in the world schema.</p>
+<p class="lede">{ui.properties_lede}</p>
 
 {#if !data.hasSchema}
-	<p class="notice"><em>No properties schema defined in world.md.</em></p>
+	<p class="notice"><em>{ui.properties_no_schema}</em></p>
 {:else if !hasEntries}
-	<p class="empty"><em>No property kinds defined yet.</em></p>
+	<p class="empty"><em>{ui.properties_empty}</em></p>
 {:else}
 	<ul class="property-list" role="list">
 		{#each data.entries as entry (entry.id)}
 			<li class="property-row">
 				<a class="kind-id" href={entry.href}>{entry.id}</a>
 				<span class="label">{entry.label}</span>
-				<span class="count" aria-label="{entry.count} entities">{entry.count}</span>
+				<span class="count" aria-label={ui.properties_entities(entry.count)}>{entry.count}</span>
 			</li>
 		{/each}
 	</ul>

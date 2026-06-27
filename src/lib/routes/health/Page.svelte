@@ -1,24 +1,26 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { t } from '$lib/i18n';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import type { HealthData } from './load';
 
 	let { data }: { data: HealthData } = $props();
+
+	const ui = $derived(t(page.data.world.language));
 </script>
 
 <svelte:head>
 	<title>Health · {page.data.world.shortName}</title>
 </svelte:head>
 
-<PageHeader title="Health" />
+<PageHeader title={ui.health_title} />
 
 <p class="lede">
-	Everything the loader flagged on its last pass. Each group below is one category of issue;
-	entities are linked to their page when one exists. <em>Empty is good.</em>
+	{ui.health_lede} <em>{ui.health_lede_good}</em>
 </p>
 
 {#if data.total === 0}
-	<p class="empty"><em>No issues. The compendium is in good order.</em></p>
+	<p class="empty"><em>{ui.health_empty}</em></p>
 {:else}
 	{#each data.groups as group (group.kind)}
 		<section class="group">

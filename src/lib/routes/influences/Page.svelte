@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { t } from '$lib/i18n';
 	import type { InfluencesData } from './load';
 
 	let { data }: { data: InfluencesData } = $props();
@@ -9,6 +10,8 @@
 	const visibleItems = $derived(
 		activeKind === null ? data.items : data.items.filter((item) => item.kind === activeKind)
 	);
+
+	const ui = $derived(t(page.data.world.language));
 </script>
 
 <svelte:head>
@@ -22,12 +25,12 @@
 -->
 <div class="influences-page">
 	<div class="influences-header">
-		<nav class="bt-journal__frame" aria-label="Influences navigation">
+		<nav class="bt-journal__frame" aria-label={ui.influences_nav_aria}>
 			<a href="/">↑ {page.data.world.shortName}</a>
 		</nav>
 		<header class="head">
-			<h1 class="bt-journal__title">Influences</h1>
-			<p class="sub">Works, ideas, and creators that shaped this world.</p>
+			<h1 class="bt-journal__title">{ui.influences_title}</h1>
+			<p class="sub">{ui.influences_sub}</p>
 		</header>
 		<div class="bt-fleuron" aria-hidden="true">
 			<span class="bt-fleuron__rule"></span>
@@ -36,14 +39,14 @@
 		</div>
 
 		{#if data.kinds.length > 1}
-			<div class="filter-group" role="group" aria-label="Filter by kind">
+			<div class="filter-group" role="group" aria-label={ui.influences_filter_aria}>
 				<button
 					type="button"
 					class="filter"
 					class:active={activeKind === null}
 					onclick={() => (activeKind = null)}
 				>
-					All
+					{ui.influences_filter_all}
 				</button>
 				{#each data.kinds as kind (kind)}
 					<button
@@ -60,9 +63,9 @@
 	</div>
 
 	{#if data.items.length === 0}
-		<p class="empty"><em>No influences recorded yet.</em></p>
+		<p class="empty"><em>{ui.influences_empty}</em></p>
 	{:else if visibleItems.length === 0}
-		<p class="empty"><em>No influences in this category.</em></p>
+		<p class="empty"><em>{ui.influences_empty_filtered}</em></p>
 	{:else}
 		<div class="gallery">
 			{#each visibleItems as item (item.slug)}

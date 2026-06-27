@@ -1,6 +1,7 @@
 <script lang="ts">
 	import './CollectionPage.css';
 	import { page } from '$app/state';
+	import { t } from '$lib/i18n';
 	import type { CollectionPageData, ContainerNode, OrbitNode } from './collectionPage.load';
 	import CollectionCard from '$lib/components/CollectionCard.svelte';
 	import EntityCard from '$lib/components/EntityCard.svelte';
@@ -10,6 +11,7 @@
 
 	let { data }: { data: CollectionPageData } = $props();
 
+	const ui = $derived(t(page.data.world.language));
 	const ornamentSvg = $derived(page.data.ornament?.svg ?? null);
 	const collectionNav = $derived(data.collectionNav);
 
@@ -499,15 +501,15 @@
 		<span class="bt-fleuron__rule"></span>
 	</div>
 	{#if collectionNav.prev || collectionNav.next}
-		<nav class="rank-nav" aria-label="Collection navigation">
+		<nav class="rank-nav" aria-label={ui.collection_nav_aria}>
 			{#if collectionNav.prev}
 				<a
 					class="rank-nav__item rank-nav__item--prev"
-					href="/{collectionNav.prev.path}"
-					aria-label="Previous: {collectionNav.prev.title}"
-				>
-					<span class="rank-nav__arrow" aria-hidden="true">←</span>
-					<span>back</span>
+				href="/{collectionNav.prev.path}"
+				aria-label={ui.collection_nav_prev_aria(collectionNav.prev.title)}
+			>
+				<span class="rank-nav__arrow" aria-hidden="true">←</span>
+				<span>{ui.collection_nav_prev_label}</span>
 				</a>
 			{:else}
 				<span class="rank-nav__item rank-nav__item--prev rank-nav__item--empty"></span>
@@ -515,11 +517,11 @@
 			{#if collectionNav.next}
 				<a
 					class="rank-nav__item rank-nav__item--next"
-					href="/{collectionNav.next.path}"
-					aria-label="Next: {collectionNav.next.title}"
-				>
-					<span>next</span>
-					<span class="rank-nav__arrow" aria-hidden="true">→</span>
+				href="/{collectionNav.next.path}"
+				aria-label={ui.collection_nav_next_aria(collectionNav.next.title)}
+			>
+				<span>{ui.collection_nav_next_label}</span>
+				<span class="rank-nav__arrow" aria-hidden="true">→</span>
 				</a>
 			{:else}
 				<span class="rank-nav__item rank-nav__item--next rank-nav__item--empty"></span>
@@ -545,7 +547,7 @@
 
 {#if data.flat.length === 0}
 	<p class="empty">
-		<em>No {data.label.plural.toLowerCase()} have been recorded yet.</em>
+		<em>{ui.collection_empty(data.label.plural)}</em>
 	</p>
 {:else}
 	{#if hasViewToggle}
@@ -558,45 +560,44 @@
 		     folder / tag filters. -->
 		<div class="toolbar">
 			<span class="toolbar-count">
-				{filterEntitySet.length}
-				{filterEntitySet.length === 1 ? 'entry' : 'entries'}
+				{ui.collection_entries(filterEntitySet.length)}
 			</span>
-			<div class="filter-group view-toggle" role="group" aria-label="View mode">
+			<div class="filter-group view-toggle" role="group" aria-label={ui.collection_viewmode_aria}>
 				<button
 					type="button"
 					class="filter"
-					class:active={viewMode === 'index'}
-					onclick={() => (viewMode = 'index')}
-				>
-					Index
-				</button>
+				class:active={viewMode === 'index'}
+				onclick={() => (viewMode = 'index')}
+			>
+				{ui.collection_view_index}
+			</button>
 				{#if hasSubcollections}
 					<button
 						type="button"
 						class="filter"
-						class:active={viewMode === 'tree'}
-						onclick={() => (viewMode = 'tree')}
-					>
-						Tree
-					</button>
+					class:active={viewMode === 'tree'}
+					onclick={() => (viewMode = 'tree')}
+				>
+					{ui.collection_view_tree}
+				</button>
 				{/if}
 				<button
 					type="button"
 					class="filter"
-					class:active={viewMode === 'flat'}
-					onclick={() => (viewMode = 'flat')}
-				>
-					Flat
-				</button>
+				class:active={viewMode === 'flat'}
+				onclick={() => (viewMode = 'flat')}
+			>
+				{ui.collection_view_flat}
+			</button>
 				{#if hasOrbits}
 					<button
 						type="button"
 						class="filter"
-						class:active={viewMode === 'orbits'}
-						onclick={() => (viewMode = 'orbits')}
-					>
-						Orbits
-					</button>
+					class:active={viewMode === 'orbits'}
+					onclick={() => (viewMode = 'orbits')}
+				>
+					{ui.collection_view_orbits}
+				</button>
 				{/if}
 			</div>
 		</div>
@@ -605,13 +606,13 @@
 	<div class="layout">
 		<div class="content">
 		{#if visibleSubcollections.length > 0}
-			<section class="subcollections" aria-label="Subcollections">
+			<section class="subcollections" aria-label={ui.collection_subcollections_aria}>
 				<ul class="subcollection-list">
 					{#each visibleSubcollections as sub (sub.type)}
 						<CollectionCard
 							href={`/${sub.type}`}
 							label={sub.plural}
-							eyebrow={sub.isCluster ? 'Cluster' : 'Collection'}
+							eyebrow={sub.isCluster ? ui.collection_eyebrow_cluster : ui.collection_eyebrow_collection}
 							description={sub.description}
 							rank={sub.rank}
 							rankDisplay={data.subcollectionRankDisplay}
@@ -624,7 +625,7 @@
 		{/if}
 
 		{#if viewMode === 'index' && data.subShelves.length > 0}
-			<section class="subcollections sub-shelves" aria-label="Sub-shelves">
+			<section class="subcollections sub-shelves" aria-label={ui.collection_subshelves_aria}>
 				<ul class="subcollection-list">
 					{#each data.subShelves as sub (sub.type)}
 						<CollectionCard
@@ -645,7 +646,7 @@
 								<a href={`/${node.container.id}`}>{node.container.name}</a>
 							</h2>
 							{#if node.container.crossLinkId}
-								<a class="cross-link" href={`/${node.container.crossLinkId}`}> see entity → </a>
+								<a class="cross-link" href={`/${node.container.crossLinkId}`}>{ui.collection_see_entity}</a>
 							{/if}
 						</div>
 					{:else if node.containerMatches}
@@ -677,7 +678,7 @@
 			{/snippet}
 
 			{#if visibleContainers.length > 0}
-				<section class="containers" aria-label="Container entities">
+				<section class="containers" aria-label={ui.collection_containers_aria}>
 					{#each visibleContainers as group (group.container.id)}
 						{@render containerTree(group)}
 					{/each}
@@ -685,7 +686,7 @@
 			{/if}
 
 			{#if visibleSubcollectionTrees.length > 0}
-				<section class="subcollection-trees" aria-label="Subcollection trees">
+				<section class="subcollection-trees" aria-label={ui.collection_subtrees_aria}>
 					{#each visibleSubcollectionTrees as sub (sub.path)}
 						<section class="subcollection-tree" aria-label={sub.headlineEntity?.name ?? sub.plural}>
 							{#if sub.headlineEntity}
@@ -750,7 +751,7 @@
 			{/snippet}
 
 			{#if visibleOrbits.length > 0}
-				<section class="orbits" aria-label="Orbital hierarchy">
+				<section class="orbits" aria-label={ui.collection_orbits_aria}>
 					{#each visibleOrbits as root (root.entity.id)}
 						{@render orbitTree(root)}
 					{/each}
@@ -787,18 +788,18 @@
 		     same family. Sticks below the masthead while scrolling
 		     a long index. -->
 		{#if kindCounts.length > 1 || visibleFolders.length > 0 || availableTags.length > 0}
-			<aside class="sidebar" aria-label="Filters">
+			<aside class="sidebar" aria-label={ui.collection_filters_aria}>
 				{#if kindCounts.length > 1}
-					<section class="filter-section" aria-label="Filter by kind">
-						<h3 class="filter-eyebrow">Kind</h3>
+				<section class="filter-section" aria-label={ui.collection_filter_kind_aria}>
+					<h3 class="filter-eyebrow">{ui.collection_filter_kind_label}</h3>
 						<div class="filter-stack" role="group">
 							<button
 								type="button"
 								class="filter"
-								class:active={activeKind === null}
-								onclick={() => (activeKind = null)}
-							>
-								All <span class="count">{filterEntitySet.length}</span>
+						class:active={activeKind === null}
+							onclick={() => (activeKind = null)}
+						>
+							{ui.collection_filter_all} <span class="count">{filterEntitySet.length}</span>
 							</button>
 							{#each kindCounts as [kind, info] (kind)}
 								<button
@@ -817,17 +818,17 @@
 				{/if}
 
 				{#if visibleFolders.length > 0}
-					<section class="filter-section" aria-label="Filter by folder">
-						<h3 class="filter-eyebrow">Folder</h3>
+				<section class="filter-section" aria-label={ui.collection_filter_folder_aria}>
+					<h3 class="filter-eyebrow">{ui.collection_filter_folder_label}</h3>
 						<div class="filter-stack" role="group">
 							<button
 								type="button"
 								class="filter"
-								class:active={activeFolder === null}
-								onclick={() => (activeFolder = null)}
-							>
-								All
-							</button>
+						class:active={activeFolder === null}
+							onclick={() => (activeFolder = null)}
+						>
+							{ui.collection_filter_all}
+						</button>
 							{#each visibleFolders as folder (folder.path)}
 								<button
 									type="button"
@@ -844,8 +845,8 @@
 				{/if}
 
 				{#if availableTags.length > 0}
-					<section class="filter-section" aria-label="Filter by tag">
-						<h3 class="filter-eyebrow">Tags</h3>
+				<section class="filter-section" aria-label={ui.collection_filter_tag_aria}>
+					<h3 class="filter-eyebrow">{ui.collection_filter_tag_label}</h3>
 						<ul class="tag-filter-list">
 							{#each visibleFilterTags as tag (tag.label)}
 								<li>
@@ -862,21 +863,21 @@
 							{/each}
 							{#if hiddenTagCount > 0 && !showAllTags}
 								<li>
-									<button type="button" class="tag-more" onclick={() => (showAllTags = true)}>
-										+{hiddenTagCount} more
-									</button>
+							<button type="button" class="tag-more" onclick={() => (showAllTags = true)}>
+									{ui.collection_filter_more(hiddenTagCount)}
+								</button>
 								</li>
 							{/if}
 							{#if showAllTags && availableTags.length > FILTER_TOP_N}
 								<li>
-									<button type="button" class="tag-more" onclick={() => (showAllTags = false)}>
-										show fewer
-									</button>
+							<button type="button" class="tag-more" onclick={() => (showAllTags = false)}>
+									{ui.collection_filter_fewer}
+								</button>
 								</li>
 							{/if}
 							{#if activeTags.size > 0}
 								<li>
-									<button type="button" class="tag-clear" onclick={clearTags}> clear </button>
+									<button type="button" class="tag-clear" onclick={clearTags}>{ui.collection_filter_clear}</button>
 								</li>
 							{/if}
 						</ul>

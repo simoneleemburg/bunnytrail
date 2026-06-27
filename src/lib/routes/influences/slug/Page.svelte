@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { t } from '$lib/i18n';
 	import type { InfluenceDetailData } from './load';
 
 	let { data }: { data: InfluenceDetailData } = $props();
@@ -7,6 +8,8 @@
 	const hasContent = $derived(
 		data.illustrations.length > 0 || data.epigraph !== null || data.bodyHtml !== null
 	);
+
+	const ui = $derived(t(page.data.world.language));
 </script>
 
 <svelte:head>
@@ -14,8 +17,8 @@
 </svelte:head>
 
 <article class="influence-detail">
-	<div class="influence-nav" role="navigation" aria-label="Influences navigation">
-		<a class="influence-nav__back" href="/influences">← Influences</a>
+	<div class="influence-nav" role="navigation" aria-label={ui.influence_nav_aria}>
+		<a class="influence-nav__back" href="/influences">{ui.influence_back}</a>
 		<a class="influence-nav__home" href="/">
 			<span class="influence-nav__arrow" aria-hidden="true">↑</span>{page.data.world.shortName}
 		</a>
@@ -69,7 +72,7 @@
 			</div>
 		{/if}
 	{:else}
-		<p class="no-details"><em>No further details recorded.</em></p>
+		<p class="no-details"><em>{ui.influence_empty}</em></p>
 	{/if}
 </article>
 

@@ -6,6 +6,7 @@
 	import { browser, dev } from '$app/environment';
 	import { onMount, setContext } from 'svelte';
 	import { injectAnalytics } from '@vercel/analytics/sveltekit';
+	import { t } from '$lib/i18n';
 	import { paintAllScope, paintMode, readMode, translateUrl, type ScopeContext, type ViewMode } from '$lib/cluster';
 	import SvgLightbox from '$lib/components/SvgLightbox.svelte';
 	import SearchOverlay from '$lib/components/SearchOverlay.svelte';
@@ -37,6 +38,8 @@
 	}
 
 	let { data, children }: Props = $props();
+
+	const ui = $derived(t($page.data.world?.language));
 
 	// Vercel Web Analytics. Safe to call unconditionally — on
 	// non-Vercel deployments the beacon endpoint is absent, so the
@@ -463,7 +466,7 @@
 			</nav>
 
 			{#if activeMode === 'dev' && data.issueCount > 0}
-				<a class="health-badge" href="/health" title="{data.issueCount} health issue{data.issueCount === 1 ? '' : 's'}">
+				<a class="health-badge" href="/health" title={ui.nav_health_issues(data.issueCount)}>
 					{data.issueCount}
 				</a>
 			{/if}
@@ -472,7 +475,7 @@
 				<button
 					type="button"
 					class="search-trigger"
-					aria-label="Search"
+					aria-label={ui.nav_search_aria}
 					onclick={() => (searchOpen = true)}
 				>
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -490,7 +493,7 @@
 						aria-current={metaActive ? true : undefined}
 						onclick={() => (metaOpen = !metaOpen)}
 					>
-						<span class="meta-eyebrow">Meta</span>
+						<span class="meta-eyebrow">{ui.nav_meta_eyebrow}</span>
 						<span class="meta-caret" aria-hidden="true">▾</span>
 					</button>
 					{#if metaOpen}
@@ -501,53 +504,53 @@
 									role="option"
 									aria-selected={!!navAriaCurrent(data.kindsHref)}
 									class:selected={!!navAriaCurrent(data.kindsHref)}
-									onclick={() => (metaOpen = false)}
-								>Kinds</a>
-							</li>
-							<li>
-								<a
-									href="/guides"
-									role="option"
-									aria-selected={!!navAriaCurrent('/guides')}
-									class:selected={!!navAriaCurrent('/guides')}
-									onclick={() => (metaOpen = false)}
-								>Guides</a>
-							</li>
-							<li>
-								<a
-									href="/blog"
-									role="option"
-									aria-selected={!!navAriaCurrent('/blog')}
-									class:selected={!!navAriaCurrent('/blog')}
-									onclick={() => (metaOpen = false)}
-								>Journal</a>
-							</li>
-							<li>
-								<a
-									href="/symbology"
-									role="option"
-									aria-selected={!!navAriaCurrent('/symbology')}
-									class:selected={!!navAriaCurrent('/symbology')}
-									onclick={() => (metaOpen = false)}
-								>Symbology</a>
-							</li>
-							<li>
-								<a
-									href="/graph"
-									role="option"
-									aria-selected={!!navAriaCurrent('/graph')}
-									class:selected={!!navAriaCurrent('/graph')}
-									onclick={() => (metaOpen = false)}
-								>Graph</a>
-							</li>
-							<li>
-								<a
-									href="/relations"
-									role="option"
-									aria-selected={!!navAriaCurrent('/relations')}
-									class:selected={!!navAriaCurrent('/relations')}
-									onclick={() => (metaOpen = false)}
-								>Relations</a>
+								onclick={() => (metaOpen = false)}
+							>{ui.nav_kinds}</a>
+						</li>
+						<li>
+							<a
+								href="/guides"
+								role="option"
+								aria-selected={!!navAriaCurrent('/guides')}
+								class:selected={!!navAriaCurrent('/guides')}
+								onclick={() => (metaOpen = false)}
+							>{ui.nav_guides}</a>
+						</li>
+						<li>
+							<a
+								href="/blog"
+								role="option"
+								aria-selected={!!navAriaCurrent('/blog')}
+								class:selected={!!navAriaCurrent('/blog')}
+								onclick={() => (metaOpen = false)}
+							>{ui.nav_journal}</a>
+						</li>
+						<li>
+							<a
+								href="/symbology"
+								role="option"
+								aria-selected={!!navAriaCurrent('/symbology')}
+								class:selected={!!navAriaCurrent('/symbology')}
+								onclick={() => (metaOpen = false)}
+							>{ui.nav_symbology}</a>
+						</li>
+						<li>
+							<a
+								href="/graph"
+								role="option"
+								aria-selected={!!navAriaCurrent('/graph')}
+								class:selected={!!navAriaCurrent('/graph')}
+								onclick={() => (metaOpen = false)}
+							>{ui.nav_graph}</a>
+						</li>
+						<li>
+							<a
+								href="/relations"
+								role="option"
+								aria-selected={!!navAriaCurrent('/relations')}
+								class:selected={!!navAriaCurrent('/relations')}
+								onclick={() => (metaOpen = false)}
+							>{ui.nav_relations}</a>
 							</li>
 						</ul>
 					{/if}
@@ -562,14 +565,14 @@
 						class:active={filtersActive}
 						onclick={() => (filtersOpen = !filtersOpen)}
 					>
-						<span class="filters-label">Filters</span>
+						<span class="filters-label">{ui.nav_filters_label}</span>
 						<span class="filters-caret" aria-hidden="true">▾</span>
 					</button>
 					{#if filtersOpen}
 					<div class="filters-panel">
 						{#if eraOptions.length > 0}
 								<section class="filters-section">
-									<p class="filters-eyebrow">Era</p>
+									<p class="filters-eyebrow">{ui.nav_era_eyebrow}</p>
 									<ul class="filters-list" role="listbox">
 										<li>
 											<button
@@ -577,18 +580,18 @@
 												role="option"
 												aria-selected={activeEra === null}
 												class:selected={activeEra === null}
-												onclick={() => switchEra(null)}
-											>All eras</button>
-										</li>
-										{#each eraOptions as opt (opt.ref)}
-											<li>
-												<button
-													type="button"
-													role="option"
-													aria-selected={activeEra === opt.ref}
-													class:selected={activeEra === opt.ref}
-													onclick={() => switchEra(opt.ref)}
-												>{opt.title}</button>
+										onclick={() => switchEra(null)}
+										>{ui.nav_all_eras}</button>
+									</li>
+									{#each eraOptions as opt (opt.ref)}
+										<li>
+											<button
+												type="button"
+												role="option"
+												aria-selected={activeEra === opt.ref}
+												class:selected={activeEra === opt.ref}
+												onclick={() => switchEra(opt.ref)}
+											>{opt.title}</button>
 											</li>
 										{/each}
 									</ul>
@@ -596,7 +599,7 @@
 							{/if}
 							{#if data.clusterOptions.length > 1}
 								<section class="filters-section">
-									<p class="filters-eyebrow">Cluster</p>
+									<p class="filters-eyebrow">{ui.nav_cluster_eyebrow}</p>
 									<ul class="filters-list" role="listbox">
 										{#each data.clusterOptions as opt (opt.value)}
 											<li>
@@ -619,8 +622,8 @@
 								class:active={activeMode === 'dev'}
 								onclick={() => switchMode(activeMode === 'dev' ? 'visitor' : 'dev')}
 							>
-								<span class="dev-toggle-indicator" aria-hidden="true"></span>
-								{activeMode === 'dev' ? 'Disable dev mode' : 'Enable dev mode'}
+							<span class="dev-toggle-indicator" aria-hidden="true"></span>
+							{activeMode === 'dev' ? ui.nav_devmode_disable : ui.nav_devmode_enable}
 							</button>
 						</div>
 					</div>
@@ -630,7 +633,7 @@
 				<button
 					type="button"
 					class="hamburger"
-					aria-label={drawerOpen ? 'Close menu' : 'Open menu'}
+					aria-label={drawerOpen ? ui.nav_menu_close_aria : ui.nav_menu_open_aria}
 					aria-expanded={drawerOpen}
 					aria-controls="mobile-drawer"
 					onclick={() => (drawerOpen = !drawerOpen)}
@@ -648,17 +651,17 @@
 					{#each data.nav as item (item.href)}
 						<a href={item.href} aria-current={navAriaCurrent(item.href)}>{item.label}</a>
 					{/each}
-					<a href={data.kindsHref} aria-current={navAriaCurrent(data.kindsHref)}>Kinds</a>
-				<a href="/guides" aria-current={navAriaCurrent('/guides')}>Guides</a>
-				<a href="/blog" aria-current={navAriaCurrent('/blog')}>Journal</a>
-				<a href="/symbology" aria-current={navAriaCurrent('/symbology')}>Symbology</a>
-				<a href="/graph" aria-current={navAriaCurrent('/graph')}>Graph</a>
-				<a href="/relations" aria-current={navAriaCurrent('/relations')}>Relations</a>
+					<a href={data.kindsHref} aria-current={navAriaCurrent(data.kindsHref)}>{ui.nav_kinds}</a>
+				<a href="/guides" aria-current={navAriaCurrent('/guides')}>{ui.nav_guides}</a>
+				<a href="/blog" aria-current={navAriaCurrent('/blog')}>{ui.nav_journal}</a>
+				<a href="/symbology" aria-current={navAriaCurrent('/symbology')}>{ui.nav_symbology}</a>
+				<a href="/graph" aria-current={navAriaCurrent('/graph')}>{ui.nav_graph}</a>
+				<a href="/relations" aria-current={navAriaCurrent('/relations')}>{ui.nav_relations}</a>
 				</nav>
 
 				{#if data.clusterOptions.length > 1}
 					<div class="drawer-cluster">
-						<p class="drawer-cluster-eyebrow">Cluster</p>
+						<p class="drawer-cluster-eyebrow">{ui.nav_cluster_eyebrow}</p>
 						<ul class="drawer-cluster-list" role="listbox">
 							{#each data.clusterOptions as opt (opt.value)}
 								<li>
@@ -679,7 +682,7 @@
 
 				{#if eraOptions.length > 0}
 					<div class="drawer-era">
-						<p class="drawer-era-eyebrow">Era</p>
+						<p class="drawer-era-eyebrow">{ui.nav_era_eyebrow}</p>
 						<ul class="drawer-era-list" role="listbox">
 							<li>
 								<button
@@ -687,8 +690,8 @@
 									role="option"
 									aria-selected={activeEra === null}
 									class:selected={activeEra === null}
-									onclick={() => switchEra(null)}
-								>All eras</button>
+							onclick={() => switchEra(null)}
+							>{ui.nav_all_eras}</button>
 							</li>
 							{#each eraOptions as opt (opt.ref)}
 								<li>
@@ -711,9 +714,9 @@
 	{#if devBar}
 		<div class="dev-bar-wrap">
 			<div class="dev-bar">
-			{#if devBar.isStub}<span class="dev-bar-stub">stub</span>{/if}
+			{#if devBar.isStub}<span class="dev-bar-stub">{ui.nav_devbar_stub}</span>{/if}
 			<code class="dev-bar-path">{devBar.path}</code>
-			<button type="button" class="dev-bar-copy" onclick={copyPath} title="Copy path" aria-label="Copy path">
+			<button type="button" class="dev-bar-copy" onclick={copyPath} title={ui.nav_copypath_aria} aria-label={ui.nav_copypath_aria}>
 				<svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
 					<rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
 					<path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -722,7 +725,7 @@
 			{#if devBar.kind}
 				<span class="dev-bar-sep" aria-hidden="true">·</span>
 				<code class="dev-bar-path">{devBar.kind}</code>
-				<button type="button" class="dev-bar-copy" onclick={copyKind} title="Copy kind" aria-label="Copy kind">
+				<button type="button" class="dev-bar-copy" onclick={copyKind} title={ui.nav_copykind_aria} aria-label={ui.nav_copykind_aria}>
 					<svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
 						<rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
 						<path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -732,7 +735,7 @@
 			{#if devBar.classId}
 				<span class="dev-bar-sep" aria-hidden="true">·</span>
 				<code class="dev-bar-path">{devBar.classId}</code>
-				<button type="button" class="dev-bar-copy" onclick={copyClassId} title="Copy class" aria-label="Copy class">
+				<button type="button" class="dev-bar-copy" onclick={copyClassId} title={ui.nav_copyclass_aria} aria-label={ui.nav_copyclass_aria}>
 					<svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
 						<rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
 						<path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -740,7 +743,7 @@
 				</button>
 			{/if}
 			{#if devBar.issues.length > 0}
-				<a class="dev-bar-issues" href="/health" title="View all health issues">{devBar.issues.length} issue{devBar.issues.length === 1 ? '' : 's'}</a>
+				<a class="dev-bar-issues" href="/health" title={ui.nav_viewhealth_aria}>{ui.nav_devbar_issues(devBar.issues.length)}</a>
 				<ul class="dev-bar-issue-list">
 					{#each devBar.issues as issue (issue.kind + issue.detail)}
 						<li><span class="dev-bar-issue-kind">{issue.kind}</span> {issue.detail}</li>

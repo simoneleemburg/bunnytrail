@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { t } from '$lib/i18n';
 	import type { BlogPostData } from './load';
 	import Tag from '$lib/components/Tag.svelte';
 
 	let { data }: { data: BlogPostData } = $props();
+
+	const ui = $derived(t(page.data.world.language));
 </script>
 
 <svelte:head>
@@ -17,14 +20,14 @@
 	distinct from the warm in-world chrome of the compendium.
 -->
 <article class="bt-journal">
-	<nav class="bt-journal__frame" aria-label="Journal navigation">
-		<a href="/blog">↩ All entries</a>
+	<nav class="bt-journal__frame" aria-label={ui.blog_post_nav_aria}>
+		<a href="/blog">{ui.blog_post_back}</a>
 		<span aria-hidden="true"> · </span>
 		<a href="/">↑ {page.data.world.shortName}</a>
 	</nav>
 
 	<header class="head">
-		<p class="bt-journal__eyebrow">Journale</p>
+		<p class="bt-journal__eyebrow">{ui.blog_post_eyebrow}</p>
 		<h1 class="bt-journal__title">{data.title}</h1>
 		<p class="date">{data.dateLabel}</p>
 		{#if data.tags.length > 0}

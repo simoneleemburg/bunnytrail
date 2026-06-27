@@ -2,6 +2,7 @@
 	import type { HomeData } from './load';
 	import { tick } from 'svelte';
 	import { page } from '$app/stores';
+	import { t } from '$lib/i18n';
 	import Tag from '$lib/components/Tag.svelte';
 	import CollectionCard from '$lib/components/CollectionCard.svelte';
 
@@ -9,6 +10,7 @@
 
 	const world = $derived($page.data.world);
 	const ornament = $derived($page.data.ornament);
+	const ui = $derived(t($page.data.world.language));
 
 	const wordCount = $derived(data.totalWords.toLocaleString());
 
@@ -170,35 +172,35 @@
 	-->
 	{#if data.authed}
 	<p class="colophon">
-		{data.totalEntities} entities&ensp;&middot;&ensp;{data.entitiesWithProse} with prose&ensp;&middot;&ensp;{data.entitiesStub} stubs&ensp;&middot;&ensp;{wordCount} words{#if data.issues > 0}
+		{data.totalEntities} {ui.home_entities}&ensp;&middot;&ensp;{data.entitiesWithProse} {ui.home_with_prose}&ensp;&middot;&ensp;{data.entitiesStub} {ui.home_stubs}&ensp;&middot;&ensp;{wordCount} {ui.home_words}{#if data.issues > 0}
 			&ensp;&middot;&ensp;<a class="issues-link" href="/health"
-				>{data.issues} {data.issues === 1 ? 'issue' : 'issues'}</a
+				>{ui.home_issues(data.issues)}</a
 			>{/if}
 	</p>
 	{/if}
 </section>
 
 {#if !data.authed}
-	<section
-		class="gate"
-		role="group"
-		aria-label="Secret passphrase entry"
-		onclick={() => {
-			const nextEmpty = chars.findIndex((c) => !c);
-			const idx = nextEmpty === -1 ? secretLength - 1 : nextEmpty;
-			boxEls[idx]?.focus();
-		}}
-		onkeydown={(e) => {
-			if (e.key === 'Enter' || e.key === ' ') {
+	<section class="gate" aria-label={ui.home_gate_section_aria}>
+		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+		<div
+			class="gate-form"
+			role="group"
+			onclick={() => {
 				const nextEmpty = chars.findIndex((c) => !c);
 				const idx = nextEmpty === -1 ? secretLength - 1 : nextEmpty;
 				boxEls[idx]?.focus();
-			}
-		}}
-	>
-		<div class="gate-form">
+			}}
+			onkeydown={(e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					const nextEmpty = chars.findIndex((c) => !c);
+					const idx = nextEmpty === -1 ? secretLength - 1 : nextEmpty;
+					boxEls[idx]?.focus();
+				}
+			}}
+		>
 			<p class="gate-prompt">{data.gatePrompt}</p>
-			<div class="gate-boxes" aria-label="Secret passphrase">
+			<div class="gate-boxes" aria-label={ui.home_gate_boxes_aria}>
 				{#each chars as ch, i (i)}
 					<div
 						class="gate-slot"
@@ -211,7 +213,7 @@
 							maxlength={2}
 							value={ch}
 							autocomplete="off"
-							aria-label="Character {i + 1} of {data.secretLength}"
+							aria-label={ui.home_gate_char_aria(i + 1, data.secretLength)}
 						bind:this={boxEls[i]}
 						oninput={(e) => onBoxInput(i, e)}
 							onkeydown={(e) => onBoxKeydown(i, e)}
@@ -227,7 +229,7 @@
 			</div>
 		</div>
 		{#if toastVisible}
-			<p class="gate-toast" role="alert">That's not it.</p>
+			<p class="gate-toast" role="alert">{ui.home_gate_wrong}</p>
 		{/if}
 	</section>
 {/if}
@@ -263,19 +265,19 @@
 				-->
 				<a class="sources-callout" href="/sources">
 					<div class="sources-body">
-						<p class="sources-eyebrow">Workbench</p>
-						<p class="sources-title bt-meta-link">Source projects</p>
-						<p class="sources-sub">
-							{data.sourceProjects.length} feeder works:
-							<span class="sources-names"
-								>{(() => {
-									const titles = data.sourceProjects.map((p) => p.title);
-									const shown = titles.slice(0, 3);
-									const rest = titles.length - shown.length;
-									return shown.join(', ') + (rest > 0 ? `, and ${rest} more` : '');
-								})()}.</span
-							>
-						</p>
+					<p class="sources-eyebrow">{ui.home_sources_eyebrow}</p>
+					<p class="sources-title bt-meta-link">{ui.home_sources_title}</p>
+					<p class="sources-sub">
+						{ui.home_sources_feeder(data.sourceProjects.length)}:
+						<span class="sources-names"
+							>{(() => {
+								const titles = data.sourceProjects.map((p) => p.title);
+								const shown = titles.slice(0, 3);
+								const rest = titles.length - shown.length;
+								return shown.join(', ') + (rest > 0 ? `, ${ui.home_sources_more(rest)}` : '');
+							})()}.</span
+						>
+					</p>
 					</div>
 					<div class="sources-arrow bt-meta-link" aria-hidden="true">→</div>
 				</a>
@@ -291,12 +293,11 @@
 			-->
 			<a class="journal-callout" href="/blog">
 				<div class="journal-body">
-					<p class="journal-eyebrow">Working notes</p>
-					<p class="journal-title bt-meta-link">Notebook</p>
-					<p class="journal-sub">
-						Author&rsquo;s-room reflections on building {world.name}. Out-of-world; not part of the
-						compendium.
-					</p>
+				<p class="journal-eyebrow">{ui.home_notebook_eyebrow}</p>
+				<p class="journal-title bt-meta-link">{ui.home_notebook_title}</p>
+				<p class="journal-sub">
+					{ui.home_notebook_sub(world.name)}
+				</p>
 				</div>
 				<div class="journal-arrow bt-meta-link" aria-hidden="true">→</div>
 			</a>
@@ -322,7 +323,7 @@
 						></div>
 					{/if}
 					<div class="influence-card__body">
-						<p class="influence-card__section">My influences</p>
+						<p class="influence-card__section">{ui.home_influences_label}</p>
 						{#if data.influenceCard.imageComment}
 							<p class="influence-card__eyebrow">{data.influenceCard.imageComment}</p>
 						{/if}
@@ -334,7 +335,7 @@
 						{#if data.influenceCard.epigraph}
 							<p class="influence-card__epigraph">{data.influenceCard.epigraph}</p>
 						{/if}
-						<p class="influence-card__cta bt-meta-link" aria-hidden="true">Browse influences →</p>
+						<p class="influence-card__cta bt-meta-link" aria-hidden="true">{ui.home_influences_cta}</p>
 					</div>
 				</a>
 			</div>
@@ -342,7 +343,7 @@
 	</div>
 
 	<section class="types">
-		<h2 class="section-heading">Collections</h2>
+		<h2 class="section-heading">{ui.home_collections_heading}</h2>
 		<ul class="collection-list">
 			{#each data.counts as c (c.type)}
 				<CollectionCard href={`/${c.type}`} label={c.label} description={c.description} />
@@ -352,7 +353,7 @@
 
 	{#if data.threads.length > 0}
 		<section class="threads">
-			<h2 class="section-heading">Starting threads</h2>
+			<h2 class="section-heading">{ui.home_threads_heading}</h2>
 			<ul class="collection-list">
 				{#each data.threads as t (t.type)}
 					<CollectionCard href={`/${t.type}`} label={t.label} description={t.description} />
@@ -363,7 +364,7 @@
 
 	{#if data.tags.length > 0}
 		<section class="tags-section">
-			<h2 class="section-heading">Tags</h2>
+			<h2 class="section-heading">{ui.home_tags_heading}</h2>
 			<div class="tag-row">
 				{#each data.tags as t (t.tag)}
 					<Tag label={t.tag} href={`/tags/${encodeURIComponent(t.tag)}`} />

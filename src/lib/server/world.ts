@@ -72,6 +72,12 @@ export interface WorldConfig {
 	allScopeLabel: string;
 	ornament: OrnamentConfig;
 	/**
+	 * UI language for built-in engine labels (nav items, section headings,
+	 * empty states, etc.). Authored as `language: nl` in
+	 * `content_meta/world.md`. Defaults to `'en'`.
+	 */
+	language: 'en' | 'nl';
+	/**
 	 * When `false` (the default), any relation kind used in content that
 	 * is NOT listed in any `_ontology.yaml` `relations:` block emits a
 	 * health-page warning. Set to `true` in `content_meta/world.md` to
@@ -128,6 +134,7 @@ function fallbackConfig(): WorldConfig {
 		tagline: FALLBACK_TAGLINE,
 		allScopeLabel: `All ${FALLBACK_NAME}`,
 		ornament: fallbackOrnament(),
+		language: 'en',
 		allowUndefinedRelations: true,
 		allowUndefinedProperties: true,
 		disableScopePainting: false,
@@ -190,15 +197,43 @@ export async function loadWorld(
 	const eras = readEras(meta, issues);
 	const gatePrompt =
 		readString(meta, 'secret_prompt', issues) ?? 'Enter the secret to continue.';
+	const language = readLanguage(meta, issues);
 
 	const ledeHtml = body.trim() === '' ? null : renderPlainBody(body);
 
 	return {
-		config: { name, shortName, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties, disableScopePainting, eras, gatePrompt },
+		config: { name, shortName, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties, disableScopePainting, eras, gatePrompt, language },
 		ledeHtml,
 		present: true,
 		issues
 	};
+}
+
+const SUPPORTED_LANGUAGES = ['en', 'nl'] as const;
+type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
+
+function readLanguage(
+	meta: Record<string, unknown>,
+	issues: HealthIssue[]
+): SupportedLanguage {
+	const val = meta['language'];
+	if (val === undefined || val === null) return 'en';
+	if (typeof val !== 'string') {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: `content_meta/world.md: language must be a string when present`
+		});
+		return 'en';
+	}
+	const trimmed = val.trim().toLowerCase();
+	if (!SUPPORTED_LANGUAGES.includes(trimmed as SupportedLanguage)) {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: `content_meta/world.md: unsupported language "${trimmed}"; supported: ${SUPPORTED_LANGUAGES.join(', ')}`
+		});
+		return 'en';
+	}
+	return trimmed as SupportedLanguage;
 }
 
 function readString(

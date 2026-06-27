@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import type { EntityPageData } from './entityPage.load';
+	import { t } from '$lib/i18n';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import PropertyList from '$lib/components/PropertyList.svelte';
 	import EntityLink from '$lib/components/EntityLink.svelte';
@@ -15,6 +16,7 @@
 
 	let { data }: { data: EntityPageData } = $props();
 
+	const ui = $derived(t(page.data.world.language));
 	const ornamentSvg = $derived(page.data.ornament?.svg ?? null);
 
 	const rankGlyph = $derived(
@@ -298,11 +300,11 @@
 	/>
 
 	{#if data.entity.aliases.length > 0}
-		<p class="aliases"><em>Also known as: {data.entity.aliases.join(', ')}</em></p>
+		<p class="aliases"><em>{ui.entity_also_known_as} {data.entity.aliases.join(', ')}</em></p>
 	{/if}
 
 	{#if hasTabs}
-		<div class="tabs" role="tablist" aria-label="Entity sections">
+		<div class="tabs" role="tablist" aria-label={ui.entity_sections_aria}>
 			<button
 				type="button"
 				role="tab"
@@ -311,7 +313,7 @@
 				class:active={effectiveTab === 'about'}
 				onclick={() => gotoTab('about')}
 			>
-				About
+				{ui.entity_tab_about}
 			</button>
 			{#if hasClassMates}
 				<button
@@ -322,7 +324,7 @@
 				class:active={effectiveTab === 'instances'}
 					onclick={() => gotoTab('instances')}
 				>
-					Instances
+					{ui.entity_tab_instances}
 				</button>
 			{/if}
 			{#if hasQualifierHolders}
@@ -334,7 +336,7 @@
 					class:active={effectiveTab === 'holders'}
 					onclick={() => gotoTab('holders')}
 				>
-					Holders
+					{ui.entity_tab_holders}
 				</button>
 			{/if}
 			{#if hasStatistics}
@@ -346,7 +348,7 @@
 				class:active={effectiveTab === 'statistics'}
 					onclick={() => gotoTab('statistics')}
 				>
-					Statistics
+					{ui.entity_tab_statistics}
 				</button>
 			{/if}
 			{#if hasVocabulary}
@@ -358,7 +360,7 @@
 				class:active={effectiveTab === 'vocabulary'}
 					onclick={() => gotoTab('vocabulary')}
 				>
-					Vocabulary
+					{ui.entity_tab_vocabulary}
 				</button>
 			{/if}
 		</div>
@@ -384,15 +386,15 @@
 	</div>
 
 	{#if data.rankNav}
-		<nav class="rank-nav" aria-label="Ranked navigation">
+		<nav class="rank-nav" aria-label={ui.entity_rank_nav_aria}>
 			{#if data.rankNav.prev}
 				<a
 					class="rank-nav__item rank-nav__item--prev"
-					href="/{data.rankNav.prev.id}"
-					aria-label="Previous: {data.rankNav.prev.name}"
-				>
-					<span class="rank-nav__arrow" aria-hidden="true">←</span>
-					<span>back</span>
+				href="/{data.rankNav.prev.id}"
+				aria-label={ui.entity_rank_prev_aria(data.rankNav.prev.name)}
+			>
+				<span class="rank-nav__arrow" aria-hidden="true">←</span>
+				<span>{ui.entity_rank_prev_label}</span>
 				</a>
 			{:else}
 				<span class="rank-nav__item rank-nav__item--prev rank-nav__item--empty"></span>
@@ -400,11 +402,11 @@
 			{#if data.rankNav.next}
 				<a
 					class="rank-nav__item rank-nav__item--next"
-					href="/{data.rankNav.next.id}"
-					aria-label="Next: {data.rankNav.next.name}"
-				>
-					<span>next</span>
-					<span class="rank-nav__arrow" aria-hidden="true">→</span>
+				href="/{data.rankNav.next.id}"
+				aria-label={ui.entity_rank_next_aria(data.rankNav.next.name)}
+			>
+				<span>{ui.entity_rank_next_label}</span>
+				<span class="rank-nav__arrow" aria-hidden="true">→</span>
 				</a>
 			{:else}
 				<span class="rank-nav__item rank-nav__item--next rank-nav__item--empty"></span>
@@ -429,8 +431,8 @@
 			{/if}
 
 			{#if data.chapters.length > 0}
-				<section class="chapters" aria-label={data.book?.unitPlural ?? 'Chapters'}>
-					<h2 class="chapters-heading">{data.book?.unitPlural ?? 'Chapters'}</h2>
+			<section class="chapters" aria-label={data.book?.unitPlural ?? ui.entity_chapters_fallback}>
+				<h2 class="chapters-heading">{data.book?.unitPlural ?? ui.entity_chapters_fallback}</h2>
 					<ol class="chapter-list">
 						{#each data.chapters as ch (ch.slug)}
 							<li class="chapter-item">
@@ -445,7 +447,7 @@
 			{/if}
 
 			{#if data.childGroups.length > 0}
-				<section class="children" aria-label="Contents">
+				<section class="children" aria-label={ui.entity_children_aria}>
 					{#each data.childGroups as group (group.kindId)}
 						<h2 class="children-heading">
 							{group.label.plural}
@@ -477,8 +479,8 @@
 				     entity's structural facets — a separate document
 				     about this subject — instead of being mistaken
 				     for an in-world section heading. -->
-				<section class="craft-link" aria-label="Author's notes">
-					<a href={data.craftHref}>Craft sheet →</a>
+			<section class="craft-link" aria-label={ui.entity_craft_aria}>
+				<a href={data.craftHref}>{ui.entity_craft_link}</a>
 				</section>
 			{/if}
 
@@ -530,7 +532,7 @@
 							<div class="group-label">
 								{group.label}
 								{#if gi === 0}
-									<a class="graph-link" href={'/graph?node=' + encodeURIComponent(data.entity.id)}>Graph →</a>
+									<a class="graph-link" href={'/graph?node=' + encodeURIComponent(data.entity.id)}>{ui.entity_graph_link}</a>
 								{/if}
 							</div>
 						{#if group.qualifierSubGroups}
@@ -565,7 +567,7 @@
 									</ul>
 									{#if sub.items.length > COLLAPSE_AT}
 										<button type="button" class="show-toggle" onclick={() => toggle(subKey)}>
-											{isExpanded ? 'Show fewer' : `Show all (${sub.items.length})`}
+											{isExpanded ? ui.entity_show_fewer : ui.entity_show_all(sub.items.length)}
 										</button>
 									{/if}
 								{/each}
@@ -592,11 +594,11 @@
 										{/if}
 									{/each}
 								</ul>
-								{#if group.items.length > COLLAPSE_AT}
-									<button type="button" class="show-toggle" onclick={() => toggle(group.key)}>
-										{isExpanded ? 'Show fewer' : `Show all (${group.items.length})`}
-									</button>
-								{/if}
+							{#if group.items.length > COLLAPSE_AT}
+								<button type="button" class="show-toggle" onclick={() => toggle(group.key)}>
+									{isExpanded ? ui.entity_show_fewer : ui.entity_show_all(group.items.length)}
+								</button>
+							{/if}
 							{/if}
 						</div>
 					{/each}

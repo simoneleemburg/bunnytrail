@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { t } from '$lib/i18n';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import type { RelationDetailPageData, RelationEdge, MissingRelationEntry } from './load';
 
@@ -11,6 +12,8 @@
 
 	const domainLabel = $derived(data.domain.length > 0 ? null : 'Any');
 	const codomainLabel = $derived(data.codomain.length > 0 ? null : 'Any');
+
+	const ui = $derived(t(page.data.world.language));
 </script>
 
 <svelte:head>
@@ -20,8 +23,8 @@
 <PageHeader
 	title={data.outLabel}
 	eyebrow="Relations"
-	breadcrumbs={[{ href: '/relations', label: 'Relations' }]}
-	subtitle="Inverse: {data.inLabel}"
+	breadcrumbs={[{ href: '/relations', label: ui.relation_breadcrumb }]}
+	subtitle={ui.relation_inverse(data.inLabel)}
 />
 
 {#snippet kindPill(k: string)}
@@ -31,13 +34,13 @@
 {#if data.worldDefined}
 	<div class="schema-card">
 		<div class="schema-row">
-			<span class="schema-label">Kind</span>
+			<span class="schema-label">{ui.relation_schema_kind}</span>
 			<code class="kind-mono">{data.kind}</code>
 		</div>
 		<div class="schema-row">
-			<span class="schema-label">Domain</span>
+			<span class="schema-label">{ui.relation_schema_domain}</span>
 			{#if domainLabel}
-				<em class="any-label">Any</em>
+				<em class="any-label">{ui.relation_any}</em>
 			{:else}
 				<span class="pill-group">
 					{#each data.domain as k (k)}
@@ -47,9 +50,9 @@
 			{/if}
 		</div>
 		<div class="schema-row">
-			<span class="schema-label">Codomain</span>
+			<span class="schema-label">{ui.relation_schema_codomain}</span>
 			{#if codomainLabel}
-				<em class="any-label">Any</em>
+				<em class="any-label">{ui.relation_any}</em>
 			{:else}
 				<span class="pill-group">
 					{#each data.codomain as k (k)}
@@ -62,12 +65,12 @@
 {/if}
 
 {#if isEmpty}
-	<p class="empty"><em>No edges of this kind in the graph.</em></p>
+	<p class="empty"><em>{ui.relation_empty}</em></p>
 {:else}
 	{#if hasEdges}
 		<section class="edges-section">
 			<h2 class="section-heading">
-				Edges
+				{ui.relation_edges_heading}
 				<span class="section-count">{data.edges.length}</span>
 			</h2>
 			<ul class="edge-list" role="list">
@@ -95,11 +98,11 @@
 	{#if hasMissing}
 		<section class="missing-section">
 			<h2 class="section-heading">
-				Missing
+				{ui.relation_missing_heading}
 				<span class="section-count">{data.missing.length}</span>
 			</h2>
 			<p class="section-blurb">
-				Entities whose kind satisfies the domain constraint but have no {data.outLabel.toLowerCase()} relation.
+				{ui.relation_missing_blurb(data.outLabel)}
 			</p>
 			<ul class="missing-list" role="list">
 				{#each data.missing as item (item.entityId)}

@@ -1,11 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { t } from '$lib/i18n';
 	import type { GuidesIndexData } from './load';
 
 	let { data }: { data: GuidesIndexData } = $props();
 
 	const ornament = $derived(page.data.ornament);
 	const guideMark = $derived(ornament.guides.svg ?? ornament.svg);
+
+	const ui = $derived(t(page.data.world.language));
 </script>
 
 <svelte:head>
@@ -14,7 +17,7 @@
 
 <section class="guides-index">
 	<header class="head">
-		<p class="eyebrow">Start here</p>
+		<p class="eyebrow">{ui.guides_eyebrow}</p>
 		<h1>{page.data.world.shortName}</h1>
 	</header>
 
@@ -29,7 +32,7 @@
 	</div>
 
 	{#if data.guides.length === 0}
-		<p class="empty">No guides yet.</p>
+		<p class="empty">{ui.guides_empty}</p>
 	{:else}
 		<ul class="guide-list">
 			{#each data.guides as guide (guide.slug)}

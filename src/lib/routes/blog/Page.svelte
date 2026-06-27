@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { t } from '$lib/i18n';
 	import type { BlogIndexData } from './load';
 	import Tag from '$lib/components/Tag.svelte';
 
 	let { data }: { data: BlogIndexData } = $props();
+
+	const ui = $derived(t(page.data.world.language));
 </script>
 
 <svelte:head>
@@ -18,13 +21,13 @@
 	rather than a single prose column.
 -->
 <section class="bt-journal">
-	<nav class="bt-journal__frame" aria-label="Journal navigation">
+	<nav class="bt-journal__frame" aria-label={ui.blog_nav_aria}>
 		<a href="/">↑ {page.data.world.shortName}</a>
 	</nav>
 	<header class="head">
-		<h1 class="bt-journal__title">Journal</h1>
+		<h1 class="bt-journal__title">{ui.blog_title}</h1>
 		<p class="sub">
-			My reflections on building {page.data.world.name}.
+			{ui.blog_sub(page.data.world.name)}
 		</p>
 	</header>
 	<div class="bt-fleuron" aria-hidden="true">
@@ -34,7 +37,7 @@
 	</div>
 
 	{#if data.posts.length === 0}
-		<p class="empty">No entries yet.</p>
+		<p class="empty">{ui.blog_empty}</p>
 	{:else}
 		<ul class="posts">
 			{#each data.posts as post (post.slug)}
