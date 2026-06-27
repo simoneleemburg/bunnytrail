@@ -1307,7 +1307,8 @@
 
 	.hamburger-bar {
 		display: block;
-		height: 1.5px;
+		height: 2px;
+		border-radius: 1px;
 		background: var(--ink);
 		transition:
 			transform 160ms,
@@ -1458,8 +1459,8 @@
 		color: var(--accent);
 	}
 
-	/* ── Tablet tighten (901px–1024px) ──────────────────────── */
-	@media (min-width: 901px) and (max-width: 1024px) {
+	/* ── Tablet tighten (821px–1024px) ──────────────────────── */
+	@media (min-width: 821px) and (max-width: 1024px) {
 		:global(:where(.masthead)) {
 			padding-left: var(--space-5);
 			padding-right: var(--space-5);
@@ -1479,7 +1480,7 @@
 	}
 
 	/* ── Responsive collapse ─────────────────────────────────── */
-	@media (max-width: 900px) {
+	@media (max-width: 820px) {
 		.masthead {
 			padding: var(--space-4) var(--space-5);
 		}
