@@ -42,9 +42,8 @@
 
 	const ui = $derived(t($page.data.world?.language));
 
-	// When the gate is enabled and the user isn't authenticated, hide the
-	// nav chrome so the gate page reads as a clean entry point.
-	const gated = $derived(data.gateEnabled && $page.data.authed === false);
+	// On the /login page hide the nav chrome so it reads as a clean entry point.
+	const gated = $derived($page.url.pathname === '/login');
 
 	// Vercel Web Analytics. Safe to call unconditionally — on
 	// non-Vercel deployments the beacon endpoint is absent, so the
@@ -422,7 +421,7 @@
 
 	async function logout() {
 		await fetch('/api/auth/logout', { method: 'POST' });
-		window.location.href = '/';
+		window.location.href = '/login';
 	}
 
 	let toast = $state<string | null>(null);
