@@ -16,18 +16,23 @@
 	const wordCount = $derived(data.totalWords.toLocaleString());
 
 	// ── Auth check on mount ───────────────────────────────────
-	// When the gate is enabled the home page is prerendered with
-	// authed=false. On mount we ask the server whether the current
-	// session cookie is valid; if so we reload so the server-rendered
-	// authed=true content is shown. One extra round-trip for logged-in
-	// users on first load, but zero runtime filesystem access needed.
+	// The home page is prerendered with authed=false. On mount we
+	// ask the server whether the current session cookie is valid.
+	// If so, navigate to the first nav item (the world's entry point)
+	// so the user lands on actual content instead of the gate.
 	$effect(() => {
 		if (!browser || data.authed) return;
 		if (!data.secretLength) return; // gate not enabled
 		fetch('/api/auth/check')
 			.then((r) => r.json())
 			.then(({ authed }: { authed: boolean }) => {
-				if (authed) window.location.reload();
+				if (authed) {
+					// Navigate to the first nav item if available,
+					// otherwise stay on home (gate will show but that's ok —
+					// the user can re-enter or the session was just cleared).
+					const firstNav = $page.data.nav?.[0]?.href;
+					if (firstNav) window.location.href = firstNav;
+				}
 			})
 			.catch(() => {}); // silently ignore network errors
 	});
