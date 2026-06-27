@@ -1,5 +1,6 @@
 ---
 name: Bunny World
+heroTitle: The Bunny World Compendium
 tagline: A small pink-and-blue sample world for the Bunnytrail engine.
 shortName: Bunny
 allScopeLabel: All of Bunny World

@@ -1,7 +1,7 @@
 ---
 name: __NAME__
+# heroTitle: __NAME__ — A Compendium  # optional; shown as the home page <h1>; defaults to name
 tagline: A worldbuilding compendium powered by Bunnytrail.
-# Optional overrides:
 # shortName: __NAME__          # used in <title> tags; defaults to name
 # allScopeLabel: All __NAME__  # cluster picker label; defaults to "All ${name}"
 ---
