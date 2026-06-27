@@ -42,6 +42,10 @@
 
 	const ui = $derived(t($page.data.world?.language));
 
+	// When the gate is enabled and the user isn't authenticated, hide the
+	// nav chrome so the gate page reads as a clean entry point.
+	const gated = $derived(data.gateEnabled && $page.data.authed === false);
+
 	// Vercel Web Analytics. Safe to call unconditionally — on
 	// non-Vercel deployments the beacon endpoint is absent, so the
 	// script no-ops. Mode='development' silences beacons during
@@ -455,7 +459,7 @@
 
 <div class="page" class:drawer-open={drawerOpen}>
 	<header class="masthead">
-		<div class="masthead-inner">
+		<div class="masthead-inner" class:masthead-inner--gated={gated}>
 			<a class="wordmark" class:wordmark-svg={data.wordmark} href="/" aria-label={data.world.name}>
 				{#if data.wordmark}
 					<span class="wordmark-figure" aria-hidden="true">{@html data.wordmark}</span>
@@ -658,7 +662,7 @@
 			</div>
 		</div>
 
-		{#if drawerOpen}
+		{#if drawerOpen && !gated}
 			<div class="drawer" id="mobile-drawer">
 				<nav class="nav-mobile" aria-label="Primary mobile">
 					{#each data.nav as item (item.href)}
@@ -832,6 +836,13 @@
 		display: flex;
 		align-items: baseline;
 		gap: var(--space-6);
+	}
+
+	/* Hide all nav chrome when the gate is active (unauthenticated). */
+	.masthead-inner--gated :global(.nav-desktop),
+	.masthead-inner--gated .chrome-end,
+	.masthead-inner--gated .hamburger {
+		display: none;
 	}
 
 	.wordmark {
