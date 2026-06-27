@@ -22,7 +22,7 @@ export function isGateEnabled(): boolean {
 
 /** Expected cookie value: SHA-256 hex of the raw secret. */
 function expectedToken(): string {
-	const secret = process.env.BUNNYTRAIL_WORLD_SECRET ?? '';
+	const secret = (process.env.BUNNYTRAIL_WORLD_SECRET ?? '').trim();
 	return createHash('sha256').update(secret).digest('hex');
 }
 
@@ -45,7 +45,7 @@ export function isValidSession(cookieValue: string | undefined): boolean {
  * Uses a timing-safe comparison.
  */
 export function verifySecret(input: string): boolean {
-	const secret = process.env.BUNNYTRAIL_WORLD_SECRET ?? '';
+	const secret = (process.env.BUNNYTRAIL_WORLD_SECRET ?? '').trim();
 	if (!secret) return false;
 	const a = Buffer.from(input.padEnd(secret.length, '\0'));
 	const b = Buffer.from(secret.padEnd(input.length, '\0'));
