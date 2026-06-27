@@ -215,6 +215,22 @@ export async function generateShims(opts: GenerateShimsOptions): Promise<string[
 		written.push(file);
 	}
 	await reconcile(root, plannedSet);
+
+	// Consumer-only root-level files (live at project root, not src/routes/).
+	if (opts.mode === 'consumer') {
+		const rootFiles: Shim[] = [
+			{
+				file: 'middleware.ts',
+				contents: `export { default, config } from 'bunnytrail/middleware';\n`
+			}
+		];
+		for (const { file, contents } of rootFiles) {
+			const full = resolve(opts.targetDir, file);
+			await writeFile(full, contents);
+			written.push(file);
+		}
+	}
+
 	return written;
 }
 

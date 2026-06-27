@@ -53,6 +53,10 @@
 		"./hooks": {
 			"types": "./dist/hooks.d.ts",
 			"default": "./dist/hooks.js"
+		},
+		"./middleware": {
+			"types": "./dist/middleware.d.ts",
+			"default": "./dist/middleware.js"
 		}
 	},
 	"scripts": {
@@ -93,6 +97,7 @@
 	},
 	"dependencies": {
 		"@vercel/analytics": "^2.0.1",
+		"@vercel/functions": "^3.7.4",
 		"chokidar": "^4.0.0",
 		"d3-force": "^3.0.0",
 		"d3-selection": "^3.0.0",

@@ -54,6 +54,7 @@ const STATIC: FileCopy[] = [
 	{ from: 'src/app.html.tpl', to: 'src/app.html' },
 	{ from: 'src/app.d.ts.tpl', to: 'src/app.d.ts' },
 	{ from: 'src/hooks.server.ts.tpl', to: 'src/hooks.server.ts' },
+	{ from: 'middleware.ts.tpl', to: 'middleware.ts' },
 	{ from: 'inline-svg.css', to: 'assets/inline-svg.css' },
 	{ from: 'assets-README.md', to: 'assets/README.md' }
 ];
