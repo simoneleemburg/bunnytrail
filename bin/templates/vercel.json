@@ -1,4 +1,5 @@
 {
 	"$schema": "https://openapi.vercel.sh/vercel.json",
-	"installCommand": "rm -rf node_modules/bunnytrail && npm ci"
+	"installCommand": "rm -rf node_modules/bunnytrail && npm ci",
+	"buildCommand": "npm run build && node -e \"const{cpSync}=require('fs');['content','content_meta','assets'].forEach(d=>{try{cpSync(d,'.vercel/output/functions/![-]/catchall.func/'+d,{recursive:true})}catch(e){}})\""
 }
