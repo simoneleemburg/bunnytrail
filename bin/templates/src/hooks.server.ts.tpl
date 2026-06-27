@@ -1,5 +1,5 @@
-// All the engine boots in here. Side-effect import: loads the graph
-// once and starts the file watcher in dev. SvelteKit awaits this
-// module before serving requests, so it's safe to rely on the graph
-// being ready by the time any load function runs.
-import 'bunnytrail/hooks';
+// Engine boot module. The `init` export is awaited by SvelteKit before
+// the first request is served, ensuring the graph and world singletons
+// are fully loaded. The `handle` hook enforces the passphrase gate when
+// BUNNYTRAIL_WORLD_SECRET is set.
+export { init, handle } from 'bunnytrail/hooks';
