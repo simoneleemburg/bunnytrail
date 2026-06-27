@@ -57,3 +57,36 @@ export function verifySecret(input: string): boolean {
 export function sessionToken(): string {
 	return expectedToken();
 }
+
+/**
+ * Sanitize a post-login redirect target (`?from=…`) to a safe,
+ * same-origin internal path. Guards against open-redirect: an
+ * attacker who controls the `from` value must not be able to bounce
+ * a freshly-authenticated user to an external site or back to the
+ * gate.
+ *
+ * Returns a path that always:
+ *   - starts with a single `/` (relative to this origin),
+ *   - is not protocol-relative (`//evil.com`) or a full URL,
+ *   - is not the login page or an auth endpoint (would loop),
+ * Falls back to `/` when the input is missing or fails any check.
+ */
+export function safeRedirectTarget(from: string | null | undefined): string {
+	if (!from) return '/';
+
+	// Must be an absolute path on this origin. Reject full URLs
+	// (`http://…`, `https://…`, `javascript:…`) and protocol-relative
+	// (`//host`) targets outright.
+	if (!from.startsWith('/') || from.startsWith('//')) return '/';
+	// Backslashes can be normalized to `/` by some browsers — treat a
+	// leading `/\` as protocol-relative too.
+	if (from.startsWith('/\\')) return '/';
+
+	// Don't bounce back to the gate or auth endpoints — that loops.
+	if (from === '/login' || from.startsWith('/login?') || from.startsWith('/api/auth/')) {
+		return '/';
+	}
+
+	return from;
+}
+

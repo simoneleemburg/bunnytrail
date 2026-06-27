@@ -94,6 +94,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const cookie = event.cookies.get(SESSION_COOKIE);
 	if (isValidSession(cookie)) return resolve(event);
 
-	// Not authenticated — redirect to login page.
-	redirect(303, '/login');
+	// Not authenticated — redirect to the gate, preserving where the
+	// user was headed so the login page can send them back after auth.
+	// We capture pathname + search (not the origin) and pass it as the
+	// `from` query param; the login flow re-validates it via
+	// safeRedirectTarget before using it.
+	const target = event.url.pathname + event.url.search;
+	const loginUrl = target && target !== '/' ? `/login?from=${encodeURIComponent(target)}` : '/login';
+	redirect(303, loginUrl);
 };

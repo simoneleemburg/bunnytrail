@@ -47,7 +47,10 @@
 		const res = await fetch('/api/auth/login', { method: 'POST', body });
 		const { ok } = await res.json();
 		if (ok) {
-			window.location.href = '/';
+			// Send the user back where the gate intercepted them. `from`
+			// was already sanitized server-side (safeRedirectTarget), so
+			// it's a safe same-origin path; default to home.
+			window.location.href = data.from ?? '/';
 		} else {
 			chars = Array(secretLength).fill('');
 			showToast();
