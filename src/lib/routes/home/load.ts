@@ -4,6 +4,7 @@ import { sources } from '$lib/server/sources';
 import { influences } from '$lib/server/influences';
 import { world } from '$lib/server/world';
 import { assets } from '$lib/server/assets';
+import { blog } from '$lib/server/blog';
 import { isGateEnabled, isValidSession, SESSION_COOKIE } from '$lib/server/auth';
 import type { RequestEvent } from '@sveltejs/kit';
 
@@ -31,6 +32,7 @@ export async function load(event?: RequestEvent) {
 	await sources.ready();
 	await influences.ready();
 	await world.ready();
+	await blog.ready();
 
 	// Gate auth state — only relevant when BUNNYTRAIL_WORLD_SECRET is set.
 	const gateEnabled = isGateEnabled();
@@ -192,6 +194,7 @@ export async function load(event?: RequestEvent) {
 		// case so a freshly scaffolded world still has a coherent hero.
 		lede: world.ledeHtml(),
 		crest,
+		hasBlogPosts: blog.all().length > 0,
 		// Gate auth state.
 		authed,
 		gatePrompt,

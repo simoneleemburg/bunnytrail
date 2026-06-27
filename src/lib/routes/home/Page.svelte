@@ -281,6 +281,7 @@
 				</a>
 			{/if}
 
+			{#if data.hasBlogPosts}
 			<!--
 				Notebook callout: a sibling doorway to the author's-room blog,
 				in a cooler register than the world's chrome. Same shape as the
@@ -299,6 +300,7 @@
 				</div>
 				<div class="journal-arrow bt-meta-link" aria-hidden="true">→</div>
 			</a>
+			{/if}
 		</div>
 
 		{#if data.influenceCard}
