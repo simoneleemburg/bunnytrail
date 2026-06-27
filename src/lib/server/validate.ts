@@ -748,6 +748,7 @@ export function validateGovernedByConstraints(args: ValidateArgs): void {
  */
 const KNOWN_ENTITY_META_FIELDS = new Set([
 	'name',
+	'title',
 	'aliases',
 	'summary',
 	'tags',
