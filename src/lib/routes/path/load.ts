@@ -1,6 +1,7 @@
 import { error, redirect } from '@sveltejs/kit';
 import { graph } from '$lib/server/graph';
 import { readMode } from '$lib/cluster';
+import { isGateEnabled } from '$lib/server/auth';
 import { loadEntityPage } from './entityPage.load';
 import { loadCollectionPage } from './collectionPage.load';
 import { loadAggregateShelfPage } from './aggregateShelfPage.load';
@@ -156,11 +157,17 @@ export type PathPageData = Awaited<ReturnType<typeof load>>;
  * Enumerate every path that this catch-all route handles so that
  * SvelteKit's prerenderer knows which pages to generate.
  *
- * Covers: entity ids, browseable folder paths, chapter sub-pages,
- * craft sub-pages, cluster-scoped /kinds and /symbology, and
- * cross-cluster aggregate shelf / sub-shelf paths.
+ * When the passphrase gate is active (`BUNNYTRAIL_WORLD_SECRET` is set),
+ * returns an empty list so SvelteKit skips prerendering entirely and
+ * serves every page via SSR — which lets the `handle` hook enforce the
+ * session cookie on every request. Prerendered static files bypass the
+ * hook and would be accessible without authentication.
+ *
+ * For ungated worlds the full list is returned and pages are prerendered
+ * as normal for CDN-speed delivery.
  */
 export async function entries(): Promise<{ path: string }[]> {
+	if (isGateEnabled()) return [];
 	await graph.ready();
 
 	const paths = new Set<string>();
