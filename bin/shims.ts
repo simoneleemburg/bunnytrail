@@ -96,9 +96,7 @@ export function planShims(mode: ShimMode): Shim[] {
 		? `\n// Prerender every page at build time. adapter-vercel's serverless\n// functions can't read arbitrary files at runtime, and bunnytrail's\n// loader walks \`content/\` recursively — so we prerender the whole\n// site instead.\n// Set BUNNYTRAIL_NEVER_PRERENDER=1 at build time to disable this\n// (e.g. for a local SSR server where content is read at request time).\nexport const prerender = !process.env.BUNNYTRAIL_NEVER_PRERENDER;\n`
 		: '';
 
-	const homePageExtras = prerender(mode)
-		? `\n// Must not be prerendered — checks the session cookie at request time\n// to decide whether to show the gate or the world content.\nexport const prerender = false;\n`
-		: '';
+	const homePageExtras = '';
 
 	const out: Shim[] = [
 		// Root
