@@ -5,8 +5,6 @@ import { influences } from '$lib/server/influences';
 import { world } from '$lib/server/world';
 import { assets } from '$lib/server/assets';
 import { blog } from '$lib/server/blog';
-import { isGateEnabled, isValidSession, SESSION_COOKIE } from '$lib/server/auth';
-import type { RequestEvent } from '@sveltejs/kit';
 
 /**
  * Recursively walk every browseable folder under `content/`, in
@@ -26,19 +24,13 @@ function allFolders(): string[] {
 	return out;
 }
 
-export async function load(event?: RequestEvent) {
+export async function load() {
 	await graph.ready();
 	await guides.ready();
 	await sources.ready();
 	await influences.ready();
 	await world.ready();
 	await blog.ready();
-
-	// Gate auth state — only relevant when BUNNYTRAIL_WORLD_SECRET is set.
-	const gateEnabled = isGateEnabled();
-	const authed = !gateEnabled || isValidSession(event?.cookies.get(SESSION_COOKIE));
-	const gatePrompt = world.config().gatePrompt;
-	const secretLength = gateEnabled ? (process.env.BUNNYTRAIL_WORLD_SECRET?.trim().length ?? 0) : 0;
 
 	// Guide callouts — content-authored tours of the world that live
 	// under `content_meta/guides/`. The homepage renders one card per
@@ -194,11 +186,7 @@ export async function load(event?: RequestEvent) {
 		// case so a freshly scaffolded world still has a coherent hero.
 		lede: world.ledeHtml(),
 		crest,
-		hasBlogPosts: blog.all().length > 0,
-		// Gate auth state.
-		authed,
-		gatePrompt,
-		secretLength
+		hasBlogPosts: blog.all().length > 0
 	};
 }
 

@@ -46,9 +46,9 @@ export default async function middleware(request: Request): Promise<Response> {
 
 	const { pathname } = new URL(request.url);
 
-	// Always pass through the gate page and its dependencies.
+	// Always pass through the login page and auth endpoints.
 	if (
-		pathname === '/' ||
+		pathname === '/login' ||
 		pathname === '/api/auth/login' ||
 		pathname === '/api/auth/logout' ||
 		pathname === '/api/auth/check' ||
