@@ -8,7 +8,7 @@
  * Runs at the CDN edge before any prerendered static file or SSR
  * response is served. Checks the bt_session cookie against the
  * SHA-256 hash of BUNNYTRAIL_WORLD_SECRET. Unauthenticated requests
- * are redirected to / where the gate UI lives.
+ * are redirected to /login.
  *
  * When BUNNYTRAIL_WORLD_SECRET is unset the middleware is a no-op,
  * so ungated worlds incur no overhead.
@@ -66,7 +66,7 @@ export default async function middleware(request: Request): Promise<Response> {
 	}
 
 	// Not authenticated — redirect to gate.
-	return new Response(null, { status: 303, headers: { Location: '/' } });
+	return new Response(null, { status: 303, headers: { Location: '/login' } });
 }
 
 // Exclude SvelteKit and Vercel internals from middleware — those

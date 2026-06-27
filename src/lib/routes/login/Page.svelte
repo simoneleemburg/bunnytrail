@@ -1,14 +1,13 @@
 <script lang="ts">
 	import type { LoginData } from './load';
 	import { tick } from 'svelte';
-	import { page } from '$app/stores';
 	import { t } from '$lib/i18n';
 
 	let { data }: { data: LoginData } = $props();
 
-	const world = $derived($page.data.world);
-	const ornament = $derived($page.data.ornament);
-	const ui = $derived(t($page.data.world.language));
+	const world = $derived(data.world);
+	const ornament = $derived(data.ornament);
+	const ui = $derived(t(data.world.language));
 
 	// ── Passphrase gate ───────────────────────────────────────
 	// One input box per character. Submit is intercepted via fetch
