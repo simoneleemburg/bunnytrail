@@ -279,28 +279,41 @@ attribute payloads, not route changes).
 4. In the consumer: `npm update bunnytrail` (and `npx bunnytrail sync`
    if routes changed), commit + push. Vercel auto-deploys.
 
-### Edge middleware caveat
+### Auth gate & render mode
 
-Vercel **caches the edge middleware bundle** keyed on the consumer's
-`middleware.ts` source content. A `npm update bunnytrail` that changes
-only `node_modules/bunnytrail/dist/middleware.js` will **not** trigger
-a rebundle — the deployed edge function stays stale.
+The passphrase gate is enforced in **one** place: the SvelteKit
+`handle` hook in `src/lib/hooks.ts`. There is no edge middleware.
 
-When engine middleware logic changes (i.e. `src/lib/middleware.ts`),
-the consumer's `middleware.ts` must also change to bust the cache. The
-`bundle-rev` comment at the top of each consumer's `middleware.ts` is
-the designated lever:
+How render mode interacts with the gate (consumer root layout, baked
+by `bin/shims.ts`):
 
 ```ts
-// bundle-rev: 2 — bump this to force Vercel to rebundle the edge function
-// when only the engine's middleware logic (in node_modules) changes.
+export const prerender = !process.env.BUNNYTRAIL_WORLD_SECRET;
 ```
 
-Bump the integer, commit, push. Vercel will see a changed source file
-and rebuild the edge bundle from scratch.
+- **Ungated world** (no `BUNNYTRAIL_WORLD_SECRET` at build time) →
+  prerender the whole site to static HTML. adapter-vercel serves it
+  from the CDN; the loader walks `content/` at build time. The iPad
+  build (adapter-node, no secret) also lands here.
+- **Gated world** (`BUNNYTRAIL_WORLD_SECRET` set at build time) →
+  SSR. Every request runs through `handle`, which checks the
+  `bt_session` cookie and redirects unauthenticated requests to
+  `/login`. The home page and all deep content paths are gated;
+  only `/login`, `/api/auth/*`, and the prerendered `/api/assets/*`
+  pipeline pass through.
 
-**Both consumers** (`alteria_world` and `familie_leemburg`) need the
-bump whenever `src/lib/middleware.ts` changes in this repo.
+The old dual-gate (edge middleware + handle hook) is gone. The
+middleware couldn't protect prerendered pages, which is why deep
+links hung after login — SvelteKit's client router thought you were
+authed while the middleware 303'd the data fetches. SSR-when-gated
+makes `handle` the single source of truth and removes that race.
+
+**Consumer migration:** `npx bunnytrail sync` removes the now-stale
+root `middleware.ts` automatically (only if it's the generated shim
+that re-exports `bunnytrail/middleware` — hand-authored middleware is
+left alone). The gated consumer must also be built with
+`BUNNYTRAIL_WORLD_SECRET` present in the Vercel build environment, not
+just the runtime environment, so the prerender flag resolves to SSR.
 
 ## Agent etiquette
 

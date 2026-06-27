@@ -16,12 +16,12 @@
 //                    package exports map). Used by world repos that
 //                    install bunnytrail.
 //
-// Consumer shims also include `export const prerender = true` on
-// the root layout to satisfy adapter-vercel's filesystem-access
-// constraints (the loader walks `content/` recursively, which only
-// works at build time).
+// Consumer shims also bake a conditional `prerender` export onto the
+// root layout: prerender when the world is ungated (no
+// BUNNYTRAIL_WORLD_SECRET at build time), SSR when the gate is on so
+// the `handle` hook can enforce auth on every request.
 
-import { mkdir, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, relative, resolve, sep } from 'node:path';
 
 export type ShimMode = 'engine' | 'consumer';
@@ -93,7 +93,7 @@ const server = (mode: ShimMode, lib: string, opts: RouteShimOpts = {}, verb = 'G
 
 export function planShims(mode: ShimMode): Shim[] {
 	const rootLayoutExtras = prerender(mode)
-		? `\n// Prerender every page at build time. adapter-vercel's serverless\n// functions can't read arbitrary files at runtime, and bunnytrail's\n// loader walks \`content/\` recursively — so we prerender the whole\n// site instead.\n// Set BUNNYTRAIL_NEVER_PRERENDER=1 at build time to disable this\n// (e.g. for a local SSR server where content is read at request time).\nexport const prerender = !process.env.BUNNYTRAIL_NEVER_PRERENDER;\n`
+		? `\n// Prerender only when the passphrase gate is OFF. An ungated world has\n// no per-request auth, so baking every page to static HTML at build time\n// is safe and lets adapter-vercel serve from the CDN (the loader can't\n// read \`content/\` at runtime in a serverless function — it walks the tree\n// at build time instead).\n//\n// When BUNNYTRAIL_WORLD_SECRET is set the gate is ON, so we must run SSR:\n// the \`handle\` hook (in bunnytrail/hooks) enforces the session check on\n// every request. Prerendered pages bypass \`handle\` entirely, which is what\n// broke deep-link auth — so gated builds are never prerendered.\n//\n// The iPad build (adapter-node, no secret) and ungated worlds both land in\n// the prerender branch automatically.\nexport const prerender = !process.env.BUNNYTRAIL_WORLD_SECRET;\n`
 		: '';
 
 	const homePageExtras = '';
@@ -225,18 +225,22 @@ export async function generateShims(opts: GenerateShimsOptions): Promise<string[
 	}
 	await reconcile(root, plannedSet);
 
-	// Consumer-only root-level files (live at project root, not src/routes/).
+	// Migration cleanup: earlier engine versions generated a root-level
+	// `middleware.ts` re-exporting `bunnytrail/middleware` (an edge gate).
+	// The gate now lives entirely in the SSR `handle` hook, so a stale
+	// shim would import a deleted export and break the consumer build.
+	// Remove it on sync — but only if it's the generated shim, never a
+	// hand-authored middleware the world may have added themselves.
 	if (opts.mode === 'consumer') {
-		const rootFiles: Shim[] = [
-			{
-				file: 'middleware.ts',
-				contents: `// bundle-rev: 1 — bump this to force Vercel to rebundle the edge function\n// when only the engine's middleware logic (in node_modules) changes.\nexport { default } from 'bunnytrail/middleware';\n\n// Vercel's static analysis for the middleware matcher runs on this file\n// before bundling — it cannot follow re-exports into node_modules to find\n// the config. The matcher must be a static literal here or Vercel ignores\n// it and runs middleware on every route, including /_app/immutable/ assets,\n// causing 303 redirects for JS/CSS module scripts.\nexport const config = {\n\tmatcher: ['/((?!_app/|_vercel/|favicon\\\\.ico).*)']\n};\n`
+		const staleMiddleware = resolve(opts.targetDir, 'middleware.ts');
+		try {
+			const contents = await readFile(staleMiddleware, 'utf8');
+			if (contents.includes('bunnytrail/middleware')) {
+				await rm(staleMiddleware);
+				written.push('removed: middleware.ts');
 			}
-		];
-		for (const { file, contents } of rootFiles) {
-			const full = resolve(opts.targetDir, file);
-			await writeFile(full, contents);
-			written.push(file);
+		} catch {
+			// No middleware.ts present — nothing to clean up.
 		}
 	}
 

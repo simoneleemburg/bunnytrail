@@ -51,26 +51,34 @@ export const init = async () => {
  * every request is checked for a valid session cookie. Requests
  * without a valid session are redirected to /login.
  *
+ * This is the *only* gate. When the secret is set, the consumer's
+ * root layout is not prerendered (see bin/shims.ts), so `handle`
+ * runs on every request — including the home page and every deep
+ * content path. There is no edge middleware; this hook is the single
+ * source of truth for auth.
+ *
  * Always passes through:
  *   - /login — the gate UI itself.
  *   - /api/auth/login — handles form POST.
+ *   - /api/auth/logout — clears the session.
  *   - /api/auth/check — session check endpoint.
- *   - /api/assets/… — needed to style the gate page.
+ *   - /api/assets/… — needed to style the gate page (these are
+ *     prerendered static files regardless of gate state, so they
+ *     can't be gated here anyway; they carry no world content).
  */
 export const handle: Handle = async ({ event, resolve }) => {
 	if (!isGateEnabled()) return resolve(event);
 
 	const pathname = event.url.pathname;
 
-	// Always pass through the home page, login page, and its dependencies.
-	// The home page (/) is prerendered and public — it carries no gated
-	// content (BUNNYTRAIL_WORLD_SECRET is unavailable at build time, so it
-	// renders with gateEnabled=false). Gating it here would loop with the
-	// post-login redirect to /. Real content pages stay gated below.
+	// Only the gate UI, the auth endpoints, and the public asset
+	// pipeline bypass the check. Everything else — including / — is
+	// gated. (Previously / was a passthrough because it was prerendered
+	// and `handle` couldn't protect it; under SSR that's no longer true.)
 	const isPassthrough =
-		pathname === '/' ||
 		pathname === '/login' ||
 		pathname === '/api/auth/login' ||
+		pathname === '/api/auth/logout' ||
 		pathname === '/api/auth/check' ||
 		pathname.startsWith('/api/assets/');
 
