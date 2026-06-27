@@ -148,7 +148,14 @@
 </section>
 
 {#if !data.authed}
-	<section class="gate">
+	<section
+		class="gate"
+		onclick={() => {
+			const nextEmpty = chars.findIndex((c) => !c);
+			const idx = nextEmpty === -1 ? secretLength - 1 : nextEmpty;
+			boxEls[idx]?.focus();
+		}}
+	>
 		<form
 			class="gate-form"
 			method="post"
@@ -921,6 +928,7 @@
 		align-items: center;
 		gap: var(--space-5);
 		padding: var(--space-8) var(--space-5) 6rem;
+		cursor: text;
 	}
 
 	.gate-form {
@@ -962,6 +970,18 @@
 	.gate-boxes {
 		display: flex;
 		gap: var(--space-4);
+		opacity: 1;
+		transition: opacity 300ms;
+	}
+
+	/* When nothing in the form has focus, dim the slots gently */
+	.gate-form:not(:focus-within) .gate-boxes {
+		opacity: 0.45;
+	}
+
+	/* Hovering the gate section while unfocused brightens them back as an invite */
+	.gate:hover .gate-form:not(:focus-within) .gate-boxes {
+		opacity: 0.8;
 	}
 
 	/* Each slot is a positioned wrapper so the glyph can overlay the input */
