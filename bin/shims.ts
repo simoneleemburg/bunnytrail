@@ -230,7 +230,7 @@ export async function generateShims(opts: GenerateShimsOptions): Promise<string[
 		const rootFiles: Shim[] = [
 			{
 				file: 'middleware.ts',
-				contents: `export { default } from 'bunnytrail/middleware';\n\n// Vercel's static analysis for the middleware matcher runs on this file\n// before bundling — it cannot follow re-exports into node_modules to find\n// the config. The matcher must be a static literal here or Vercel ignores\n// it and runs middleware on every route, including /_app/immutable/ assets,\n// causing 303 redirects for JS/CSS module scripts.\nexport const config = {\n\tmatcher: ['/((?!_app/|_vercel/|favicon\\\\.ico).*)']\n};\n`
+				contents: `// bundle-rev: 1 — bump this to force Vercel to rebundle the edge function\n// when only the engine's middleware logic (in node_modules) changes.\nexport { default } from 'bunnytrail/middleware';\n\n// Vercel's static analysis for the middleware matcher runs on this file\n// before bundling — it cannot follow re-exports into node_modules to find\n// the config. The matcher must be a static literal here or Vercel ignores\n// it and runs middleware on every route, including /_app/immutable/ assets,\n// causing 303 redirects for JS/CSS module scripts.\nexport const config = {\n\tmatcher: ['/((?!_app/|_vercel/|favicon\\\\.ico).*)']\n};\n`
 			}
 		];
 		for (const { file, contents } of rootFiles) {

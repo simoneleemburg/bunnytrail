@@ -279,6 +279,29 @@ attribute payloads, not route changes).
 4. In the consumer: `npm update bunnytrail` (and `npx bunnytrail sync`
    if routes changed), commit + push. Vercel auto-deploys.
 
+### Edge middleware caveat
+
+Vercel **caches the edge middleware bundle** keyed on the consumer's
+`middleware.ts` source content. A `npm update bunnytrail` that changes
+only `node_modules/bunnytrail/dist/middleware.js` will **not** trigger
+a rebundle — the deployed edge function stays stale.
+
+When engine middleware logic changes (i.e. `src/lib/middleware.ts`),
+the consumer's `middleware.ts` must also change to bust the cache. The
+`bundle-rev` comment at the top of each consumer's `middleware.ts` is
+the designated lever:
+
+```ts
+// bundle-rev: 2 — bump this to force Vercel to rebundle the edge function
+// when only the engine's middleware logic (in node_modules) changes.
+```
+
+Bump the integer, commit, push. Vercel will see a changed source file
+and rebuild the edge bundle from scratch.
+
+**Both consumers** (`alteria_world` and `familie_leemburg`) need the
+bump whenever `src/lib/middleware.ts` changes in this repo.
+
 ## Agent etiquette
 
 - **Plan with TodoWrite** for multi-step changes.

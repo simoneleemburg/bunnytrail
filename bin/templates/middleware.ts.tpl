@@ -1,3 +1,5 @@
+// bundle-rev: 1 — bump this to force Vercel to rebundle the edge function
+// when only the engine's middleware logic (in node_modules) changes.
 export { default } from 'bunnytrail/middleware';
 
 // Vercel's static analysis for the middleware matcher runs on this file
