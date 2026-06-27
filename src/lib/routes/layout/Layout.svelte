@@ -33,6 +33,7 @@
 			worldMarkStyle: string | null;
 			navSep: string;
 			scopeContext: ScopeContext;
+			gateEnabled: boolean;
 		};
 		children: Snippet;
 	}
@@ -415,6 +416,11 @@
 		if (devBar?.classId) { await navigator.clipboard.writeText(devBar.classId); showToast(devBar.classId); }
 	}
 
+	async function logout() {
+		await fetch('/api/auth/logout', { method: 'POST' });
+		window.location.href = '/';
+	}
+
 	let toast = $state<string | null>(null);
 	let toastTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -615,25 +621,32 @@
 									</ul>
 								</section>
 						{/if}
-						<div class="filters-dev-toggle">
-							<button
-								type="button"
-								class="dev-toggle-btn"
-								class:active={activeMode === 'dev'}
-								onclick={() => switchMode(activeMode === 'dev' ? 'visitor' : 'dev')}
-							>
-							<span class="dev-toggle-indicator" aria-hidden="true"></span>
-							{activeMode === 'dev' ? ui.nav_devmode_disable : ui.nav_devmode_enable}
+					<div class="filters-dev-toggle">
+						<button
+							type="button"
+							class="dev-toggle-btn"
+							class:active={activeMode === 'dev'}
+							onclick={() => switchMode(activeMode === 'dev' ? 'visitor' : 'dev')}
+						>
+						<span class="dev-toggle-indicator" aria-hidden="true"></span>
+						{activeMode === 'dev' ? ui.nav_devmode_disable : ui.nav_devmode_enable}
+						</button>
+					</div>
+					{#if data.gateEnabled}
+						<div class="filters-logout">
+							<button type="button" class="filters-logout-btn" onclick={logout}>
+								{ui.nav_logout}
 							</button>
 						</div>
-					</div>
 					{/if}
 				</div>
+					{/if}
+			</div>
 
-				<button
-					type="button"
-					class="hamburger"
-					aria-label={drawerOpen ? ui.nav_menu_close_aria : ui.nav_menu_open_aria}
+			<button
+				type="button"
+				class="hamburger"
+				aria-label={drawerOpen ? ui.nav_menu_close_aria : ui.nav_menu_open_aria}
 					aria-expanded={drawerOpen}
 					aria-controls="mobile-drawer"
 					onclick={() => (drawerOpen = !drawerOpen)}
@@ -705,6 +718,26 @@
 								</li>
 							{/each}
 						</ul>
+					</div>
+				{/if}
+
+					<div class="drawer-dev-toggle">
+					<button
+						type="button"
+						class="dev-toggle-btn"
+						class:active={activeMode === 'dev'}
+						onclick={() => switchMode(activeMode === 'dev' ? 'visitor' : 'dev')}
+					>
+						<span class="dev-toggle-indicator" aria-hidden="true"></span>
+						{activeMode === 'dev' ? ui.nav_devmode_disable : ui.nav_devmode_enable}
+					</button>
+				</div>
+
+				{#if data.gateEnabled}
+					<div class="drawer-logout">
+						<button type="button" class="drawer-logout-btn" onclick={logout}>
+							{ui.nav_logout}
+						</button>
 					</div>
 				{/if}
 			</div>
@@ -1283,6 +1316,32 @@
 		background: currentColor;
 	}
 
+	.filters-logout {
+		border-top: 1px solid var(--rule);
+		padding-top: var(--space-3);
+		margin-top: var(--space-1);
+	}
+
+	.filters-logout-btn {
+		display: flex;
+		align-items: center;
+		width: 100%;
+		text-align: left;
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-sm);
+		color: var(--ink-faint);
+		background: transparent;
+		border: 0;
+		border-radius: var(--radius-sm);
+		padding: var(--space-2) var(--space-3);
+		cursor: pointer;
+	}
+
+	.filters-logout-btn:hover {
+		color: var(--ink-soft);
+	}
+
 	/* ── Hamburger ───────────────────────────────────────────── */
 	.hamburger {
 		display: none;
@@ -1460,6 +1519,33 @@
 	.drawer-era-list button.selected::before {
 		content: '· ';
 		color: var(--accent);
+	}
+
+	.drawer-dev-toggle {
+		padding: var(--space-4) var(--space-6);
+		border-top: 1px solid var(--parchment-deep, #e0ddd7);
+	}
+
+	.drawer-logout {
+		margin-top: auto;
+		padding: var(--space-4) var(--space-6);
+		border-top: 1px solid var(--parchment-deep, #e0ddd7);
+	}
+
+	.drawer-logout-btn {
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.1em;
+		color: var(--ink-faint);
+		background: none;
+		border: none;
+		padding: 0;
+		cursor: pointer;
+	}
+
+	.drawer-logout-btn:hover {
+		color: var(--accent-warm);
 	}
 
 	/* ── Tablet tighten (821px–1024px) ──────────────────────── */

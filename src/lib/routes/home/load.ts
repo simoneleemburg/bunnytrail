@@ -38,7 +38,7 @@ export async function load(event?: RequestEvent) {
 	const gateEnabled = isGateEnabled();
 	const authed = !gateEnabled || isValidSession(event?.cookies.get(SESSION_COOKIE));
 	const gatePrompt = world.config().gatePrompt;
-	const secretLength = gateEnabled ? (process.env.BUNNYTRAIL_WORLD_SECRET?.length ?? 0) : 0;
+	const secretLength = gateEnabled ? (process.env.BUNNYTRAIL_WORLD_SECRET?.trim().length ?? 0) : 0;
 
 	// Guide callouts — content-authored tours of the world that live
 	// under `content_meta/guides/`. The homepage renders one card per

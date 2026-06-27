@@ -39,6 +39,7 @@ export interface Translations {
 	nav_viewhealth_aria: string;
 	nav_devbar_stub: string;
 	nav_devbar_issues: (n: number) => string;
+	nav_logout: string;
 
 	// ── Home page ──────────────────────────────────────────────────────
 	home_entities: string;
@@ -267,6 +268,7 @@ const en: Translations = {
 	nav_viewhealth_aria: 'View all health issues',
 	nav_devbar_stub: 'stub',
 	nav_devbar_issues: (n) => `${n} issue${n === 1 ? '' : 's'}`,
+	nav_logout: 'Log out',
 
 	// Home
 	home_entities: 'entities',
@@ -496,6 +498,7 @@ const nl: Translations = {
 	nav_viewhealth_aria: 'Alle meldingen bekijken',
 	nav_devbar_stub: 'stub',
 	nav_devbar_issues: (n) => `${n} ${n === 1 ? 'melding' : 'meldingen'}`,
+	nav_logout: 'Uitloggen',
 
 	// Home
 	home_entities: 'entiteiten',

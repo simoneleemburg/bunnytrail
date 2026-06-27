@@ -3,6 +3,7 @@ import { graph } from '$lib/server/graph';
 import { world } from '$lib/server/world';
 import { assets } from '$lib/server/assets';
 import { readScope, readMode, type ScopeContext, type ViewMode } from '$lib/cluster';
+import { isGateEnabled } from '$lib/server/auth';
 
 /**
  * Cluster scope for the masthead nav.
@@ -173,7 +174,8 @@ export async function load({ url }: { url: URL }) {
 		ornamentGlyphStyle,
 		worldMarkStyle,
 		navSep,
-		scopeContext: { clusters, unionShelves, clusterAwarePaths } satisfies ScopeContext
+		scopeContext: { clusters, unionShelves, clusterAwarePaths } satisfies ScopeContext,
+		gateEnabled: isGateEnabled()
 	};
 }
 
