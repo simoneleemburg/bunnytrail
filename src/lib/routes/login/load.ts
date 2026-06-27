@@ -2,6 +2,7 @@ import { redirect } from '@sveltejs/kit';
 import { world } from '$lib/server/world';
 import { assets } from '$lib/server/assets';
 import { isGateEnabled, isValidSession, SESSION_COOKIE } from '$lib/server/auth';
+import { WORLD_CONFIG_PATH } from '$lib/server/globals';
 import type { RequestEvent } from '@sveltejs/kit';
 
 // /login must never be prerendered — it reads cookies to check the
@@ -16,6 +17,7 @@ export const prerender = false;
  * and this page redirects straight to / too.
  */
 export async function load(event: RequestEvent) {
+	console.log('[bunnytrail/login] cwd:', process.cwd(), 'world config path:', WORLD_CONFIG_PATH);
 	await world.ready();
 
 	// If gate is disabled or session is already valid → go home.
