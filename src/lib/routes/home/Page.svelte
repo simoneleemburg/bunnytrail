@@ -166,9 +166,6 @@
 			bind:this={formEl}
 		>
 			<p class="gate-prompt">{data.gatePrompt}</p>
-			{#if gateError}
-				<p class="gate-error" role="alert">That's not it.</p>
-			{/if}
 			<!-- Hidden field carries the assembled secret on submit -->
 			<input type="hidden" name="secret" value={secretValue} />
 			<div class="gate-boxes" aria-label="Secret passphrase">
@@ -199,6 +196,9 @@
 					</div>
 				{/each}
 			</div>
+			{#if gateError}
+				<p class="gate-error" role="alert">That's not it.</p>
+			{/if}
 		</form>
 	</section>
 {/if}
