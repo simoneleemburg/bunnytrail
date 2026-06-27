@@ -66,7 +66,7 @@
 		 * the all-clusters scope (e.g. /earth/history?scope=all).
 		 * `focusHref` is the URL to navigate to (the same page without
 		 * ?scope=all, with the cluster prefix). `focusClusterLabel` is
-		 * the display name (e.g. "Earth").
+		 * the full translated label string (e.g. "Focus op Leemburg →").
 		 */
 		focusHref?: string;
 		focusClusterLabel?: string;
@@ -75,6 +75,7 @@
 		 * the cluster focus hint. Used on cluster-scoped sub-shelf pages
 		 * viewed in all-clusters scope (e.g. /aurethia/people/characters
 		 * ?scope=all) where the canonical aggregate view is /people/characters.
+		 * Pass the full translated label string (e.g. "← Alle Personen tonen").
 		 */
 		viewAllHref?: string;
 		viewAllLabel?: string;
@@ -180,15 +181,15 @@
 	{/if}
 	{#if (viewAllHref && viewAllLabel) || (focusHref && focusClusterLabel)}
 		<p class="focus-hint">
-			{#if viewAllHref && viewAllLabel}<a class="focus-link focus-link--back" href={viewAllHref}
-					>← View all {viewAllLabel}</a
-				>{/if}{#if viewAllHref && viewAllLabel && focusHref && focusClusterLabel}<span
-					class="focus-sep">—</span
-				>{/if}{#if focusHref && focusClusterLabel}<a
-					class="focus-link"
-					href={focusHref}
-					onclick={onFocusClick}>Focus on {focusClusterLabel} →</a
-				>{/if}
+		{#if viewAllHref && viewAllLabel}<a class="focus-link focus-link--back" href={viewAllHref}
+				>{viewAllLabel}</a
+			>{/if}{#if viewAllHref && viewAllLabel && focusHref && focusClusterLabel}<span
+				class="focus-sep">—</span
+			>{/if}{#if focusHref && focusClusterLabel}<a
+				class="focus-link"
+				href={focusHref}
+				onclick={onFocusClick}>{focusClusterLabel}</a
+			>{/if}
 		</p>
 	{/if}
 </header>

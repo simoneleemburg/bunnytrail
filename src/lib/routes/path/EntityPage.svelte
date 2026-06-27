@@ -747,7 +747,7 @@
 		justify-content: space-between;
 		align-items: baseline;
 		max-width: var(--prose-max);
-		margin: 0 auto var(--space-6);
+		margin: 0 auto var(--space-4);
 		gap: var(--space-4);
 	}
 

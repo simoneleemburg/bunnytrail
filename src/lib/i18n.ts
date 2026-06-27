@@ -116,6 +116,8 @@ export interface Translations {
 	collection_filter_more: (n: number) => string;
 	collection_filter_fewer: string;
 	collection_filter_clear: string;
+	collection_view_all: (label: string) => string;
+	collection_focus_on: (label: string) => string;
 
 	// ── Kinds ──────────────────────────────────────────────────────────
 	kinds_title: string;
@@ -342,6 +344,8 @@ const en: Translations = {
 	collection_filter_more: (n) => `+${n} more`,
 	collection_filter_fewer: 'show fewer',
 	collection_filter_clear: 'clear',
+	collection_view_all: (label) => `← View all ${label}`,
+	collection_focus_on: (label) => `Focus on ${label} →`,
 
 	// Kinds
 	kinds_title: 'Kinds',
@@ -569,6 +573,8 @@ const nl: Translations = {
 	collection_filter_more: (n) => `+${n} meer`,
 	collection_filter_fewer: 'minder tonen',
 	collection_filter_clear: 'wissen',
+	collection_view_all: (label) => `← Alle ${label} tonen`,
+	collection_focus_on: (label) => `Focus op ${label} →`,
 
 	// Kinds
 	kinds_title: 'Soorten',

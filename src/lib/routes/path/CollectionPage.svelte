@@ -49,7 +49,9 @@
 	const viewAllLabel = $derived.by(() => {
 		if (!viewAllHref) return null;
 		// Use the page's plural label (e.g. "Characters") from the data.
-		return data.label?.plural ?? null;
+		const label = data.label?.plural ?? null;
+		if (!label) return null;
+		return ui.collection_view_all(label);
 	});
 
 	// Only show the cluster focus hint when there's no aggregate sub-shelf link.
@@ -59,11 +61,11 @@
 	});
 	const focusClusterLabel = $derived.by(() => {
 		if (!focusCluster) return null;
-		return (
+		const clusterName =
 			page.data.clusterOptions?.find(
 				(o: { value: string; label: string }) => o.value === focusCluster
-			)?.label ?? focusCluster
-		);
+			)?.label ?? focusCluster;
+		return ui.collection_focus_on(clusterName);
 	});
 
 	const rankGlyph = $derived(
