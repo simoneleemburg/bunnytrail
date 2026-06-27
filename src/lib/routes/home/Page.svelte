@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { HomeData } from './load';
+	import { tick } from 'svelte';
 	import { page } from '$app/stores';
 	import Tag from '$lib/components/Tag.svelte';
 	import CollectionCard from '$lib/components/CollectionCard.svelte';
@@ -29,7 +30,7 @@
 
 	const secretValue = $derived(chars.join(''));
 
-	function onBoxInput(i: number, e: Event) {
+	async function onBoxInput(i: number, e: Event) {
 		const val = (e.target as HTMLInputElement).value;
 		const ch = val.slice(-1);
 		chars[i] = ch;
@@ -37,6 +38,7 @@
 			boxEls[i + 1]?.focus();
 		}
 		if (chars.every((c) => c !== '') && formEl) {
+			await tick();
 			formEl.requestSubmit();
 		}
 	}
@@ -59,7 +61,7 @@
 		}
 	}
 
-	function onBoxPaste(e: ClipboardEvent) {
+	async function onBoxPaste(e: ClipboardEvent) {
 		e.preventDefault();
 		const text = e.clipboardData?.getData('text') ?? '';
 		const trimmed = text.slice(0, secretLength);
@@ -70,6 +72,7 @@
 		const focusIdx = nextEmpty === -1 ? secretLength - 1 : nextEmpty;
 		boxEls[focusIdx]?.focus();
 		if (chars.every((c) => c !== '') && formEl) {
+			await tick();
 			formEl.requestSubmit();
 		}
 	}
