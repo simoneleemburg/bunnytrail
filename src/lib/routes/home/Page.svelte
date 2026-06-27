@@ -134,7 +134,7 @@
 <svelte:head>
 	<title>{world.name}</title></svelte:head>
 
-<section class="hero">
+<section class="hero" class:gate-active={!data.authed}>
 	<!--
 		Crest: optional ornament rendered above the world title.
 		Worlds opt in by dropping `assets/crest.svg` in their world
@@ -402,6 +402,11 @@
 		margin: var(--space-6) auto var(--space-8);
 		max-width: var(--prose-max);
 		text-align: center;
+	}
+
+	.hero.gate-active {
+		margin-bottom: 0;
+		margin-top: var(--space-4);
 	}
 
 	.crest {
@@ -985,8 +990,25 @@
 		flex-direction: column;
 		align-items: center;
 		gap: var(--space-5);
-		padding: var(--space-8) var(--space-5) 6rem;
+		padding: var(--space-6) var(--space-5);
 		cursor: text;
+	}
+
+	/* When the gate is showing, stretch main to the full viewport height
+	   and push the gate section to the bottom so the world crest + lede
+	   and the input box are both visible without scrolling. */
+	:global(main:has(.gate-active)) {
+		display: flex;
+		flex-direction: column;
+		min-height: calc(100svh - 4rem);
+		padding-bottom: 0 !important;
+		padding-top: clamp(var(--space-4), 3svh, var(--space-7)) !important;
+	}
+
+	:global(.gate-active ~ .gate) {
+		margin-top: auto;
+		padding-top: var(--space-4);
+		padding-bottom: max(var(--space-5), env(safe-area-inset-bottom));
 	}
 
 	.gate-form {
