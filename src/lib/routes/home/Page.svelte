@@ -928,8 +928,8 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: var(--space-8);
-		padding: 0 var(--space-5) var(--space-12);
+		gap: var(--space-5);
+		padding: var(--space-8) var(--space-5) 6rem;
 	}
 
 	.gate-fleuron {
