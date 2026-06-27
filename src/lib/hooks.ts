@@ -62,14 +62,14 @@ export const init = async () => {
  *   - /api/auth/login — handles form POST.
  *   - /api/auth/logout — clears the session.
  *   - /api/auth/check — session check endpoint.
- *   - /api/assets/… — needed to style the gate page.
- *   - /api/entity-assets/…, /api/guide-assets/…, /api/influence-assets/…
- *     — content-sibling images embedded in prose. These endpoints are
- *     `prerender = true`, so they're baked into static files at build
- *     and served by the CDN, which bypasses `handle` entirely. Gating
- *     them here only breaks the images for authenticated users (the
- *     function path), without adding protection (the static file is
- *     CDN-public regardless). They carry image bytes, not gated text.
+ *   - /api/assets/… — needed to style the gate page (these are
+ *     prerendered static files regardless of gate state, so they
+ *     can't be gated here anyway; they carry no world content).
+ *
+ * NOT passed through (deliberately gated): /api/entity-assets/…,
+ * /api/guide-assets/…, /api/influence-assets/… — these stream images
+ * that live alongside content and must stay behind the gate. They are
+ * served SSR (prerender = false) so this hook runs on every request.
  */
 export const handle: Handle = async ({ event, resolve }) => {
 	if (!isGateEnabled()) return resolve(event);
@@ -77,18 +77,16 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const pathname = event.url.pathname;
 
 	// Only the gate UI, the auth endpoints, and the public asset
-	// pipeline bypass the check. Everything else — including / — is
-	// gated. (Previously / was a passthrough because it was prerendered
-	// and `handle` couldn't protect it; under SSR that's no longer true.)
+	// pipeline bypass the check. Everything else — including / and the
+	// content-asset image endpoints — is gated. (Previously / was a
+	// passthrough because it was prerendered and `handle` couldn't
+	// protect it; under SSR that's no longer true.)
 	const isPassthrough =
 		pathname === '/login' ||
 		pathname === '/api/auth/login' ||
 		pathname === '/api/auth/logout' ||
 		pathname === '/api/auth/check' ||
-		pathname.startsWith('/api/assets/') ||
-		pathname.startsWith('/api/entity-assets/') ||
-		pathname.startsWith('/api/guide-assets/') ||
-		pathname.startsWith('/api/influence-assets/');
+		pathname.startsWith('/api/assets/');
 
 	if (isPassthrough) return resolve(event);
 

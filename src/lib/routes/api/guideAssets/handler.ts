@@ -23,11 +23,14 @@ import { IMAGE_EXTENSIONS } from '$lib/server/markdown';
  *   • The filename must be a flat name (no slashes), contain no
  *     `..`, and carry an allow-listed image extension.
  *
- * Prerendering: `prerender = true` + `entries()` so every guide
- * sibling image gets baked into the static output at build time.
+ * Render mode mirrors the root layout: prerender = true for a public
+ * world (bake every guide sibling image into the static output), but
+ * prerender = false for a gated world (BUNNYTRAIL_SSR set) so the
+ * images are served by a runtime function behind the `handle` gate
+ * instead of becoming public CDN objects.
  */
 
-export const prerender = true;
+export const prerender = !process.env.BUNNYTRAIL_SSR;
 
 export const entries = async (): Promise<Array<{ slug: string; filename: string }>> => {
 	const out: Array<{ slug: string; filename: string }> = [];

@@ -29,14 +29,23 @@ import { IMAGE_EXTENSIONS } from '$lib/server/markdown';
  */
 
 /**
- * Prerender every sibling image at build time. Same constraint as
- * `/api/assets/[name]`: adapter-vercel's serverless functions can't
- * read the world's `content/` tree, so every image URL must be
- * baked into the static output. SvelteKit only emits static files
- * for dynamic endpoints when both `prerender = true` and `entries()`
- * are exported.
+ * Render mode mirrors the root layout (see bin/shims.ts):
+ *
+ *   • Public world (BUNNYTRAIL_SSR unset) → prerender = true. The
+ *     whole site is static; bake every sibling image into the output
+ *     so adapter-vercel's CDN can serve them (the function can't read
+ *     `content/` when the site is fully prerendered). entries() below
+ *     enumerates them.
+ *   • Gated world (BUNNYTRAIL_SSR set) → prerender = false. These
+ *     images are login-only content, so they must be served by a
+ *     runtime function that passes through the `handle` gate. A
+ *     prerendered file would be a public CDN object — unauthenticated
+ *     and ungatable. The function reads `content/` at runtime; the
+ *     world's content tree is bundled into the serverless function by
+ *     the consumer's vercel.json buildCommand (cpSync into the
+ *     catch-all function).
  */
-export const prerender = true;
+export const prerender = !process.env.BUNNYTRAIL_SSR;
 
 export const entries = async (): Promise<Array<{ path: string }>> => {
 	await graph.ready();

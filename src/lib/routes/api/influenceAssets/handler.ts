@@ -15,9 +15,14 @@ import { IMAGE_EXTENSIONS } from '$lib/server/markdown';
  * prose; the markdown renderer rewrites it to this endpoint when the
  * influence's slug is passed as `imageBaseDir` with
  * `imageBaseEndpoint = 'influence-assets'`.
+ *
+ * Render mode mirrors the root layout: prerender = true for a public
+ * world, but prerender = false for a gated world (BUNNYTRAIL_SSR set)
+ * so the images are served by a runtime function behind the `handle`
+ * gate rather than becoming public CDN objects.
  */
 
-export const prerender = true;
+export const prerender = !process.env.BUNNYTRAIL_SSR;
 
 export const entries = async (): Promise<Array<{ slug: string; filename: string }>> => {
 	const out: Array<{ slug: string; filename: string }> = [];
