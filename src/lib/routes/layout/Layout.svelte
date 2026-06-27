@@ -1307,7 +1307,7 @@
 
 	.hamburger-bar {
 		display: block;
-		height: 1px;
+		height: 1.5px;
 		background: var(--ink);
 		transition:
 			transform 160ms,
@@ -1315,13 +1315,13 @@
 	}
 
 	.hamburger[aria-expanded='true'] .hamburger-bar:nth-child(1) {
-		transform: translateY(5px) rotate(45deg);
+		transform: translateY(5.5px) rotate(45deg);
 	}
 	.hamburger[aria-expanded='true'] .hamburger-bar:nth-child(2) {
 		opacity: 0;
 	}
 	.hamburger[aria-expanded='true'] .hamburger-bar:nth-child(3) {
-		transform: translateY(-5px) rotate(-45deg);
+		transform: translateY(-5.5px) rotate(-45deg);
 	}
 
 	/* ── Drawer ──────────────────────────────────────────────── */
@@ -1458,8 +1458,8 @@
 		color: var(--accent);
 	}
 
-	/* ── Tablet tighten (821px–1024px) ──────────────────────── */
-	@media (min-width: 821px) and (max-width: 1024px) {
+	/* ── Tablet tighten (901px–1024px) ──────────────────────── */
+	@media (min-width: 901px) and (max-width: 1024px) {
 		:global(:where(.masthead)) {
 			padding-left: var(--space-5);
 			padding-right: var(--space-5);
@@ -1479,7 +1479,7 @@
 	}
 
 	/* ── Responsive collapse ─────────────────────────────────── */
-	@media (max-width: 820px) {
+	@media (max-width: 900px) {
 		.masthead {
 			padding: var(--space-4) var(--space-5);
 		}
