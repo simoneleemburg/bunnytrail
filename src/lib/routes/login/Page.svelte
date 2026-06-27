@@ -221,6 +221,9 @@
 		line-height: 1.15;
 		max-width: 100%;
 		text-align: center;
+		overflow: hidden;
+		overflow-wrap: break-word;
+		word-break: break-word;
 		background: linear-gradient(
 			180deg,
 			var(--ink) 0%,
@@ -232,6 +235,14 @@
 		color: transparent;
 	}
 
+	@media (max-width: 480px) {
+		.hero-title {
+			letter-spacing: 0.08em;
+			text-indent: 0.08em;
+			padding-right: 0.08em;
+		}
+	}
+
 	/* ── Passphrase gate ──────────────────────────────────────── */
 	.gate {
 		display: flex;
@@ -240,6 +251,8 @@
 		gap: var(--space-5);
 		padding: var(--space-6) var(--space-5);
 		cursor: text;
+		width: 100%;
+		max-width: 100%;
 	}
 
 	.gate-form {
@@ -247,6 +260,8 @@
 		flex-direction: column;
 		align-items: center;
 		gap: var(--space-5);
+		width: 100%;
+		max-width: 100%;
 	}
 
 	.gate-prompt {
@@ -290,7 +305,10 @@
 
 	.gate-boxes {
 		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
 		gap: var(--space-4);
+		max-width: 100%;
 		opacity: 1;
 		transition: opacity 300ms;
 	}
