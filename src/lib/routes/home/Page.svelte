@@ -149,15 +149,6 @@
 
 {#if !data.authed}
 	<section class="gate">
-		<div class="bt-fleuron gate-fleuron" aria-hidden="true">
-			<span class="bt-fleuron__rule"></span>
-			{#if ornament.svg}
-				<span class="bt-fleuron__glyph bt-fleuron__glyph--svg">{@html ornament.svg}</span>
-			{:else}
-				<span class="bt-fleuron__glyph"></span>
-			{/if}
-			<span class="bt-fleuron__rule"></span>
-		</div>
 		<form
 			class="gate-form"
 			method="post"
@@ -930,11 +921,6 @@
 		align-items: center;
 		gap: var(--space-5);
 		padding: var(--space-8) var(--space-5) 6rem;
-	}
-
-	.gate-fleuron {
-		width: 100%;
-		max-width: var(--prose-max, 38rem);
 	}
 
 	.gate-form {
