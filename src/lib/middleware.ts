@@ -46,8 +46,14 @@ export default async function middleware(request: Request): Promise<Response> {
 
 	const { pathname } = new URL(request.url);
 
-	// Always pass through the login page and auth endpoints.
+	// Always pass through the login page, home page, and auth endpoints.
+	// The home page is prerendered as a static file — the handle hook
+	// (SSR) can't protect it, and the prerendered HTML is already baked
+	// without gate content (BUNNYTRAIL_WORLD_SECRET is unavailable at
+	// build time). Content pages below / go through SSR where the
+	// handle hook enforces the gate.
 	if (
+		pathname === '/' ||
 		pathname === '/login' ||
 		pathname === '/api/auth/login' ||
 		pathname === '/api/auth/logout' ||
