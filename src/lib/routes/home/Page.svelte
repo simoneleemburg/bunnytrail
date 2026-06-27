@@ -982,14 +982,17 @@
 		transition: background-color 200ms;
 	}
 
-	/* Focused empty slot: pulse the underline between ink-soft and accent-warm */
+	/* Focused empty slot: sharp on/off pulse with glow at peak */
 	@keyframes gate-pulse {
-		0%, 100% { background: var(--ink-soft); }
-		50%       { background: var(--accent-warm); }
+		0%   { height: 1.5px; background: var(--ink-soft);   box-shadow: none; opacity: 1; }
+		40%  { height: 2.5px; background: var(--accent-warm); box-shadow: 0 0 6px 1px var(--accent-warm); opacity: 1; }
+		60%  { height: 2.5px; background: var(--accent-warm); box-shadow: 0 0 6px 1px var(--accent-warm); opacity: 1; }
+		85%  { height: 1.5px; background: var(--ink-soft);   box-shadow: none; opacity: 0.2; }
+		100% { height: 1.5px; background: var(--ink-soft);   box-shadow: none; opacity: 1; }
 	}
 
 	.gate-slot--focused:not(.gate-slot--filled)::after {
-		animation: gate-pulse 1.6s ease-in-out infinite;
+		animation: gate-pulse 1.4s ease-in-out infinite;
 	}
 
 	/* Filled slot: hide the underline entirely */
@@ -1014,6 +1017,13 @@
 	}
 
 	/* Ornament glyph shown when slot is filled */
+	@keyframes gate-glyph-emerge {
+		0%   { opacity: 0;   transform: scale(0.5);   text-shadow: 0 0 18px var(--accent-warm); filter: blur(4px); }
+		40%  { opacity: 0.9; transform: scale(1.25);  text-shadow: 0 0 12px var(--accent-warm); filter: blur(1px); }
+		70%  { opacity: 1;   transform: scale(0.95);  text-shadow: 0 0 4px var(--accent-warm);  filter: blur(0);   }
+		100% { opacity: 1;   transform: scale(1);     text-shadow: none;                         filter: blur(0);   }
+	}
+
 	.gate-glyph {
 		font-family: var(--font-display);
 		font-size: var(--text-lg);
@@ -1022,6 +1032,7 @@
 		padding-bottom: 0.3em;
 		pointer-events: none;
 		user-select: none;
+		animation: gate-glyph-emerge 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 	}
 
 	/* ── Mobile: single column, influence card hoisted above left-column list */
