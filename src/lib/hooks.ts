@@ -62,8 +62,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	const pathname = event.url.pathname;
 
-	// Always pass through the login page and its dependencies.
+	// Always pass through the home page, login page, and its dependencies.
+	// The home page (/) is prerendered and public — it carries no gated
+	// content (BUNNYTRAIL_WORLD_SECRET is unavailable at build time, so it
+	// renders with gateEnabled=false). Gating it here would loop with the
+	// post-login redirect to /. Real content pages stay gated below.
 	const isPassthrough =
+		pathname === '/' ||
 		pathname === '/login' ||
 		pathname === '/api/auth/login' ||
 		pathname === '/api/auth/check' ||

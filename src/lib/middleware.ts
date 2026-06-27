@@ -72,15 +72,7 @@ export default async function middleware(request: Request): Promise<Response> {
 	}
 
 	// Not authenticated — redirect to gate.
-	// _debug_v2 header busts Vercel's edge bundle cache and surfaces
-	// whether the edge runtime can read the (encrypted) secret.
-	return new Response(null, {
-		status: 303,
-		headers: {
-			Location: '/login',
-			'x-bt-gate': `secret=${secret ? 'yes' : 'no'};cookie=${cookie ? 'yes' : 'no'}`
-		}
-	});
+	return new Response(null, { status: 303, headers: { Location: '/login' } });
 }
 
 // Exclude SvelteKit and Vercel internals from middleware — those
