@@ -41,14 +41,11 @@
 		await tick();
 		const body = new FormData();
 		body.set('secret', secretValue);
-		const res = await fetch('/api/auth/login', { method: 'POST', body, redirect: 'manual' });
-		// A successful login redirects to /; an opaqueredirect type means success.
-		// A redirect to /?gate_error=1 means wrong secret.
-		if (res.type === 'opaqueredirect' || res.redirected && !res.url.includes('gate_error')) {
-			// Success — follow through to the home page
+		const res = await fetch('/api/auth/login', { method: 'POST', body });
+		const { ok } = await res.json();
+		if (ok) {
 			window.location.href = '/';
 		} else {
-			// Wrong secret — clear inputs, show toast, refocus
 			chars = Array(secretLength).fill('');
 			showToast();
 			await tick();
