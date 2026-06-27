@@ -27,6 +27,22 @@ This repo is configured for Vercel via `adapter-vercel`. Push to a
 branch connected to a Vercel project; the site prerenders entirely at
 build time.
 
+### Gating the world (optional)
+
+To put the world behind a passphrase:
+
+1. Set `BUNNYTRAIL_WORLD_SECRET` (the passphrase) in the Vercel
+   **runtime** environment. This drives the auth check.
+2. Set `BUNNYTRAIL_SSR=1` in the Vercel **build** environment — or
+   prepend it to the `buildCommand` in `vercel.json`
+   (`"BUNNYTRAIL_SSR=1 npm run build && …"`). This flips the site from
+   prerendered to SSR so the auth hook runs on every request.
+
+Both are required for a gated deploy. `BUNNYTRAIL_WORLD_SECRET` is
+sensitive (runtime-only, invisible to the build), which is why the
+render mode is driven by the separate, build-visible `BUNNYTRAIL_SSR`.
+Leave both unset for a public, fully-prerendered world.
+
 ## Update the engine
 
 ```bash
