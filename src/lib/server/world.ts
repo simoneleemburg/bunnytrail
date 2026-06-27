@@ -68,6 +68,14 @@ export interface OrnamentConfig {
 export interface WorldConfig {
 	name: string;
 	shortName: string;
+	/**
+	 * Optional display title for the home page hero `<h1>`. When set,
+	 * shown in place of `name` on the homepage only — useful when the
+	 * masthead wordmark is a short identifier (e.g. "Leemburg") but the
+	 * hero needs a more descriptive title (e.g. "Familiegeschiedenis").
+	 * Falls back to `name` when absent.
+	 */
+	heroTitle: string | null;
 	tagline: string;
 	allScopeLabel: string;
 	ornament: OrnamentConfig;
@@ -131,6 +139,7 @@ function fallbackConfig(): WorldConfig {
 	return {
 		name: FALLBACK_NAME,
 		shortName: FALLBACK_NAME,
+		heroTitle: null,
 		tagline: FALLBACK_TAGLINE,
 		allScopeLabel: `All ${FALLBACK_NAME}`,
 		ornament: fallbackOrnament(),
@@ -189,6 +198,7 @@ export async function loadWorld(
 	const name = readString(meta, 'name', issues) ?? FALLBACK_NAME;
 	const tagline = readString(meta, 'tagline', issues) ?? FALLBACK_TAGLINE;
 	const shortName = readString(meta, 'shortName', issues) ?? name;
+	const heroTitle = readString(meta, 'heroTitle', issues) ?? null;
 	const allScopeLabel = readString(meta, 'allScopeLabel', issues) ?? `All ${name}`;
 	const ornament = readOrnament(meta, issues);
 	const allowUndefinedRelations = readAllowUndefinedRelations(meta, issues);
@@ -202,7 +212,7 @@ export async function loadWorld(
 	const ledeHtml = body.trim() === '' ? null : renderPlainBody(body);
 
 	return {
-		config: { name, shortName, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties, disableScopePainting, eras, gatePrompt, language },
+		config: { name, shortName, heroTitle, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties, disableScopePainting, eras, gatePrompt, language },
 		ledeHtml,
 		present: true,
 		issues

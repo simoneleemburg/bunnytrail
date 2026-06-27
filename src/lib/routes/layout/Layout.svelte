@@ -22,7 +22,7 @@
 		activeEra: string | null;
 		activeMode: ViewMode;
 		issueCount: number;
-		world: { name: string; shortName: string; tagline: string; allScopeLabel: string; eras: EraConfig | null };
+		world: { name: string; shortName: string; heroTitle: string | null; tagline: string; allScopeLabel: string; eras: EraConfig | null };
 			wordmark: string | null;
 			ornament: {
 				glyph: string | null;

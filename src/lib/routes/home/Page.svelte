@@ -132,8 +132,7 @@
 </script>
 
 <svelte:head>
-	<title>{world.name}</title>
-</svelte:head>
+	<title>{world.name}</title></svelte:head>
 
 <section class="hero">
 	<!--
@@ -148,7 +147,7 @@
 		<div class="crest" aria-hidden="true">{@html data.crest}</div>
 	{/if}
 
-	<h1 class="hero-title">{world.name}</h1>
+	<h1 class="hero-title">{world.heroTitle ?? world.name}</h1>
 
 	<!--
 		Hero divider: a thin rule with a centred ornament between
