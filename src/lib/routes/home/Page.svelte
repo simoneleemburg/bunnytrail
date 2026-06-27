@@ -11,16 +11,17 @@
 	const ornament = $derived($page.data.ornament);
 
 	const wordCount = $derived(data.totalWords.toLocaleString());
-	const gateError = $derived($page.url.searchParams.get('gate_error') === '1');
 
 	// ── Passphrase gate ───────────────────────────────────────
-	// One input box per character. Values are kept in sync via a
-	// hidden <input name="secret"> that the form actually submits.
+	// One input box per character. Submit is intercepted via fetch
+	// so wrong-password feedback is a local toast, not a URL redirect.
 	const secretLength = $derived(data.secretLength);
 	let chars = $state<string[]>([]);
 	let boxEls = $state<HTMLInputElement[]>([]);
 	let formEl = $state<HTMLFormElement | null>(null);
 	let focusedIdx = $state<number>(-1);
+	let toastVisible = $state(false);
+	let toastTimer: ReturnType<typeof setTimeout> | null = null;
 
 	$effect(() => {
 		if (chars.length !== secretLength) {
@@ -30,6 +31,31 @@
 
 	const secretValue = $derived(chars.join(''));
 
+	function showToast() {
+		if (toastTimer) clearTimeout(toastTimer);
+		toastVisible = true;
+		toastTimer = setTimeout(() => (toastVisible = false), 2200);
+	}
+
+	async function submitSecret() {
+		await tick();
+		const body = new FormData();
+		body.set('secret', secretValue);
+		const res = await fetch('/api/auth/login', { method: 'POST', body, redirect: 'manual' });
+		// A successful login redirects to /; an opaqueredirect type means success.
+		// A redirect to /?gate_error=1 means wrong secret.
+		if (res.type === 'opaqueredirect' || res.redirected && !res.url.includes('gate_error')) {
+			// Success — follow through to the home page
+			window.location.href = '/';
+		} else {
+			// Wrong secret — clear inputs, show toast, refocus
+			chars = Array(secretLength).fill('');
+			showToast();
+			await tick();
+			boxEls[0]?.focus();
+		}
+	}
+
 	async function onBoxInput(i: number, e: Event) {
 		const val = (e.target as HTMLInputElement).value;
 		const ch = val.slice(-1);
@@ -37,9 +63,8 @@
 		if (ch && i < secretLength - 1) {
 			boxEls[i + 1]?.focus();
 		}
-		if (chars.every((c) => c !== '') && formEl) {
-			await tick();
-			formEl.requestSubmit();
+		if (chars.every((c) => c !== '')) {
+			await submitSecret();
 		}
 	}
 
@@ -71,9 +96,8 @@
 		const nextEmpty = chars.findIndex((c) => !c);
 		const focusIdx = nextEmpty === -1 ? secretLength - 1 : nextEmpty;
 		boxEls[focusIdx]?.focus();
-		if (chars.every((c) => c !== '') && formEl) {
-			await tick();
-			formEl.requestSubmit();
+		if (chars.every((c) => c !== '')) {
+			await submitSecret();
 		}
 	}
 </script>
@@ -159,15 +183,8 @@
 			boxEls[idx]?.focus();
 		}}
 	>
-		<form
-			class="gate-form"
-			method="post"
-			action="/api/auth/login"
-			bind:this={formEl}
-		>
+		<div class="gate-form">
 			<p class="gate-prompt">{data.gatePrompt}</p>
-			<!-- Hidden field carries the assembled secret on submit -->
-			<input type="hidden" name="secret" value={secretValue} />
 			<div class="gate-boxes" aria-label="Secret passphrase">
 				{#each chars as ch, i (i)}
 					<div
@@ -196,10 +213,10 @@
 					</div>
 				{/each}
 			</div>
-			{#if gateError}
-				<p class="gate-error" role="alert">That's not it.</p>
-			{/if}
-		</form>
+		</div>
+		{#if toastVisible}
+			<p class="gate-toast" role="alert">That's not it.</p>
+		{/if}
 	</section>
 {/if}
 
@@ -968,6 +985,24 @@
 		text-align: center;
 		margin: 0;
 		font-style: italic;
+	}
+
+	.gate-toast {
+		font-family: var(--font-display);
+		font-size: var(--text-sm);
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--ink-soft);
+		font-style: italic;
+		margin: 0;
+		animation: gate-toast-fade 2.2s ease-out both;
+	}
+
+	@keyframes gate-toast-fade {
+		0%   { opacity: 0; transform: translateY(-4px); }
+		12%  { opacity: 1; transform: translateY(0); }
+		70%  { opacity: 1; }
+		100% { opacity: 0; }
 	}
 
 	.gate-boxes {
