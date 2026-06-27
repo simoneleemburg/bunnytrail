@@ -98,6 +98,13 @@ export interface WorldConfig {
 	 * in the masthead and the `era` field on entity cards.
 	 */
 	eras: EraConfig | null;
+	/**
+	 * Custom prompt shown on the passphrase gate form on the home page.
+	 * Only visible when `BUNNYTRAIL_WORLD_SECRET` is set. Authored as
+	 * `secret_prompt` in `content_meta/world.md` frontmatter.
+	 * Falls back to a neutral default when absent.
+	 */
+	gatePrompt: string;
 }
 
 const FALLBACK_NAME = 'Bunnytrail';
@@ -124,7 +131,8 @@ function fallbackConfig(): WorldConfig {
 		allowUndefinedRelations: true,
 		allowUndefinedProperties: true,
 		disableScopePainting: false,
-		eras: null
+		eras: null,
+		gatePrompt: 'Enter the secret to continue.'
 	};
 }
 
@@ -180,11 +188,13 @@ export async function loadWorld(
 	const allowUndefinedProperties = readAllowUndefinedProperties(meta, issues);
 	const disableScopePainting = readBooleanFlag(meta, 'disableScopePainting', issues);
 	const eras = readEras(meta, issues);
+	const gatePrompt =
+		readString(meta, 'secret_prompt', issues) ?? 'Enter the secret to continue.';
 
 	const ledeHtml = body.trim() === '' ? null : renderPlainBody(body);
 
 	return {
-		config: { name, shortName, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties, disableScopePainting, eras },
+		config: { name, shortName, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties, disableScopePainting, eras, gatePrompt },
 		ledeHtml,
 		present: true,
 		issues

@@ -125,8 +125,12 @@ export function planShims(mode: ShimMode): Shim[] {
 			contents: server(mode, 'api/influenceAssets', { extraExports: ['prerender', 'entries'] })
 		},
 		{
-			file: 'api/graph-reload/+server.ts',
-			contents: server(mode, 'api/graphReload')
+			file: 'api/search/+server.ts',
+			contents: server(mode, 'api/search')
+		},
+		{
+			file: 'api/auth/login/+server.ts',
+			contents: server(mode, 'auth', {}, 'POST')
 		},
 		{
 			file: 'api/search/+server.ts',

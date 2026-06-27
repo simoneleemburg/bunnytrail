@@ -3,7 +3,7 @@
 // `src/hooks.server.ts` during dogfooding):
 //
 //     import 'bunnytrail/hooks';
-//     export { init } from 'bunnytrail/hooks';
+//     export { init, handle } from 'bunnytrail/hooks';
 //
 // Loading is kicked off eagerly at module import time so it runs in
 // parallel with the rest of server startup. SvelteKit's `init` hook
@@ -14,6 +14,9 @@ import { BLOG_DIR, CONTENT_DIR, GUIDES_DIR, KINDS_DIR, SOURCES_DIR } from './ser
 import { graph } from './server/graph';
 import { world } from './server/world';
 import { startWatcher } from './server/watcher';
+import { isGateEnabled, isValidSession, SESSION_COOKIE } from './server/auth';
+import type { Handle } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 
 console.log(
 	`[bunnytrail] booting with: ${CONTENT_DIR}, ${KINDS_DIR}, ${BLOG_DIR}, ${GUIDES_DIR}, and ${SOURCES_DIR}`
@@ -27,4 +30,36 @@ const bootPromise = graph.load().then(() => world.load()).then(() => {
 export const init = async () => {
 	await bootPromise;
 	startWatcher();
+};
+
+/**
+ * SvelteKit `handle` hook. When `BUNNYTRAIL_WORLD_SECRET` is set,
+ * every request is checked for a valid session cookie. Requests
+ * without a valid session are redirected to the home page (which
+ * renders the passphrase gate form).
+ *
+ * Always passes through:
+ *   - The home page itself (`/`) — renders the gate UI when locked.
+ *   - The login endpoint (`/api/auth/login`) — handles form POST.
+ *   - Asset endpoints (`/api/assets/…`) — needed to style the gate page.
+ */
+export const handle: Handle = async ({ event, resolve }) => {
+	if (!isGateEnabled()) return resolve(event);
+
+	const pathname = event.url.pathname;
+
+	// Always pass through the gate page and its dependencies.
+	const isPassthrough =
+		pathname === '/' ||
+		pathname === '/api/auth/login' ||
+		pathname.startsWith('/api/assets/');
+
+	if (isPassthrough) return resolve(event);
+
+	// Check session cookie.
+	const cookie = event.cookies.get(SESSION_COOKIE);
+	if (isValidSession(cookie)) return resolve(event);
+
+	// Not authenticated — redirect to home where the gate form lives.
+	redirect(303, '/');
 };

@@ -10,6 +10,69 @@
 	const ornament = $derived($page.data.ornament);
 
 	const wordCount = $derived(data.totalWords.toLocaleString());
+	const gateError = $derived($page.url.searchParams.get('gate_error') === '1');
+
+	// ── Passphrase gate ───────────────────────────────────────
+	// One input box per character. Values are kept in sync via a
+	// hidden <input name="secret"> that the form actually submits.
+	const secretLength = $derived(data.secretLength);
+	let chars = $state<string[]>([]);
+	let boxEls = $state<HTMLInputElement[]>([]);
+	let formEl = $state<HTMLFormElement | null>(null);
+	let focusedIdx = $state<number>(-1);
+
+	$effect(() => {
+		if (chars.length !== secretLength) {
+			chars = Array(secretLength).fill('');
+		}
+	});
+
+	const secretValue = $derived(chars.join(''));
+
+	function onBoxInput(i: number, e: Event) {
+		const val = (e.target as HTMLInputElement).value;
+		const ch = val.slice(-1);
+		chars[i] = ch;
+		if (ch && i < secretLength - 1) {
+			boxEls[i + 1]?.focus();
+		}
+		if (chars.every((c) => c !== '') && formEl) {
+			formEl.requestSubmit();
+		}
+	}
+
+	function onBoxKeydown(i: number, e: KeyboardEvent) {
+		if (e.key === 'Backspace') {
+			if (chars[i]) {
+				chars[i] = '';
+			} else if (i > 0) {
+				chars[i - 1] = '';
+				boxEls[i - 1]?.focus();
+			}
+			e.preventDefault();
+		} else if (e.key === 'ArrowLeft' && i > 0) {
+			boxEls[i - 1]?.focus();
+			e.preventDefault();
+		} else if (e.key === 'ArrowRight' && i < secretLength - 1) {
+			boxEls[i + 1]?.focus();
+			e.preventDefault();
+		}
+	}
+
+	function onBoxPaste(e: ClipboardEvent) {
+		e.preventDefault();
+		const text = e.clipboardData?.getData('text') ?? '';
+		const trimmed = text.slice(0, secretLength);
+		for (let i = 0; i < secretLength; i++) {
+			chars[i] = trimmed[i] ?? '';
+		}
+		const nextEmpty = chars.findIndex((c) => !c);
+		const focusIdx = nextEmpty === -1 ? secretLength - 1 : nextEmpty;
+		boxEls[focusIdx]?.focus();
+		if (chars.every((c) => c !== '') && formEl) {
+			formEl.requestSubmit();
+		}
+	}
 </script>
 
 <svelte:head>
@@ -82,9 +145,56 @@
 	</p>
 </section>
 
+{#if !data.authed}
+	<section class="gate">
+		<form
+			class="gate-form"
+			method="post"
+			action="/api/auth/login"
+			bind:this={formEl}
+		>
+			<p class="gate-prompt">{data.gatePrompt}</p>
+			{#if gateError}
+				<p class="gate-error" role="alert">That's not it.</p>
+			{/if}
+			<!-- Hidden field carries the assembled secret on submit -->
+			<input type="hidden" name="secret" value={secretValue} />
+			<div class="gate-boxes" aria-label="Secret passphrase">
+				{#each chars as ch, i (i)}
+					<div
+						class="gate-slot"
+						class:gate-slot--filled={!!ch}
+						class:gate-slot--focused={focusedIdx === i}
+					>
+						<input
+							type="password"
+							class="gate-box"
+							maxlength={2}
+							value={ch}
+							autocomplete="off"
+							aria-label="Character {i + 1} of {data.secretLength}"
+							bind:this={boxEls[i]}
+							autofocus={i === 0}
+							oninput={(e) => onBoxInput(i, e)}
+							onkeydown={(e) => onBoxKeydown(i, e)}
+							onpaste={onBoxPaste}
+							onfocus={() => (focusedIdx = i)}
+							onblur={() => (focusedIdx = -1)}
+						/>
+						{#if ch}
+							<span class="gate-glyph" aria-hidden="true">{ornament.glyph ?? '✦'}</span>
+						{/if}
+					</div>
+				{/each}
+			</div>
+		</form>
+	</section>
+{/if}
+
 <!-- ── Dashboard: two-column layout. Left = guide/sources/journal callouts;
      Right = tall influence card. Stacks vertically on mobile (influence
      card rendered last in DOM but hoisted to top via order on mobile). -->
+{#if data.authed}
 <div class="page-wide">
 	<div class="dashboard">
 		<div class="dashboard-left">
@@ -219,6 +329,7 @@
 		</section>
 	{/if}
 </div>
+{/if}
 
 <style>
 	.hero {
@@ -799,6 +910,118 @@
 
 	.issues-link:hover {
 		color: var(--accent);
+	}
+
+	/* ── Passphrase gate ──────────────────────────────────────── */
+	.gate {
+		display: flex;
+		justify-content: center;
+		padding: var(--space-8) var(--space-5) var(--space-10);
+	}
+
+	.gate-form {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-5);
+	}
+
+	.gate-prompt {
+		font-family: var(--font-display);
+		font-size: clamp(1.1rem, 5vw, var(--text-2xl));
+		font-weight: 400;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		text-indent: 0.18em;
+		line-height: 1.1;
+		margin: 0;
+		background: linear-gradient(
+			180deg,
+			var(--ink) 0%,
+			var(--accent-warm) 55%,
+			var(--accent-deep) 100%
+		);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+		text-align: center;
+	}
+
+	.gate-error {
+		font-size: var(--text-sm);
+		color: var(--ink-soft);
+		text-align: center;
+		margin: 0;
+		font-style: italic;
+	}
+
+	.gate-boxes {
+		display: flex;
+		gap: var(--space-4);
+	}
+
+	/* Each slot is a positioned wrapper so the glyph can overlay the input */
+	.gate-slot {
+		position: relative;
+		width: 2.4rem;
+		height: 3rem;
+		display: flex;
+		align-items: flex-end;
+		justify-content: center;
+	}
+
+	/* The underline lives on the slot, not the input */
+	.gate-slot::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 1.5px;
+		background: var(--ink-soft);
+		transition: background-color 200ms;
+	}
+
+	/* Focused empty slot: pulse the underline between ink-soft and accent-warm */
+	@keyframes gate-pulse {
+		0%, 100% { background: var(--ink-soft); }
+		50%       { background: var(--accent-warm); }
+	}
+
+	.gate-slot--focused:not(.gate-slot--filled)::after {
+		animation: gate-pulse 1.6s ease-in-out infinite;
+	}
+
+	/* Filled slot: hide the underline entirely */
+	.gate-slot--filled::after {
+		background: transparent;
+	}
+
+	/* The actual input — invisible, just captures keypresses */
+	.gate-box {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		padding: 0;
+		opacity: 0;
+		background: transparent;
+		border: none;
+		outline: none;
+		cursor: default;
+		-webkit-appearance: none;
+		appearance: none;
+	}
+
+	/* Ornament glyph shown when slot is filled */
+	.gate-glyph {
+		font-family: var(--font-display);
+		font-size: var(--text-lg);
+		color: var(--accent-warm);
+		line-height: 1;
+		padding-bottom: 0.3em;
+		pointer-events: none;
+		user-select: none;
 	}
 
 	/* ── Mobile: single column, influence card hoisted above left-column list */
