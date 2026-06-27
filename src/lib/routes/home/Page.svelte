@@ -137,16 +137,27 @@
 		a fresh world reads as a clean two-liner rather than a list
 		of zeros.
 	-->
+	{#if data.authed}
 	<p class="colophon">
 		{data.totalEntities} entities&ensp;&middot;&ensp;{data.entitiesWithProse} with prose&ensp;&middot;&ensp;{data.entitiesStub} stubs&ensp;&middot;&ensp;{wordCount} words{#if data.issues > 0}
 			&ensp;&middot;&ensp;<a class="issues-link" href="/health"
 				>{data.issues} {data.issues === 1 ? 'issue' : 'issues'}</a
 			>{/if}
 	</p>
+	{/if}
 </section>
 
 {#if !data.authed}
 	<section class="gate">
+		<div class="bt-fleuron gate-fleuron" aria-hidden="true">
+			<span class="bt-fleuron__rule"></span>
+			{#if ornament.svg}
+				<span class="bt-fleuron__glyph bt-fleuron__glyph--svg">{@html ornament.svg}</span>
+			{:else}
+				<span class="bt-fleuron__glyph"></span>
+			{/if}
+			<span class="bt-fleuron__rule"></span>
+		</div>
 		<form
 			class="gate-form"
 			method="post"
@@ -915,8 +926,15 @@
 	/* ── Passphrase gate ──────────────────────────────────────── */
 	.gate {
 		display: flex;
-		justify-content: center;
-		padding: var(--space-8) var(--space-5) var(--space-10);
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-8);
+		padding: 0 var(--space-5) var(--space-12);
+	}
+
+	.gate-fleuron {
+		width: 100%;
+		max-width: var(--prose-max, 38rem);
 	}
 
 	.gate-form {
