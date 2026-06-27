@@ -47,7 +47,9 @@ export async function load(event: RequestEvent) {
 		ornamentGlyphStyle,
 		worldMarkStyle,
 		gatePrompt: worldConfig.gatePrompt,
-		secretLength: (process.env.BUNNYTRAIL_WORLD_SECRET ?? '').trim().length
+		secretLength: (process.env.BUNNYTRAIL_WORLD_SECRET ?? '').trim().length,
+		_debug_cwd: process.cwd(),
+		_debug_worldConfigPath: WORLD_CONFIG_PATH
 	};
 }
 
