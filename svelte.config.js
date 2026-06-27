@@ -11,6 +11,9 @@ const config = {
 		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
 		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
 		adapter: adapter(),
+		// Use absolute asset paths so /_app/immutable/... URLs resolve
+		// correctly from non-root pages like /login.
+		paths: { relative: false },
 		prerender: {
 			// Some prerenderable endpoints (e.g. /api/entity-assets)
 			// enumerate their entries from the world graph and may

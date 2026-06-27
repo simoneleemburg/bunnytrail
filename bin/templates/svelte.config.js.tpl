@@ -11,6 +11,10 @@ const config = {
 		// Node version, which fails when you build with a newer
 		// Node than Vercel offers (currently up to 22.x).
 		adapter: adapter({ runtime: 'nodejs22.x' }),
+		// Use absolute asset paths so /_app/immutable/... URLs resolve
+		// correctly from non-root pages like /login (relative ./_app/...
+		// would resolve to /login/_app/... and get 303'd by the auth gate).
+		paths: { relative: false },
 		prerender: {
 			// Don't fail the build on broken in-site links — they'll
 			// 404 at runtime like any normal site. Common cases: tag
