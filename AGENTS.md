@@ -288,19 +288,37 @@ How render mode interacts with the gate (consumer root layout, baked
 by `bin/shims.ts`):
 
 ```ts
-export const prerender = !process.env.BUNNYTRAIL_WORLD_SECRET;
+export const prerender = !process.env.BUNNYTRAIL_SSR;
 ```
 
-- **Ungated world** (no `BUNNYTRAIL_WORLD_SECRET` at build time) →
-  prerender the whole site to static HTML. adapter-vercel serves it
-  from the CDN; the loader walks `content/` at build time. The iPad
-  build (adapter-node, no secret) also lands here.
-- **Gated world** (`BUNNYTRAIL_WORLD_SECRET` set at build time) →
-  SSR. Every request runs through `handle`, which checks the
-  `bt_session` cookie and redirects unauthenticated requests to
-  `/login`. The home page and all deep content paths are gated;
-  only `/login`, `/api/auth/*`, and the prerendered `/api/assets/*`
-  pipeline pass through.
+Two variables, deliberately separate:
+
+- **`BUNNYTRAIL_WORLD_SECRET`** — sensitive (encrypted), **runtime-only**.
+  Drives `handle` enforcement and `isGateEnabled()`. Vercel does *not*
+  expose encrypted vars to the build step, so it cannot drive a
+  build-time render decision.
+- **`BUNNYTRAIL_SSR`** — plain, non-sensitive, **build-visible**. Drives
+  the `prerender` flag only. Set it (`=1`) in the build environment
+  wherever the gate is on.
+
+- **Ungated world** (`BUNNYTRAIL_SSR` unset) → prerender the whole site
+  to static HTML. adapter-vercel serves it from the CDN; the loader
+  walks `content/` at build time. The iPad build (adapter-node, no
+  flag) also lands here — zero config.
+- **Gated world** (`BUNNYTRAIL_SSR=1` at build time **and**
+  `BUNNYTRAIL_WORLD_SECRET` set at runtime) → SSR. Every request runs
+  through `handle`, which checks the `bt_session` cookie and redirects
+  unauthenticated requests to `/login`. The home page and all deep
+  content paths are gated; only `/login`, `/api/auth/*`, and the
+  prerendered `/api/assets/*` pipeline pass through.
+
+> Why two flags: the gate was originally keyed on
+> `BUNNYTRAIL_WORLD_SECRET` alone, but because that var is sensitive it
+> is invisible to the build, so the build always prerendered — failing
+> the gated deploy with *"the pattern `**` doesn't match any Serverless
+> Functions"* (no SSR functions were produced). Splitting the
+> build-time render switch into the non-sensitive `BUNNYTRAIL_SSR`
+> fixes that.
 
 The old dual-gate (edge middleware + handle hook) is gone. The
 middleware couldn't protect prerendered pages, which is why deep
@@ -311,9 +329,9 @@ makes `handle` the single source of truth and removes that race.
 **Consumer migration:** `npx bunnytrail sync` removes the now-stale
 root `middleware.ts` automatically (only if it's the generated shim
 that re-exports `bunnytrail/middleware` — hand-authored middleware is
-left alone). The gated consumer must also be built with
-`BUNNYTRAIL_WORLD_SECRET` present in the Vercel build environment, not
-just the runtime environment, so the prerender flag resolves to SSR.
+left alone). The gated consumer must set **`BUNNYTRAIL_SSR=1` in the
+Vercel build environment** (alongside the runtime
+`BUNNYTRAIL_WORLD_SECRET`) so the prerender flag resolves to SSR.
 
 ## Agent etiquette
 

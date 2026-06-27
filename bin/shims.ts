@@ -17,9 +17,10 @@
 //                    install bunnytrail.
 //
 // Consumer shims also bake a conditional `prerender` export onto the
-// root layout: prerender when the world is ungated (no
-// BUNNYTRAIL_WORLD_SECRET at build time), SSR when the gate is on so
-// the `handle` hook can enforce auth on every request.
+// root layout: prerender by default, SSR when BUNNYTRAIL_SSR is set at
+// build time (so the `handle` hook can enforce auth on every request).
+// BUNNYTRAIL_SSR is a build-visible flag, distinct from the sensitive
+// runtime-only BUNNYTRAIL_WORLD_SECRET — see the layout shim comment.
 
 import { mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, relative, resolve, sep } from 'node:path';
@@ -93,7 +94,7 @@ const server = (mode: ShimMode, lib: string, opts: RouteShimOpts = {}, verb = 'G
 
 export function planShims(mode: ShimMode): Shim[] {
 	const rootLayoutExtras = prerender(mode)
-		? `\n// Prerender only when the passphrase gate is OFF. An ungated world has\n// no per-request auth, so baking every page to static HTML at build time\n// is safe and lets adapter-vercel serve from the CDN (the loader can't\n// read \`content/\` at runtime in a serverless function — it walks the tree\n// at build time instead).\n//\n// When BUNNYTRAIL_WORLD_SECRET is set the gate is ON, so we must run SSR:\n// the \`handle\` hook (in bunnytrail/hooks) enforces the session check on\n// every request. Prerendered pages bypass \`handle\` entirely, which is what\n// broke deep-link auth — so gated builds are never prerendered.\n//\n// The iPad build (adapter-node, no secret) and ungated worlds both land in\n// the prerender branch automatically.\nexport const prerender = !process.env.BUNNYTRAIL_WORLD_SECRET;\n`
+		? `\n// Render mode is chosen at BUILD time by BUNNYTRAIL_SSR:\n//\n//   • unset/empty → prerender the whole site to static HTML. Safe for\n//     ungated worlds (no per-request auth) and required by the iPad\n//     adapter-node build. adapter-vercel serves the static output from\n//     the CDN; the loader walks \`content/\` at build time.\n//   • set (truthy) → SSR. Every request runs through the \`handle\` hook\n//     (in bunnytrail/hooks), which enforces the passphrase gate.\n//     Prerendered pages bypass \`handle\` entirely, so a gated world MUST\n//     build with BUNNYTRAIL_SSR=1 or deep links won't be protected.\n//\n// This is intentionally a SEPARATE flag from BUNNYTRAIL_WORLD_SECRET:\n// the secret is sensitive (encrypted) and therefore runtime-only —\n// Vercel does not expose it to the build step, so it can't drive a\n// build-time prerender decision. BUNNYTRAIL_SSR is a plain,\n// non-sensitive build flag. Set BUNNYTRAIL_SSR=1 wherever\n// BUNNYTRAIL_WORLD_SECRET is set, in the build environment.\nexport const prerender = !process.env.BUNNYTRAIL_SSR;\n`
 		: '';
 
 	const homePageExtras = '';
