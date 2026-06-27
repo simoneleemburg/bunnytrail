@@ -49,22 +49,22 @@ export const init = async () => {
 /**
  * SvelteKit `handle` hook. When `BUNNYTRAIL_WORLD_SECRET` is set,
  * every request is checked for a valid session cookie. Requests
- * without a valid session are redirected to the home page (which
- * renders the passphrase gate form).
+ * without a valid session are redirected to /login.
  *
  * Always passes through:
- *   - The home page itself (`/`) — renders the gate UI when locked.
- *   - The login endpoint (`/api/auth/login`) — handles form POST.
- *   - Asset endpoints (`/api/assets/…`) — needed to style the gate page.
+ *   - /login — the gate UI itself.
+ *   - /api/auth/login — handles form POST.
+ *   - /api/auth/check — session check endpoint.
+ *   - /api/assets/… — needed to style the gate page.
  */
 export const handle: Handle = async ({ event, resolve }) => {
 	if (!isGateEnabled()) return resolve(event);
 
 	const pathname = event.url.pathname;
 
-	// Always pass through the gate page and its dependencies.
+	// Always pass through the login page and its dependencies.
 	const isPassthrough =
-		pathname === '/' ||
+		pathname === '/login' ||
 		pathname === '/api/auth/login' ||
 		pathname === '/api/auth/check' ||
 		pathname.startsWith('/api/assets/');
@@ -75,6 +75,6 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const cookie = event.cookies.get(SESSION_COOKIE);
 	if (isValidSession(cookie)) return resolve(event);
 
-	// Not authenticated — redirect to home where the gate form lives.
-	redirect(303, '/');
+	// Not authenticated — redirect to login page.
+	redirect(303, '/login');
 };
