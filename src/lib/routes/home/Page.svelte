@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { HomeData } from './load';
 	import { tick } from 'svelte';
+	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import { t } from '$lib/i18n';
 	import Tag from '$lib/components/Tag.svelte';
@@ -13,6 +14,23 @@
 	const ui = $derived(t($page.data.world.language));
 
 	const wordCount = $derived(data.totalWords.toLocaleString());
+
+	// ── Auth check on mount ───────────────────────────────────
+	// When the gate is enabled the home page is prerendered with
+	// authed=false. On mount we ask the server whether the current
+	// session cookie is valid; if so we reload so the server-rendered
+	// authed=true content is shown. One extra round-trip for logged-in
+	// users on first load, but zero runtime filesystem access needed.
+	$effect(() => {
+		if (!browser || data.authed) return;
+		if (!data.secretLength) return; // gate not enabled
+		fetch('/api/auth/check')
+			.then((r) => r.json())
+			.then(({ authed }: { authed: boolean }) => {
+				if (authed) window.location.reload();
+			})
+			.catch(() => {}); // silently ignore network errors
+	});
 
 	// ── Passphrase gate ───────────────────────────────────────
 	// One input box per character. Submit is intercepted via fetch

@@ -52,6 +52,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const isPassthrough =
 		pathname === '/' ||
 		pathname === '/api/auth/login' ||
+		pathname === '/api/auth/check' ||
 		pathname.startsWith('/api/assets/');
 
 	if (isPassthrough) return resolve(event);
