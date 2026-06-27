@@ -296,6 +296,8 @@ export async function loadEntityPage(entity: Entity, mode: ViewMode = 'visitor')
 
 	const HIDDEN = new Set([
 		'name',
+		// `title` overrides the page <h1> and is surfaced there; not a sidebar property.
+		'title',
 		'summary',
 		'aliases',
 		'tags',
@@ -520,6 +522,7 @@ export async function loadEntityPage(entity: Entity, mode: ViewMode = 'visitor')
 		entity: {
 			id: entity.id,
 			name: entity.meta.name,
+			title: typeof entity.meta.title === 'string' ? entity.meta.title : null,
 			summaryHtml: summaryHtml(entity.meta.summary),
 			aliases: entity.meta.aliases ?? [],
 			tags: entity.meta.tags ?? [],

@@ -41,7 +41,7 @@
 			? data.entity.plural
 				? data.entity.name + ' / ' + data.entity.plural
 				: data.entity.name + ' (class)'
-			: data.entity.name
+			: (data.entity.title ?? data.entity.name)
 	);
 
 	// Tabs: shown when the entity has classMates (instances) and/or statistics.

@@ -424,8 +424,15 @@ export type EntityKind = 'class' | 'instance';
 
 /** Meta loaded from the YAML sidecar. */
 export interface EntityMeta {
-	/** Display name. */
+	/** Display name. Used externally — in cards, links, breadcrumbs, titles. */
 	name: string;
+	/**
+	 * Optional page title shown as the `<h1>` on the entity's own page.
+	 * Falls back to `name` when absent. Use this when the public-facing
+	 * name (e.g. "Jan 1954") should stay short for cards and links, but
+	 * the entity page itself deserves a more descriptive heading (e.g. "Jan").
+	 */
+	title?: string;
 	/**
 	 * Whether this entity is a class definition or a concrete instance.
 	 * Defaults to `'instance'` when omitted.
