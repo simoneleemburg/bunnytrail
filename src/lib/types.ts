@@ -785,6 +785,11 @@ export interface RelationSchema extends RelationLabels {
 	 * Value is the full prefixed relation id, e.g. `cultural/part-of-structure`.
 	 */
 	governedBy?: string;
+	/**
+	 * When `true`, the relation is considered symmetric — A→B implies B→A.
+	 * Stored for future engine use; no behaviour is currently derived from it.
+	 */
+	symmetric?: boolean;
 }
 
 /** The full world-level relation registry as loaded from world.md. */

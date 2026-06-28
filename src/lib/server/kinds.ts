@@ -213,7 +213,8 @@ const KNOWN_ONTOLOGY_FIELDS = new Set(['title', 'description', 'relations']);
 const KNOWN_RELATION_ENTRY_FIELDS = new Set([
 	'outLabel', 'inLabel',
 	'domain', 'codomain', 'qualifierDomain',
-	'governedBy', 'qualifierGovernedBy', 'qualifier'
+	'governedBy', 'qualifierGovernedBy', 'qualifier',
+	'symmetric'
 ]);
 
 /**
