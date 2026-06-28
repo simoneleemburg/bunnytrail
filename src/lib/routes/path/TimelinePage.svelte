@@ -19,7 +19,7 @@
 	</div>
 {/if}
 
-{#if data.entries.length === 0}
+{#if data.entries.length === 0 && data.childTimelines.length === 0}
 	<p class="timeline-empty">No entries yet.</p>
 {:else}
 	<div class="timeline">
@@ -36,6 +36,28 @@
 					</div>
 				{/if}
 			</article>
+		{/each}
+
+		{#each data.childTimelines as child (child.path)}
+			<div class="child-timeline">
+				<!-- Branch connector: horizontal arm off the spine -->
+				<div class="child-timeline__connector" aria-hidden="true"></div>
+				<a class="child-timeline__card" href={child.href}>
+					<span class="child-timeline__title">{child.title}</span>
+					{#if child.firstYear !== null}
+						<span class="child-timeline__years">
+							{child.firstYear}{child.lastYear !== null && child.lastYear !== child.firstYear ? `–${child.lastYear}` : ''}
+						</span>
+					{/if}
+					{#if child.targets.length > 0}
+						<span class="child-timeline__targets">
+							{#each child.targets as t, i (t.href)}
+								{#if i > 0}<span aria-hidden="true"> · </span>{/if}{t.label}
+							{/each}
+						</span>
+					{/if}
+				</a>
+			</div>
 		{/each}
 	</div>
 {/if}
@@ -59,6 +81,7 @@
 	.timeline {
 		max-width: var(--prose-max);
 		margin: 0 auto;
+		--spine-x: calc(1rem + var(--space-4));
 	}
 
 	/* ── Individual entry tile ────────────────────────────────────── */
@@ -91,7 +114,7 @@
 		position: absolute;
 		top: 0;
 		bottom: calc(-1 * var(--space-2));
-		left: calc(1rem + var(--space-4));
+		left: var(--spine-x);
 		width: 2px;
 		transform: translateX(-50%);
 		background-color: var(--accent-deep);
@@ -109,7 +132,7 @@
 		content: '';
 		position: absolute;
 		top: calc(var(--space-4) + 0.35em); /* align with year cap-height */
-		left: calc(1rem + var(--space-4));
+		left: var(--spine-x);
 		transform: translateX(-50%);
 		width: 12px;
 		height: 12px;
@@ -195,5 +218,83 @@
 
 	.timeline-summary :global(p) {
 		margin: 0;
+	}
+
+	/* ── Child timeline branch ────────────────────────────────────── */
+	.child-timeline {
+		position: relative;
+	}
+
+	/* Vertical spine continuation */
+	.child-timeline__connector {
+		position: absolute;
+		left: calc(var(--spine-x) - 1rem);
+		top: 0;
+		bottom: 0;
+		width: 2px;
+		transform: translateX(-50%);
+		background-color: var(--accent-deep);
+		opacity: 0.25;
+	}
+
+	/* Horizontal arm — short tick at the top of the branch showing where
+	   the sub-timeline card connects to the spine */
+	.child-timeline__connector::after {
+		content: '';
+		position: absolute;
+		top: var(--space-3);
+		left: 1px;
+		width: var(--space-4);
+		height: 2px;
+		background-color: var(--accent-deep);
+		opacity: 1;
+		border-left: 2px solid color-mix(in srgb, var(--accent-deep) 40%, transparent);
+		transition: background-color 150ms ease, border-left-color 150ms ease;
+	}
+
+	/* The card itself — border-left aligns with the master spine */
+	.child-timeline__card {
+		display: inline-flex;
+		flex-direction: column;
+		gap: var(--space-1);
+		text-decoration: none;
+		color: inherit;
+		/* -1px so the 2px border-left straddles the spine centre (same
+		   as the connector which uses translateX(-50%) on a 2px bar) */
+		margin-left: calc(var(--spine-x) - 1px);
+		border-left: 2px solid color-mix(in srgb, var(--accent-deep) 40%, transparent);
+		padding: var(--space-2) var(--space-3);
+		border-radius: 0 6px 6px 0;
+		transition: background-color 150ms ease, border-left-color 150ms ease;
+	}
+
+	.child-timeline__card:hover {
+		background-color: var(--paper-warm);
+		border-left-color: var(--accent);
+	}
+
+	.child-timeline__title {
+		font-family: var(--font-display);
+		font-size: var(--text-lg);
+		color: var(--ink);
+	}
+
+	.child-timeline__card:hover .child-timeline__title {
+		color: var(--accent);
+	}
+
+	.child-timeline__years {
+		font-family: var(--font-serif);
+		font-size: var(--text-xs);
+		font-variant-numeric: tabular-nums;
+		color: var(--ink-faint);
+		letter-spacing: 0.04em;
+	}
+
+	.child-timeline__targets {
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-xs);
+		color: var(--ink-soft);
 	}
 </style>

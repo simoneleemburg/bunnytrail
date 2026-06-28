@@ -11,6 +11,18 @@ export interface TimelineEntryCard {
 	href: string;
 }
 
+export interface ChildTimelineCard {
+	path: string;
+	href: string;
+	title: string;
+	/** Rendered summary HTML, or null. */
+	summaryHtml: string | null;
+	firstYear: number | null;
+	lastYear: number | null;
+	/** Resolved target entity links for the header chip row. */
+	targets: { label: string; href: string }[];
+}
+
 export interface TimelinePageData {
 	kind: 'timeline';
 	/** Display name: `meta.name` → containing entity name → slug. */
@@ -27,6 +39,8 @@ export interface TimelinePageData {
 	bodyHtml: string | null;
 	/** Resolved target entity links (label + href), one per target. */
 	targets: { label: string; href: string }[];
+	/** Direct child timelines nested under this timeline's folder. */
+	childTimelines: ChildTimelineCard[];
 }
 
 export async function loadTimelinePage(timelinePath: string): Promise<TimelinePageData> {
@@ -56,6 +70,42 @@ export async function loadTimelinePage(timelinePath: string): Promise<TimelinePa
 			href: `/${timelinePath}/${entry.year}`
 		};
 	});
+
+	// Discover direct child timelines (nested sub-timelines).
+	// childFolders() only walks entities/collections so we scan the timelines
+	// map directly: any timeline whose path is exactly `<timelinePath>/<slug>`
+	// (one extra segment, no deeper) is a direct child.
+	const childPrefix = `${timelinePath}/`;
+	const childTimelines: ChildTimelineCard[] = [...graph.timelines().entries()]
+		.filter(([p]) => {
+			if (!p.startsWith(childPrefix)) return false;
+			const rest = p.slice(childPrefix.length);
+			return rest.length > 0 && !rest.includes('/');
+		})
+		.map(([p, child]) => {
+			const childLeaf = p.slice(p.lastIndexOf('/') + 1);
+			const childEntity = graph.get(p);
+			const childTitle =
+				child.meta.name ?? childEntity?.meta.name ?? childLeaf.replace(/-/g, ' ');
+			const childSummaryHtml = child.meta.summary
+				? renderSummary(child.meta.summary, resolveLink, languageCodes, { kindIds })
+				: null;
+			return {
+				path: p,
+				href: `/${p}`,
+				title: childTitle,
+				summaryHtml: childSummaryHtml,
+				firstYear: child.entries.length > 0 ? child.entries[0].year : null,
+				lastYear:
+					child.entries.length > 0 ? child.entries[child.entries.length - 1].year : null,
+				targets: child.targets
+					.map((id) => {
+						const e = graph.get(id);
+						return e ? { label: e.meta.name, href: `/${id}` } : null;
+					})
+					.filter((t): t is { label: string; href: string } => t !== null)
+			};
+		});
 
 	// Summary HTML.
 	const summaryHtml = timeline.meta.summary
@@ -114,6 +164,7 @@ export async function loadTimelinePage(timelinePath: string): Promise<TimelinePa
 				const e = graph.get(id);
 				return e ? { label: e.meta.name, href: `/${id}` } : null;
 			})
-			.filter((t): t is { label: string; href: string } => t !== null)
+			.filter((t): t is { label: string; href: string } => t !== null),
+		childTimelines
 	};
 }
