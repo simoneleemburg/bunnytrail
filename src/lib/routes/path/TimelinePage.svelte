@@ -9,6 +9,7 @@
 	title={data.title}
 	subtitleHtml={data.summaryHtml}
 	breadcrumbs={data.breadcrumbs}
+	titleChips={data.targets}
 />
 
 {#if data.bodyHtml}

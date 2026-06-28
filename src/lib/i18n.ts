@@ -83,6 +83,7 @@ export interface Translations {
 	entity_craft_aria: string;
 	entity_craft_link: string;
 	entity_graph_link: string;
+	entity_timelines: string;
 	entity_show_fewer: string;
 	entity_show_all: (n: number) => string;
 
@@ -313,6 +314,7 @@ const en: Translations = {
 	entity_craft_aria: "Author's notes",
 	entity_craft_link: 'Craft sheet →',
 	entity_graph_link: 'Graph →',
+	entity_timelines: 'Timelines',
 	entity_show_fewer: 'Show fewer',
 	entity_show_all: (n) => `Show all (${n})`,
 
@@ -544,6 +546,7 @@ const nl: Translations = {
 	entity_craft_aria: 'Auteursnotities',
 	entity_craft_link: 'Ontwerpblad →',
 	entity_graph_link: 'Graaf →',
+	entity_timelines: 'Tijdlijnen',
 	entity_show_fewer: 'Minder tonen',
 	entity_show_all: (n) => `Alles tonen (${n})`,
 

@@ -521,7 +521,13 @@ async function walkTimelinesDir(
 				});
 			}
 			entries.sort((a, b) => a.year - b.year);
-			timelines.set(relPath, { path: relPath, meta, body, mdPath: timeMdPath, entries });
+			const rawTarget = (meta as { target?: unknown }).target;
+			const targets: string[] = Array.isArray(rawTarget)
+				? rawTarget.filter((t): t is string => typeof t === 'string')
+				: typeof rawTarget === 'string' && rawTarget.trim()
+					? [rawTarget.trim()]
+					: [];
+			timelines.set(relPath, { path: relPath, meta, body, mdPath: timeMdPath, entries, targets });
 		} else if (isDot) {
 			// A lone dot at the top level: it will be collected by its parent's
 			// line walk above. Nothing to emit here independently.

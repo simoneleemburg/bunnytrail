@@ -25,6 +25,8 @@ export interface TimelinePageData {
 	entries: TimelineEntryCard[];
 	/** Raw timeline body HTML (from the line `_time.md`), or null. */
 	bodyHtml: string | null;
+	/** Resolved target entity links (label + href), one per target. */
+	targets: { label: string; href: string }[];
 }
 
 export async function loadTimelinePage(timelinePath: string): Promise<TimelinePageData> {
@@ -106,6 +108,12 @@ export async function loadTimelinePage(timelinePath: string): Promise<TimelinePa
 		timelinePath,
 		breadcrumbs,
 		entries,
-		bodyHtml
+		bodyHtml,
+		targets: timeline.targets
+			.map((id) => {
+				const e = graph.get(id);
+				return e ? { label: e.meta.name, href: `/${id}` } : null;
+			})
+			.filter((t): t is { label: string; href: string } => t !== null)
 	};
 }

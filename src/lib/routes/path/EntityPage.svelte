@@ -605,6 +605,24 @@
 				</section>
 			{/if}
 
+			{#if data.timelineBacklinks.length > 0}
+				<section class="timeline-backlinks">
+					<div class="group-label">{ui.entity_timelines}</div>
+					<ul>
+						{#each data.timelineBacklinks as tl (tl.href)}
+							<li>
+								<a class="timeline-backlink" href={tl.href}>{tl.title}</a>
+								{#if tl.firstYear !== null}
+									<span class="timeline-backlink__years">
+										{tl.firstYear}{tl.lastYear !== null && tl.lastYear !== tl.firstYear ? `–${tl.lastYear}` : ''}
+									</span>
+								{/if}
+							</li>
+						{/each}
+					</ul>
+				</section>
+			{/if}
+
 			{#if data.entity.tags.length > 0}
 				<section>
 					<div class="tag-row">
@@ -985,6 +1003,38 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--space-2) var(--space-3);
+	}
+
+	/* ── Timeline backlinks ───────────────────────────────────────── */
+	.timeline-backlinks ul {
+		list-style: none;
+		padding: 0;
+		margin: var(--space-2) 0 0;
+	}
+
+	.timeline-backlinks li {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-2);
+		margin-bottom: var(--space-1);
+	}
+
+	.timeline-backlink {
+		font-size: var(--text-sm);
+		color: var(--accent);
+		text-decoration: none;
+		border-bottom: 1px solid transparent;
+		transition: border-color 120ms;
+	}
+
+	.timeline-backlink:hover {
+		border-bottom-color: var(--accent);
+	}
+
+	.timeline-backlink__years {
+		font-size: var(--text-xs);
+		color: var(--ink-faint);
+		font-variant-numeric: tabular-nums;
 	}
 
 	/* Match collection-card / EntityCard treatment: drop the per-tag

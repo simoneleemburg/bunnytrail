@@ -895,6 +895,12 @@ export interface TimelineMeta {
 	name?: string;
 	/** Optional one-line summary shown below the title. */
 	summary?: string;
+	/**
+	 * One or more entity paths this timeline is about.
+	 * Authored as a single string or a list in frontmatter.
+	 * Normalised to `string[]` by the walker.
+	 */
+	target?: string | string[];
 }
 
 /**
@@ -930,6 +936,11 @@ export interface Timeline {
 	mdPath: string;
 	/** Dot entries, sorted ascending by year. */
 	entries: TimelineEntry[];
+	/**
+	 * Normalised list of entity paths this timeline targets.
+	 * Derived from `meta.target` (single string or array). Empty when unset.
+	 */
+	targets: string[];
 }
 
 // ── Vocabulary ────────────────────────────────────────────────────────────────

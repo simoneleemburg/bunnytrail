@@ -329,6 +329,18 @@ export class Graph {
 	}
 
 	/**
+	 * All timelines whose `targets` list includes `entityId`.
+	 * Used to surface timeline backlinks on entity pages.
+	 */
+	timelinesTargeting(entityId: string): Timeline[] {
+		const out: Timeline[] = [];
+		for (const tl of this.#timelines.values()) {
+			if (tl.targets.includes(entityId)) out.push(tl);
+		}
+		return out;
+	}
+
+	/**
 	 * True if `path` is a timeline entry (dot) folder — i.e. it is a
 	 * year-named sub-folder of a known timeline line. Used by the
 	 * entity-assets handler to allow sibling image serving for timeline

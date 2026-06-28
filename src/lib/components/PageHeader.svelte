@@ -61,6 +61,12 @@
 		 */
 		kindChip?: KindChip | null;
 		/**
+		 * Optional list of plain link chips rendered beside the title,
+		 * after `kindChip` when both are present. Used e.g. on timeline
+		 * pages to show target entity links in the kind-chip register.
+		 */
+		titleChips?: Array<{ label: string; href: string }> | null;
+		/**
 		 * When set, renders a quiet "focus on <cluster>" hint below the
 		 * subtitle. Used on cluster-scoped collection pages viewed in
 		 * the all-clusters scope (e.g. /earth/history?scope=all).
@@ -90,6 +96,7 @@
 		sigil,
 		breadcrumbs,
 		kindChip,
+		titleChips,
 		focusHref,
 		focusClusterLabel,
 		viewAllHref,
@@ -172,6 +179,11 @@
 				title={kindChip.broken ? `unregistered kind: ${kindChip.id}` : undefined}
 				>{kindChip.label}</a
 			>
+		{/if}
+		{#if titleChips && titleChips.length > 0}
+			{#each titleChips as chip (chip.href)}
+				<a class="kind-chip kind-chip--link" href={chip.href}>{chip.label}</a>
+			{/each}
 		{/if}
 	</div>
 	{#if subtitleHtml}
@@ -335,6 +347,14 @@
 
 	.kind-chip:hover {
 		color: var(--accent);
+	}
+
+	.kind-chip--link {
+		color: var(--accent);
+	}
+
+	.kind-chip--link:hover {
+		color: var(--accent-deep);
 	}
 
 	.kind-chip[data-broken='true'] {
