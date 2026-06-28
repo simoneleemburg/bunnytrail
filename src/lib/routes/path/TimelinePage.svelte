@@ -56,22 +56,8 @@
 
 	/* ── Vertical timeline spine ──────────────────────────────────── */
 	.timeline {
-		position: relative;
 		max-width: var(--prose-max);
 		margin: 0 auto;
-	}
-
-	/* Vertical line running the full height of the container,
-	   anchored at left: 1rem. Sits behind the entry tiles. */
-	.timeline::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 1rem;
-		width: 2px;
-		background-color: var(--accent-deep);
-		opacity: 0.4;
 	}
 
 	/* ── Individual entry tile ────────────────────────────────────── */
@@ -96,14 +82,34 @@
 		transform: translateY(-1px);
 	}
 
-	/* Dot on the spine — ::before so it sits relative to the entry
-	   and visually "floats" on the spine line. On hover it sharpens
-	   to match the warm fill. */
+	/* Spine line segment — ::after, same coordinate space as the dot.
+	   Extends bottom by the inter-entry gap so segments butt together
+	   into one continuous line with no breaks between entries. */
+	.timeline-entry::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		bottom: calc(-1 * var(--space-2));
+		left: calc(1rem + var(--space-4));
+		width: 2px;
+		transform: translateX(-50%);
+		background-color: var(--accent-deep);
+		opacity: 0.4;
+		z-index: 0;
+	}
+
+	/* Last entry: don't extend past the last dot — stop at bottom of entry. */
+	.timeline-entry:last-child::after {
+		bottom: 0;
+	}
+
+	/* Dot — ::before, same coordinate space as ::after line. */
 	.timeline-entry::before {
 		content: '';
 		position: absolute;
 		top: calc(var(--space-4) + 0.35em); /* align with year cap-height */
-		left: calc(1rem - 5px);
+		left: calc(1rem + var(--space-4));
+		transform: translateX(-50%);
 		width: 12px;
 		height: 12px;
 		border-radius: 50%;
@@ -115,7 +121,7 @@
 
 	.timeline-entry:hover::before {
 		opacity: 1;
-		transform: scale(1.15);
+		transform: translateX(-50%) scale(1.15);
 	}
 
 	/* ── Year label ───────────────────────────────────────────────── */
