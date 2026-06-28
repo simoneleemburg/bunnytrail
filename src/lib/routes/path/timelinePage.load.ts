@@ -43,6 +43,9 @@ export interface TimelinePageData {
 	childTimelines: ChildTimelineCard[];
 	/** Parent timeline when this is a nested sub-timeline, else null. */
 	parentTimeline: { label: string; href: string; firstYear: number | null; lastYear: number | null } | null;
+	/** Recursive year range: min/max across this timeline and all descendants. */
+	firstYear: number | null;
+	lastYear: number | null;
 }
 
 export async function loadTimelinePage(timelinePath: string): Promise<TimelinePageData> {
@@ -97,9 +100,7 @@ export async function loadTimelinePage(timelinePath: string): Promise<TimelinePa
 				href: `/${p}`,
 				title: childTitle,
 				summaryHtml: childSummaryHtml,
-				firstYear: child.entries.length > 0 ? child.entries[0].year : null,
-				lastYear:
-					child.entries.length > 0 ? child.entries[child.entries.length - 1].year : null,
+				...graph.timelineYearRange(p),
 				targets: child.targets
 					.map((id) => {
 						const e = graph.get(id);
@@ -168,8 +169,7 @@ export async function loadTimelinePage(timelinePath: string): Promise<TimelinePa
 			parentTimeline = {
 				label: parentLabel,
 				href: `/${parentPath}`,
-				firstYear: parent.entries.length > 0 ? parent.entries[0].year : null,
-				lastYear: parent.entries.length > 0 ? parent.entries[parent.entries.length - 1].year : null
+				...graph.timelineYearRange(parentPath)
 			};
 		}
 	}
@@ -189,6 +189,7 @@ export async function loadTimelinePage(timelinePath: string): Promise<TimelinePa
 			})
 			.filter((t): t is { label: string; href: string } => t !== null),
 		childTimelines,
-		parentTimeline
+		parentTimeline,
+		...graph.timelineYearRange(timelinePath)
 	};
 }

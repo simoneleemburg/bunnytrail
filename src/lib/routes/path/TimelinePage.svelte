@@ -44,20 +44,18 @@
 	</div>
 {:else}
 	<!-- Top-level timeline: same two-column layout, non-interactive spine widget -->
-	{#if data.breadcrumbs.length > 0}
-		<nav class="tl-breadcrumbs" aria-label="Breadcrumb">
-			{#each data.breadcrumbs as crumb, i (crumb.href)}
-				{#if i > 0}<span class="tl-crumb-sep" aria-hidden="true">›</span>{/if}
-				<a class="tl-crumb" href={crumb.href}>{crumb.label}</a>
-			{/each}
-		</nav>
+	{#if data.breadcrumbs.length >= 2}
+		{@const upCrumb = data.breadcrumbs[data.breadcrumbs.length - 2]}
+		<a class="tl-up-link" href={upCrumb.href}>
+			<span class="up-arrow" aria-hidden="true">↑</span>{upCrumb.label}
+		</a>
 	{/if}
 	<div class="sub-header">
 		<!-- Non-interactive spine: same chrome, no link/hover -->
 		<div class="spine-widget" aria-hidden="true">
-			{#if data.entries.length > 0}
+			{#if data.firstYear !== null}
 				<span class="parent-link__eyebrow">
-					{data.entries[0].year}{data.entries.length > 1 && data.entries[data.entries.length - 1].year !== data.entries[0].year ? `–${data.entries[data.entries.length - 1].year}` : ''}
+					{data.firstYear}{data.lastYear !== null && data.lastYear !== data.firstYear ? `–${data.lastYear}` : ''}
 				</span>
 			{/if}
 			<div class="parent-link__spine">
@@ -494,33 +492,28 @@
 		margin-bottom: var(--space-3);
 	}
 
-	/* ── Breadcrumb for top-level timelines ───────────────────────── */
-	.tl-breadcrumbs {
-		max-width: var(--prose-max);
-		margin: 0 auto var(--space-4);
-		padding-top: var(--space-6);
+	/* ── Up-link for top-level timelines ─────────────────────────── */
+	.tl-up-link {
 		display: flex;
-		align-items: center;
-		gap: var(--space-2);
+		justify-content: center;
+		align-items: baseline;
+		gap: 0.35em;
+		margin-bottom: var(--space-6);
 		font-family: var(--font-serif);
 		font-variant-caps: all-small-caps;
-		font-size: var(--text-xs);
-		letter-spacing: 0.1em;
-	}
-
-	.tl-crumb {
+		font-size: var(--text-sm);
+		letter-spacing: 0.14em;
 		color: var(--ink-faint);
 		text-decoration: none;
-		transition: color 120ms;
 	}
 
-	.tl-crumb:hover {
-		color: var(--accent);
+	.tl-up-link:hover {
+		color: var(--accent-warm);
 	}
 
-	.tl-crumb-sep {
-		color: var(--ink-faint);
-		opacity: 0.5;
+	.tl-up-link .up-arrow {
+		font-variant: normal;
+		letter-spacing: 0;
 	}
 
 	/* Non-interactive spine widget (no link, no hover) */

@@ -582,8 +582,7 @@ export async function loadEntityPage(entity: Entity, mode: ViewMode = 'visitor')
 		timelineBacklinks: graph.timelinesTargeting(entity.id).map((tl) => ({
 			title: tl.meta.name ?? graph.get(tl.path)?.meta.name ?? tl.path.split('/').pop()!,
 			href: `/${tl.path}`,
-			firstYear: tl.entries.length > 0 ? tl.entries[0].year : null,
-			lastYear: tl.entries.length > 0 ? tl.entries[tl.entries.length - 1].year : null
+		...graph.timelineYearRange(tl.path)
 		}))
 	};
 }

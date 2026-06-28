@@ -329,6 +329,25 @@ export class Graph {
 	}
 
 	/**
+	 * Compute the year range for a timeline, recursively including all
+	 * descendant (nested) timelines. Returns { firstYear, lastYear } where
+	 * either may be null if no entries exist anywhere in the subtree.
+	 */
+	timelineYearRange(path: string): { firstYear: number | null; lastYear: number | null } {
+		const childPrefix = `${path}/`;
+		let min: number | null = null;
+		let max: number | null = null;
+		for (const [p, tl] of this.#timelines) {
+			if (p !== path && !p.startsWith(childPrefix)) continue;
+			for (const entry of tl.entries) {
+				if (min === null || entry.year < min) min = entry.year;
+				if (max === null || entry.year > max) max = entry.year;
+			}
+		}
+		return { firstYear: min, lastYear: max };
+	}
+
+	/**
 	 * All timelines whose `targets` list includes `entityId`.
 	 * Used to surface timeline backlinks on entity pages.
 	 */

@@ -311,8 +311,7 @@ export async function loadCollectionPage(path: string) {
 			href: `/${tl.path}`,
 			title: tl.meta.name ?? graph.get(tl.path)?.meta.name ?? tl.path.slice(tl.path.lastIndexOf('/') + 1).replace(/-/g, ' '),
 			summary: tl.meta.summary ?? null,
-			firstYear: tl.entries.length > 0 ? tl.entries[0].year : null,
-			lastYear: tl.entries.length > 0 ? tl.entries[tl.entries.length - 1].year : null
+			...graph.timelineYearRange(tl.path)
 		}))
 		.sort((a, b) => a.title.localeCompare(b.title));
 
