@@ -11,6 +11,8 @@ export interface TimelineDotPageData {
 	timelineTitle: string;
 	/** The year of this dot. */
 	year: number;
+	/** Rendered HTML summary (may be null). */
+	summaryHtml: string | null;
 	/** Rendered HTML body of this entry (may be empty string). */
 	bodyHtml: string;
 	/** Navigation to the previous dot (lower year), or null. */
@@ -44,6 +46,10 @@ export async function loadTimelineDotPage(
 			)
 		: '';
 
+	const summaryHtml = entry.summary?.trim()
+		? renderSummary(entry.summary, resolveLink, languageCodes, { kindIds })
+		: null;
+
 	// Determine prev/next within this timeline.
 	const sorted = timeline.entries;
 	const idx = sorted.findIndex((e) => e.year === year);
@@ -76,6 +82,7 @@ export async function loadTimelineDotPage(
 		timelinePath,
 		timelineTitle,
 		year,
+		summaryHtml,
 		bodyHtml,
 	prev: prev ? { year: prev.year, href: `/${timelinePath}/${prev.year}` } : null,
 	next: next ? { year: next.year, href: `/${timelinePath}/${next.year}` } : null,

@@ -39,6 +39,13 @@
 	</div>
 </div>
 
+{#if data.summaryHtml}
+	<p class="dot-summary">
+		<!-- trusted: server-rendered summary from the engine pipeline -->
+		{@html data.summaryHtml}
+	</p>
+{/if}
+
 {#if data.bodyHtml}
 	<div class="dot-body">
 		<!-- trusted: server-rendered markdown from the engine pipeline -->
@@ -184,6 +191,17 @@
 		width: 14px;
 		height: 14px;
 		opacity: 1;
+	}
+
+	/* ── Summary ───────────────────────────────────────────────────── */
+	.dot-summary {
+		max-width: var(--prose-w, 48rem);
+		margin: 0 auto var(--space-6);
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-base);
+		color: var(--ink-soft);
+		text-align: center;
 	}
 
 	/* ── Body prose ────────────────────────────────────────────────── */
