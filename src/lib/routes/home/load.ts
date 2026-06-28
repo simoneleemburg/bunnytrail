@@ -112,12 +112,27 @@ export async function load() {
 	const entities = graph.all();
 	const entitiesWithProse = entities.filter((e) => e.body.trim().length > 0).length;
 	const entitiesStub = entities.length - entitiesWithProse;
-	const totalWords = entities.reduce((n, e) => {
-		const bodyWords = e.body.trim() ? e.body.trim().split(/\s+/).length : 0;
-		const summaryWords =
-			e.meta.summary?.trim() ? e.meta.summary.trim().split(/\s+/).length : 0;
-		return n + bodyWords + summaryWords;
-	}, 0);
+	const countWords = (s: string) => (s.trim() ? s.trim().split(/\s+/).length : 0);
+
+	const totalWords =
+		// Entity bodies + summaries
+		entities.reduce((n, e) => {
+			return n + countWords(e.body) + countWords(e.meta.summary ?? '');
+		}, 0) +
+		// Timeline line bodies + every dot body
+		[...graph.timelines().values()].reduce((n, tl) => {
+			return (
+				n +
+				countWords(tl.body) +
+				tl.entries.reduce((m, entry) => m + countWords(entry.body), 0)
+			);
+		}, 0) +
+		// Collection prose (_collection.md bodies)
+		[...graph.collections().values()].reduce((n, col) => {
+			return n + countWords(col.body ?? '');
+		}, 0) +
+		// Guide bodies
+		guides.all().reduce((n, g) => n + countWords(g.body), 0);
 
 	// Entities carrying a chapters/ subfolder — "works" in the
 	// generic sense (a record bearing fragments, a future codex,
