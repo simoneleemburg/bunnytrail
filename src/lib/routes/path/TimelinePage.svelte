@@ -43,18 +43,43 @@
 		</div>
 	</div>
 {:else}
-	<PageHeader
-		title={data.title}
-		subtitleHtml={data.summaryHtml}
-		breadcrumbs={data.breadcrumbs}
-	/>
-	{#if data.targets.length > 0}
-		<div class="timeline-targets timeline-targets--standalone">
-			{#each data.targets as t (t.href)}
-				<a class="timeline-target" href={t.href}>{t.label}</a>
+	<!-- Top-level timeline: same two-column layout, non-interactive spine widget -->
+	{#if data.breadcrumbs.length > 0}
+		<nav class="tl-breadcrumbs" aria-label="Breadcrumb">
+			{#each data.breadcrumbs as crumb, i (crumb.href)}
+				{#if i > 0}<span class="tl-crumb-sep" aria-hidden="true">›</span>{/if}
+				<a class="tl-crumb" href={crumb.href}>{crumb.label}</a>
 			{/each}
-		</div>
+		</nav>
 	{/if}
+	<div class="sub-header">
+		<!-- Non-interactive spine: same chrome, no link/hover -->
+		<div class="spine-widget" aria-hidden="true">
+			{#if data.entries.length > 0}
+				<span class="parent-link__eyebrow">
+					{data.entries[0].year}{data.entries.length > 1 && data.entries[data.entries.length - 1].year !== data.entries[0].year ? `–${data.entries[data.entries.length - 1].year}` : ''}
+				</span>
+			{/if}
+			<div class="parent-link__spine">
+				<span class="parent-link__pip parent-link__pip--top"></span>
+				<span class="parent-link__line"></span>
+				<span class="parent-link__pip parent-link__pip--bottom"></span>
+			</div>
+		</div>
+		<div class="sub-header__right">
+			<h1 class="sub-header__title">{data.title}</h1>
+			{#if data.targets.length > 0}
+				<div class="timeline-targets">
+					{#each data.targets as t (t.href)}
+						<a class="timeline-target" href={t.href}>{t.label}</a>
+					{/each}
+				</div>
+			{/if}
+			{#if data.summaryHtml}
+				<p class="sub-header__subtitle">{@html data.summaryHtml}</p>
+			{/if}
+		</div>
+	</div>
 {/if}
 
 {#if data.bodyHtml}
@@ -469,12 +494,42 @@
 		margin-bottom: var(--space-3);
 	}
 
-	/* standalone: below PageHeader, centered in the prose column */
-	.timeline-targets--standalone {
+	/* ── Breadcrumb for top-level timelines ───────────────────────── */
+	.tl-breadcrumbs {
 		max-width: var(--prose-max);
-		margin-left: auto;
-		margin-right: auto;
+		margin: 0 auto var(--space-4);
+		padding-top: var(--space-6);
+		display: flex;
 		align-items: center;
+		gap: var(--space-2);
+		font-family: var(--font-serif);
+		font-variant-caps: all-small-caps;
+		font-size: var(--text-xs);
+		letter-spacing: 0.1em;
+	}
+
+	.tl-crumb {
+		color: var(--ink-faint);
+		text-decoration: none;
+		transition: color 120ms;
+	}
+
+	.tl-crumb:hover {
+		color: var(--accent);
+	}
+
+	.tl-crumb-sep {
+		color: var(--ink-faint);
+		opacity: 0.5;
+	}
+
+	/* Non-interactive spine widget (no link, no hover) */
+	.spine-widget {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-2);
+		flex-shrink: 0;
 	}
 
 	.timeline-target {
