@@ -10,6 +10,7 @@
 		summary: string | null;
 		url: string;
 		score: number;
+		context: string | null;
 	}
 
 	interface Props {
@@ -149,8 +150,11 @@
 								onmouseenter={() => (activeIndex = i)}
 							>
 								<span class="search-result-main">
-									<span class="search-result-name">{result.name}</span>
-									{#if result.kind}
+								<span class="search-result-name">{result.name}</span>
+								{#if result.context}
+									<span class="search-result-context">· {result.context}</span>
+								{/if}
+								{#if result.kind}
 										<span class="search-result-kind">{kindLabel(result.kind)}</span>
 									{:else if result.type === 'collection'}
 										<span class="search-result-kind search-result-kind--collection">Collection</span>
@@ -293,6 +297,12 @@
 
 	.search-result-kind--collection {
 		color: var(--accent-warm, var(--ink-faint));
+	}
+
+	.search-result-context {
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		color: var(--ink-soft);
 	}
 
 	.search-result-summary {

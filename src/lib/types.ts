@@ -85,6 +85,17 @@ export interface KindMeta {
 	 * default era (e.g. `current`).
 	 */
 	eraBounded?: boolean;
+	/**
+	 * Entity fields to surface as extra context in search results. Each
+	 * entry is a field name from `EntityMeta` (e.g. `"rank"`). The
+	 * resolved values are appended after the entity name in the search
+	 * overlay as `· <value>`, giving the user immediate disambiguation
+	 * without having to open the entity.
+	 *
+	 * Example: `searchContext: ["rank"]` on the `persoon` kind renders
+	 * "Jan Leemburg · 1950" in the overlay when the entity's `rank` is 1950.
+	 */
+	searchContext?: string[];
 }
 
 /**

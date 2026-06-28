@@ -31,6 +31,14 @@ export interface SearchResult {
 	summary: string | null;
 	url: string;
 	score: number;
+	/**
+	 * Optional extra context resolved from the kind's `searchContext`
+	 * declaration. Each entry is the string representation of the named
+	 * field's value on the entity, joined with " · ". Null when the kind
+	 * declares no `searchContext` or none of the declared fields have a
+	 * value on this entity.
+	 */
+	context: string | null;
 }
 
 /**
@@ -1353,32 +1361,48 @@ export class Graph {
 				if (coll) {
 					const memberCount = this.byFolder(sharedParent).length;
 					if (memberCount <= topEntities.length) {
-						return [
-							{
-								type: 'collection',
-								id: coll.path,
-								name: coll.meta.title ?? titleCaseSlug(coll.path.split('/').at(-1) ?? coll.path),
-								kind: null,
-								summary: coll.meta.description ?? null,
-								url: `/${coll.path}`,
-								score: scored[0].score
-							}
-						];
+					return [
+						{
+							type: 'collection',
+							id: coll.path,
+							name: coll.meta.title ?? titleCaseSlug(coll.path.split('/').at(-1) ?? coll.path),
+							kind: null,
+							summary: coll.meta.description ?? null,
+							url: `/${coll.path}`,
+							score: scored[0].score,
+							context: null
+						}
+					];
 					}
 				}
 			}
 		}
 
 		// ── Return entity results (max 3) ───────────────────────────────────
-		return topEntities.slice(0, 3).map((e) => ({
-			type: 'entity' as const,
-			id: e.id,
-			name: e.meta.name,
-			kind: e.meta.kind ?? null,
-			summary: e.meta.summary ?? null,
-			url: `/${e.id}`,
-			score: scored.find((s) => s.entity === e)!.score
-		}));
+		return topEntities.slice(0, 3).map((e) => {
+			// Resolve searchContext fields declared on the entity's kind.
+			let context: string | null = null;
+			const kindMeta = e.meta.kind ? this.kind(e.meta.kind)?.meta : undefined;
+			if (kindMeta?.searchContext?.length) {
+				const parts = kindMeta.searchContext
+					.map((field: string) => {
+						const val = (e.meta as Record<string, unknown>)[field];
+						return val !== undefined && val !== null ? String(val) : null;
+					})
+					.filter((v: string | null): v is string => v !== null);
+				if (parts.length > 0) context = parts.join(' · ');
+			}
+			return {
+				type: 'entity' as const,
+				id: e.id,
+				name: e.meta.name,
+				kind: e.meta.kind ?? null,
+				summary: e.meta.summary ?? null,
+				url: `/${e.id}`,
+				score: scored.find((s) => s.entity === e)!.score,
+				context
+			};
+		});
 	}
 
 	/** Score collections by title/description match. */
@@ -1410,7 +1434,8 @@ export class Graph {
 			kind: null,
 			summary: s.coll.meta.description ?? null,
 			url: `/${s.coll.path}`,
-			score: s.score
+			score: s.score,
+			context: null
 		}));
 	}
 

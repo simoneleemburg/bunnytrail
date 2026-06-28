@@ -564,6 +564,19 @@ function parseKindMeta(
 		}
 	}
 
+	// searchContext: optional array of entity field names shown as search hints.
+	const rawSearchContext = obj['searchContext'];
+	if (rawSearchContext !== undefined && rawSearchContext !== null) {
+		if (!Array.isArray(rawSearchContext) || rawSearchContext.some((v) => typeof v !== 'string')) {
+			issues.push({
+				kind: 'invalid-yaml',
+				detail: `${relTo(yamlPath, rootDir)}: searchContext must be an array of strings`
+			});
+		} else {
+			meta.searchContext = rawSearchContext as string[];
+		}
+	}
+
 	// Parse optional properties block.
 	const rawProps = obj['properties'];
 	if (rawProps !== undefined && rawProps !== null) {
