@@ -1080,7 +1080,8 @@
 
 <style>
 	:global(body:has(.graph-canvas)) {
-		background: #09080f;
+		--graph-bg: color-mix(in srgb, var(--page, #f5f4f2) 20%, black 80%);
+		background: var(--graph-bg);
 		overflow: hidden;
 	}
 
@@ -1155,7 +1156,7 @@
 		letter-spacing: 0.05em;
 		pointer-events: none;
 		paint-order: stroke;
-		stroke: #09080f;
+		stroke: var(--graph-bg);
 		stroke-width: 4px;
 	}
 
@@ -1189,7 +1190,7 @@
 		letter-spacing: 0.04em;
 		pointer-events: none;
 		paint-order: stroke;
-		stroke: #09080f;
+		stroke: var(--graph-bg);
 		stroke-width: 3px;
 	}
 
