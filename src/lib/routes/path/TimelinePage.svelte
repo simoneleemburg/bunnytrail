@@ -3,14 +3,59 @@
 	import type { TimelinePageData } from './timelinePage.load.ts';
 
 	let { data }: { data: TimelinePageData } = $props();
+
+	const pt = $derived(data.parentTimeline);
+	const ptYears = $derived(
+		pt?.firstYear != null
+			? pt.firstYear === pt.lastYear || pt.lastYear == null
+				? `${pt.firstYear}`
+				: `${pt.firstYear}–${pt.lastYear}`
+			: null
+	);
 </script>
 
-<PageHeader
-	title={data.title}
-	subtitleHtml={data.summaryHtml}
-	breadcrumbs={data.breadcrumbs}
-	titleChips={data.targets}
-/>
+{#if pt}
+	<!-- Sub-timeline header: parent widget left, title+chips right, aligned at top of spine -->
+	<div class="sub-header">
+		<a class="parent-link" href={pt.href} aria-label="Back to {pt.label}">
+			<span class="parent-link__label">{pt.label}</span>
+			{#if ptYears}
+				<span class="parent-link__eyebrow">{ptYears}</span>
+			{/if}
+			<div class="parent-link__spine" aria-hidden="true">
+				<span class="parent-link__pip parent-link__pip--top"></span>
+				<span class="parent-link__line"></span>
+				<span class="parent-link__pip parent-link__pip--bottom"></span>
+			</div>
+		</a>
+		<div class="sub-header__right">
+			<h1 class="sub-header__title">{data.title}</h1>
+			{#if data.targets.length > 0}
+				<div class="timeline-targets">
+					{#each data.targets as t (t.href)}
+						<a class="timeline-target" href={t.href}>{t.label}</a>
+					{/each}
+				</div>
+			{/if}
+			{#if data.summaryHtml}
+				<p class="sub-header__subtitle">{@html data.summaryHtml}</p>
+			{/if}
+		</div>
+	</div>
+{:else}
+	<PageHeader
+		title={data.title}
+		subtitleHtml={data.summaryHtml}
+		breadcrumbs={data.breadcrumbs}
+	/>
+	{#if data.targets.length > 0}
+		<div class="timeline-targets timeline-targets--standalone">
+			{#each data.targets as t (t.href)}
+				<a class="timeline-target" href={t.href}>{t.label}</a>
+			{/each}
+		</div>
+	{/if}
+{/if}
 
 {#if data.bodyHtml}
 	<div class="timeline-prose">
@@ -296,5 +341,166 @@
 		font-style: italic;
 		font-size: var(--text-xs);
 		color: var(--ink-soft);
+	}
+
+	/* ── Sub-timeline parent header ───────────────────────────────── */
+	.sub-header {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-6);
+		max-width: var(--prose-max);
+		margin: 0 auto var(--space-8);
+		padding-top: var(--space-7);
+	}
+
+	/* Right column holds both title and subtitle so subtitle is indented with title */
+	.sub-header__right {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+	}
+
+	.sub-header__subtitle {
+		font-family: var(--font-serif);
+		font-style: italic;
+		color: var(--ink-soft);
+		font-size: var(--text-lg);
+		margin: 0;
+	}
+
+	.sub-header__subtitle :global(p) {
+		margin: 0;
+	}
+
+	/* Parent timeline link: eyebrow + spine + name, stacked */
+	.parent-link {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-2);
+		text-decoration: none;
+		color: inherit;
+		flex-shrink: 0;
+	}
+
+	.parent-link__label {
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-sm);
+		color: var(--ink-faint);
+		display: inline-block;
+		transition: color 200ms ease, transform 200ms ease;
+	}
+
+	.parent-link:hover .parent-link__label {
+		color: var(--accent-warm);
+		transform: scale(1.15);
+	}
+
+	.parent-link__eyebrow {
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-sm);
+		color: var(--ink-faint);
+		display: inline-block;
+		transition: color 200ms ease, transform 200ms ease;
+	}
+
+	.parent-link:hover .parent-link__eyebrow {
+		color: var(--accent-warm);
+		transform: scale(1.15);
+	}
+
+	.parent-link__spine {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-1);
+	}
+
+	.parent-link__pip {
+		display: block;
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background-color: var(--accent);
+		opacity: 0.45;
+		transition: opacity 200ms ease, transform 200ms ease;
+	}
+
+	.parent-link:hover .parent-link__pip {
+		opacity: 1;
+		transform: scale(1.25);
+	}
+
+	.parent-link__line {
+		display: block;
+		width: 2px;
+		height: 2.5rem;
+		background: linear-gradient(
+			to bottom,
+			var(--accent-deep),
+			var(--accent-deep)
+		);
+		opacity: 0.35;
+		transition: height 200ms ease, opacity 200ms ease;
+	}
+
+	.parent-link:hover .parent-link__line {
+		height: 3rem;
+		opacity: 0.6;
+	}
+
+	.sub-header__title {
+		font-family: var(--font-display);
+		font-size: var(--text-5xl, 3rem);
+		font-weight: 400;
+		line-height: 1.1;
+		margin: 0 0 var(--space-2);
+		color: var(--ink);
+	}
+
+	/* ── Target entity links (stacked under title) ────────────────── */
+	.timeline-targets {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--space-1);
+		margin-bottom: var(--space-3);
+	}
+
+	/* standalone: below PageHeader, centered in the prose column */
+	.timeline-targets--standalone {
+		max-width: var(--prose-max);
+		margin-left: auto;
+		margin-right: auto;
+		align-items: center;
+	}
+
+	.timeline-target {
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.1em;
+		font-weight: 600;
+		color: var(--accent);
+		text-decoration: none;
+		transition: color 200ms ease;
+	}
+
+	.timeline-target:hover {
+		color: var(--accent-deep);
+	}
+
+	.sub-header__subtitle {
+		font-family: var(--font-serif);
+		font-style: italic;
+		color: var(--ink-soft);
+		font-size: var(--text-lg);
+		margin: 0;
+	}
+
+	.sub-header__subtitle :global(p) {
+		margin: 0;
 	}
 </style>

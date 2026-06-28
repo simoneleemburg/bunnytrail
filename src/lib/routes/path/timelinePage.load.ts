@@ -41,6 +41,8 @@ export interface TimelinePageData {
 	targets: { label: string; href: string }[];
 	/** Direct child timelines nested under this timeline's folder. */
 	childTimelines: ChildTimelineCard[];
+	/** Parent timeline when this is a nested sub-timeline, else null. */
+	parentTimeline: { label: string; href: string; firstYear: number | null; lastYear: number | null } | null;
 }
 
 export async function loadTimelinePage(timelinePath: string): Promise<TimelinePageData> {
@@ -151,6 +153,27 @@ export async function loadTimelinePage(timelinePath: string): Promise<TimelinePa
 		}
 	}
 
+	// Detect parent timeline — if our path has a parent segment that is itself
+	// a timeline, this is a nested sub-timeline.
+	let parentTimeline: TimelinePageData['parentTimeline'] = null;
+	const lastSlash = timelinePath.lastIndexOf('/');
+	if (lastSlash > 0) {
+		const parentPath = timelinePath.slice(0, lastSlash);
+		const parent = graph.timeline(parentPath);
+		if (parent) {
+			const parentLeaf = parentPath.slice(parentPath.lastIndexOf('/') + 1);
+			const parentEntity = graph.get(parentPath);
+			const parentLabel =
+				parent.meta.name ?? parentEntity?.meta.name ?? parentLeaf.replace(/-/g, ' ');
+			parentTimeline = {
+				label: parentLabel,
+				href: `/${parentPath}`,
+				firstYear: parent.entries.length > 0 ? parent.entries[0].year : null,
+				lastYear: parent.entries.length > 0 ? parent.entries[parent.entries.length - 1].year : null
+			};
+		}
+	}
+
 	return {
 		kind: 'timeline',
 		title,
@@ -165,6 +188,7 @@ export async function loadTimelinePage(timelinePath: string): Promise<TimelinePa
 				return e ? { label: e.meta.name, href: `/${id}` } : null;
 			})
 			.filter((t): t is { label: string; href: string } => t !== null),
-		childTimelines
+		childTimelines,
+		parentTimeline
 	};
 }
