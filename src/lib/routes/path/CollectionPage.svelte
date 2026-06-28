@@ -547,7 +547,7 @@
 	{/if}
 {/if}
 
-{#if data.flat.length === 0}
+{#if data.flat.length === 0 && data.timelines.length === 0}
 	<p class="empty">
 		<em>{ui.collection_empty(data.label.plural)}</em>
 	</p>
@@ -607,7 +607,7 @@
 
 	<div class="layout">
 		<div class="content">
-		{#if visibleSubcollections.length > 0}
+		{#if visibleSubcollections.length > 0 || data.timelines.length > 0}
 			<section class="subcollections" aria-label={ui.collection_subcollections_aria}>
 				<ul class="subcollection-list">
 					{#each visibleSubcollections as sub (sub.type)}
@@ -621,6 +621,37 @@
 							tags={sub.displayTags}
 							isCluster={sub.isCluster}
 						/>
+					{/each}
+					{#each data.timelines as tl (tl.path)}
+						<li class="timeline-tile">
+							<a class="timeline-tile__link" href={tl.href}>
+								<!-- Mini timeline: vertical spine with first/last dots -->
+								<div class="timeline-tile__spine" aria-hidden="true">
+									<div class="timeline-tile__line"></div>
+									{#if tl.firstYear !== null}
+										<div class="timeline-tile__dot timeline-tile__dot--first"></div>
+									{/if}
+									{#if tl.lastYear !== null && tl.lastYear !== tl.firstYear}
+										<div class="timeline-tile__dot timeline-tile__dot--last"></div>
+									{/if}
+								</div>
+								<div class="timeline-tile__body">
+									<div class="timeline-tile__eyebrow">
+										{#if tl.firstYear !== null && tl.lastYear !== null && tl.firstYear !== tl.lastYear}
+											{tl.firstYear} – {tl.lastYear}
+										{:else if tl.firstYear !== null}
+											{tl.firstYear}
+										{:else}
+											&nbsp;
+										{/if}
+									</div>
+									<h3 class="timeline-tile__label">{tl.title}</h3>
+								</div>
+							</a>
+							{#if tl.summary}
+								<p class="timeline-tile__description">{tl.summary}</p>
+							{/if}
+						</li>
 					{/each}
 				</ul>
 			</section>

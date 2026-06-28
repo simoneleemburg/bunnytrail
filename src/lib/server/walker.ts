@@ -12,7 +12,10 @@ import type {
 	EntityId,
 	EntityMeta,
 	HealthIssue,
-	ResolvedBookMeta
+	ResolvedBookMeta,
+	Timeline,
+	TimelineEntry,
+	TimelineMeta
 } from '$lib/types';
 import { splitFrontmatter } from './frontmatter';
 import { extractKindLinks, extractKindRefs, extractWikilinks } from './wikilinks';
@@ -407,6 +410,133 @@ export function resolveBookMeta(raw: unknown): ResolvedBookMeta {
 				? meta.unitPlural.trim()
 				: defaults.plural
 	};
+}
+
+/**
+ * Walk `contentDir` recursively, discovering every `_time.md` file.
+ *
+ * Two structural roles:
+ *
+ *   1. **Line** (`type: line` | `type: period` in frontmatter, or heuristic:
+ *      the folder contains sub-folders that are themselves year-named and
+ *      carry a `_time.md`). Produces a `Timeline` with its entries.
+ *
+ *   2. **Dot** (`year:` present, or sub-folder is a bare integer name).
+ *      Not emitted independently — they are collected as `Timeline.entries`.
+ *
+ * A `_time.md` with `type: dot` (or just a `year:` field) at a top-level
+ * content folder is silently ignored (orphan dot without a parent line).
+ *
+ * Results are accumulated into the `timelines` map, keyed by the line's
+ * folder path relative to `contentDir`.
+ */
+export async function walkTimelines(
+	contentDir: string,
+	issues: HealthIssue[]
+): Promise<Map<string, Timeline>> {
+	const timelines = new Map<string, Timeline>();
+	await walkTimelinesDir(contentDir, '', contentDir, timelines, issues);
+	return timelines;
+}
+
+async function walkTimelinesDir(
+	absDir: string,
+	relPath: string,
+	contentDir: string,
+	timelines: Map<string, Timeline>,
+	issues: HealthIssue[]
+): Promise<void> {
+	const timeMdPath = join(absDir, '_time.md');
+	const hasTimeMd = await exists(timeMdPath);
+
+	if (relPath && hasTimeMd) {
+		const raw = await readFile(timeMdPath, 'utf8');
+		const split = splitFrontmatter(raw);
+		let meta: TimelineMeta = {};
+		if (split.frontmatter !== null) {
+			try {
+				const parsed = parseYaml(split.frontmatter);
+				meta = (parsed && typeof parsed === 'object' ? parsed : {}) as TimelineMeta;
+			} catch (err) {
+				issues.push({
+					kind: 'invalid-yaml',
+					detail: `${timeMdPath}: ${err instanceof Error ? err.message : String(err)}`
+				});
+			}
+		}
+		const body = split.body;
+
+		// Decide role: `line`/`period` type, or dot (has `year:`) — or
+		// infer from the folder name (pure integer → dot).
+		const folderName = relPath.includes('/') ? relPath.slice(relPath.lastIndexOf('/') + 1) : relPath;
+		const isYearFolder = /^-?\d+$/.test(folderName);
+		const isLine =
+			meta.type === 'line' ||
+			meta.type === 'period' ||
+			(!isYearFolder && meta.type !== 'dot' && meta.year === undefined);
+		const isDot =
+			meta.type === 'dot' || meta.year !== undefined || (isYearFolder && meta.type !== 'line');
+
+		if (isLine) {
+			// Load the dot entries from year-named immediate sub-folders.
+			const entries: TimelineEntry[] = [];
+			const dirents = await readDirents(absDir);
+			for (const entry of dirents) {
+				if (!entry.isDirectory()) continue;
+				const childName = entry.name;
+				// Skip hidden/underscore dirs (consistent with entity walk).
+				if (childName.startsWith('.') || childName.startsWith('_')) continue;
+				// Only year-like folders qualify as dot containers.
+				if (!/^-?\d+$/.test(childName)) continue;
+				const childAbsDir = join(absDir, childName);
+				const childTimeMdPath = join(childAbsDir, '_time.md');
+				if (!(await exists(childTimeMdPath))) continue;
+				const childRaw = await readFile(childTimeMdPath, 'utf8');
+				const childSplit = splitFrontmatter(childRaw);
+				let childMeta: TimelineMeta = {};
+				if (childSplit.frontmatter !== null) {
+					try {
+						const parsed = parseYaml(childSplit.frontmatter);
+						childMeta = (parsed && typeof parsed === 'object' ? parsed : {}) as TimelineMeta;
+					} catch (err) {
+						issues.push({
+							kind: 'invalid-yaml',
+							detail: `${childTimeMdPath}: ${err instanceof Error ? err.message : String(err)}`
+						});
+						continue;
+					}
+				}
+				// Determine the year: explicit field first, folder name fallback.
+				const year: number =
+					typeof childMeta.year === 'number'
+						? childMeta.year
+						: parseInt(childName, 10);
+				const childRelPath = relPath ? `${relPath}/${childName}` : childName;
+				entries.push({
+					path: childRelPath,
+					year,
+					summary: typeof childMeta.summary === 'string' ? childMeta.summary : undefined,
+					body: childSplit.body,
+					mdPath: childTimeMdPath
+				});
+			}
+			entries.sort((a, b) => a.year - b.year);
+			timelines.set(relPath, { path: relPath, meta, body, mdPath: timeMdPath, entries });
+		} else if (isDot) {
+			// A lone dot at the top level: it will be collected by its parent's
+			// line walk above. Nothing to emit here independently.
+		}
+	}
+
+	// Always recurse into sub-directories (a line `_time.md` may be
+	// arbitrarily deep; we don't want to stop early).
+	const dirents = await readDirents(absDir);
+	for (const entry of dirents) {
+		if (!entry.isDirectory()) continue;
+		if (entry.name.startsWith('.') || entry.name.startsWith('_')) continue;
+		const childRel = relPath ? `${relPath}/${entry.name}` : entry.name;
+		await walkTimelinesDir(join(absDir, entry.name), childRel, contentDir, timelines, issues);
+	}
 }
 
 export async function readDirents(dirPath: string): Promise<Dirent[]> {

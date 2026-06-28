@@ -664,3 +664,164 @@ a.rank-nav__item:hover {
 .orbit-group.dimmed > article:focus-within {
 	opacity: 1;
 }
+
+/* ── Timeline tile ───────────────────────────────────────────────────────────
+   A bespoke collection-list item for timeline entries. Matches the
+   CollectionCard geometry (same padding, negative margin, hover lift) but
+   replaces the left-border accent with a mini vertical timeline: a thin
+   spine with dots placed proportionally for each entry year.            */
+
+.timeline-tile {
+	position: relative;
+	padding: var(--space-4);
+	margin: 0 calc(var(--space-4) * -1);
+	border-radius: 8px;
+	transition:
+		background-color 200ms ease,
+		box-shadow 200ms ease,
+		transform 200ms ease;
+}
+
+.timeline-tile:hover {
+	background-color: var(--paper-warm);
+	box-shadow:
+		0 1px 1px rgba(120, 90, 60, 0.04),
+		0 4px 14px -8px rgba(120, 90, 60, 0.1);
+	transform: translateY(-1px);
+}
+
+/* The link wraps spine + body side by side */
+.timeline-tile__link {
+	display: flex;
+	align-items: stretch;
+	gap: var(--space-3);
+	color: inherit;
+	text-decoration: none;
+}
+
+/* Stretched link overlay — same technique as CollectionCard */
+.timeline-tile__link::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	border-radius: 8px;
+}
+
+/* ── Mini spine ── */
+.timeline-tile__spine {
+	position: relative;
+	width: 14px;
+	flex: 0 0 14px;
+	/* Give it enough vertical room to show dots */
+	min-height: 3.5rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+/* The vertical line */
+.timeline-tile__line {
+	position: absolute;
+	top: 4px;
+	bottom: 4px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 2px;
+	background-color: var(--accent-deep);
+	opacity: 0.35;
+	border-radius: 1px;
+	transition: opacity 200ms ease;
+}
+
+.timeline-tile:hover .timeline-tile__line {
+	opacity: 0.7;
+}
+
+/* Dots — all three share the same base geometry */
+.timeline-tile__dot {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background-color: var(--accent);
+	opacity: 0.6;
+	transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.timeline-tile:hover .timeline-tile__dot {
+	opacity: 1;
+}
+
+.timeline-tile__dot--first {
+	top: 2px;
+}
+
+.timeline-tile__dot--last {
+	bottom: 2px;
+}
+
+/* ── Body text ── */
+.timeline-tile__body {
+	flex: 1;
+	min-width: 0;
+}
+
+.timeline-tile__eyebrow {
+	font-family: var(--font-serif);
+	font-style: italic;
+	font-size: var(--text-xs);
+	letter-spacing: 0.04em;
+	color: var(--ink-faint);
+	margin-bottom: var(--space-2);
+}
+
+.timeline-tile__label {
+	font-family: var(--font-display);
+	font-size: var(--text-lg);
+	font-weight: 500;
+	margin: 0;
+	color: var(--ink);
+	background-image: linear-gradient(
+		100deg,
+		currentColor 0%,
+		currentColor 42%,
+		var(--accent-warm) 50%,
+		currentColor 58%,
+		currentColor 100%
+	);
+	background-size: 250% 100%;
+	background-position: 130% 0;
+	background-clip: text;
+	-webkit-background-clip: text;
+}
+
+.timeline-tile:hover .timeline-tile__label {
+	animation: timeline-tile-gleam 600ms ease-out;
+	color: var(--accent);
+}
+
+@keyframes timeline-tile-gleam {
+	0% {
+		background-position: 130% 0;
+		-webkit-text-fill-color: currentColor;
+	}
+	15%, 85% {
+		-webkit-text-fill-color: transparent;
+	}
+	100% {
+		background-position: -30% 0;
+		-webkit-text-fill-color: currentColor;
+	}
+}
+
+.timeline-tile__description {
+	margin: var(--space-2) 0 0 0;
+	/* indent to align with body text (spine width + gap) */
+	padding-left: calc(14px + var(--space-3));
+	font-size: var(--text-sm);
+	color: var(--ink-soft);
+	line-height: var(--leading-normal);
+}

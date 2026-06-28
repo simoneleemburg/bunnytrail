@@ -127,6 +127,7 @@ export function loadAggregateShelfPage(shelf: string) {
 		description,
 		bodyHtml: null,
 		subcollections,
+		timelines: [] as Array<{ path: string; href: string; title: string; summary: string | null; firstYear: number | null; lastYear: number | null }>,
 		subShelves,
 		subcollectionTrees,
 		containers: [] as ContainerNode[],

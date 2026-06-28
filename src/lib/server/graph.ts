@@ -10,6 +10,7 @@ import type {
 	Ontology,
 	PropertyRegistry,
 	RelationRegistry,
+	Timeline,
 	VocabEntry
 } from '$lib/types';
 import { folderLabels, titleCaseSlug } from '$lib/types';
@@ -114,6 +115,7 @@ export class Graph {
 	#collections: Map<string, Collection> = new Map();
 	#clusters: Set<string> = new Set();
 	#universalFolders: Set<string> = new Set();
+	#timelines: Map<string, Timeline> = new Map();
 	#loaded = false;
 	#loading: Promise<void> | null = null;
 	/** Monotonically incrementing counter; bumped after every successful load(). */
@@ -133,7 +135,7 @@ export class Graph {
 		this.#loading = (async () => {
 			// Load world config for identity, ornament, property registry, and global relation strictness.
 			const { config: worldConfig, issues: worldIssues } = await loadWorld();
-			const { entities, issues, kindRegistry, ontologies, relations, properties, collections, clusters, universalFolders } =
+			const { entities, issues, kindRegistry, ontologies, relations, properties, collections, clusters, universalFolders, timelines } =
 				await loadAll(contentDir, {
 					allowUndefinedRelations: worldConfig.allowUndefinedRelations,
 					allowUndefinedProperties: worldConfig.allowUndefinedProperties,
@@ -151,6 +153,7 @@ export class Graph {
 			this.#collections = collections;
 			this.#clusters = clusters;
 			this.#universalFolders = universalFolders;
+			this.#timelines = timelines;
 			this.#loaded = true;
 		// Invalidate lazy indices so a dev-mode reload rebuilds them
 		// against the fresh entity set.
@@ -302,6 +305,45 @@ export class Graph {
 	/** A single collection by its folder path, or undefined. */
 	collection(path: string): Collection | undefined {
 		return this.#collections.get(path);
+	}
+
+	// ---------------------------------------------------------------------
+	// Timeline helpers.
+	// ---------------------------------------------------------------------
+
+	/**
+	 * All loaded timelines (line type), keyed by folder path.
+	 */
+	timelines(): ReadonlyMap<string, Timeline> {
+		return this.#timelines;
+	}
+
+	/** A single timeline by its folder path, or undefined. */
+	timeline(path: string): Timeline | undefined {
+		return this.#timelines.get(path);
+	}
+
+	/** True if `path` names a known timeline (line). */
+	isTimeline(path: string): boolean {
+		return this.#timelines.has(path);
+	}
+
+	/**
+	 * True if `path` is a timeline entry (dot) folder — i.e. it is a
+	 * year-named sub-folder of a known timeline line. Used by the
+	 * entity-assets handler to allow sibling image serving for timeline
+	 * entry folders that are not entities or collections.
+	 */
+	isTimelineEntryPath(path: string): boolean {
+		// `path` looks like `<timelinePath>/<year>`. Extract the parent.
+		const lastSlash = path.lastIndexOf('/');
+		if (lastSlash < 0) return false;
+		const parent = path.slice(0, lastSlash);
+		const leaf = path.slice(lastSlash + 1);
+		if (!/^-?\d+$/.test(leaf)) return false;
+		const timeline = this.#timelines.get(parent);
+		if (!timeline) return false;
+		return timeline.entries.some((e) => e.path === path);
 	}
 
 	// ---------------------------------------------------------------------

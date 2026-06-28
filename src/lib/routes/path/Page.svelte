@@ -7,6 +7,8 @@
 	import KindsIndexPage from '../kinds/KindsIndexPage.svelte';
 	import KindPage from '../kinds/kind/KindPage.svelte';
 	import SymbologyPage from '../symbology/Page.svelte';
+	import TimelinePage from './TimelinePage.svelte';
+	import TimelineDotPage from './TimelineDotPage.svelte';
 	import { page } from '$app/state';
 
 	let { data }: { data: PathPageData } = $props();
@@ -33,6 +35,10 @@
 	<KindPage {data} upHref={kindUpHref} />
 {:else if data.kind === 'symbology'}
 	<SymbologyPage {data} />
+{:else if data.kind === 'timeline'}
+	<TimelinePage {data} />
+{:else if data.kind === 'timeline-dot'}
+	<TimelineDotPage {data} />
 {:else}
 	<EntityPage {data} />
 {/if}

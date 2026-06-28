@@ -7,6 +7,8 @@ import { loadAggregateShelfPage } from './aggregateShelfPage.load';
 import { loadAggregateSubShelfPage } from './aggregateSubShelfPage.load';
 import { loadChapterPage } from './chapterPage.load';
 import { loadCraftPage } from './craftPage.load';
+import { loadTimelinePage } from './timelinePage.load';
+import { loadTimelineDotPage } from './timelineDotPage.load';
 import { loadKindsIndexPage } from '../kinds/kindsIndexPage.load';
 import { loadKindPage } from '../kinds/kind/kindPage.load';
 import { loadSymbologyPage } from '../symbology/load';
@@ -84,6 +86,26 @@ export async function load({ params, url }: { params: { path: string }; url: URL
 	const entity = graph.get(path);
 	if (entity) {
 		return { kind: 'entity' as const, ...(await loadEntityPage(entity, mode)) };
+	}
+
+	// Timeline dot dispatch: `<timeline-path>/<year>` where the path is a
+	// known timeline and the last segment is an integer year.
+	const lastSlash = path.lastIndexOf('/');
+	if (lastSlash !== -1) {
+		const possibleYear = path.slice(lastSlash + 1);
+		if (/^-?\d+$/.test(possibleYear)) {
+			const timelinePath = path.slice(0, lastSlash);
+			const year = parseInt(possibleYear, 10);
+			if (graph.isTimeline(timelinePath)) {
+				const dotData = await loadTimelineDotPage(timelinePath, year);
+				if (dotData) return dotData;
+			}
+		}
+	}
+
+	// Timeline line dispatch: the path itself is a known timeline.
+	if (graph.isTimeline(path)) {
+		return await loadTimelinePage(path);
 	}
 
 	// Chapter dispatch: split off a trailing `/chapters/<slug>` and
@@ -206,6 +228,14 @@ export async function entries(): Promise<{ path: string }[]> {
 		paths.add(shelf);
 		for (const sub of graph.subShelvesAll(shelf)) {
 			paths.add(`${shelf}/${sub}`);
+		}
+	}
+
+	// Timeline pages: line at the timeline path itself, dots at <path>/<year>
+	for (const [timelinePath, timeline] of graph.timelines()) {
+		paths.add(timelinePath);
+		for (const entry of timeline.entries) {
+			paths.add(`${timelinePath}/${entry.year}`);
 		}
 	}
 

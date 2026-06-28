@@ -848,6 +848,90 @@ export function relationLabel(
 	return kind.replace(/[-_]/g, ' ').replace(/^./, (c) => c.toUpperCase());
 }
 
+// ── Timelines ─────────────────────────────────────────────────────────────────
+//
+// A *timeline* is a folder-level concept distinct from entities.
+// It is declared by placing a `_time.md` file inside a folder.
+//
+// Two flavours:
+//
+//   - `dot`  (default): a single timestamped entry, always with a `year`.
+//             Placed inside a year-named sub-folder of a `line` timeline.
+//   - `line`: an editorial container that groups dot entries.
+//             Its own `_time.md` lives in the parent folder of the dots.
+//
+// Directory layout for a `line` timeline:
+//
+//   jan-arend-jr/
+//     _time.md          ← type: line (or `type: period`)
+//     1954/
+//       _time.md        ← year: 1954  (dot — inferred type)
+//       knd6.jpg
+//     1955/
+//       _time.md        ← year: 1955  (dot — inferred type)
+//
+// URL scheme (relative to the entity they annotate):
+//
+//   /<entity-path>/time           → TimelinePage   (line view)
+//   /<entity-path>/time/<year>    → TimelineDotPage (single dot view)
+
+/**
+ * Frontmatter of a `_time.md` file.  The same shape covers both the
+ * `line` (container) and `dot` (entry) flavours; discriminate with `type`.
+ */
+export interface TimelineMeta {
+	/**
+	 * `'dot'` — a single timestamped entry (default when `year` is set).
+	 * `'line'` — an editorial container that groups dot entries.
+	 * `'period'` — alias for `'line'` for backwards compat.
+	 */
+	type?: 'dot' | 'line' | 'period';
+	/**
+	 * The year this entry belongs to. Required on dot entries.
+	 * Must be a valid integer (may be negative for BCE years).
+	 */
+	year?: number;
+	/** Optional display name for a line timeline (appears in the header). */
+	name?: string;
+	/** Optional one-line summary shown below the title. */
+	summary?: string;
+}
+
+/**
+ * A single loaded timeline entry (dot). `body` is the raw markdown
+ * prose from the `_time.md` file (post-frontmatter). `path` is the
+ * folder path relative to `content/` (e.g. `leemburg/verhalen/jan-arend-jr/1954`).
+ */
+export interface TimelineEntry {
+	/** Full folder path under `content/`, e.g. `leemburg/verhalen/jan-arend-jr/1954`. */
+	path: string;
+	/** The year. */
+	year: number;
+	/** Optional one-line summary from the dot's `_time.md` frontmatter. */
+	summary?: string;
+	/** Raw markdown body (empty string when no prose was authored). */
+	body: string;
+	/** Absolute disk path to the `_time.md` file (for diagnostics). */
+	mdPath: string;
+}
+
+/**
+ * A loaded timeline (line) — the container. `path` is the folder that
+ * holds the `_time.md` with `type: line` (or `period`). The dot entries
+ * are discovered by walking the immediate year-named sub-folders.
+ */
+export interface Timeline {
+	/** Full folder path, e.g. `leemburg/verhalen/jan-arend-jr`. */
+	path: string;
+	meta: TimelineMeta;
+	/** Raw markdown body of the line `_time.md` (empty when no prose). */
+	body: string;
+	/** Absolute disk path to the `_time.md` file (for diagnostics). */
+	mdPath: string;
+	/** Dot entries, sorted ascending by year. */
+	entries: TimelineEntry[];
+}
+
 // ── Vocabulary ────────────────────────────────────────────────────────────────
 //
 // A single word/term in a language, collected either from the language entity's

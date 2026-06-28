@@ -1,9 +1,9 @@
 import { readdir } from 'node:fs/promises';
 import type { Dirent } from 'node:fs';
-import type { Edge, Entity, EntityId, EntityType, EraConfig, HealthIssue, Kind, Ontology, Collection, PropertyRegistry, RelationRegistry } from '$lib/types';
+import type { Edge, Entity, EntityId, EntityType, EraConfig, HealthIssue, Kind, Ontology, Collection, PropertyRegistry, RelationRegistry, Timeline } from '$lib/types';
 import { loadKindRegistry } from './kinds';
 import { CONTENT_DIR } from './globals';
-import { walk, readDirents } from './walker';
+import { walk, walkTimelines, readDirents } from './walker';
 import {
 	deriveClusterSets,
 	buildLangCodes,
@@ -79,6 +79,13 @@ export interface LoadResult {
 	 * wikilinks fall back to these when no in-cluster match exists.
 	 */
 	universalFolders: Set<string>;
+	/**
+	 * All loaded timelines, keyed by their folder path under `content/`
+	 * (e.g. `leemburg/verhalen/jan-arend-jr`). Only folders that carry a
+	 * `_time.md` with `type: line` (or `type: period`) are recorded here;
+	 * the individual dot entries live on `Timeline.entries`.
+	 */
+	timelines: Map<string, Timeline>;
 }
 
 /**
@@ -120,6 +127,9 @@ export async function loadAll(
 	const collections = new Map<string, Collection>();
 
 	await walk({ absDir: contentDir, relPath: '', parentEntity: null, contentDir, entities, issues, collections });
+
+	// Walk timelines: discover _time.md files across the content tree.
+	const timelines = await walkTimelines(contentDir, issues);
 
 	// Resolve children: for every entity whose `parent` is set, push its
 	// id onto the parent's `children` array. Done in a second pass so
@@ -185,7 +195,8 @@ export async function loadAll(
 		properties: registryResult.properties,
 		collections,
 		clusters: clusterSet,
-		universalFolders: universalSet
+		universalFolders: universalSet,
+		timelines
 	};
 }
 

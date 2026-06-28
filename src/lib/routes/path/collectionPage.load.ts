@@ -297,6 +297,25 @@ export async function loadCollectionPage(path: string) {
 		buildSubcollectionTree(sub, path, cardSummaryHtml)
 	);
 
+	// Timeline tiles: immediate child folders of this collection that
+	// carry a _time.md (are known timelines). Shown alongside
+	// subcollection tiles so they're discoverable from browse pages.
+	const timelines = [...graph.timelines().values()]
+		.filter((tl) => {
+			if (!tl.path.startsWith(`${path}/`)) return false;
+			const rest = tl.path.slice(path.length + 1);
+			return !rest.includes('/');
+		})
+		.map((tl) => ({
+			path: tl.path,
+			href: `/${tl.path}`,
+			title: tl.meta.name ?? graph.get(tl.path)?.meta.name ?? tl.path.slice(tl.path.lastIndexOf('/') + 1).replace(/-/g, ' '),
+			summary: tl.meta.summary ?? null,
+			firstYear: tl.entries.length > 0 ? tl.entries[0].year : null,
+			lastYear: tl.entries.length > 0 ? tl.entries[tl.entries.length - 1].year : null
+		}))
+		.sort((a, b) => a.title.localeCompare(b.title));
+
 	// Prev/next navigation between sibling collections that have an
 	// explicit `rank` in their `_collection` frontmatter. Siblings
 	// are the other child folders of the same parent folder.
@@ -342,6 +361,7 @@ export async function loadCollectionPage(path: string) {
 		description,
 		bodyHtml,
 		subcollections,
+		timelines,
 		subShelves: [] as Array<{
 			type: string;
 			plural: string;

@@ -52,6 +52,13 @@ export const entries = async (): Promise<Array<{ path: string }>> => {
 	const folders = new Set<string>();
 	for (const e of graph.all()) folders.add(e.id);
 	for (const cp of graph.collections().keys()) folders.add(cp);
+	// Also include timeline entry folders so their sibling images are
+	// prerendered alongside entity and collection assets.
+	for (const timeline of graph.timelines().values()) {
+		for (const entry of timeline.entries) {
+			folders.add(entry.path);
+		}
+	}
 
 	const out: Array<{ path: string }> = [];
 	for (const folder of folders) {
@@ -90,10 +97,13 @@ export const GET = async ({ params }: { params: { path: string } }) => {
 	const ext = dot >= 0 ? filename.slice(dot + 1).toLowerCase() : '';
 	if (!IMAGE_EXTENSIONS.has(ext)) error(404, 'unsupported extension');
 
-	// The folder must be a real entity or collection — otherwise we
-	// could be coaxed into serving anything under CONTENT_DIR.
+	// The folder must be a real entity, collection, or timeline entry —
+	// otherwise we could be coaxed into serving anything under CONTENT_DIR.
 	await graph.ready();
-	const isKnownFolder = graph.get(folder) !== undefined || graph.collection(folder) !== undefined;
+	const isKnownFolder =
+		graph.get(folder) !== undefined ||
+		graph.collection(folder) !== undefined ||
+		graph.isTimelineEntryPath(folder);
 	if (!isKnownFolder) error(404, 'unknown folder');
 
 	const filePath = resolve(CONTENT_DIR, folder, filename);
