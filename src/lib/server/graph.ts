@@ -368,9 +368,13 @@ export class Graph {
 	/** True if `path` is a browseable folder: it has at least one descendant entity, or it has a `_collection.yaml`. */
 	isFolder(path: string): boolean {
 		if (this.#collections.has(path)) return true;
+		if (this.#timelines.has(path)) return true;
 		const prefix = `${path}/`;
 		for (const id of this.#entities.keys()) {
 			if (id.startsWith(prefix)) return true;
+		}
+		for (const tlPath of this.#timelines.keys()) {
+			if (tlPath.startsWith(prefix)) return true;
 		}
 		return false;
 	}

@@ -41,7 +41,7 @@ export function loadAggregateSubShelfPage(shelf: string, subShelf: string) {
 			const rootLabels = graph.folderLabels(rootSegment);
 			return {
 				...buildSubcollectionEntry(p, kindTree),
-				plural: folderLabel.plural + ' of ' + rootLabels.plural,
+				plural: rootLabels.plural + ' · ' + folderLabel.plural,
 				isCluster: true as const
 			};
 		})

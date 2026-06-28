@@ -547,7 +547,7 @@
 	{/if}
 {/if}
 
-{#if data.flat.length === 0 && data.timelines.length === 0}
+{#if data.flat.length === 0 && data.timelines.length === 0 && data.subcollections.length === 0 && data.subShelves.length === 0}
 	<p class="empty">
 		<em>{ui.collection_empty(data.label.plural)}</em>
 	</p>

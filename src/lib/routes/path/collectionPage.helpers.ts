@@ -175,6 +175,15 @@ export function buildSubcollectionEntry(path: string, tree: KindTree) {
 	const labels = graph.folderLabels(path);
 	const description = graph.collection(path)?.meta.description ?? null;
 
+	// Count timeline entries (dots) under this path so that collections
+	// whose only content is _time.md files are not treated as empty.
+	let timelineEntryCount = 0;
+	for (const [tlPath, tl] of graph.timelines()) {
+		if (tlPath === path || tlPath.startsWith(path + '/')) {
+			timelineEntryCount += tl.entries.length;
+		}
+	}
+
 	const kindCounts: Record<string, number> = {};
 	const tagCounts = new Map<string, number>();
 	const tagsByKind: Record<string, Map<string, number>> = {};
@@ -223,7 +232,7 @@ export function buildSubcollectionEntry(path: string, tree: KindTree) {
 		plural: labels.plural,
 		description,
 		rank: typeof col?.meta.rank === 'number' ? col.meta.rank : null,
-		count: subEntities.length,
+		count: subEntities.length + timelineEntryCount,
 		kindCounts,
 		tags: rankTags(tagCounts),
 		tagsByKind: Object.fromEntries(Object.entries(tagsByKind).map(([k, m]) => [k, rankTags(m)])),
