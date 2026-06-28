@@ -145,11 +145,13 @@
 		font-variant-caps: all-small-caps;
 		letter-spacing: 0.1em;
 		color: var(--ink-faint);
-		transition: color 200ms ease;
+		transition: color 200ms ease, transform 200ms ease;
+		display: inline-block; /* transform needs a block context */
 	}
 
 	.dot-nav__neighbour:hover .dot-nav__neighbour-year {
 		color: var(--accent-warm);
+		transform: scale(1.25);
 	}
 
 	/* ── Current dot ───────────────────────────────────────────────── */
