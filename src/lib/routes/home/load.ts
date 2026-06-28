@@ -5,6 +5,25 @@ import { influences } from '$lib/server/influences';
 import { world } from '$lib/server/world';
 import { assets } from '$lib/server/assets';
 import { blog } from '$lib/server/blog';
+import { readDirents } from '$lib/server/walker';
+import { CONTENT_DIR } from '$lib/server/globals';
+import { join } from 'path';
+
+const IMAGE_EXTS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif']);
+
+async function countContentImages(dir: string): Promise<number> {
+	let count = 0;
+	const dirents = await readDirents(dir).catch(() => []);
+	for (const d of dirents) {
+		if (d.isDirectory()) {
+			count += await countContentImages(join(dir, d.name));
+		} else if (d.isFile()) {
+			const ext = d.name.slice(d.name.lastIndexOf('.')).toLowerCase();
+			if (IMAGE_EXTS.has(ext)) count++;
+		}
+	}
+	return count;
+}
 
 /**
  * Recursively walk every browseable folder under `content/`, in
@@ -201,7 +220,12 @@ export async function load() {
 		// case so a freshly scaffolded world still has a coherent hero.
 		lede: world.ledeHtml(),
 		crest,
-		hasBlogPosts: blog.all().length > 0
+		hasBlogPosts: blog.all().length > 0,
+		showProseBreakdown: world.config().homePageSettings.showProseBreakdown,
+		showImageCount: world.config().homePageSettings.showImageCount,
+		imageCount: world.config().homePageSettings.showImageCount
+			? await countContentImages(CONTENT_DIR)
+			: 0
 	};
 }
 

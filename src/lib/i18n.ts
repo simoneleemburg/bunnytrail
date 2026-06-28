@@ -46,6 +46,7 @@ export interface Translations {
 	home_with_prose: string;
 	home_stubs: string;
 	home_words: string;
+	home_images: string;
 	home_issues: (n: number) => string;
 	home_gate_section_aria: string;
 	home_gate_boxes_aria: string;
@@ -275,6 +276,7 @@ const en: Translations = {
 	home_with_prose: 'with prose',
 	home_stubs: 'stubs',
 	home_words: 'words',
+	home_images: 'images',
 	home_issues: (n) => `${n} ${n === 1 ? 'issue' : 'issues'}`,
 	home_gate_section_aria: 'Secret passphrase entry',
 	home_gate_boxes_aria: 'Secret passphrase',
@@ -505,6 +507,7 @@ const nl: Translations = {
 	home_with_prose: 'met tekst',
 	home_stubs: 'stubs',
 	home_words: 'woorden',
+	home_images: "foto's",
 	home_issues: (n) => `${n} ${n === 1 ? 'melding' : 'meldingen'}`,
 	home_gate_section_aria: 'Wachtwoord invoeren',
 	home_gate_boxes_aria: 'Geheim wachtwoord',

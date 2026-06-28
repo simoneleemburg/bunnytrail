@@ -76,7 +76,7 @@
 		of zeros.
 	-->
 	<p class="colophon">
-		{data.totalEntities} {ui.home_entities}&ensp;&middot;&ensp;{data.entitiesWithProse} {ui.home_with_prose}&ensp;&middot;&ensp;{data.entitiesStub} {ui.home_stubs}&ensp;&middot;&ensp;{wordCount} {ui.home_words}{#if data.issues > 0}
+		{data.totalEntities} {ui.home_entities}{#if data.showProseBreakdown}&ensp;&middot;&ensp;{data.entitiesWithProse} {ui.home_with_prose}&ensp;&middot;&ensp;{data.entitiesStub} {ui.home_stubs}{/if}&ensp;&middot;&ensp;{wordCount} {ui.home_words}{#if data.showImageCount}&ensp;&middot;&ensp;{data.imageCount.toLocaleString()} {ui.home_images}{/if}{#if data.issues > 0}
 			&ensp;&middot;&ensp;<a class="issues-link" href="/health"
 				>{ui.home_issues(data.issues)}</a
 			>{/if}

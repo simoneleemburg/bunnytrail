@@ -119,6 +119,27 @@ export interface WorldConfig {
 	 * Falls back to a neutral default when absent.
 	 */
 	gatePrompt: string;
+	/**
+	 * Optional settings for the home page display.
+	 */
+	homePageSettings: HomePageSettings;
+}
+
+export interface HomePageSettings {
+	/**
+	 * When `true` (the default), the colophon shows the entity prose
+	 * breakdown — "N met tekst · N stubs". Set to `false` in
+	 * `content_meta/world.md` under `homePageSettings.showProseBreakdown`
+	 * to hide it (e.g. when the world uses timelines/collections as its
+	 * primary prose containers and the entity-only stub count is misleading).
+	 */
+	showProseBreakdown: boolean;
+	/**
+	 * When `true`, the colophon shows a count of image files found in the
+	 * `content/` tree (jpg, jpeg, png, webp, gif, avif). Defaults to `false`.
+	 * Set `homePageSettings.showImageCount: true` in `content_meta/world.md`.
+	 */
+	showImageCount: boolean;
 }
 
 const FALLBACK_NAME = 'Bunnytrail';
@@ -148,7 +169,8 @@ function fallbackConfig(): WorldConfig {
 		allowUndefinedProperties: true,
 		disableScopePainting: false,
 		eras: null,
-		gatePrompt: 'Enter the secret to continue.'
+		gatePrompt: 'Enter the secret to continue.',
+		homePageSettings: { showProseBreakdown: true, showImageCount: false }
 	};
 }
 
@@ -208,11 +230,12 @@ export async function loadWorld(
 	const gatePrompt =
 		readString(meta, 'secret_prompt', issues) ?? 'Enter the secret to continue.';
 	const language = readLanguage(meta, issues);
+	const homePageSettings = readHomePageSettings(meta, issues);
 
 	const ledeHtml = body.trim() === '' ? null : renderPlainBody(body);
 
 	return {
-		config: { name, shortName, heroTitle, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties, disableScopePainting, eras, gatePrompt, language },
+		config: { name, shortName, heroTitle, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties, disableScopePainting, eras, gatePrompt, language, homePageSettings },
 		ledeHtml,
 		present: true,
 		issues
@@ -317,6 +340,27 @@ function readBooleanFlag(
 		return false;
 	}
 	return raw;
+}
+
+function readHomePageSettings(
+	meta: Record<string, unknown>,
+	issues: HealthIssue[]
+): HomePageSettings {
+	const raw = meta['homePageSettings'];
+	if (raw === undefined || raw === null) return { showProseBreakdown: true, showImageCount: false };
+	if (typeof raw !== 'object' || Array.isArray(raw)) {
+		issues.push({
+			kind: 'invalid-yaml',
+			detail: 'content_meta/world.md: homePageSettings must be a mapping when present'
+		});
+		return { showProseBreakdown: true, showImageCount: false };
+	}
+	const o = raw as Record<string, unknown>;
+	const showProseBreakdown =
+		o['showProseBreakdown'] === false ? false : true;
+	const showImageCount =
+		o['showImageCount'] === true ? true : false;
+	return { showProseBreakdown, showImageCount };
 }
 
 /**
