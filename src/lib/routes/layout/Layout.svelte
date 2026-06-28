@@ -1176,6 +1176,55 @@
 		transform: rotate(180deg);
 	}
 
+	/* ── Masthead dark-background defaults for Meta + Filters ─────────
+	   When a world themes the masthead to a dark colour (e.g. via
+	   `.masthead { background: #1e2d5a }` in theme.css) these buttons
+	   would otherwise render in --ink-soft / --ink-faint — warm browns
+	   that are illegible on dark surfaces. We provide sensible defaults
+	   using :where() (zero specificity) so theme.css can override with
+	   any plain selector when needed. */
+	:global(:where(.masthead) .meta-trigger),
+	:global(:where(.masthead) .filters-trigger) {
+		color: var(--masthead-btn-color, var(--ink-soft));
+	}
+
+	:global(:where(.masthead) .meta-eyebrow),
+	:global(:where(.masthead) .meta-caret),
+	:global(:where(.masthead) .filters-label),
+	:global(:where(.masthead) .filters-caret) {
+		color: var(--masthead-btn-color, var(--ink-faint));
+	}
+
+	:global(:where(.masthead) .meta-trigger:hover),
+	:global(:where(.masthead) .meta-trigger:focus-visible),
+	:global(:where(.masthead) .meta-trigger[aria-expanded='true']),
+	:global(:where(.masthead) .filters-trigger:hover),
+	:global(:where(.masthead) .filters-trigger:focus-visible),
+	:global(:where(.masthead) .filters-trigger[aria-expanded='true']) {
+		color: var(--masthead-btn-color-hover, var(--ink));
+		border-color: var(--masthead-btn-border, var(--rule));
+		background: var(--masthead-btn-bg, var(--paper-warm));
+	}
+
+	:global(:where(.masthead) .meta-trigger:hover .meta-eyebrow),
+	:global(:where(.masthead) .meta-trigger:hover .meta-caret),
+	:global(:where(.masthead) .meta-trigger[aria-expanded='true'] .meta-eyebrow),
+	:global(:where(.masthead) .meta-trigger[aria-expanded='true'] .meta-caret),
+	:global(:where(.masthead) .filters-trigger:hover .filters-label),
+	:global(:where(.masthead) .filters-trigger:hover .filters-caret),
+	:global(:where(.masthead) .filters-trigger[aria-expanded='true'] .filters-label),
+	:global(:where(.masthead) .filters-trigger[aria-expanded='true'] .filters-caret) {
+		color: var(--masthead-btn-color-hover, var(--ink));
+	}
+
+	:global(:where(.masthead) .filters-trigger.active) {
+		border-color: var(--masthead-btn-border, var(--rule));
+	}
+
+	:global(:where(.masthead) .filters-trigger.active .filters-label) {
+		color: var(--masthead-btn-color, var(--accent));
+	}
+
 	.filters-panel {
 		position: absolute;
 		top: calc(100% + var(--space-2));
