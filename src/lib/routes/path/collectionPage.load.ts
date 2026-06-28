@@ -68,6 +68,19 @@ export async function loadCollectionPage(path: string) {
 	// Direct entities of this folder, sorted by rank then name.
 	const entities = graph.byFolder(path).sort(byRankThenName);
 
+	// Virtual members: entities declared via `included:` in the
+	// collection meta that live outside this folder. Deduped against
+	// the native member set so an entity that moves into the folder
+	// later doesn't appear twice.
+	const nativeIds = new Set(entities.map((e) => e.id));
+	const includedEntities: Entity[] = (collection?.meta.included ?? [])
+		.filter((id): id is string => typeof id === 'string')
+		.flatMap((id) => {
+			const e = graph.get(id);
+			return e && !nativeIds.has(e.id) ? [e] : [];
+		});
+	const allEntities = [...entities, ...includedEntities].sort(byRankThenName);
+
 	// Wikilinks in a collection's prose resolve from the
 	// collection's own cluster (the first path segment, if it's a
 	// registered cluster). Sub-collections inherit their cluster
@@ -133,7 +146,7 @@ export async function loadCollectionPage(path: string) {
 
 	// Cards for direct entities, retaining their bucket for folder
 	// chips / synthetic folder containers.
-	const cards = entities.map((e) => toCard(e, cardSummaryHtml, undefined, pathBucket(e.id)));
+	const cards = allEntities.map((e) => toCard(e, cardSummaryHtml, undefined, pathBucket(e.id)));
 
 	// Descendants: every entity under this folder at any depth that
 	// is *not* a direct child. Each shows its containing folder
@@ -166,7 +179,7 @@ export async function loadCollectionPage(path: string) {
 			.map(buildNode);
 		return { container: toCard(e, cardSummaryHtml, undefined, pathBucket(e.id)), children };
 	};
-	let containers = entities
+	let containers = allEntities
 		.filter((e) => {
 			if (e.children.length === 0) return false;
 			if (!e.parent) return true;

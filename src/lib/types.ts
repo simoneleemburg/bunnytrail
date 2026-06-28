@@ -253,6 +253,21 @@ export interface CollectionMeta {
 	 * inherit their cluster from their containing top-level folder.
 	 */
 	universal?: boolean;
+	/**
+	 * Entity ids to include as virtual members of this collection.
+	 * Each entry is a full entity id (path relative to `content/`,
+	 * e.g. `graaf/personen/1951-corrie`). The referenced entities
+	 * are surfaced on this collection's page as if they were direct
+	 * members, alongside the native members, without moving them
+	 * from their real location.
+	 *
+	 * Useful for cross-family or cross-cluster entities that
+	 * naturally belong to multiple collections (e.g. a person who
+	 * married into a family and should appear under both families).
+	 * Entities that are already direct members of this folder are
+	 * silently skipped to avoid duplicates.
+	 */
+	included?: string[];
 }
 
 /**
