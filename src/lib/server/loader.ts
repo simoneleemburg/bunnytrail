@@ -4,6 +4,7 @@ import type { Edge, Entity, EntityId, EntityType, EraConfig, HealthIssue, Kind, 
 import { loadKindRegistry } from './kinds';
 import { CONTENT_DIR } from './globals';
 import { walk, walkTimelines, readDirents } from './walker';
+import { extractWikilinks, resolveWikilink } from './wikilinks';
 import {
 	deriveClusterSets,
 	buildLangCodes,
@@ -245,7 +246,12 @@ function applyEraDefaults(
 }
 
 /** Build a forward + reverse edge index from a set of entities. */
-export function buildEdges(entities: Map<EntityId, Entity>): {
+export function buildEdges(
+	entities: Map<EntityId, Entity>,
+	timelines?: Map<string, Timeline>,
+	clusters?: ReadonlySet<string>,
+	universalFolders?: ReadonlySet<string>
+): {
 	out: Map<EntityId, Edge[]>;
 	in: Map<EntityId, Edge[]>;
 } {
@@ -277,6 +283,26 @@ export function buildEdges(entities: Map<EntityId, Entity>): {
 			const edge: Edge = { from: entity.id, to: link, kind: 'wikilink' };
 			push(outIdx, entity.id, edge);
 			push(inIdx, link, edge);
+		}
+	}
+
+	// Also index wikilinks from timeline entry bodies so that entity
+	// pages receive backlinks from timeline dots that mention them.
+	if (timelines) {
+		const clusterSet = clusters ?? new Set<string>();
+		const universalSet = universalFolders ?? new Set<string>();
+		for (const tl of timelines.values()) {
+			const fromCluster = tl.path.includes('/') ? tl.path.split('/')[0] : tl.path;
+			for (const entry of tl.entries) {
+				if (!entry.body.trim()) continue;
+				for (const raw of extractWikilinks(entry.body)) {
+					const r = resolveWikilink(raw, entities, fromCluster, clusterSet, universalSet);
+					if (!r.id || !entities.has(r.id)) continue;
+					const edge: Edge = { from: entry.path, to: r.id, kind: 'wikilink' };
+					push(outIdx, entry.path, edge);
+					push(inIdx, r.id, edge);
+				}
+			}
 		}
 	}
 

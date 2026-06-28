@@ -141,7 +141,7 @@ export class Graph {
 					allowUndefinedProperties: worldConfig.allowUndefinedProperties,
 					eraConfig: worldConfig.eras
 				});
-			const edges = buildEdges(entities);
+			const edges = buildEdges(entities, timelines, new Set(clusters), new Set(universalFolders));
 			this.#entities = entities;
 			this.#outEdges = edges.out;
 			this.#inEdges = edges.in;

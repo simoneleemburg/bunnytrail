@@ -136,11 +136,33 @@ export async function loadEntityPage(entity: Entity, mode: ViewMode = 'visitor')
 		toEntity: pickCard(graph.get(e.to), cardSummaryHtml),
 		qualifierEntity: e.qualifier ? pickQualifierEntity(graph.get(e.qualifier)) : null
 	}));
-	const inEdges = graph.inEdges(id).map((e) => ({
-		...e,
-		fromEntity: pickCard(graph.get(e.from), cardSummaryHtml),
-		qualifierEntity: e.qualifier ? pickQualifierEntity(graph.get(e.qualifier)) : null
-	}));
+	const inEdges = graph.inEdges(id).map((e) => {
+		let fromEntity = pickCard(graph.get(e.from), cardSummaryHtml);
+		// e.from may be a timeline dot path (e.g. `leemburg/verhalen/jan-arend-jr/1956`).
+		// Those aren't entities so graph.get returns undefined — synthesise a card instead.
+		if (!fromEntity && graph.isTimelineEntryPath(e.from)) {
+			const lastSlash = e.from.lastIndexOf('/');
+			const timelinePath = e.from.slice(0, lastSlash);
+			const year = e.from.slice(lastSlash + 1);
+			const tl = graph.timeline(timelinePath);
+			const tlTitle = tl?.meta.name ?? graph.get(timelinePath)?.meta.name ?? timelinePath.split('/').pop()!;
+			fromEntity = {
+				id: e.from,
+				type: timelinePath,
+				slug: year,
+				name: `${year} · ${tlTitle}`,
+				summary: null,
+				summaryHtml: null,
+				sigil: null,
+				kind: null
+			};
+		}
+		return {
+			...e,
+			fromEntity,
+			qualifierEntity: e.qualifier ? pickQualifierEntity(graph.get(e.qualifier)) : null
+		};
+	});
 
 	// Filesystem-derived containment: entities living *inside* this
 	// entity's folder. Grouped by the child's *kind* (taxonomy)
