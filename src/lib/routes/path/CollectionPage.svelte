@@ -664,6 +664,7 @@
 						<CollectionCard
 							href={`/${sub.type}`}
 							label={sub.plural}
+							eyebrow={ui.collection_eyebrow_collection}
 							description={sub.description}
 						/>
 					{/each}

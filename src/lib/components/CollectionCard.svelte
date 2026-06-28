@@ -5,8 +5,7 @@
 	interface Props {
 		href: string;
 		label: string;
-		eyebrow?: string;
-		description?: string | null;
+		eyebrow?: string;		description?: string | null;
 		rank?: number | null;
 		rankDisplay?: RankDisplay | null;
 		tags?: Array<{ label: string }>;
@@ -16,7 +15,7 @@
 	let {
 		href,
 		label,
-		eyebrow = 'Collection',
+		eyebrow = '',
 		description = null,
 		rank = null,
 		rankDisplay = null,

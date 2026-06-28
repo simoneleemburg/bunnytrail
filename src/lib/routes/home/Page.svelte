@@ -194,7 +194,7 @@
 		<h2 class="section-heading">{ui.home_collections_heading}</h2>
 		<ul class="collection-list">
 			{#each data.counts as c (c.type)}
-				<CollectionCard href={`/${c.type}`} label={c.label} description={c.description} />
+				<CollectionCard href={`/${c.type}`} label={c.label} description={c.description} eyebrow={ui.collection_eyebrow_collection} />
 			{/each}
 		</ul>
 	</section>
@@ -204,7 +204,7 @@
 			<h2 class="section-heading">{ui.home_threads_heading}</h2>
 			<ul class="collection-list">
 				{#each data.threads as t (t.type)}
-					<CollectionCard href={`/${t.type}`} label={t.label} description={t.description} />
+					<CollectionCard href={`/${t.type}`} label={t.label} description={t.description} eyebrow={ui.collection_eyebrow_collection} />
 				{/each}
 			</ul>
 		</section>
