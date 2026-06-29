@@ -25,6 +25,8 @@
 		formatDate(iso, page.data.world?.dateFormat, page.data.world?.language ?? 'en')
 	);
 
+	const isStub = $derived(!data.html.trim() && data.chapters.length === 0 && data.childGroups.length === 0);
+
 	const rankGlyph = $derived(
 		data.kindChip?.rank != null && data.kindChip.rankDisplay !== 'none'
 			? data.kindChip.rankDisplay === 'roman'
@@ -466,6 +468,162 @@
 		</nav>
 	{/if}
 
+	{#if isStub}
+		<div class="layout layout--stub">
+			{#if data.profileUrl}
+				<div class="stub-profile">
+					<img src={data.profileUrl} alt={data.entity.name} class="profile-img" />
+					{#if data.extra.length > 0}
+						<section class="stub-profile__props">
+							<PropertyList items={data.extra} />
+						</section>
+					{/if}
+				</div>
+			{/if}
+			<aside class="sidebar sidebar--stub" class:sidebar--stub-with-profile={!!data.profileUrl}>
+				{#if data.craftHref}
+					<section class="craft-link" aria-label={ui.entity_craft_aria}>
+						<a href={data.craftHref}>{ui.entity_craft_link}</a>
+					</section>
+				{/if}
+
+				{#if data.namesInOtherLanguages.length > 0}
+					<section class="names-in-languages">
+						<dl>
+							{#each data.namesInOtherLanguages as entry (entry.langCode)}
+								<dt>
+									{#if entry.langHref}
+										<a href={entry.langHref}>{entry.langName}</a>
+									{:else}
+										{entry.langName}
+									{/if}
+								</dt>
+								<dd>
+									{entry.word}{#if entry.notes}<span class="names-note">{entry.notes}</span>{/if}
+								</dd>
+							{/each}
+						</dl>
+					</section>
+				{/if}
+
+				{#if !data.profileUrl && data.extra.length > 0}
+					<section>
+						<PropertyList items={data.extra} />
+					</section>
+				{/if}
+
+				{#if data.kindRefs.length > 0}
+					<section class="kind-refs">
+						<dl>
+							{#each data.kindRefs as group (group.field)}
+								<dt>{humaniseField(group.field)}</dt>
+								<dd>
+									{#each group.items as item, i (item.id)}
+										{#if i > 0},{/if}<a class="kind-ref" href={item.href}>{item.label}</a>
+									{/each}
+								</dd>
+							{/each}
+						</dl>
+					</section>
+				{/if}
+
+				{#if relationGroups.length > 0}
+					<section class="relations">
+						{#each relationGroups as group, gi (group.key)}
+							<div class="group">
+								<div class="group-label">
+									{group.label}
+								</div>
+								{#if group.qualifierSubGroups}
+									{#each group.qualifierSubGroups as sub (sub.qualifierId ?? '__plain__')}
+										{@const subKey = group.key + ':' + (sub.qualifierId ?? '__plain__')}
+										{@const isExpanded = expanded.has(subKey)}
+										{@const visible = sub.items.length > COLLAPSE_AT && !isExpanded ? sub.items.slice(0, COLLAPSE_AT) : sub.items}
+										{#if sub.qualifierEntity}
+											<div class="qualifier-sub-label">
+												<a href={sub.qualifierEntity.href}>{sub.qualifierEntity.name}</a>
+											</div>
+										{/if}
+										<ul>
+											{#each visible as item, i (item.entity?.id ?? i)}
+												{#if item.entity}
+													<li>
+														<EntityLink id={item.entity.id} name={item.entity.name} summary={item.entity.summary} sigil={item.entity.sigil} kind={item.entity.kind} compact />
+														{#if item.date}<span class="rel-temporal">{fmt(item.date)}</span>{:else if item.from || item.to}<span class="rel-temporal">{item.from ? fmt(item.from) : '?'}–{item.to ? fmt(item.to) : '?'}</span>{/if}
+														{#if item.note}<span class="note"> — {item.note}</span>{/if}
+													</li>
+												{/if}
+											{/each}
+										</ul>
+										{#if sub.items.length > COLLAPSE_AT}
+											<button type="button" class="show-toggle" onclick={() => toggle(subKey)}>
+												{isExpanded ? ui.entity_show_fewer : ui.entity_show_all(sub.items.length)}
+											</button>
+										{/if}
+									{/each}
+								{:else}
+									{@const isExpanded = expanded.has(group.key)}
+									{@const visible = group.items.length > COLLAPSE_AT && !isExpanded ? group.items.slice(0, COLLAPSE_AT) : group.items}
+									<ul>
+										{#each visible as item, i (item.entity?.id ?? i)}
+											{#if item.entity}
+												<li>
+													<EntityLink id={item.entity.id} name={item.entity.name} summary={item.entity.summary} sigil={item.entity.sigil} kind={item.entity.kind} compact />
+													{#if item.date}<span class="rel-temporal">{fmt(item.date)}</span>{:else if item.from || item.to}<span class="rel-temporal">{item.from ? fmt(item.from) : '?'}–{item.to ? fmt(item.to) : '?'}</span>{/if}
+													{#if item.note}<span class="note"> — {item.note}</span>{/if}
+												</li>
+											{/if}
+										{/each}
+									</ul>
+									{#if group.items.length > COLLAPSE_AT}
+										<button type="button" class="show-toggle" onclick={() => toggle(group.key)}>
+											{isExpanded ? ui.entity_show_fewer : ui.entity_show_all(group.items.length)}
+										</button>
+									{/if}
+								{/if}
+							</div>
+						{/each}
+					</section>
+				{/if}
+
+				{#if data.entity.tags.length > 0}
+					<section>
+						<div class="tag-row">
+							{#each data.entity.tags as tag (tag)}
+								<Tag label={tag} href={`/tags/${encodeURIComponent(tag)}`} />
+							{/each}
+						</div>
+					</section>
+				{/if}
+			</aside>
+
+			{#if data.timelineBacklinks.length > 0 || relationGroups.length > 0}
+				<aside class="sidebar sidebar--stub sidebar--stub-extra">
+					{#if relationGroups.length > 0}
+						<a class="graph-link" href={'/graph?node=' + encodeURIComponent(data.entity.id)}>{ui.entity_graph_link}</a>
+					{/if}
+					{#if data.timelineBacklinks.length > 0}
+					<section class="timeline-backlinks">
+						<div class="group-label">{ui.entity_timelines}</div>
+						<ul>
+							{#each data.timelineBacklinks as tl (tl.href)}
+								<li>
+									<a class="timeline-backlink" href={tl.href}>{tl.title}</a>
+									{#if tl.firstYear !== null}
+										<span class="timeline-backlink__years">
+											{tl.firstYear}{tl.lastYear !== null && tl.lastYear !== tl.firstYear ? `–${tl.lastYear}` : ''}
+										</span>
+									{/if}
+								</li>
+							{/each}
+						</ul>
+					</section>
+					{/if}
+				</aside>
+			{/if}
+		</div>
+	{:else}
+
 	<div class="layout">
 		<div class="prose">
 			{@html data.html}
@@ -523,6 +681,12 @@
 		</div>
 
 		<aside class="sidebar sidebar--top">
+			{#if data.profileUrl}
+				<section class="sidebar-profile">
+					<img src={data.profileUrl} alt={data.entity.name} class="profile-img" />
+				</section>
+			{/if}
+
 			{#if data.craftHref}
 				<!-- Sub-page link to the author's-room companion
 				     document. Lives in the sidebar (alongside the
@@ -696,6 +860,8 @@
 			{/if}
 		</aside>
 	</div>
+	{/if}
+
 	{/if}
 
 	{#if hasClassMates && effectiveTab === 'instances'}
@@ -896,6 +1062,53 @@
 		margin-inline: calc((100% - var(--layout-max)) / 2);
 	}
 
+	/* Stub layout: no prose column.
+	   On wide screens: profile image left, metadata right, side by side.
+	   On narrow screens: stack vertically. */
+	.layout--stub {
+		--layout-max: min(80rem, calc(100vw - 2 * var(--space-8)));
+		display: flex;
+		justify-content: center;
+		align-items: flex-start;
+		gap: var(--space-8);
+		flex-wrap: wrap;
+		width: var(--layout-max);
+		margin-inline: calc((100% - var(--layout-max)) / 2);
+	}
+
+	.stub-profile {
+		flex: 0 0 auto;
+		width: clamp(10rem, 20vw, 18rem);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-5);
+	}
+
+	.stub-profile__props {
+		font-size: var(--text-sm);
+	}
+
+	.profile-img {
+		display: block;
+		width: 100%;
+		border-radius: 4px;
+		object-fit: cover;
+	}
+
+	.sidebar--stub {
+		flex: 0 1 28rem;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+		font-size: var(--text-base);
+	}
+
+	/* Third column: tijdlijnen (and any future extras). Only visible on
+	   wide screens; wraps under the other columns on narrower ones. */
+	.sidebar--stub-extra {
+		flex: 0 1 16rem;
+	}
+
 	.prose {
 		grid-column: 3;
 		grid-row: 1 / span 99; /* span all sidebar rows so prose always fills the left column */
@@ -910,6 +1123,14 @@
 		gap: var(--space-6);
 		font-size: var(--text-sm);
 		align-self: start;
+	}
+
+	.sidebar--stub {
+		width: var(--stub-sidebar-w, 20rem);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+		font-size: var(--text-base);
 	}
 
 	@media (max-width: 60rem) {
@@ -1146,6 +1367,13 @@
 		margin-left: auto;
 	}
 
+	/* When graph-link is a direct child of sidebar--stub-extra it stands
+	   alone (not inside a group-label flex row) so auto margin has no effect
+	   and we want it left-aligned. */
+	.sidebar--stub-extra > .graph-link {
+		margin-left: 0;
+	}
+
 	.graph-link:hover {
 		color: var(--accent);
 	}
@@ -1358,7 +1586,15 @@
 		color: var(--ink);
 	}
 
-	/* Sidebar link to the entity's craft sub-page. Quiet by
+	/* Profile image in the right sidebar (non-stub layout). */
+	.sidebar-profile .profile-img {
+		width: 100%;
+		border-radius: 4px;
+		object-fit: cover;
+		display: block;
+	}
+
+	/* Craft sub-page link in the sidebar. Quiet by
 	   design: a single line in the same register as the other
 	   sidebar metadata (small, soft ink) so it doesn't compete
 	   with the in-world content for attention. */

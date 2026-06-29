@@ -353,6 +353,13 @@ export async function loadEntityPage(entity: Entity, mode: ViewMode = 'visitor')
 		});
 	}
 
+	// Profile image: a sibling filename (e.g. "jan.jpg") served via the
+	// entity-assets endpoint. Resolved here so the component just gets a URL.
+	const profileFilename = typeof entity.meta.profile === 'string' ? entity.meta.profile.trim() : null;
+	const profileUrl = profileFilename
+		? `/api/entity-assets/${entity.id}/${profileFilename}`
+		: null;
+
 	const HIDDEN = new Set([
 		'name',
 		// `title` overrides the page <h1> and is surfaced there; not a sidebar property.
@@ -381,7 +388,9 @@ export async function loadEntityPage(entity: Entity, mode: ViewMode = 'visitor')
 		// `vocabulary` is surfaced as its own Vocabulary tab.
 		'vocabulary',
 		// `properties` is read separately below from entity.meta.properties.
-		'properties'
+		'properties',
+		// `profile` is resolved to a URL and surfaced as an image, not raw text.
+		'profile'
 	]);
 	const extra: { key: string; value: unknown }[] = [];
 	// Read structured properties from the explicit `properties:` block
@@ -578,6 +587,7 @@ export async function loadEntityPage(entity: Entity, mode: ViewMode = 'visitor')
 		breadcrumbs,
 		kindChip,
 		classChip,
+		profileUrl,
 		entity: {
 			id: entity.id,
 			name: entity.meta.name,

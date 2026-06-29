@@ -539,6 +539,11 @@ export interface EntityMeta {
 	 * what the author assigns.
 	 */
 	sigil?: string;
+	/**
+	 * Optional profile image filename (e.g. "jan.jpg"), relative to the
+	 * entity's own folder. Served via /api/entity-assets/<id>/<filename>.
+	 */
+	profile?: string;
 	/** Structured relations. */
 	relations?: Relation[];
 	/**
