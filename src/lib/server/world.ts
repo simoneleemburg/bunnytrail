@@ -108,7 +108,7 @@ export interface CalendarTokenDef {
 	 * - `roman`     — Roman numeral (I, II, III, …)
 	 * - `mapped`    — look up from `values` array (1-based index)
 	 */
-	numeral: 'cardinal' | 'ordinal' | 'roman' | 'mapped';
+	numeral: 'cardinal' | 'ordinal' | 'ordinal-short' | 'roman' | 'mapped';
 	/** Required when `numeral: mapped`. 1-based list of display strings. */
 	values?: string[];
 }

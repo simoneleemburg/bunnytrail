@@ -409,6 +409,31 @@ describe('formatCalendarDate', () => {
 		);
 	});
 
+	it('ordinal-short inline hint: {E:ordinal-short} gives "6th"', () => {
+		const spec: CalendarSpec = { ...revelantSpec, display: '{E:ordinal-short} Eve, Year {Y}' };
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143] }, spec))
+			.toBe('6th Eve, Year 143');
+	});
+
+	it('ordinal-short inline hint overrides ordinal def', () => {
+		// E has numeral:ordinal in revelantSpec, but the template hint wins
+		const spec: CalendarSpec = { ...revelantSpec, display: '{E:ordinal-short}' };
+		expect(formatCalendarDate({ calendar: 'revelant', value: [1] }, spec)).toBe('1st');
+		expect(formatCalendarDate({ calendar: 'revelant', value: [2] }, spec)).toBe('2nd');
+		expect(formatCalendarDate({ calendar: 'revelant', value: [3] }, spec)).toBe('3rd');
+		expect(formatCalendarDate({ calendar: 'revelant', value: [11] }, spec)).toBe('11th');
+		expect(formatCalendarDate({ calendar: 'revelant', value: [21] }, spec)).toBe('21st');
+	});
+
+	it('ordinal-short as token def numeral', () => {
+		const spec: CalendarSpec = {
+			...revelantSpec,
+			tokens: { ...revelantSpec.tokens, E: { numeral: 'ordinal-short' } },
+			display: '{E} Eve'
+		};
+		expect(formatCalendarDate({ calendar: 'revelant', value: [5] }, spec)).toBe('5th Eve');
+	});
+
 	it('renders ordinal tokens', () => {
 		const date = { calendar: 'revelant', value: [1, 1, 1, 1, 1] };
 		const result = formatCalendarDate(date, revelantSpec);

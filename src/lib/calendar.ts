@@ -310,22 +310,39 @@ function toOrdinalWord(n: number): string {
 	return `${s}th`;
 }
 
+function toOrdinalShort(n: number): string {
+	const s = String(n);
+	const last = n % 10;
+	const tens = Math.floor(n / 10) % 10;
+	if (tens === 1) return `${s}th`;
+	if (last === 1) return `${s}st`;
+	if (last === 2) return `${s}nd`;
+	if (last === 3) return `${s}rd`;
+	return `${s}th`;
+}
+
 /**
- * Render a token value according to its `CalendarTokenDef`.
+ * Render a token value according to its `CalendarTokenDef`, with an optional
+ * inline hint from the template (e.g. `:ordinal-short`) that takes priority
+ * over the def's `numeral` field. `mapped` always requires the def's `values`
+ * array, so a hint of `mapped` without a def falls back to cardinal.
  */
 function renderToken(
 	value: number,
 	tokenId: string,
-	spec: CalendarSpec
+	spec: CalendarSpec,
+	hintOverride?: string
 ): string {
 	const def = spec.tokens?.[tokenId];
-	const numeral = def?.numeral ?? 'cardinal';
+	const numeral = hintOverride ?? def?.numeral ?? 'cardinal';
 
 	switch (numeral) {
 		case 'cardinal':
 			return String(value);
 		case 'ordinal':
 			return toOrdinalWord(value);
+		case 'ordinal-short':
+			return toOrdinalShort(value);
 		case 'roman':
 			return toRoman(value);
 		case 'mapped': {
@@ -333,6 +350,8 @@ function renderToken(
 			const idx = value - 1; // 1-based → 0-based
 			return idx >= 0 && idx < values.length ? values[idx] : String(value);
 		}
+		default:
+			return String(value);
 	}
 }
 
@@ -377,11 +396,12 @@ export function formatCalendarDate(
 
 	// Replace {TOKEN} or {TOKEN:hint} in the chosen template.
 	// Tokens for unspecified units render as empty string.
-	return template.replace(/\{([A-Za-z0-9]+)(?::[^}]*)?\}/g, (_match, tok: string) => {
+	// The inline hint (e.g. :ordinal-short) overrides the spec's tokens def.
+	return template.replace(/\{([A-Za-z0-9]+)(?::([^}]*))?\}/g, (_match, tok: string, hint: string | undefined) => {
 		const upper = tok.toUpperCase();
 		const key = providedTokens.has(upper) ? upper : providedTokens.has(tok) ? tok : null;
 		if (key === null) return ''; // unit not provided — omit
-		return renderToken(tokenValues[key], upper, spec);
+		return renderToken(tokenValues[key], upper, spec, hint ?? undefined);
 	});
 }
 
