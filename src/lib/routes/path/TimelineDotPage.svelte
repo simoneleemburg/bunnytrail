@@ -6,16 +6,26 @@
 	}
 
 	let { data }: Props = $props();
+
+	/** Append `?thread=<path>` to a dot href when a thread context is active. */
+	function withThread(href: string): string {
+		if (!data.thread) return href;
+		return `${href}?thread=${encodeURIComponent(data.thread)}`;
+	}
 </script>
 
 <div class="dot-nav">
-	<a class="dot-nav__timeline-link" href={data.timelineHref}>{data.timelineTitle}</a>
+	{#if data.thread}
+		<a class="dot-nav__thread-link" href="/{data.thread}"><span class="up-arrow" aria-hidden="true">↑</span>{data.threadTitle}</a>
+	{:else}
+		<a class="dot-nav__timeline-link" href={data.timelineHref}><span class="up-arrow" aria-hidden="true">↑</span>{data.timelineTitle}</a>
+	{/if}
 
 	<div class="dot-nav__strip" role="navigation" aria-label="Timeline navigation">
 		<div class="dot-nav__line" aria-hidden="true"></div>
 
 		{#if data.prev}
-			<a class="dot-nav__neighbour dot-nav__neighbour--prev" href={data.prev.href} aria-label="Go to {data.prev.year}">
+			<a class="dot-nav__neighbour dot-nav__neighbour--prev" href={withThread(data.prev.href)} aria-label="Go to {data.prev.year}">
 				<span class="dot-nav__neighbour-year">{data.prev.year}</span>
 				<span class="dot-nav__pip"></span>
 			</a>
@@ -29,7 +39,7 @@
 		</div>
 
 		{#if data.next}
-			<a class="dot-nav__neighbour dot-nav__neighbour--next" href={data.next.href} aria-label="Go to {data.next.year}">
+			<a class="dot-nav__neighbour dot-nav__neighbour--next" href={withThread(data.next.href)} aria-label="Go to {data.next.year}">
 				<span class="dot-nav__neighbour-year">{data.next.year}</span>
 				<span class="dot-nav__pip"></span>
 			</a>
@@ -38,6 +48,10 @@
 		{/if}
 	</div>
 </div>
+
+{#if data.subThread}
+	<div class="dot-subthread"><a class="dot-subthread__link" href={data.subThread.href}>{data.subThread.title}</a></div>
+{/if}
 
 {#if data.summaryHtml}
 	<p class="dot-summary">
@@ -65,6 +79,10 @@
 	}
 
 	.dot-nav__timeline-link {
+		display: flex;
+		justify-content: center;
+		align-items: baseline;
+		gap: 0.35em;
 		font-family: var(--font-serif);
 		font-size: var(--text-sm);
 		font-variant-caps: all-small-caps;
@@ -73,6 +91,48 @@
 		text-decoration: none;
 	}
 	.dot-nav__timeline-link:hover {
+		color: var(--accent-warm);
+	}
+	.dot-nav__timeline-link .up-arrow {
+		font-variant: normal;
+		letter-spacing: 0;
+	}
+
+	.dot-nav__thread-link {
+		display: flex;
+		justify-content: center;
+		align-items: baseline;
+		gap: 0.35em;
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.14em;
+		color: var(--ink-faint);
+		text-decoration: none;
+	}
+	.dot-nav__thread-link:hover {
+		color: var(--accent-warm);
+	}
+	.dot-nav__thread-link .up-arrow {
+		font-variant: normal;
+		letter-spacing: 0;
+	}
+
+	.dot-subthread {
+		max-width: var(--prose-w, 48rem);
+		margin: 0 auto;
+		margin-top: var(--space-4);
+		text-align: center;
+	}
+	.dot-subthread__link {
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.12em;
+		color: var(--ink-faint);
+		text-decoration: none;
+	}
+	.dot-subthread__link:hover {
 		color: var(--accent-warm);
 	}
 

@@ -23,11 +23,53 @@ export interface TimelineDotPageData {
 	timelineHref: string;
 	/** Breadcrumb chain. */
 	breadcrumbs: { label: string; href: string }[];
+	/**
+	 * The thread context path that was supplied via `?thread=`. When
+	 * present, prev/next are scoped to all entries within that timeline
+	 * and its nested descendants. When absent, prev/next are scoped to
+	 * the immediate containing timeline only.
+	 */
+	thread: string | null;
+	/** Display name of the thread timeline (for the back-nav). Null when thread is null. */
+	threadTitle: string | null;
+	/**
+	 * When the current dot belongs to a nested timeline (timelinePath !== thread),
+	 * this is the sub-timeline's display title and href for the contextual label.
+	 * Null when thread is null or when the dot is on the thread timeline itself.
+	 */
+	subThread: { title: string; href: string } | null;
+}
+
+/**
+ * Collect all `TimelineEntry` objects from a timeline and every nested
+ * timeline whose path starts with `<threadPath>/`, then return them
+ * sorted ascending by year. Entries from the same year are ordered by
+ * entry path for determinism.
+ */
+function threadEntries(threadPath: string): TimelineEntry[] {
+	const childPrefix = `${threadPath}/`;
+	const all: TimelineEntry[] = [];
+	for (const [p, tl] of graph.timelines()) {
+		if (p !== threadPath && !p.startsWith(childPrefix)) continue;
+		all.push(...tl.entries);
+	}
+	all.sort((a, b) => a.year - b.year || a.path.localeCompare(b.path));
+	return all;
+}
+
+/** Resolve a human-readable display title for any timeline path. */
+function resolveTimelineTitle(path: string): string {
+	const tl = graph.timeline(path);
+	if (!tl) return path.slice(path.lastIndexOf('/') + 1).replace(/-/g, ' ');
+	const leaf = path.includes('/') ? path.slice(path.lastIndexOf('/') + 1) : path;
+	const entity = graph.get(path);
+	return tl.meta.name ?? entity?.meta.name ?? leaf.replace(/-/g, ' ');
 }
 
 export async function loadTimelineDotPage(
 	timelinePath: string,
-	year: number
+	year: number,
+	thread: string | null = null
 ): Promise<TimelineDotPageData | null> {
 	await graph.ready();
 	const timeline = graph.timeline(timelinePath);
@@ -50,9 +92,18 @@ export async function loadTimelineDotPage(
 		? renderSummary(entry.summary, resolveLink, languageCodes, { kindIds })
 		: null;
 
-	// Determine prev/next within this timeline.
-	const sorted = timeline.entries;
-	const idx = sorted.findIndex((e) => e.year === year);
+	// Determine prev/next.
+	// When a thread context is given and valid, scope to all entries in
+	// that timeline and its nested descendants (interleaved by year).
+	// Otherwise fall back to the immediate containing timeline.
+	const validThread =
+		thread && graph.isTimeline(thread) ? thread : null;
+	const sorted: TimelineEntry[] = validThread
+		? threadEntries(validThread)
+		: timeline.entries;
+	// Find this entry in the scoped list by its full path.
+	const thisPath = `${timelinePath}/${year}`;
+	const idx = sorted.findIndex((e) => e.path === thisPath);
 	const prev = idx > 0 ? sorted[idx - 1] : null;
 	const next = idx < sorted.length - 1 ? sorted[idx + 1] : null;
 
@@ -77,6 +128,12 @@ export async function loadTimelineDotPage(
 		href: `/${timelinePath}`
 	});
 
+	const threadTitle = validThread ? resolveTimelineTitle(validThread) : null;
+	const subThread =
+		validThread && timelinePath !== validThread
+			? { title: timelineTitle, href: `/${timelinePath}` }
+			: null;
+
 	return {
 		kind: 'timeline-dot',
 		timelinePath,
@@ -84,9 +141,12 @@ export async function loadTimelineDotPage(
 		year,
 		summaryHtml,
 		bodyHtml,
-	prev: prev ? { year: prev.year, href: `/${timelinePath}/${prev.year}` } : null,
-	next: next ? { year: next.year, href: `/${timelinePath}/${next.year}` } : null,
-	timelineHref: `/${timelinePath}`,
-		breadcrumbs
+		prev: prev ? { year: prev.year, href: `/${prev.path}` } : null,
+		next: next ? { year: next.year, href: `/${next.path}` } : null,
+		timelineHref: `/${timelinePath}`,
+		breadcrumbs,
+		thread: validThread,
+		threadTitle,
+		subThread
 	};
 }

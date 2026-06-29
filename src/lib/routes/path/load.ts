@@ -97,9 +97,10 @@ export async function load({ params, url }: { params: { path: string }; url: URL
 			const timelinePath = path.slice(0, lastSlash);
 			const year = parseInt(possibleYear, 10);
 			if (graph.isTimeline(timelinePath)) {
-				const dotData = await loadTimelineDotPage(timelinePath, year);
-				if (dotData) return dotData;
-			}
+			const thread = searchParams.get('thread') ?? null;
+			const dotData = await loadTimelineDotPage(timelinePath, year, thread);
+			if (dotData) return dotData;
+		}
 		}
 	}
 

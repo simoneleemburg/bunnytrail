@@ -72,7 +72,7 @@ export async function loadTimelinePage(timelinePath: string): Promise<TimelinePa
 			path: entry.path,
 			year: entry.year,
 			summaryHtml,
-			href: `/${timelinePath}/${entry.year}`
+			href: `/${timelinePath}/${entry.year}?thread=${encodeURIComponent(timelinePath)}`
 		};
 	});
 
