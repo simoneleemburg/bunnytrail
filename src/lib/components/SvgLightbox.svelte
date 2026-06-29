@@ -76,6 +76,8 @@
 	// portrait viewports zoomed into wide SVGs (mundus on mobile)
 	// land around 0.5–0.6.
 	let minScale = $state(1);
+	let tx = $state(0); // horizontal translate offset for sub-1 pan (px)
+	let ty = $state(0); // vertical translate offset for sub-1 pan (px)
 	// Close on navigation. Reading `page.url.href` registers the
 	// dependency; the effect re-fires on every route change.
 	$effect(() => {
@@ -170,11 +172,13 @@
 
 	// Apply current viewBox + transform + publish zoom signal.
 	$effect(() => {
-		// Reads pulled out of the gate so the effect tracks `vb`
-		// and `scale` from the first run, even before `activeSvg`
-		// is set.
+		// Reads pulled out of the gate so the effect tracks `vb`,
+		// `scale`, `tx`, and `ty` from the first run, even before
+		// `activeSvg` is set.
 		const { x, y, w, h } = vb;
 		const currentScale = scale;
+		const currentTx = tx;
+		const currentTy = ty;
 		if (!zoomTarget) return;
 		if (activeSvg && origVb.w > 0) {
 			activeSvg.setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
@@ -208,8 +212,10 @@
 			// CSS transform doesn't trigger the bitmap blur problem
 			// that upscaling does (the rasteriser still has more
 			// source than target pixels).
+			// tx/ty carry any pan offset accumulated while in sub-1
+			// zoom (wide SVGs that still overflow the stage at < 1).
 			if (currentScale < 1) {
-				wrapper.style.transform = `scale(${currentScale})`;
+				wrapper.style.transform = `translate(${currentTx}px, ${currentTy}px) scale(${currentScale})`;
 				wrapper.style.transformOrigin = 'center center';
 			} else {
 				wrapper.style.transform = '';
@@ -221,6 +227,8 @@
 	function reset() {
 		vb = { ...origVb };
 		scale = 1;
+		tx = 0;
+		ty = 0;
 	}
 
 	/**
@@ -255,6 +263,10 @@
 		// On resize, if the user is already zoomed below the new
 		// floor (e.g. they rotated to landscape), clamp upward.
 		if (scale < minScale) scale = minScale;
+		// Resize may change overflow bounds; reset translate so we don't
+		// stray outside the new clamped region.
+		tx = 0;
+		ty = 0;
 	}
 
 	/**
@@ -271,8 +283,11 @@
 			// extent and the wrapper is CSS-scaled down. Anchor
 			// math doesn't apply — the whole SVG is visible so
 			// "zoom toward the cursor" reduces to "shrink in place".
+			// Reset any accumulated translate so the SVG re-centres.
 			vb = { ...origVb };
 			scale = next;
+			tx = 0;
+			ty = 0;
 			return;
 		}
 		// scale ≥ 1: viewBox-based zoom toward the anchor.
@@ -292,9 +307,25 @@
 	/** Pan by a screen-pixel delta, converted to SVG user units. */
 	function panBy(dx: number, dy: number) {
 		if (!activeSvg || origVb.w === 0) return;
-		// Below cover-fit the entire SVG is visible; panning would
-		// just drag empty space, so we no-op.
-		if (scale < 1) return;
+		if (scale < 1) {
+			// Sub-cover zoom: wrapper is CSS-scaled. If it still overflows
+			// the stage in an axis, allow translating it in that axis.
+			if (!stage) return;
+			const stageRect = stage.getBoundingClientRect();
+			const wrapper = zoomTarget?.firstElementChild as HTMLElement | null;
+			if (!wrapper) return;
+			// Visual size of the scaled wrapper in each axis
+			const ww = wrapper.offsetWidth * scale;
+			const wh = wrapper.offsetHeight * scale;
+			// Max translate: half the overflow in each axis (centered origin)
+			const maxTx = Math.max(0, (ww - stageRect.width) / 2);
+			const maxTy = Math.max(0, (wh - stageRect.height) / 2);
+			if (maxTx === 0 && maxTy === 0) return; // fully visible, nothing to pan
+			tx = Math.max(-maxTx, Math.min(maxTx, tx + dx));
+			ty = Math.max(-maxTy, Math.min(maxTy, ty + dy));
+			return;
+		}
+		// scale >= 1: viewBox-based pan
 		const rect = activeSvg.getBoundingClientRect();
 		if (rect.width === 0 || rect.height === 0) return;
 		vb = {
@@ -597,6 +628,8 @@
 				vb = { ...origVb };
 				scale = 1;
 				minScale = 1;
+				tx = 0;
+				ty = 0;
 				activeSvg = clone;
 				textBaseSizes = new WeakMap();
 
