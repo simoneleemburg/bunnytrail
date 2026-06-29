@@ -13,6 +13,11 @@ export interface TimelineDotPageData {
 	timelineTitle: string;
 	/** Display label for this dot — formatted calendar date or plain year string. */
 	label: string;
+	/**
+	 * Secondary display-variant label, shown below the heading.
+	 * Null when the display variant is identical to the heading label.
+	 */
+	displayLabel: string | null;
 	/** Rendered HTML summary (may be null). */
 	summaryHtml: string | null;
 	/** Rendered HTML body of this entry (may be empty string). */
@@ -164,11 +169,15 @@ export async function loadTimelineDotPage(
 		}
 	}
 
+	const headingLabel = entryLabel(entry, 'heading');
+	const displayLabel = entryLabel(entry, 'display');
+
 	return {
 		kind: 'timeline-dot',
 		timelinePath,
 		timelineTitle,
-		label: entryLabel(entry, 'heading'),
+		label: headingLabel,
+		displayLabel: displayLabel !== headingLabel ? displayLabel : null,
 		summaryHtml,
 		bodyHtml,
 		prev: prev

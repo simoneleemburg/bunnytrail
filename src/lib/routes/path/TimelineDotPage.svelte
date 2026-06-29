@@ -83,6 +83,10 @@
 	</p>
 {/if}
 
+{#if data.displayLabel}
+	<p class="dot-dateline">{data.displayLabel}</p>
+{/if}
+
 {#if data.bodyHtml}
 	<div class="dot-body">
 		<!-- trusted: server-rendered markdown from the engine pipeline -->
@@ -331,11 +335,23 @@
 	/* ── Summary ───────────────────────────────────────────────────── */
 	.dot-summary {
 		max-width: var(--prose-w, 48rem);
-		margin: 0 auto var(--space-6);
+		margin: 0 auto var(--space-2);
 		font-family: var(--font-serif);
 		font-style: italic;
 		font-size: var(--text-base);
 		color: var(--ink-soft);
+		text-align: center;
+	}
+
+	/* ── Dateline (display variant, only shown when it differs from heading) */
+	.dot-dateline {
+		max-width: var(--prose-w, 48rem);
+		margin: 0 auto var(--space-6);
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.08em;
+		color: var(--ink-faint);
 		text-align: center;
 	}
 
