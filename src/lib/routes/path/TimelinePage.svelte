@@ -5,78 +5,48 @@
 	let { data }: { data: TimelinePageData } = $props();
 
 	const pt = $derived(data.parentTimeline);
-	const ptYears = $derived(
-		pt?.firstYear != null
-			? pt.firstYear === pt.lastYear || pt.lastYear == null
-				? `${pt.firstYear}`
-				: `${pt.firstYear}–${pt.lastYear}`
-			: null
-	);
 </script>
 
 {#if pt}
-	<!-- Sub-timeline header: parent widget left, title+chips right, aligned at top of spine -->
-	<div class="sub-header">
-		<a class="parent-link" href={pt.href} aria-label="Back to {pt.label}">
-			<span class="parent-link__label">{pt.label}</span>
-			{#if ptYears}
-				<span class="parent-link__eyebrow">{ptYears}</span>
-			{/if}
-			<div class="parent-link__spine" aria-hidden="true">
-				<span class="parent-link__pip parent-link__pip--top"></span>
-				<span class="parent-link__line"></span>
-				<span class="parent-link__pip parent-link__pip--bottom"></span>
+	<!-- Sub-timeline header: simple up-link + centred title block -->
+	<a class="tl-up-link" href={pt.href}>
+		<span class="up-arrow" aria-hidden="true">↑</span>{pt.label}
+	</a>
+	<div class="tl-header">
+		<h1 class="tl-header__title">{data.title}</h1>
+		{#if data.targets.length > 0}
+			<div class="timeline-targets">
+				{#each data.targets as t (t.href)}
+					<a class="timeline-target" href={t.href}>{t.label}</a>
+				{/each}
 			</div>
-		</a>
-		<div class="sub-header__right">
-			<h1 class="sub-header__title">{data.title}</h1>
-			{#if data.targets.length > 0}
-				<div class="timeline-targets">
-					{#each data.targets as t (t.href)}
-						<a class="timeline-target" href={t.href}>{t.label}</a>
-					{/each}
-				</div>
-			{/if}
-			{#if data.summaryHtml}
-				<p class="sub-header__subtitle">{@html data.summaryHtml}</p>
-			{/if}
-		</div>
+		{/if}
+		{#if data.summaryHtml}
+			<!-- trusted: server-rendered markdown from the engine pipeline -->
+			<p class="tl-header__subtitle">{@html data.summaryHtml}</p>
+		{/if}
 	</div>
 {:else}
-	<!-- Top-level timeline: same two-column layout, non-interactive spine widget -->
+	<!-- Top-level timeline: up-link + centred title block -->
 	{#if data.breadcrumbs.length >= 2}
 		{@const upCrumb = data.breadcrumbs[data.breadcrumbs.length - 2]}
 		<a class="tl-up-link" href={upCrumb.href}>
 			<span class="up-arrow" aria-hidden="true">↑</span>{upCrumb.label}
 		</a>
 	{/if}
-	<div class="sub-header">
-		<!-- Non-interactive spine: same chrome, no link/hover -->
-		<div class="spine-widget" aria-hidden="true">
-			{#if data.firstYear !== null}
-				<span class="parent-link__eyebrow">
-					{data.firstYear}{data.lastYear !== null && data.lastYear !== data.firstYear ? `–${data.lastYear}` : ''}
-				</span>
-			{/if}
-			<div class="parent-link__spine">
-				<span class="parent-link__pip parent-link__pip--top"></span>
-				<span class="parent-link__line"></span>
-				<span class="parent-link__pip parent-link__pip--bottom"></span>
+	<div class="tl-header">
+		<h1 class="tl-header__title">{data.title}</h1>
+		{#if data.targets.length > 0}
+			<div class="timeline-targets">
+				{#each data.targets as t (t.href)}
+					<a class="timeline-target" href={t.href}>{t.label}</a>
+				{/each}
 			</div>
-		</div>
-		<div class="sub-header__right">
-			<h1 class="sub-header__title">{data.title}</h1>
-			{#if data.targets.length > 0}
-				<div class="timeline-targets">
-					{#each data.targets as t (t.href)}
-						<a class="timeline-target" href={t.href}>{t.label}</a>
-					{/each}
-				</div>
-			{/if}
-			{#if data.summaryHtml}
-				<p class="sub-header__subtitle">{@html data.summaryHtml}</p>
-			{/if}
-		</div>
+		{/if}
+		{#if data.summaryHtml}
+			<!-- trusted: server-rendered markdown from the engine pipeline -->
+			<p class="tl-header__subtitle">{@html data.summaryHtml}</p>
+		{/if}
 	</div>
 {/if}
 
@@ -366,123 +336,6 @@
 		color: var(--ink-soft);
 	}
 
-	/* ── Sub-timeline parent header ───────────────────────────────── */
-	.sub-header {
-		display: flex;
-		align-items: baseline;
-		gap: var(--space-6);
-		max-width: var(--prose-max);
-		margin: 0 auto var(--space-8);
-		padding-top: var(--space-7);
-	}
-
-	/* Right column holds both title and subtitle so subtitle is indented with title */
-	.sub-header__right {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-3);
-	}
-
-	.sub-header__subtitle {
-		font-family: var(--font-serif);
-		font-style: italic;
-		color: var(--ink-soft);
-		font-size: var(--text-lg);
-		margin: 0;
-	}
-
-	.sub-header__subtitle :global(p) {
-		margin: 0;
-	}
-
-	/* Parent timeline link: eyebrow + spine + name, stacked */
-	.parent-link {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: var(--space-2);
-		text-decoration: none;
-		color: inherit;
-		flex-shrink: 0;
-	}
-
-	.parent-link__label {
-		font-family: var(--font-serif);
-		font-style: italic;
-		font-size: var(--text-sm);
-		color: var(--ink-faint);
-		display: inline-block;
-		transition: color 200ms ease, transform 200ms ease;
-	}
-
-	.parent-link:hover .parent-link__label {
-		color: var(--accent-warm);
-		transform: scale(1.15);
-	}
-
-	.parent-link__eyebrow {
-		font-family: var(--font-serif);
-		font-style: italic;
-		font-size: var(--text-sm);
-		color: var(--ink-faint);
-		display: inline-block;
-		transition: color 200ms ease, transform 200ms ease;
-	}
-
-	.parent-link:hover .parent-link__eyebrow {
-		color: var(--accent-warm);
-		transform: scale(1.15);
-	}
-
-	.parent-link__spine {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: var(--space-1);
-	}
-
-	.parent-link__pip {
-		display: block;
-		width: 10px;
-		height: 10px;
-		border-radius: 50%;
-		background-color: var(--accent);
-		opacity: 0.45;
-		transition: opacity 200ms ease, transform 200ms ease;
-	}
-
-	.parent-link:hover .parent-link__pip {
-		opacity: 1;
-		transform: scale(1.25);
-	}
-
-	.parent-link__line {
-		display: block;
-		width: 2px;
-		height: 2.5rem;
-		background: linear-gradient(
-			to bottom,
-			var(--accent-deep),
-			var(--accent-deep)
-		);
-		opacity: 0.35;
-		transition: height 200ms ease, opacity 200ms ease;
-	}
-
-	.parent-link:hover .parent-link__line {
-		height: 3rem;
-		opacity: 0.6;
-	}
-
-	.sub-header__title {
-		font-family: var(--font-display);
-		font-size: var(--text-5xl, 3rem);
-		font-weight: 400;
-		line-height: 1.1;
-		margin: 0 0 var(--space-2);
-		color: var(--ink);
-	}
-
 	/* ── Target entity links (stacked under title) ────────────────── */
 	.timeline-targets {
 		display: flex;
@@ -492,7 +345,22 @@
 		margin-bottom: var(--space-3);
 	}
 
-	/* ── Up-link for top-level timelines ─────────────────────────── */
+	.timeline-target {
+		font-family: var(--font-serif);
+		font-size: var(--text-sm);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.1em;
+		font-weight: 600;
+		color: var(--accent);
+		text-decoration: none;
+		transition: color 200ms ease;
+	}
+
+	.timeline-target:hover {
+		color: var(--accent-deep);
+	}
+
+	/* ── Up-link for sub/top-level timelines ────────────────────── */
 	.tl-up-link {
 		display: flex;
 		justify-content: center;
@@ -516,31 +384,23 @@
 		letter-spacing: 0;
 	}
 
-	/* Non-interactive spine widget (no link, no hover) */
-	.spine-widget {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: var(--space-2);
-		flex-shrink: 0;
+	/* ── Timeline page header (title + targets + subtitle) ───────── */
+	.tl-header {
+		max-width: var(--prose-max);
+		margin: 0 auto var(--space-8);
+		padding-top: var(--space-4);
 	}
 
-	.timeline-target {
-		font-family: var(--font-serif);
-		font-size: var(--text-sm);
-		font-variant-caps: all-small-caps;
-		letter-spacing: 0.1em;
-		font-weight: 600;
-		color: var(--accent);
-		text-decoration: none;
-		transition: color 200ms ease;
+	.tl-header__title {
+		font-family: var(--font-display);
+		font-size: var(--text-5xl, 3rem);
+		font-weight: 400;
+		line-height: 1.1;
+		margin: 0 0 var(--space-2);
+		color: var(--ink);
 	}
 
-	.timeline-target:hover {
-		color: var(--accent-deep);
-	}
-
-	.sub-header__subtitle {
+	.tl-header__subtitle {
 		font-family: var(--font-serif);
 		font-style: italic;
 		color: var(--ink-soft);
@@ -548,7 +408,7 @@
 		margin: 0;
 	}
 
-	.sub-header__subtitle :global(p) {
+	.tl-header__subtitle :global(p) {
 		margin: 0;
 	}
 </style>
