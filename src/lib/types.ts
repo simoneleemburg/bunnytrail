@@ -435,6 +435,24 @@ export interface Relation {
 	 * the group's entity page.
 	 */
 	qualifier?: EntityId;
+	/**
+	 * Point-in-time date for a `temporal: moment` relation.
+	 * Authored as an ISO-8601 date string, e.g. `1950-01-15`.
+	 * Only meaningful when the relation's schema carries `temporal: 'moment'`.
+	 */
+	date?: string;
+	/**
+	 * Start date for a `temporal: range` relation.
+	 * Authored as an ISO-8601 date string, e.g. `1977-06-04`.
+	 * Only meaningful when the relation's schema carries `temporal: 'range'`.
+	 */
+	from?: string;
+	/**
+	 * End date for a `temporal: range` relation.
+	 * Authored as an ISO-8601 date string, e.g. `2010-03-21`.
+	 * Only meaningful when the relation's schema carries `temporal: 'range'`.
+	 */
+	to?: string;
 }
 
 /**
@@ -816,6 +834,14 @@ export interface RelationSchema extends RelationLabels {
 	 * Stored for future engine use; no behaviour is currently derived from it.
 	 */
 	symmetric?: boolean;
+	/**
+	 * When set, indicates that this relation has a temporal dimension.
+	 * - `'moment'` — the relation applies at a single point in time.
+	 * - `'range'`  — the relation applies over a span of time (start → end).
+	 *
+	 * Used to gate/drive temporal UI on relation instances.
+	 */
+	temporal?: 'moment' | 'range';
 }
 
 /** The full world-level relation registry as loaded from world.md. */

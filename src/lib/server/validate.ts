@@ -558,6 +558,61 @@ export function validateRelationSchema(args: ValidateArgs): void {
 					}
 				}
 			}
+
+			// Check 5: temporal fields
+			// Validates that date/from/to are only present when the schema
+			// declares temporal, that they are valid-looking ISO-8601 date
+			// strings, and that the correct fields are used for each mode.
+			const isDate = (v: unknown): v is string =>
+				typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
+
+			if (schema.temporal === 'moment') {
+				if (rel.date !== undefined && !isDate(rel.date)) {
+					issues.push({
+						kind: 'invalid-yaml',
+						entity: entity.id,
+						detail: `relation '${rel.kind}' → ${rel.target}: 'date' must be an ISO-8601 date string (YYYY-MM-DD)`
+					});
+				}
+				if (rel.from !== undefined || rel.to !== undefined) {
+					issues.push({
+						kind: 'invalid-yaml',
+						entity: entity.id,
+						detail: `relation '${rel.kind}' → ${rel.target}: 'from'/'to' are not valid for temporal: moment — use 'date'`
+					});
+				}
+			} else if (schema.temporal === 'range') {
+				if (rel.date !== undefined) {
+					issues.push({
+						kind: 'invalid-yaml',
+						entity: entity.id,
+						detail: `relation '${rel.kind}' → ${rel.target}: 'date' is not valid for temporal: range — use 'from'/'to'`
+					});
+				}
+				if (rel.from !== undefined && !isDate(rel.from)) {
+					issues.push({
+						kind: 'invalid-yaml',
+						entity: entity.id,
+						detail: `relation '${rel.kind}' → ${rel.target}: 'from' must be an ISO-8601 date string (YYYY-MM-DD)`
+					});
+				}
+				if (rel.to !== undefined && !isDate(rel.to)) {
+					issues.push({
+						kind: 'invalid-yaml',
+						entity: entity.id,
+						detail: `relation '${rel.kind}' → ${rel.target}: 'to' must be an ISO-8601 date string (YYYY-MM-DD)`
+					});
+				}
+			} else {
+				// No temporal schema — flag any stray temporal fields.
+				if (rel.date !== undefined || rel.from !== undefined || rel.to !== undefined) {
+					issues.push({
+						kind: 'invalid-yaml',
+						entity: entity.id,
+						detail: `relation '${rel.kind}' → ${rel.target}: 'date'/'from'/'to' are only valid when the relation schema declares 'temporal'`
+					});
+				}
+			}
 		}
 	}
 }

@@ -13,11 +13,17 @@
 	import { SvelteSet } from 'svelte/reactivity';
 	import { relationLabel } from '$lib/types';
 	import { toRoman } from '$lib/types';
+	import { formatDate } from '$lib/dates';
 
 	let { data }: { data: EntityPageData } = $props();
 
 	const ui = $derived(t(page.data.world.language));
 	const ornamentSvg = $derived(page.data.ornament?.svg ?? null);
+
+	/** Format a single ISO date string using world dateFormat + language. */
+	const fmt = $derived((iso: string) =>
+		formatDate(iso, page.data.world?.dateFormat, page.data.world?.language ?? 'en')
+	);
 
 	const rankGlyph = $derived(
 		data.kindChip?.rank != null && data.kindChip.rankDisplay !== 'none'
@@ -101,6 +107,12 @@
 			sigil: string | null;
 			kind: string | null;
 		} | null;
+		/** ISO-8601 date for temporal: moment relations. */
+		date?: string;
+		/** ISO-8601 range start for temporal: range relations. */
+		from?: string;
+		/** ISO-8601 range end for temporal: range relations. */
+		to?: string;
 	};
 
 	function labelForKind(kind: string, direction: 'out' | 'in'): string {
@@ -177,18 +189,24 @@
 					direction: 'out' as const,
 					note: e.note,
 					qualifierEntity: e.qualifierEntity ?? null,
-					entity: e.toEntity
+					entity: e.toEntity,
+					date: e.date,
+					from: e.from,
+					to: e.to
 				})
 			),
-			...data.inEdges.map(
-				(e): EdgeWithEntity => ({
-					kind: e.kind,
-					direction: 'in' as const,
-					note: e.note,
-					qualifierEntity: e.qualifierEntity ?? null,
-					entity: e.fromEntity
-				})
-			)
+		...data.inEdges.map(
+			(e): EdgeWithEntity => ({
+				kind: e.kind,
+				direction: 'in' as const,
+				note: e.note,
+				qualifierEntity: e.qualifierEntity ?? null,
+				entity: e.fromEntity,
+				date: e.date,
+				from: e.from,
+				to: e.to
+			})
+		)
 		];
 
 		// Suppress wikilink edges that duplicate a typed relation
@@ -271,17 +289,51 @@
 			group.qualifierSubGroups = plain ? [...named, plain] : named;
 		}
 
-		// Typed relations first (the structured signal), then wikilink
-		// mentions at the bottom (the noisier prose layer). Within each
-		// tier, preserve insertion order so authors get a predictable
-		// reading order tied to how the page declares its connections.
-		const typed: Group[] = [];
+		// Sort items within each group by temporal date (moment: date, range: from), nulls last.
+		for (const group of groups.values()) {
+			const temporalKey = (e: EdgeWithEntity): string | undefined => e.date ?? e.from;
+			const hasAnyTemporal = group.items.some((e) => temporalKey(e) !== undefined);
+			if (!hasAnyTemporal) continue;
+			const sortItems = (items: EdgeWithEntity[]) =>
+				items.sort((a, b) => {
+					const ta = temporalKey(a);
+					const tb = temporalKey(b);
+					if (ta && tb) return ta.localeCompare(tb);
+					if (ta) return -1;
+					if (tb) return 1;
+					return 0;
+				});
+			sortItems(group.items);
+			if (group.qualifierSubGroups) {
+				for (const sub of group.qualifierSubGroups) sortItems(sub.items);
+			}
+		}
+
+		// Groups with temporal data first (earliest anchor first), then
+		// non-temporal typed relations, then wikilink mentions.
+		const temporalKey = (e: EdgeWithEntity): string | undefined => e.date ?? e.from;
+		const groupEarliestTemporal = (g: Group): string | undefined => {
+			for (const item of g.items) {
+				const t = temporalKey(item);
+				if (t) return t;
+			}
+			return undefined;
+		};
+
+		const withTemporal: Group[] = [];
+		const typedOnly: Group[] = [];
 		const mentions: Group[] = [];
 		for (const g of groups.values()) {
-			if (g.kind === 'wikilink') mentions.push(g);
-			else typed.push(g);
+			if (g.kind === 'wikilink') { mentions.push(g); continue; }
+			if (groupEarliestTemporal(g) !== undefined) withTemporal.push(g);
+			else typedOnly.push(g);
 		}
-		return [...typed, ...mentions];
+		withTemporal.sort((a, b) => {
+			const ta = groupEarliestTemporal(a)!;
+			const tb = groupEarliestTemporal(b)!;
+			return ta.localeCompare(tb);
+		});
+		return [...withTemporal, ...typedOnly, ...mentions];
 	});
 </script>
 
@@ -560,6 +612,11 @@
 														kind={item.entity.kind}
 														compact
 													/>
+													{#if item.date}
+														<span class="rel-temporal">{fmt(item.date)}</span>
+													{:else if item.from || item.to}
+														<span class="rel-temporal">{item.from ? fmt(item.from) : '?'}–{item.to ? fmt(item.to) : '?'}</span>
+													{/if}
 													{#if item.note}<span class="note"> — {item.note}</span>{/if}
 												</li>
 											{/if}
@@ -589,6 +646,11 @@
 													kind={item.entity.kind}
 													compact
 												/>
+											{#if item.date}
+												<span class="rel-temporal">{fmt(item.date)}</span>
+											{:else if item.from || item.to}
+												<span class="rel-temporal">{item.from ? fmt(item.from) : '?'}–{item.to ? fmt(item.to) : '?'}</span>
+											{/if}
 												{#if item.note}<span class="note"> — {item.note}</span>{/if}
 											</li>
 										{/if}
@@ -1035,6 +1097,15 @@
 		font-size: var(--text-xs);
 		color: var(--ink-faint);
 		font-variant-numeric: tabular-nums;
+	}
+
+	.rel-temporal {
+		display: inline-block;
+		margin-left: 0.4em;
+		font-size: var(--text-xs);
+		color: var(--ink-faint);
+		font-variant-numeric: tabular-nums;
+		white-space: nowrap;
 	}
 
 	/* Match collection-card / EntityCard treatment: drop the per-tag

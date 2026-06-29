@@ -123,6 +123,17 @@ export interface WorldConfig {
 	 * Optional settings for the home page display.
 	 */
 	homePageSettings: HomePageSettings;
+	/**
+	 * Optional date display format for temporal relation fields.
+	 * Authored as a token string in `content_meta/world.md`, e.g.:
+	 *   `d mmm YYYY`  → "21 sep 1950"
+	 *   `dd/mm/YYYY`  → "21/09/1950"
+	 * Supported tokens: `d` (day), `dd` (zero-padded day),
+	 * `mm` (zero-padded month), `mmm` (short month name),
+	 * `mmmm` (long month name), `YYYY` (4-digit year), `YY` (2-digit year).
+	 * When absent the ISO date string is shown as-is.
+	 */
+	dateFormat: string | null;
 }
 
 export interface HomePageSettings {
@@ -170,7 +181,8 @@ function fallbackConfig(): WorldConfig {
 		disableScopePainting: false,
 		eras: null,
 		gatePrompt: 'Enter the secret to continue.',
-		homePageSettings: { showProseBreakdown: true, showImageCount: false }
+		homePageSettings: { showProseBreakdown: true, showImageCount: false },
+		dateFormat: null
 	};
 }
 
@@ -231,11 +243,12 @@ export async function loadWorld(
 		readString(meta, 'secret_prompt', issues) ?? 'Enter the secret to continue.';
 	const language = readLanguage(meta, issues);
 	const homePageSettings = readHomePageSettings(meta, issues);
+	const dateFormat = typeof meta['dateFormat'] === 'string' ? meta['dateFormat'] : null;
 
 	const ledeHtml = body.trim() === '' ? null : renderPlainBody(body);
 
 	return {
-		config: { name, shortName, heroTitle, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties, disableScopePainting, eras, gatePrompt, language, homePageSettings },
+		config: { name, shortName, heroTitle, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties, disableScopePainting, eras, gatePrompt, language, homePageSettings, dateFormat },
 		ledeHtml,
 		present: true,
 		issues

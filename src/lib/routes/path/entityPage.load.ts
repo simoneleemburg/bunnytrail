@@ -131,11 +131,33 @@ export async function loadEntityPage(entity: Entity, mode: ViewMode = 'visitor')
 			}
 		: null;
 
-	const outEdges = graph.outEdges(id).map((e) => ({
-		...e,
-		toEntity: pickCard(graph.get(e.to), cardSummaryHtml),
-		qualifierEntity: e.qualifier ? pickQualifierEntity(graph.get(e.qualifier)) : null
-	}));
+	// Build a lookup for temporal data on outgoing relations.
+	// Key: `${kind}\0${target}` — matches how graph.outEdges() orders them.
+	const temporalByRel = new Map<string, { date?: string; from?: string; to?: string }>();
+	for (const rel of entity.meta.relations ?? []) {
+		if (rel.date !== undefined || rel.from !== undefined || rel.to !== undefined) {
+			temporalByRel.set(`${rel.kind}\0${rel.target}`, {
+				date: rel.date,
+				from: rel.from,
+				to: rel.to
+			});
+		}
+	}
+
+	const outEdges = graph.outEdges(id).map((e) => {
+		const temporal = temporalByRel.get(`${e.kind}\0${e.to}`);
+		return {
+			kind: e.kind,
+			note: e.note,
+			order: e.order,
+			qualifier: e.qualifier,
+			date: temporal?.date,
+			from: temporal?.from,
+			to: temporal?.to,
+			toEntity: pickCard(graph.get(e.to), cardSummaryHtml),
+			qualifierEntity: e.qualifier ? pickQualifierEntity(graph.get(e.qualifier)) : null
+		};
+	});
 	const inEdges = graph.inEdges(id).map((e) => {
 		let fromEntity = pickCard(graph.get(e.from), cardSummaryHtml);
 		// e.from may be a timeline dot path (e.g. `leemburg/verhalen/jan-arend-jr/1956`).
@@ -157,8 +179,15 @@ export async function loadEntityPage(entity: Entity, mode: ViewMode = 'visitor')
 				kind: null
 			};
 		}
+		// Pull temporal data from the source entity's authored relation pointing at us.
+		const sourceRel = graph.get(e.from)?.meta.relations?.find(
+			(r) => r.kind === e.kind && r.target === id
+		);
 		return {
 			...e,
+			date: sourceRel?.date,
+			from: sourceRel?.from,
+			to: sourceRel?.to,
 			fromEntity,
 			qualifierEntity: e.qualifier ? pickQualifierEntity(graph.get(e.qualifier)) : null
 		};
@@ -292,11 +321,15 @@ export async function loadEntityPage(entity: Entity, mode: ViewMode = 'visitor')
 			existingInIds.add(slice.speciesId);
 			const entity = graph.get(slice.speciesId);
 			inEdges.push({
-				from: slice.speciesId,
-				to: id,
 				kind: 'inhabits',
-			fromEntity: pickCard(entity, cardSummaryHtml),
-			qualifierEntity: null
+				note: undefined,
+				order: undefined,
+				qualifier: undefined,
+				date: undefined,
+				from: undefined,
+				to: undefined,
+				fromEntity: pickCard(entity, cardSummaryHtml),
+				qualifierEntity: null
 			});
 		}
 	}
@@ -308,9 +341,13 @@ export async function loadEntityPage(entity: Entity, mode: ViewMode = 'visitor')
 		existingOutIds.add(entry.worldId);
 		const worldEntity = graph.get(entry.worldId);
 		outEdges.push({
-			from: id,
-			to: entry.worldId,
 			kind: 'inhabits',
+			note: undefined,
+			order: undefined,
+			qualifier: undefined,
+			date: undefined,
+			from: undefined,
+			to: undefined,
 			toEntity: pickCard(worldEntity, cardSummaryHtml),
 			qualifierEntity: null
 		});

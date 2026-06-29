@@ -214,7 +214,7 @@ const KNOWN_RELATION_ENTRY_FIELDS = new Set([
 	'outLabel', 'inLabel',
 	'domain', 'codomain', 'qualifierDomain',
 	'governedBy', 'qualifierGovernedBy', 'qualifier',
-	'symmetric'
+	'symmetric', 'temporal'
 ]);
 
 /**
@@ -349,6 +349,23 @@ function parseOntologyRelations(
 			}
 		}
 
+		if (e['symmetric'] === true) schema.symmetric = true;
+		else if (e['symmetric'] !== undefined && e['symmetric'] !== null && e['symmetric'] !== false) {
+			issues.push({ kind: 'invalid-yaml', detail: `${context}.symmetric must be a boolean` });
+		}
+
+		const temporalVal = e['temporal'];
+		if (temporalVal !== undefined && temporalVal !== null) {
+			if (temporalVal !== 'moment' && temporalVal !== 'range') {
+				issues.push({
+					kind: 'invalid-yaml',
+					detail: `${context}.temporal must be 'moment' or 'range' when present`
+				});
+			} else {
+				schema.temporal = temporalVal;
+			}
+		}
+
 		// Unknown fields inside the relation entry.
 		for (const key of Object.keys(e)) {
 			if (!KNOWN_RELATION_ENTRY_FIELDS.has(key)) {
@@ -471,6 +488,23 @@ async function readOntologyRelations(
 				});
 			} else {
 				schema.qualifier = 'required';
+			}
+		}
+
+		if (e['symmetric'] === true) schema.symmetric = true;
+		else if (e['symmetric'] !== undefined && e['symmetric'] !== null && e['symmetric'] !== false) {
+			issues.push({ kind: 'invalid-yaml', detail: `${context}.symmetric must be a boolean` });
+		}
+
+		const temporalVal = e['temporal'];
+		if (temporalVal !== undefined && temporalVal !== null) {
+			if (temporalVal !== 'moment' && temporalVal !== 'range') {
+				issues.push({
+					kind: 'invalid-yaml',
+					detail: `${context}.temporal must be 'moment' or 'range' when present`
+				});
+			} else {
+				schema.temporal = temporalVal;
 			}
 		}
 
