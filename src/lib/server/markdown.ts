@@ -241,8 +241,8 @@ function rewriteBrackets(
 	return text.replace(
 		/\[\[([^\]|]+?)(?:\|([^\]]+))?\]\]/g,
 		(whole, inner: string, label: string | undefined) => {
-			const wikiPath = /^[a-z][a-z0-9-]*(?:\/[a-z0-9-]+)+$/;
-			const slugOnly = /^[a-z][a-z0-9-]*$/;
+			const wikiPath = /^[a-z0-9][a-z0-9-]*(?:\/[a-z0-9-]+)+$/;
+			const slugOnly = /^[a-z0-9][a-z0-9-]*$/;
 			const langShape = /^[a-z]{2,8}$/;
 			const anchorFrag = /^[a-z0-9][a-z0-9-]*$/;
 
