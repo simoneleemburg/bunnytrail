@@ -243,6 +243,12 @@ export interface Translations {
 	chapter_contents: string;
 	chapter_next: string;
 	chapter_unit_default: string;
+
+	// ── Timeline dot page ─────────────────────────────────────────────
+	timeline_dot_nav_aria: string;
+	timeline_dot_go_to_aria: (year: number) => string;
+	timeline_dot_back_in: (title: string) => string;
+	timeline_dot_forward_in: (title: string) => string;
 }
 
 const en: Translations = {
@@ -475,6 +481,12 @@ const en: Translations = {
 	chapter_contents: 'Contents',
 	chapter_next: 'Next',
 	chapter_unit_default: 'Chapter',
+
+	// Timeline dot page
+	timeline_dot_nav_aria: 'Timeline navigation',
+	timeline_dot_go_to_aria: (year) => `Go to ${year}`,
+	timeline_dot_back_in: (title) => `Back in ${title}`,
+	timeline_dot_forward_in: (title) => `Onwards in ${title}`,
 };
 
 const nl: Translations = {
@@ -707,6 +719,12 @@ const nl: Translations = {
 	chapter_contents: 'Inhoud',
 	chapter_next: 'Volgende',
 	chapter_unit_default: 'Hoofdstuk',
+
+	// Timeline dot page
+	timeline_dot_nav_aria: 'Tijdlijnnavigatie',
+	timeline_dot_go_to_aria: (year) => `Ga naar ${year}`,
+	timeline_dot_back_in: (title) => `Terug in ${title}`,
+	timeline_dot_forward_in: (title) => `Verder in ${title}`,
 };
 
 const LOCALES: Record<Locale, Translations> = { en, nl };

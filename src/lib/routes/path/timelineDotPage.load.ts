@@ -38,6 +38,19 @@ export interface TimelineDotPageData {
 	 * Null when thread is null or when the dot is on the thread timeline itself.
 	 */
 	subThread: { title: string; href: string } | null;
+	/**
+	 * When the thread is scoped exactly to a sub-timeline (thread === timelinePath)
+	 * and the parent path is also a known timeline, this provides a link to the
+	 * last entry in the parent thread that precedes the current year.
+	 * Only present when there is no prev within the current thread.
+	 */
+	parentThreadBack: { label: string; href: string } | null;
+	/**
+	 * Mirror of parentThreadBack for the forward direction: first parent-thread
+	 * entry after the current year. Only present when there is no next within
+	 * the current thread.
+	 */
+	parentThreadForward: { label: string; href: string } | null;
 }
 
 /**
@@ -149,6 +162,37 @@ export async function loadTimelineDotPage(
 		return { title: resolveTimelineTitle(ntl), href: `/${ntl}` };
 	}
 
+	// Parent-thread nav: shown when the current thread IS the sub-timeline itself
+	// (thread === timelinePath), there is no prev within this thread (i.e. this is
+	// the first entry), and the parent folder is also a known timeline.
+	// Links to the last entry in the parent thread before the current year.
+	let parentThreadBack: { label: string; href: string } | null = null;
+	let parentThreadForward: { label: string; href: string } | null = null;
+	if (validThread && validThread === timelinePath) {
+		const parentPath = timelinePath.includes('/')
+			? timelinePath.slice(0, timelinePath.lastIndexOf('/'))
+			: null;
+		if (parentPath && graph.isTimeline(parentPath)) {
+			const parentTitle = resolveTimelineTitle(parentPath);
+			const qs = `?thread=${encodeURIComponent(parentPath)}`;
+			const parentEntries = threadEntries(parentPath);
+			if (prev === null) {
+				// First entry in this sub-thread — offer back-nav to last parent entry before this year.
+				const predecessor = [...parentEntries].reverse().find((e) => e.year < year);
+				if (predecessor) {
+					parentThreadBack = { label: parentTitle, href: `/${predecessor.path}${qs}` };
+				}
+			}
+			if (next === null) {
+				// Last entry in this sub-thread — offer forward-nav to first parent entry after this year.
+				const successor = parentEntries.find((e) => e.year > year);
+				if (successor) {
+					parentThreadForward = { label: parentTitle, href: `/${successor.path}${qs}` };
+				}
+			}
+		}
+	}
+
 	return {
 		kind: 'timeline-dot',
 		timelinePath,
@@ -166,6 +210,8 @@ export async function loadTimelineDotPage(
 		breadcrumbs,
 		thread: validThread,
 		threadTitle,
-		subThread
+		subThread,
+		parentThreadBack,
+		parentThreadForward
 	};
 }

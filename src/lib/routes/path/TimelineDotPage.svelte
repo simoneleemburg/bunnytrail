@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { page } from '$app/stores';
+	import { t } from '$lib/i18n';
 	import type { TimelineDotPageData } from './timelineDotPage.load.ts';
 
 	interface Props {
@@ -6,6 +8,8 @@
 	}
 
 	let { data }: Props = $props();
+
+	const ui = $derived(t($page.data.world?.language));
 
 	/** Append `?thread=<path>` to a dot href when a thread context is active. */
 	function withThread(href: string): string {
@@ -21,11 +25,18 @@
 		<a class="dot-nav__timeline-link" href={data.timelineHref}><span class="up-arrow" aria-hidden="true">↑</span>{data.timelineTitle}</a>
 	{/if}
 
-	<div class="dot-nav__strip" role="navigation" aria-label="Timeline navigation">
+	<div class="dot-nav__strip-wrap">
+		{#if data.parentThreadBack}
+			<a class="dot-nav__parent-nav dot-nav__parent-nav--back" href={data.parentThreadBack.href}>
+				<span class="dot-nav__parent-nav-arrow" aria-hidden="true">←</span>{ui.timeline_dot_back_in(data.parentThreadBack.label)}
+			</a>
+		{/if}
+
+		<div class="dot-nav__strip" role="navigation" aria-label={ui.timeline_dot_nav_aria}>
 		<div class="dot-nav__line" aria-hidden="true"></div>
 
 		{#if data.prev}
-			<a class="dot-nav__neighbour dot-nav__neighbour--prev" href={withThread(data.prev.href)} aria-label="Go to {data.prev.year}">
+			<a class="dot-nav__neighbour dot-nav__neighbour--prev" href={withThread(data.prev.href)} aria-label={ui.timeline_dot_go_to_aria(data.prev.year)}>
 				<span class="dot-nav__neighbour-year">{data.prev.year}</span>
 				<span class="dot-nav__pip"></span>
 				{#if data.prev.crossThread}
@@ -42,7 +53,7 @@
 		</div>
 
 		{#if data.next}
-			<a class="dot-nav__neighbour dot-nav__neighbour--next" href={withThread(data.next.href)} aria-label="Go to {data.next.year}">
+			<a class="dot-nav__neighbour dot-nav__neighbour--next" href={withThread(data.next.href)} aria-label={ui.timeline_dot_go_to_aria(data.next.year)}>
 				<span class="dot-nav__neighbour-year">{data.next.year}</span>
 				<span class="dot-nav__pip"></span>
 				{#if data.next.crossThread}
@@ -51,6 +62,12 @@
 			</a>
 		{:else}
 			<span class="dot-nav__neighbour dot-nav__neighbour--next dot-nav__neighbour--empty" aria-hidden="true"></span>
+		{/if}
+	</div>
+		{#if data.parentThreadForward}
+			<a class="dot-nav__parent-nav dot-nav__parent-nav--forward" href={data.parentThreadForward.href}>
+				{ui.timeline_dot_forward_in(data.parentThreadForward.label)}<span class="dot-nav__parent-nav-arrow" aria-hidden="true">→</span>
+			</a>
 		{/if}
 	</div>
 </div>
@@ -140,6 +157,39 @@
 	}
 	.dot-subthread__link:hover {
 		color: var(--accent-warm);
+	}
+
+	/* ── Strip wrapper (holds parent-nav + strip together) ─────────── */
+	.dot-nav__strip-wrap {
+		position: relative;
+		width: 100%;
+	}
+
+	.dot-nav__parent-nav {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.4em;
+		margin-bottom: var(--space-2);
+		font-family: var(--font-serif);
+		font-size: var(--text-xs, 0.75rem);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.1em;
+		color: var(--ink-faint);
+		text-decoration: none;
+		transition: color 200ms ease;
+	}
+	.dot-nav__parent-nav:hover {
+		color: var(--accent-warm);
+	}
+	.dot-nav__parent-nav-arrow {
+		font-variant: normal;
+		letter-spacing: 0;
+	}
+	.dot-nav__parent-nav--forward {
+		display: flex;
+		justify-content: flex-end;
+		margin-top: var(--space-2);
+		margin-bottom: 0;
 	}
 
 	/* ── Strip ─────────────────────────────────────────────────────── */
