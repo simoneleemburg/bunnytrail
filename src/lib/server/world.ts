@@ -3,7 +3,7 @@ import { parse as parseYaml } from 'yaml';
 import type { EraConfig, EraDef, ClusterEras, HealthIssue } from '$lib/types';
 import { defaultWorldConfigPath } from './globals';
 import { splitFrontmatter } from './frontmatter';
-import { renderPlainBody } from './markdown';
+import { renderPlainBody, type LinkResolver } from './markdown';
 
 /**
  * Identity and chrome for the world being rendered.
@@ -188,7 +188,9 @@ function fallbackConfig(): WorldConfig {
 
 export interface WorldLoadResult {
 	config: WorldConfig;
+	/** @deprecated use ledeBody — kept for test compatibility */
 	ledeHtml: string | null;
+	ledeBody: string;
 	/** True iff a `world.md` was found on disk (vs. fallback). */
 	present: boolean;
 	issues: HealthIssue[];
@@ -200,7 +202,7 @@ export async function loadWorld(
 	const issues: HealthIssue[] = [];
 	const raw = await readOptional(worldConfigPath);
 	if (raw === null) {
-		return { config: fallbackConfig(), ledeHtml: null, present: false, issues };
+		return { config: fallbackConfig(), ledeHtml: null, ledeBody: '', present: false, issues };
 	}
 
 	const split = splitFrontmatter(raw);
@@ -245,11 +247,13 @@ export async function loadWorld(
 	const homePageSettings = readHomePageSettings(meta, issues);
 	const dateFormat = typeof meta['dateFormat'] === 'string' ? meta['dateFormat'] : null;
 
-	const ledeHtml = body.trim() === '' ? null : renderPlainBody(body);
+	const ledeBody = body.trim() === '' ? '' : body;
+	const ledeHtml = ledeBody ? renderPlainBody(ledeBody) : null;
 
 	return {
 		config: { name, shortName, heroTitle, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties, disableScopePainting, eras, gatePrompt, language, homePageSettings, dateFormat },
 		ledeHtml,
+		ledeBody,
 		present: true,
 		issues
 	};
@@ -521,7 +525,7 @@ async function readOptional(path: string): Promise<string | null> {
  */
 class World {
 	#config: WorldConfig = fallbackConfig();
-	#ledeHtml: string | null = null;
+	#ledeBody: string = '';
 	#present = false;
 	#issues: HealthIssue[] = [];
 	#loaded = false;
@@ -530,9 +534,9 @@ class World {
 	async load(worldConfigPath: string = defaultWorldConfigPath()): Promise<void> {
 		if (this.#loading) return this.#loading;
 		this.#loading = (async () => {
-			const { config, ledeHtml, present, issues } = await loadWorld(worldConfigPath);
+			const { config, ledeHtml: _unused, ledeBody, present, issues } = await loadWorld(worldConfigPath);
 			this.#config = config;
-			this.#ledeHtml = ledeHtml;
+			this.#ledeBody = ledeBody;
 			this.#present = present;
 			this.#issues = issues;
 			this.#loaded = true;
@@ -552,8 +556,9 @@ class World {
 		return { ...this.#config };
 	}
 
-	ledeHtml(): string | null {
-		return this.#ledeHtml;
+	ledeHtml(resolveLink?: LinkResolver): string | null {
+		if (!this.#ledeBody) return null;
+		return renderPlainBody(this.#ledeBody, resolveLink);
 	}
 
 	/** True iff a world.md was found on disk (vs. running on fallback defaults). */

@@ -613,7 +613,8 @@ export function renderEntityBody(
  * Heading-id slugification still runs, so cross-post anchor links
  * keep working. `marked` does the rest.
  */
-export function renderPlainBody(body: string): string {
+export function renderPlainBody(body: string, resolveLink?: LinkResolver): string {
+	const rewritten = resolveLink ? rewriteBrackets(body, resolveLink, new Map(), new Set()) : body;
 	const headingSlugCounts = new Map<string, number>();
 	const renderer = new marked.Renderer();
 	renderer.heading = ({ depth, text }) => {
@@ -647,7 +648,7 @@ export function renderPlainBody(body: string): string {
 		}
 		return defaultCode(token);
 	};
-	return marked.parse(body, { async: false, renderer }) as string;
+	return marked.parse(rewritten, { async: false, renderer }) as string;
 }
 
 /**

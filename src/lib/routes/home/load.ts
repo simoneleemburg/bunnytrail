@@ -218,7 +218,7 @@ export async function load() {
 		// `content_meta/world.md`. `null` when the file is missing or
 		// its body is empty — the page renders a placeholder in that
 		// case so a freshly scaffolded world still has a coherent hero.
-		lede: world.ledeHtml(),
+		lede: world.ledeHtml((path) => graph.resolveLink(path, null)),
 		crest,
 		hasBlogPosts: blog.all().length > 0,
 		showProseBreakdown: world.config().homePageSettings.showProseBreakdown,
