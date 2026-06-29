@@ -136,17 +136,28 @@ export interface CalendarSpec {
 	/**
 	 * Separator-joined token ids that describe the input tuple order.
 	 * E.g. "E-Y-C-A-D" means the tuple is [eve, year, circle, arc, day].
-	 * Separators may be any non-alphanumeric character sequence.
 	 */
 	input: string;
 	/**
-	 * Display template. Use `{TOKEN}` for default (cardinal) rendering,
-	 * or `{TOKEN:numeral}` to reference the token's `tokens` override.
-	 * Literal text (including spaces, punctuation, unit names) goes
-	 * directly in the template.
+	 * Display template used when no `displayByPrecision` entry matches.
+	 * Use `{TOKEN}` for cardinal rendering, `{TOKEN:hint}` to reference a
+	 * `tokens` override. Literal text passes through unchanged.
 	 * Example: "{E:ordinal} Eve, Year {Y} — {C:ordinal} Circle {A:mapped}, Day {D}"
 	 */
 	display: string;
+	/**
+	 * Optional per-precision display templates. Keys are the number of units
+	 * provided in the date tuple (1 = top-unit only, 2 = top two units, …).
+	 * When present, `formatCalendarDate` picks the entry whose key matches
+	 * `date.value.length`, falling back to `display` when no entry matches.
+	 *
+	 * Example (Revelant calendar, 5 units):
+	 *   displayByPrecision:
+	 *     1: "{E:ordinal} Eve"
+	 *     2: "{E:ordinal} Eve, Year {Y}"
+	 *     5: "{E:ordinal} Eve, Year {Y} — {C:ordinal} Circle {A:mapped}, Day {D}"
+	 */
+	displayByPrecision?: Record<number, string>;
 	/**
 	 * Token overrides. Keys are the uppercase token letters from `input`.
 	 * Only needed for non-cardinal rendering. Cardinals need no entry.
@@ -767,7 +778,30 @@ function readCalendarSpec(
 		}
 	}
 
-	return { ...(name ? { name } : {}), ...(eves ? { eves } : {}), units, input, display, ...(tokens ? { tokens } : {}) };
+	// --- displayByPrecision ---
+	const dpRaw = o['displayByPrecision'];
+	let displayByPrecision: Record<number, string> | undefined;
+	if (dpRaw !== undefined && dpRaw !== null) {
+		if (typeof dpRaw !== 'object' || Array.isArray(dpRaw)) {
+			issues.push({ kind: 'invalid-yaml', detail: `${ctx}: displayByPrecision must be a mapping` });
+		} else {
+			displayByPrecision = {};
+			for (const [k, v] of Object.entries(dpRaw as Record<string, unknown>)) {
+				const precision = parseInt(k, 10);
+				if (isNaN(precision) || precision < 1) {
+					issues.push({ kind: 'invalid-yaml', detail: `${ctx}: displayByPrecision key '${k}' must be a positive integer` });
+					continue;
+				}
+				if (typeof v !== 'string') {
+					issues.push({ kind: 'invalid-yaml', detail: `${ctx}: displayByPrecision.${k} must be a string` });
+					continue;
+				}
+				displayByPrecision[precision] = v;
+			}
+		}
+	}
+
+	return { ...(name ? { name } : {}), ...(eves ? { eves } : {}), units, input, display, ...(displayByPrecision ? { displayByPrecision } : {}), ...(tokens ? { tokens } : {}) };
 }
 
 function readStringFrom(

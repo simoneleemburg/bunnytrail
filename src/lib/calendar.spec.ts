@@ -300,6 +300,52 @@ describe('partial dates', () => {
 });
 
 
+// ── displayByPrecision ────────────────────────────────────────────────────────
+
+describe('displayByPrecision', () => {
+	const specWithPrecision: CalendarSpec = {
+		...revelantSpec,
+		displayByPrecision: {
+			1: '{E:ordinal} Eve',
+			2: '{E:ordinal} Eve, Year {Y}',
+			3: '{E:ordinal} Eve, Year {Y} — {C:ordinal} Circle',
+			5: '{E:ordinal} Eve, Year {Y} — {C:ordinal} Circle {A:mapped}, Day {D}'
+		}
+	};
+
+	it('precision 1 uses the 1-key template', () => {
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6] }, specWithPrecision))
+			.toBe('Sixth Eve');
+	});
+
+	it('precision 2 uses the 2-key template', () => {
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143] }, specWithPrecision))
+			.toBe('Sixth Eve, Year 143');
+	});
+
+	it('precision 3 uses the 3-key template', () => {
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143, 5] }, specWithPrecision))
+			.toBe('Sixth Eve, Year 143 — Fifth Circle');
+	});
+
+	it('precision 4 falls back to display (no 4-key entry), D token renders empty', () => {
+		const result = formatCalendarDate({ calendar: 'revelant', value: [6, 143, 5, 2] }, specWithPrecision);
+		expect(result).toContain('Sixth Eve, Year 143');
+		expect(result).toContain('Fifth Circle Rising');
+		expect(result).not.toMatch(/Day \d/);
+	});
+
+	it('precision 5 uses the 5-key template (full)', () => {
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143, 5, 2, 12] }, specWithPrecision))
+			.toBe('Sixth Eve, Year 143 — Fifth Circle Rising, Day 12');
+	});
+
+	it('without displayByPrecision falls back to display for partial dates', () => {
+		const result = formatCalendarDate({ calendar: 'revelant', value: [6, 143] }, revelantSpec);
+		expect(result).toContain('Sixth Eve, Year 143');
+	});
+});
+
 describe('formatCalendarDate', () => {
 	it('renders the example date correctly', () => {
 		const date = { calendar: 'revelant', value: [6, 143, 5, 2, 12] };

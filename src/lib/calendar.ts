@@ -355,6 +355,10 @@ function renderToken(
  *   "Sixth Eve, Year 143 — Fifth Circle Rising, Day 12"
  */
 export function formatCalendarDate(date: CalendarDate, spec: CalendarSpec): string {
+	// Pick the template: precision-keyed entry first, fallback to display.
+	const precision = date.value.length;
+	const template = spec.displayByPrecision?.[precision] ?? spec.display;
+
 	// Build a map from token letter → unit value (only for provided units).
 	const tokens = inputTokens(spec.input);
 	const tokenValues: Record<string, number> = {};
@@ -364,9 +368,9 @@ export function formatCalendarDate(date: CalendarDate, spec: CalendarSpec): stri
 	// Set of token letters that were actually provided (for partial-date check).
 	const providedTokens = new Set(Object.keys(tokenValues));
 
-	// Replace {TOKEN} or {TOKEN:hint} in the display template.
+	// Replace {TOKEN} or {TOKEN:hint} in the chosen template.
 	// Tokens for unspecified units render as empty string.
-	return spec.display.replace(/\{([A-Za-z0-9]+)(?::[^}]*)?\}/g, (_match, tok: string) => {
+	return template.replace(/\{([A-Za-z0-9]+)(?::[^}]*)?\}/g, (_match, tok: string) => {
 		const upper = tok.toUpperCase();
 		const key = providedTokens.has(upper) ? upper : providedTokens.has(tok) ? tok : null;
 		if (key === null) return ''; // unit not provided — omit
