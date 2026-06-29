@@ -492,7 +492,7 @@ const en: Translations = {
 const nl: Translations = {
 	// Layout / nav
 	nav_meta_eyebrow: 'Meta',
-	nav_kinds: 'Soorten',
+	nav_kinds: 'Overzicht',
 	nav_guides: 'Gidsen',
 	nav_journal: 'Dagboek',
 	nav_symbology: 'Symbologie',
@@ -598,11 +598,11 @@ const nl: Translations = {
 	collection_focus_on: (label) => `Focus op ${label} →`,
 
 	// Kinds
-	kinds_title: 'Soorten',
+	kinds_title: 'Overzicht',
 	kinds_empty: 'Er zijn nog geen soorten geregistreerd.',
 	kinds_unregistered: 'Niet geregistreerd',
-	kind_up_aria: 'Terug naar Soorten',
-	kind_up_label: 'Soorten',
+	kind_up_aria: 'Terug naar Overzicht',
+	kind_up_label: 'Overzicht',
 	kind_mentioned_in: 'Genoemd in',
 	kind_sections_aria: 'Soortsecties',
 	kind_tab_about: 'Over',
