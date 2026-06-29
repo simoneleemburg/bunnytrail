@@ -17,6 +17,7 @@ export type Locale = 'en' | 'nl';
 export interface Translations {
 	// ── Layout / nav ──────────────────────────────────────────────────
 	nav_meta_eyebrow: string;
+	nav_content_label: string;
 	nav_kinds: string;
 	nav_guides: string;
 	nav_journal: string;
@@ -254,6 +255,7 @@ export interface Translations {
 const en: Translations = {
 	// Layout / nav
 	nav_meta_eyebrow: 'Meta',
+	nav_content_label: 'Content',
 	nav_kinds: 'Kinds',
 	nav_guides: 'Guides',
 	nav_journal: 'Journal',
@@ -492,6 +494,7 @@ const en: Translations = {
 const nl: Translations = {
 	// Layout / nav
 	nav_meta_eyebrow: 'Meta',
+	nav_content_label: 'Inhoud',
 	nav_kinds: 'Overzicht',
 	nav_guides: 'Gidsen',
 	nav_journal: 'Dagboek',

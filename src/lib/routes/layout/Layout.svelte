@@ -117,6 +117,7 @@
 	let drawerOpen = $state(false);
 	let filtersOpen = $state(false);
 	let metaOpen = $state(false);
+	let contentOpen = $state(false);
 	let searchOpen = $state(false);
 
 	// Navigation loading state — drives a subtle fade on <main> so the
@@ -322,6 +323,7 @@
 		if (searchOpen) searchOpen = false;
 		else if (filtersOpen) filtersOpen = false;
 		else if (metaOpen) metaOpen = false;
+		else if (contentOpen) contentOpen = false;
 		else if (drawerOpen) drawerOpen = false;
 	}
 
@@ -349,6 +351,19 @@
 		if (!metaOpen) return;
 		document.addEventListener('click', onDocumentClickMeta);
 		return () => document.removeEventListener('click', onDocumentClickMeta);
+	});
+
+	function onDocumentClickContent(e: MouseEvent) {
+		const target = e.target as Element | null;
+		if (target?.closest('[data-content-picker]')) return;
+		contentOpen = false;
+	}
+
+	$effect(() => {
+		if (!browser) return;
+		if (!contentOpen) return;
+		document.addEventListener('click', onDocumentClickContent);
+		return () => document.removeEventListener('click', onDocumentClickContent);
 	});
 
 	let metaActive = $derived.by(() => {
@@ -476,6 +491,37 @@
 					<a href={item.href} aria-current={navAriaCurrent(item.href)}>{item.label}</a>
 				{/each}
 			</nav>
+
+			<!-- Tablet content dropdown: shown only at 821px–1024px where nav-desktop is hidden -->
+			{#if !gated && data.nav.length > 0}
+				<div class="content-picker" data-content-picker>
+					<button
+						type="button"
+						class="content-trigger"
+						aria-haspopup="listbox"
+						aria-expanded={contentOpen}
+						onclick={() => (contentOpen = !contentOpen)}
+					>
+						<span class="content-label">{ui.nav_content_label}</span>
+						<span class="content-caret" aria-hidden="true">▾</span>
+					</button>
+					{#if contentOpen}
+						<ul class="content-menu" role="listbox">
+							{#each data.nav as item (item.href)}
+								<li>
+									<a
+										href={item.href}
+										role="option"
+										aria-selected={!!navAriaCurrent(item.href)}
+										class:selected={!!navAriaCurrent(item.href)}
+										onclick={() => (contentOpen = false)}
+									>{item.label}</a>
+								</li>
+							{/each}
+						</ul>
+					{/if}
+				</div>
+			{/if}
 
 			{#if activeMode === 'dev' && data.issueCount > 0}
 				<a class="health-badge" href="/health" title={ui.nav_health_issues(data.issueCount)}>
@@ -967,6 +1013,105 @@
 	   Vertically-folding menu behind the masthead "Meta" trigger.
 	   Shares visual language with the cluster picker but is
 	   anchored left (aligned to the trigger) rather than right. */
+	/* ── Content picker (tablet only: 821px–1024px) ─────────── */
+	.content-picker {
+		display: none; /* shown only inside the 821–1024px media query */
+		position: relative;
+	}
+
+	.content-trigger {
+		display: inline-flex;
+		align-items: baseline;
+		gap: var(--space-3);
+		font: inherit;
+		color: var(--ink-soft);
+		background: transparent;
+		border: 1px solid transparent;
+		border-radius: var(--radius-md);
+		padding: var(--space-2) var(--space-3);
+		cursor: pointer;
+		transition:
+			background-color 120ms,
+			border-color 120ms,
+			color 120ms;
+	}
+
+	.content-trigger:hover,
+	.content-trigger:focus-visible {
+		background: var(--paper-warm);
+		border-color: var(--rule);
+		outline: none;
+	}
+
+	.content-trigger[aria-expanded='true'] {
+		background: var(--paper-warm);
+		border-color: var(--rule);
+	}
+
+	.content-label {
+		font-family: var(--font-display);
+		font-size: var(--text-base);
+		letter-spacing: 0.01em;
+		color: var(--ink-soft);
+	}
+
+	.content-caret {
+		font-size: 0.7em;
+		color: var(--ink-faint);
+		transition: transform 120ms;
+	}
+
+	.content-trigger[aria-expanded='true'] .content-caret {
+		transform: rotate(180deg);
+	}
+
+	.content-menu {
+		position: absolute;
+		top: calc(100% + var(--space-2));
+		left: 0;
+		min-width: 9rem;
+		margin: 0;
+		padding: var(--space-2);
+		list-style: none;
+		background: var(--vellum);
+		border: 1px solid var(--rule);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-hover);
+		z-index: 20;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+	}
+
+	.content-menu li {
+		border-radius: var(--radius-sm);
+	}
+
+	.content-menu li:has(a:hover),
+	.content-menu li:has(a:focus-visible) {
+		background: var(--paper-warm);
+	}
+
+	.content-menu a {
+		display: block;
+		padding: var(--space-2) var(--space-3);
+		font-family: var(--font-display);
+		font-size: var(--text-base);
+		color: var(--ink-soft);
+		text-decoration: none;
+		border-radius: var(--radius-sm);
+	}
+
+	.content-menu a:hover,
+	.content-menu a:focus-visible {
+		color: var(--ink);
+		outline: none;
+	}
+
+	.content-menu a.selected {
+		color: var(--ink);
+	}
+
 	.meta-picker {
 		position: relative;
 	}
@@ -1629,8 +1774,8 @@
 		color: var(--accent-warm);
 	}
 
-	/* ── Tablet tighten (821px–1024px) ──────────────────────── */
-	@media (min-width: 821px) and (max-width: 1024px) {
+	/* ── Tablet tighten (641px–1024px) ──────────────────────── */
+	@media (min-width: 641px) and (max-width: 1024px) {
 		:global(:where(.masthead)) {
 			padding-left: var(--space-5);
 			padding-right: var(--space-5);
@@ -1647,10 +1792,19 @@
 		.nav-desktop {
 			gap: var(--space-4);
 		}
+
+		/* Swap nav-desktop for the content dropdown at this range. */
+		.nav-desktop {
+			display: none;
+		}
+
+		.content-picker {
+			display: block;
+		}
 	}
 
 	/* ── Responsive collapse ─────────────────────────────────── */
-	@media (max-width: 820px) {
+	@media (max-width: 640px) {
 		.masthead {
 			padding: var(--space-4) var(--space-5);
 		}
@@ -1660,6 +1814,7 @@
 		}
 
 		.nav-desktop,
+		.content-picker,
 		.filters-picker,
 		.meta-picker {
 			display: none;
