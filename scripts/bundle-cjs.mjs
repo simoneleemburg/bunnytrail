@@ -188,10 +188,23 @@ if (remaining) {
 // ── Patch 6: dynamic import("node:async_hooks") in SvelteKit internals ───────
 // vm2 (used by Node.js Lab) throws synchronously on dynamic import(), so
 // .catch() doesn't help. Replace with a synchronous require() in try/catch.
-cjsBundle = cjsBundle.replace(
-  `import("node:async_hooks").then((hooks) => als2 = new hooks.AsyncLocalStorage()).catch(() => {\n    });`,
-  `try { als2 = new (require("node:async_hooks").AsyncLocalStorage)(); } catch (_) {}`
-);
+//
+// The variable name (als, als2, …) and indentation vary across SvelteKit
+// versions — use a regex so we match regardless of those details.
+// Pattern: import("node:async_hooks").then((hooks) => <varName> = new hooks.AsyncLocalStorage()).catch(...)
+{
+  const asyncHooksRe = /import\("node:async_hooks"\)\.then\(\(hooks\) => (\w+) = new hooks\.AsyncLocalStorage\(\)\)\.catch\(\(\) => \{[\r\n]+\s*\}\);/;
+  const ahMatch = cjsBundle.match(asyncHooksRe);
+  if (ahMatch) {
+    const varName = ahMatch[1];
+    cjsBundle = cjsBundle.replace(
+      asyncHooksRe,
+      `try { ${varName} = new (require("async_hooks").AsyncLocalStorage)(); } catch (_) {}`
+    );
+  } else {
+    console.warn('[bt-build-ipad] WARNING: Patch 6 (async_hooks dynamic import) did not match — vm2 may crash on first request');
+  }
+}
 
 // ── Patch 7: inject BUNNYTRAIL_WORLD_DIR at bundle top ───────────────────────
 // When run as server.cjs, __dirname is ipad-build/. Content lives one level
@@ -804,6 +817,11 @@ for (const [name, marker] of Object.entries(_verifyPatches)) {
     console.warn(`[bt-build-ipad] WARNING: ${name} did not apply — esbuild output may have changed`);
     _patchFailed = true;
   }
+}
+// Verify no dynamic import("node:async_hooks") survived (Patch 6)
+if (/import\("node:async_hooks"\)/.test(cjsBundle)) {
+  console.warn('[bt-build-ipad] WARNING: Patch 6 (async_hooks) left a dynamic import in the bundle — vm2 will crash');
+  _patchFailed = true;
 }
 if (_patchFailed) console.warn('[bt-build-ipad] Some patches failed. SSR in vm2 may not work correctly.');
 
