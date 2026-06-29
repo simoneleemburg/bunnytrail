@@ -122,10 +122,11 @@ describe('parseCalendarDate', () => {
 		expect(result.ok).toBe(true);
 	});
 
-	it('rejects wrong tuple length', () => {
-		const result = parseCalendarDate({ calendar: 'revelant', value: [6, 143, 5] }, revelantSpec);
+	it('rejects wrong tuple length — too many values', () => {
+		// Too many is still an error
+		const result = parseCalendarDate({ calendar: 'revelant', value: [6, 143, 5, 2, 12, 99] }, revelantSpec);
 		expect(result.ok).toBe(false);
-		if (!result.ok) expect(result.errors[0]).toMatch(/expected 5/);
+		if (!result.ok) expect(result.errors[0]).toMatch(/too many/);
 	});
 
 	it('rejects eve out of range', () => {
@@ -236,7 +237,68 @@ describe('toAbsoluteDay', () => {
 	});
 });
 
-// ── formatCalendarDate ────────────────────────────────────────────────────────
+// ── Partial dates ─────────────────────────────────────────────────────────────
+
+describe('partial dates', () => {
+	it('parseCalendarDate: accepts a partial tuple', () => {
+		const result = parseCalendarDate({ calendar: 'revelant', value: [6, 143] }, revelantSpec);
+		expect(result.ok).toBe(true);
+	});
+
+	it('parseCalendarDate: accepts a single-unit (eve-only) tuple', () => {
+		const result = parseCalendarDate({ calendar: 'revelant', value: [3] }, revelantSpec);
+		expect(result.ok).toBe(true);
+	});
+
+	it('parseCalendarDate: rejects an empty tuple', () => {
+		const result = parseCalendarDate({ calendar: 'revelant', value: [] }, revelantSpec);
+		expect(result.ok).toBe(false);
+	});
+
+	it('parseCalendarDate: rejects a tuple longer than the spec', () => {
+		const result = parseCalendarDate({ calendar: 'revelant', value: [6, 143, 5, 2, 12, 99] }, revelantSpec);
+		expect(result.ok).toBe(false);
+		if (!result.ok) expect(result.errors[0]).toMatch(/too many/);
+	});
+
+	it('toAbsoluteDay: partial [6, 143] folds to same as [6, 143, 1, 1, 1]', () => {
+		const partial = { calendar: 'revelant', value: [6, 143] };
+		const full = { calendar: 'revelant', value: [6, 143, 1, 1, 1] };
+		expect(toAbsoluteDay(partial, revelantSpec)).toBe(toAbsoluteDay(full, revelantSpec));
+	});
+
+	it('toAbsoluteDay: partial sorts before more specific dates in same year', () => {
+		const yearOnly = { calendar: 'revelant', value: [6, 143] };
+		const specific = { calendar: 'revelant', value: [6, 143, 1, 1, 2] }; // day 2
+		expect(toAbsoluteDay(yearOnly, revelantSpec)).toBeLessThan(toAbsoluteDay(specific, revelantSpec));
+	});
+
+	it('toAbsoluteDay: eve-only partial sorts before any year within that eve', () => {
+		const eveOnly = { calendar: 'revelant', value: [3] };
+		const firstDayEve3 = { calendar: 'revelant', value: [3, 1, 1, 1, 1] };
+		expect(toAbsoluteDay(eveOnly, revelantSpec)).toBe(toAbsoluteDay(firstDayEve3, revelantSpec));
+	});
+
+	it('formatCalendarDate: partial [6, 143] — unspecified tokens render empty, literals stay', () => {
+		const date = { calendar: 'revelant', value: [6, 143] };
+		const result = formatCalendarDate(date, revelantSpec);
+		expect(result).toContain('Sixth Eve');
+		expect(result).toContain('Year 143');
+		// The token {C:ordinal} renders empty, but the literal word "Circle" in the
+		// template stays — the template is " Circle " not just "{C:ordinal}".
+		// What's absent is the rendered ordinal value (e.g. "Fifth").
+		expect(result).not.toMatch(/Fifth|First|Second|Third|Fourth/); // no circle ordinal
+		expect(result).not.toMatch(/Low|Rising|Returning/); // no arc
+	});
+
+	it('formatCalendarDate: partial [6, 143, 5] shows circle but not arc/day', () => {
+		const date = { calendar: 'revelant', value: [6, 143, 5] };
+		const result = formatCalendarDate(date, revelantSpec);
+		expect(result).toContain('Fifth');
+		expect(result).not.toMatch(/Low|Rising|Returning/);
+	});
+});
+
 
 describe('formatCalendarDate', () => {
 	it('renders the example date correctly', () => {
@@ -268,14 +330,16 @@ describe('formatCalendarDate', () => {
 		expect(result).toContain('Year 77');
 	});
 
-	it('passes through unknown tokens unchanged', () => {
+	it('passes through — unspecified tokens render as empty string', () => {
+		// Tokens for units not in the value render as '' (not left as {UNKNOWN})
 		const spec: CalendarSpec = {
 			units: [{ unit: 'year' }],
 			input: 'Y',
 			display: '{Y} / {UNKNOWN}'
 		};
 		const date = { calendar: 'test', value: [5] };
-		expect(formatCalendarDate(date, spec)).toBe('5 / {UNKNOWN}');
+		// {UNKNOWN} is not a token in this spec's input — treated as unspecified → ''
+		expect(formatCalendarDate(date, spec)).toBe('5 / ');
 	});
 
 	it('simple spec: renders without token overrides', () => {

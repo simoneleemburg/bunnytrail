@@ -132,7 +132,9 @@ function parseTuple(raw: unknown): number[] | null {
 
 /**
  * Validate a `CalendarDate` tuple against a `CalendarSpec`.
- * Returns the validated date on success, or a list of error messages.
+ * Partial tuples (fewer values than units) are valid — missing trailing
+ * units are treated as "unspecified". Returns the validated date on
+ * success, or a list of error messages.
  */
 export function parseCalendarDate(
 	date: CalendarDate,
@@ -141,14 +143,19 @@ export function parseCalendarDate(
 	const errors: string[] = [];
 	const tokens = inputTokens(spec.input);
 
-	if (date.value.length !== spec.units.length) {
+	if (date.value.length === 0) {
+		errors.push(`Calendar '${date.calendar}': value must have at least one unit`);
+		return { ok: false, errors };
+	}
+
+	if (date.value.length > spec.units.length) {
 		errors.push(
-			`Calendar '${date.calendar}': expected ${spec.units.length} values (${tokens.join('-')}), got ${date.value.length}`
+			`Calendar '${date.calendar}': too many values — expected at most ${spec.units.length} (${tokens.join('-')}), got ${date.value.length}`
 		);
 		return { ok: false, errors };
 	}
 
-	for (let i = 0; i < spec.units.length; i++) {
+	for (let i = 0; i < date.value.length; i++) {
 		const unit = spec.units[i];
 		const val = date.value[i];
 
@@ -199,27 +206,23 @@ export function parseCalendarDate(
  * the absolute day count from the calendar's epoch (day 0 = first value of
  * every unit at 1).
  *
- * The fold multiplies out the unit hierarchy from smallest to largest.
- * For the Revelant calendar (eves → years → circles → arcs → days):
- *
- *   absoluteYear = Σ(years of all prior eves) + (year − 1)
- *   absoluteDay  = absoluteYear·(circles·arcs·days)
- *                + (circle−1)·(arcs·days)
- *                + (arc−1)·days
- *                + (day−1)
- *
- * Units without a `per` (the top unit, and year-within-eve when eves are
- * declared) are handled specially via the `eves` table.
+ * Partial tuples (fewer values than units) are padded with `1` for all
+ * missing trailing units, placing the date at the *start* of the
+ * specified period. E.g. `[6, 143]` folds to the first day of
+ * Sixth Eve, Year 143.
  */
 export function toAbsoluteDay(date: CalendarDate, spec: CalendarSpec): number {
-	const vals = date.value;
+	// Pad the tuple to full length with 1s for unspecified trailing units.
+	const n = spec.units.length;
+	const vals = date.value.length < n
+		? [...date.value, ...new Array(n - date.value.length).fill(1)]
+		: date.value;
 	const units = spec.units;
 
 	// Build unit sizes (number of smallest units per each unit level).
 	// Process bottom-up: the last unit has size 1; each parent = per * child.
 	// For the year unit (index 1 when eves exist), per is variable — we
 	// handle it via the eves table instead.
-	const n = units.length;
 	const unitSize: number[] = new Array(n).fill(1);
 	for (let i = n - 2; i >= 0; i--) {
 		const childSize = unitSize[i + 1];
@@ -251,22 +254,14 @@ export function toAbsoluteDay(date: CalendarDate, spec: CalendarSpec): number {
 		}
 		const absoluteYear = priorYears + yearWithinEve;
 
-		// Smallest-unit size for everything below "year" (i.e. the day multiplier
-		// per year, e.g. 567 for 9×3×21).
-		const daysPerYear = unitSize[2] !== undefined ? unitSize[1] : 1;
-		// unitSize[1] was set to unitSize[2] (placeholder) above; recompute from
-		// the remaining fixed units.
+		// Compute days-per-year from the fixed sub-year units (circle × arc × day).
 		let daysPerYearActual = 1;
 		for (let i = 2; i < n; i++) {
 			const per = units[i].per;
 			if (typeof per === 'number') daysPerYearActual *= per;
 		}
-		// unitSize[2..n-1] are the days-per-unit for circle, arc, day, etc.
-		// We need to compute the contribution of units[2..n-1].
-		let subYearDay = 0;
-		let multiplier = 1;
-		// Walk from the smallest unit upwards (index n-1 down to 2).
-		// unitSize[i] = number of smallest units in one of unit[i].
+
+		// Compute the sub-year day offset from circle/arc/day values.
 		const fixedUnitSize: number[] = new Array(n).fill(1);
 		for (let i = n - 2; i >= 2; i--) {
 			const per = units[i + 1].per;
@@ -274,6 +269,7 @@ export function toAbsoluteDay(date: CalendarDate, spec: CalendarSpec): number {
 				fixedUnitSize[i] = per * fixedUnitSize[i + 1];
 			}
 		}
+		let subYearDay = 0;
 		for (let i = 2; i < n; i++) {
 			subYearDay += (vals[i] - 1) * fixedUnitSize[i];
 		}
@@ -347,26 +343,34 @@ function renderToken(
  * The template uses `{TOKEN}` for the token's primary rendering (per its
  * `tokens` entry, or cardinal if absent). Literal text passes through unchanged.
  *
- * Example template: "{E:ordinal} Eve, Year {Y} — {C:ordinal} Circle {A:mapped}, Day {D}"
- * With tokens: E=6, Y=143, C=5, A=2, D=12 →
+ * For **partial dates** (fewer values than units), tokens for unspecified
+ * units render as an empty string. This collapses cleanly when the display
+ * template places precision-dependent parts at the end — e.g. with value
+ * `[6, 143]` and template `"{E:ordinal} Eve, Year {Y} — {C:ordinal} Circle
+ * {A:mapped}, Day {D}"`, the output is `"Sixth Eve, Year 143 — , Day "`.
+ * Authors can avoid the trailing punctuation by structuring the template
+ * accordingly (e.g. separate templates per precision level).
+ *
+ * Example: value [6, 143, 5, 2, 12], template above →
  *   "Sixth Eve, Year 143 — Fifth Circle Rising, Day 12"
  */
 export function formatCalendarDate(date: CalendarDate, spec: CalendarSpec): string {
-	// Build a map from token letter → unit value.
+	// Build a map from token letter → unit value (only for provided units).
 	const tokens = inputTokens(spec.input);
 	const tokenValues: Record<string, number> = {};
 	for (let i = 0; i < tokens.length && i < date.value.length; i++) {
 		tokenValues[tokens[i]] = date.value[i];
 	}
+	// Set of token letters that were actually provided (for partial-date check).
+	const providedTokens = new Set(Object.keys(tokenValues));
 
 	// Replace {TOKEN} or {TOKEN:hint} in the display template.
-	// The :hint is purely documentary (the actual rendering is controlled by
-	// the `tokens` map on the spec), so we ignore it during rendering.
+	// Tokens for unspecified units render as empty string.
 	return spec.display.replace(/\{([A-Za-z0-9]+)(?::[^}]*)?\}/g, (_match, tok: string) => {
 		const upper = tok.toUpperCase();
-		const value = tokenValues[upper] ?? tokenValues[tok];
-		if (value === undefined) return _match; // unknown token: leave as-is
-		return renderToken(value, upper, spec);
+		const key = providedTokens.has(upper) ? upper : providedTokens.has(tok) ? tok : null;
+		if (key === null) return ''; // unit not provided — omit
+		return renderToken(tokenValues[key], upper, spec);
 	});
 }
 
