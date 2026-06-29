@@ -28,6 +28,9 @@
 			<a class="dot-nav__neighbour dot-nav__neighbour--prev" href={withThread(data.prev.href)} aria-label="Go to {data.prev.year}">
 				<span class="dot-nav__neighbour-year">{data.prev.year}</span>
 				<span class="dot-nav__pip"></span>
+				{#if data.prev.crossThread}
+					<span class="dot-nav__cross-thread">{data.prev.crossThread.title}</span>
+				{/if}
 			</a>
 		{:else}
 			<span class="dot-nav__neighbour dot-nav__neighbour--prev dot-nav__neighbour--empty" aria-hidden="true"></span>
@@ -42,6 +45,9 @@
 			<a class="dot-nav__neighbour dot-nav__neighbour--next" href={withThread(data.next.href)} aria-label="Go to {data.next.year}">
 				<span class="dot-nav__neighbour-year">{data.next.year}</span>
 				<span class="dot-nav__pip"></span>
+				{#if data.next.crossThread}
+					<span class="dot-nav__cross-thread">{data.next.crossThread.title}</span>
+				{/if}
 			</a>
 		{:else}
 			<span class="dot-nav__neighbour dot-nav__neighbour--next dot-nav__neighbour--empty" aria-hidden="true"></span>
@@ -193,6 +199,23 @@
 
 	.dot-nav__neighbour--empty {
 		pointer-events: none;
+	}
+
+	.dot-nav__cross-thread {
+		position: absolute;
+		top: calc(100% + var(--space-1));
+		left: 50%;
+		transform: translateX(-50%);
+		white-space: nowrap;
+		font-family: var(--font-serif);
+		font-size: var(--text-xs, 0.75rem);
+		font-variant-caps: all-small-caps;
+		letter-spacing: 0.1em;
+		color: var(--ink-faint);
+		transition: color 200ms ease;
+	}
+	.dot-nav__neighbour:hover .dot-nav__cross-thread {
+		color: var(--accent-warm);
 	}
 
 	.dot-nav__neighbour:not(.dot-nav__neighbour--empty):hover {

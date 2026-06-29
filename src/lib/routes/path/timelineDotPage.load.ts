@@ -16,9 +16,9 @@ export interface TimelineDotPageData {
 	/** Rendered HTML body of this entry (may be empty string). */
 	bodyHtml: string;
 	/** Navigation to the previous dot (lower year), or null. */
-	prev: { year: number; href: string } | null;
+	prev: { year: number; href: string; crossThread: { title: string; href: string } | null } | null;
 	/** Navigation to the next dot (higher year), or null. */
-	next: { year: number; href: string } | null;
+	next: { year: number; href: string; crossThread: { title: string; href: string } | null } | null;
 	/** Link back to the timeline line page. */
 	timelineHref: string;
 	/** Breadcrumb chain. */
@@ -134,6 +134,21 @@ export async function loadTimelineDotPage(
 			? { title: timelineTitle, href: `/${timelinePath}` }
 			: null;
 
+	/** Given an entry, returns the timeline path it belongs to. */
+	function neighbourTimeline(e: TimelineEntry): string {
+		return e.path.slice(0, e.path.lastIndexOf('/'));
+	}
+
+	/** Build a crossThread descriptor when a neighbour is on a different timeline. */
+	function crossThread(
+		neighbour: TimelineEntry | null
+	): { title: string; href: string } | null {
+		if (!neighbour || !validThread) return null;
+		const ntl = neighbourTimeline(neighbour);
+		if (ntl === timelinePath) return null;
+		return { title: resolveTimelineTitle(ntl), href: `/${ntl}` };
+	}
+
 	return {
 		kind: 'timeline-dot',
 		timelinePath,
@@ -141,8 +156,12 @@ export async function loadTimelineDotPage(
 		year,
 		summaryHtml,
 		bodyHtml,
-		prev: prev ? { year: prev.year, href: `/${prev.path}` } : null,
-		next: next ? { year: next.year, href: `/${next.path}` } : null,
+		prev: prev
+			? { year: prev.year, href: `/${prev.path}`, crossThread: crossThread(prev) }
+			: null,
+		next: next
+			? { year: next.year, href: `/${next.path}`, crossThread: crossThread(next) }
+			: null,
 		timelineHref: `/${timelinePath}`,
 		breadcrumbs,
 		thread: validThread,
