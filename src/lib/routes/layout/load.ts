@@ -2,6 +2,8 @@ import { building } from '$app/environment';
 import { graph } from '$lib/server/graph';
 import { world } from '$lib/server/world';
 import { assets } from '$lib/server/assets';
+import { guides } from '$lib/server/guides';
+import { blog } from '$lib/server/blog';
 import { readScope, readMode, type ScopeContext, type ViewMode } from '$lib/cluster';
 import { isGateEnabled } from '$lib/server/auth';
 
@@ -163,6 +165,9 @@ export async function load({ url }: { url: URL }) {
 	return {
 		nav: [...nav, ...universalNav],
 		kindsHref: selectedCluster ? `/${selectedCluster}/kinds` : '/kinds',
+		hasGuides: guides.all().length > 0,
+		hasBlog: blog.all().length > 0,
+		hasSymbology: graph.all().some((e) => typeof e.meta.sigil === 'string' && e.meta.sigil.trim() !== ''),
 		clusterOptions,
 		selectedCluster,
 		activeEra,

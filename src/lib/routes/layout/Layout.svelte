@@ -17,6 +17,9 @@
 		data: {
 			nav: { href: string; label: string; count: number }[];
 			kindsHref: string;
+			hasGuides: boolean;
+			hasBlog: boolean;
+			hasSymbology: boolean;
 			clusterOptions: { value: string; label: string; selected: boolean }[];
 			selectedCluster: string | null;
 		activeEra: string | null;
@@ -516,6 +519,7 @@
 								onclick={() => (metaOpen = false)}
 							>{ui.nav_kinds}</a>
 						</li>
+						{#if data.hasGuides}
 						<li>
 							<a
 								href="/guides"
@@ -525,6 +529,8 @@
 								onclick={() => (metaOpen = false)}
 							>{ui.nav_guides}</a>
 						</li>
+					{/if}
+					{#if data.hasBlog}
 						<li>
 							<a
 								href="/blog"
@@ -534,6 +540,8 @@
 								onclick={() => (metaOpen = false)}
 							>{ui.nav_journal}</a>
 						</li>
+					{/if}
+					{#if data.hasSymbology}
 						<li>
 							<a
 								href="/symbology"
@@ -543,6 +551,7 @@
 								onclick={() => (metaOpen = false)}
 							>{ui.nav_symbology}</a>
 						</li>
+					{/if}
 						<li>
 							<a
 								href="/graph"
@@ -667,10 +676,18 @@
 					{#each data.nav as item (item.href)}
 						<a href={item.href} aria-current={navAriaCurrent(item.href)}>{item.label}</a>
 					{/each}
+				</nav>
+				<nav class="nav-mobile nav-mobile--meta" aria-label="Secondary mobile">
 					<a href={data.kindsHref} aria-current={navAriaCurrent(data.kindsHref)}>{ui.nav_kinds}</a>
-				<a href="/guides" aria-current={navAriaCurrent('/guides')}>{ui.nav_guides}</a>
-				<a href="/blog" aria-current={navAriaCurrent('/blog')}>{ui.nav_journal}</a>
-				<a href="/symbology" aria-current={navAriaCurrent('/symbology')}>{ui.nav_symbology}</a>
+				{#if data.hasGuides}
+					<a href="/guides" aria-current={navAriaCurrent('/guides')}>{ui.nav_guides}</a>
+				{/if}
+				{#if data.hasBlog}
+					<a href="/blog" aria-current={navAriaCurrent('/blog')}>{ui.nav_journal}</a>
+				{/if}
+				{#if data.hasSymbology}
+					<a href="/symbology" aria-current={navAriaCurrent('/symbology')}>{ui.nav_symbology}</a>
+				{/if}
 				<a href="/graph" aria-current={navAriaCurrent('/graph')}>{ui.nav_graph}</a>
 				<a href="/relations" aria-current={navAriaCurrent('/relations')}>{ui.nav_relations}</a>
 				</nav>
@@ -1474,6 +1491,11 @@
 
 	.nav-mobile a:hover {
 		color: var(--accent);
+	}
+
+	.nav-mobile--meta {
+		border-top: var(--rule-thin);
+		padding-top: var(--space-2);
 	}
 
 	.drawer-cluster {
