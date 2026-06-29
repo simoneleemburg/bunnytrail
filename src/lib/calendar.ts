@@ -17,7 +17,7 @@
  *   - `calendarDateFromRaw` — parse raw frontmatter into a CalendarDate
  */
 
-import type { CalendarSpec, EveDef } from './server/world';
+import type { CalendarSpec, CalendarDisplayEntry, EveDef } from './server/world';
 import { toRoman } from './types';
 
 // ── Public types ──────────────────────────────────────────────────────────────
@@ -336,28 +336,35 @@ function renderToken(
 	}
 }
 
+/** Pick the display string from a `CalendarDisplayEntry` for a given variant. */
+function entryTemplate(entry: CalendarDisplayEntry, variant: 'heading' | 'display'): string | undefined {
+	if (typeof entry === 'string') return entry;
+	return entry[variant] ?? (variant === 'heading' ? entry.display : entry.heading);
+}
+
 /**
- * Format a `CalendarDate` to a display string using the calendar's `display`
- * template.
+ * Format a `CalendarDate` using the spec's display template.
  *
- * The template uses `{TOKEN}` for the token's primary rendering (per its
- * `tokens` entry, or cardinal if absent). Literal text passes through unchanged.
+ * `variant`:
+ * - `'display'` (default) — picks the `display` key in a `displayByPrecision`
+ *   object entry, or the plain string, or the top-level `display` fallback.
+ * - `'heading'` — picks the `heading` key first, falls back to `display` key,
+ *   then to the top-level `display`.
  *
- * For **partial dates** (fewer values than units), tokens for unspecified
- * units render as an empty string. This collapses cleanly when the display
- * template places precision-dependent parts at the end — e.g. with value
- * `[6, 143]` and template `"{E:ordinal} Eve, Year {Y} — {C:ordinal} Circle
- * {A:mapped}, Day {D}"`, the output is `"Sixth Eve, Year 143 — , Day "`.
- * Authors can avoid the trailing punctuation by structuring the template
- * accordingly (e.g. separate templates per precision level).
+ * Tokens for unspecified units render as empty string.
  *
- * Example: value [6, 143, 5, 2, 12], template above →
+ * Example:
  *   "Sixth Eve, Year 143 — Fifth Circle Rising, Day 12"
  */
-export function formatCalendarDate(date: CalendarDate, spec: CalendarSpec): string {
+export function formatCalendarDate(
+	date: CalendarDate,
+	spec: CalendarSpec,
+	variant: 'heading' | 'display' = 'display'
+): string {
 	// Pick the template: precision-keyed entry first, fallback to display.
 	const precision = date.value.length;
-	const template = spec.displayByPrecision?.[precision] ?? spec.display;
+	const entry = spec.displayByPrecision?.[precision];
+	const template = (entry !== undefined ? entryTemplate(entry, variant) : undefined) ?? spec.display;
 
 	// Build a map from token letter → unit value (only for provided units).
 	const tokens = inputTokens(spec.input);
@@ -385,9 +392,10 @@ export function formatCalendarDate(date: CalendarDate, spec: CalendarSpec): stri
  */
 export function formatCalendarDateById(
 	date: CalendarDate,
-	calendars: Record<string, CalendarSpec>
+	calendars: Record<string, CalendarSpec>,
+	variant: 'heading' | 'display' = 'display'
 ): string {
 	const spec = calendars[date.calendar];
 	if (!spec) return date.value.join('-');
-	return formatCalendarDate(date, spec);
+	return formatCalendarDate(date, spec, variant);
 }

@@ -73,9 +73,9 @@ export async function loadTimelineDotPage(
 	const customCalendars = world.config().customCalendars;
 
 	/** Format an entry's sort key as a display label. */
-	function entryLabel(e: TimelineEntry): string {
+	function entryLabel(e: TimelineEntry, variant: 'heading' | 'display' = 'display'): string {
 		if (e.calendarDate && customCalendars?.calendars) {
-			return formatCalendarDateById(e.calendarDate, customCalendars.calendars);
+			return formatCalendarDateById(e.calendarDate, customCalendars.calendars, variant);
 		}
 		return String(e.year);
 	}
@@ -168,7 +168,7 @@ export async function loadTimelineDotPage(
 		kind: 'timeline-dot',
 		timelinePath,
 		timelineTitle,
-		label: entryLabel(entry),
+		label: entryLabel(entry, 'heading'),
 		summaryHtml,
 		bodyHtml,
 		prev: prev

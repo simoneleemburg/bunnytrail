@@ -114,6 +114,18 @@ export interface CalendarTokenDef {
 }
 
 /**
+ * A single entry in `displayByPrecision`. Can be:
+ * - a plain string — used for both heading and display variants
+ * - an object with `heading` and/or `display` — lets you phrase the date
+ *   differently in a page title vs. a timeline list entry.
+ *   Missing variant falls back to the other, then to `CalendarSpec.display`.
+ */
+export type CalendarDisplayEntry =
+	| string
+	| { heading?: string; display?: string };
+
+
+/**
  * A fully-specified custom calendar. The engine uses this to:
  *   1. Parse a date tuple from frontmatter (validate ranges).
  *   2. Fold a tuple to a single absolute-day integer (timeline sort key).
@@ -148,16 +160,12 @@ export interface CalendarSpec {
 	/**
 	 * Optional per-precision display templates. Keys are the number of units
 	 * provided in the date tuple (1 = top-unit only, 2 = top two units, …).
-	 * When present, `formatCalendarDate` picks the entry whose key matches
-	 * `date.value.length`, falling back to `display` when no entry matches.
-	 *
-	 * Example (Revelant calendar, 5 units):
-	 *   displayByPrecision:
-	 *     1: "{E:ordinal} Eve"
-	 *     2: "{E:ordinal} Eve, Year {Y}"
-	 *     5: "{E:ordinal} Eve, Year {Y} — {C:ordinal} Circle {A:mapped}, Day {D}"
+	 * Each entry is either a plain string (used for both heading and display
+	 * variants) or `{ heading, display }` for distinct phrasing.
+	 * Falls back to `display` when no entry matches, or when an object entry
+	 * is missing the requested variant.
 	 */
-	displayByPrecision?: Record<number, string>;
+	displayByPrecision?: Record<number, CalendarDisplayEntry>;
 	/**
 	 * Token overrides. Keys are the uppercase token letters from `input`.
 	 * Only needed for non-cardinal rendering. Cardinals need no entry.
@@ -780,7 +788,7 @@ function readCalendarSpec(
 
 	// --- displayByPrecision ---
 	const dpRaw = o['displayByPrecision'];
-	let displayByPrecision: Record<number, string> | undefined;
+	let displayByPrecision: Record<number, CalendarDisplayEntry> | undefined;
 	if (dpRaw !== undefined && dpRaw !== null) {
 		if (typeof dpRaw !== 'object' || Array.isArray(dpRaw)) {
 			issues.push({ kind: 'invalid-yaml', detail: `${ctx}: displayByPrecision must be a mapping` });
@@ -792,11 +800,20 @@ function readCalendarSpec(
 					issues.push({ kind: 'invalid-yaml', detail: `${ctx}: displayByPrecision key '${k}' must be a positive integer` });
 					continue;
 				}
-				if (typeof v !== 'string') {
-					issues.push({ kind: 'invalid-yaml', detail: `${ctx}: displayByPrecision.${k} must be a string` });
-					continue;
+				if (typeof v === 'string') {
+					displayByPrecision[precision] = v;
+				} else if (v !== null && typeof v === 'object' && !Array.isArray(v)) {
+					const obj = v as Record<string, unknown>;
+					const heading = typeof obj['heading'] === 'string' ? obj['heading'] : undefined;
+					const display = typeof obj['display'] === 'string' ? obj['display'] : undefined;
+					if (heading === undefined && display === undefined) {
+						issues.push({ kind: 'invalid-yaml', detail: `${ctx}: displayByPrecision.${k} object must have at least one of 'heading' or 'display'` });
+						continue;
+					}
+					displayByPrecision[precision] = { ...(heading !== undefined ? { heading } : {}), ...(display !== undefined ? { display } : {}) };
+				} else {
+					issues.push({ kind: 'invalid-yaml', detail: `${ctx}: displayByPrecision.${k} must be a string or { heading, display } object` });
 				}
-				displayByPrecision[precision] = v;
 			}
 		}
 	}

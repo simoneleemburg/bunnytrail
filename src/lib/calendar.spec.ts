@@ -303,7 +303,8 @@ describe('partial dates', () => {
 // ── displayByPrecision ────────────────────────────────────────────────────────
 
 describe('displayByPrecision', () => {
-	const specWithPrecision: CalendarSpec = {
+	// Plain-string entries (backwards-compatible)
+	const specPlain: CalendarSpec = {
 		...revelantSpec,
 		displayByPrecision: {
 			1: '{E:ordinal} Eve',
@@ -313,36 +314,90 @@ describe('displayByPrecision', () => {
 		}
 	};
 
-	it('precision 1 uses the 1-key template', () => {
-		expect(formatCalendarDate({ calendar: 'revelant', value: [6] }, specWithPrecision))
+	// Object entries with separate heading / display variants
+	const specObj: CalendarSpec = {
+		...revelantSpec,
+		displayByPrecision: {
+			1: { heading: 'The {E:ordinal} Eve', display: '{E:ordinal} Eve' },
+			2: { heading: '{E:ordinal} Eve, Year {Y}', display: 'Year {Y} of the {E:ordinal} Eve' },
+			5: { heading: '{E:ordinal} Eve, Year {Y} — {C:ordinal} Circle {A:mapped}, Day {D}', display: 'Year {Y}, {C:ordinal} Circle {A:mapped}, Day {D}' }
+		}
+	};
+
+	// ── plain string entries ──────────────────────────────────────────────────
+	it('plain: precision 1 display variant', () => {
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6] }, specPlain))
 			.toBe('Sixth Eve');
 	});
-
-	it('precision 2 uses the 2-key template', () => {
-		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143] }, specWithPrecision))
+	it('plain: precision 1 heading variant same as display', () => {
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6] }, specPlain, 'heading'))
+			.toBe('Sixth Eve');
+	});
+	it('plain: precision 2 display variant', () => {
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143] }, specPlain))
 			.toBe('Sixth Eve, Year 143');
 	});
-
-	it('precision 3 uses the 3-key template', () => {
-		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143, 5] }, specWithPrecision))
+	it('plain: precision 3 display variant', () => {
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143, 5] }, specPlain))
 			.toBe('Sixth Eve, Year 143 — Fifth Circle');
 	});
-
-	it('precision 4 falls back to display (no 4-key entry), D token renders empty', () => {
-		const result = formatCalendarDate({ calendar: 'revelant', value: [6, 143, 5, 2] }, specWithPrecision);
+	it('plain: precision 4 falls back to top-level display (no 4-key entry)', () => {
+		const result = formatCalendarDate({ calendar: 'revelant', value: [6, 143, 5, 2] }, specPlain);
 		expect(result).toContain('Sixth Eve, Year 143');
 		expect(result).toContain('Fifth Circle Rising');
 		expect(result).not.toMatch(/Day \d/);
 	});
-
-	it('precision 5 uses the 5-key template (full)', () => {
-		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143, 5, 2, 12] }, specWithPrecision))
+	it('plain: precision 5 display variant', () => {
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143, 5, 2, 12] }, specPlain))
 			.toBe('Sixth Eve, Year 143 — Fifth Circle Rising, Day 12');
 	});
 
-	it('without displayByPrecision falls back to display for partial dates', () => {
-		const result = formatCalendarDate({ calendar: 'revelant', value: [6, 143] }, revelantSpec);
-		expect(result).toContain('Sixth Eve, Year 143');
+	// ── object entries ────────────────────────────────────────────────────────
+	it('object: precision 1 display variant', () => {
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6] }, specObj))
+			.toBe('Sixth Eve');
+	});
+	it('object: precision 1 heading variant', () => {
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6] }, specObj, 'heading'))
+			.toBe('The Sixth Eve');
+	});
+	it('object: precision 2 display variant', () => {
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143] }, specObj))
+			.toBe('Year 143 of the Sixth Eve');
+	});
+	it('object: precision 2 heading variant', () => {
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143] }, specObj, 'heading'))
+			.toBe('Sixth Eve, Year 143');
+	});
+	it('object: precision 5 display variant', () => {
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143, 5, 2, 12] }, specObj))
+			.toBe('Year 143, Fifth Circle Rising, Day 12');
+	});
+	it('object: precision 5 heading variant', () => {
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143, 5, 2, 12] }, specObj, 'heading'))
+			.toBe('Sixth Eve, Year 143 — Fifth Circle Rising, Day 12');
+	});
+	it('object with only heading key: display falls back to heading', () => {
+		const spec: CalendarSpec = {
+			...revelantSpec,
+			displayByPrecision: { 2: { heading: '{E:ordinal} Eve, Year {Y}' } }
+		};
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143] }, spec))
+			.toBe('Sixth Eve, Year 143');
+	});
+	it('object with only display key: heading falls back to display', () => {
+		const spec: CalendarSpec = {
+			...revelantSpec,
+			displayByPrecision: { 2: { display: 'Year {Y} of the {E:ordinal} Eve' } }
+		};
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143] }, spec, 'heading'))
+			.toBe('Year 143 of the Sixth Eve');
+	});
+	it('missing precision key falls back to top-level display for both variants', () => {
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143] }, revelantSpec))
+			.toContain('Sixth Eve, Year 143');
+		expect(formatCalendarDate({ calendar: 'revelant', value: [6, 143] }, revelantSpec, 'heading'))
+			.toContain('Sixth Eve, Year 143');
 	});
 });
 
