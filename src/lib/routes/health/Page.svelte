@@ -105,7 +105,7 @@
 
 	.issue {
 		display: grid;
-		grid-template-columns: minmax(14rem, 22rem) 1fr;
+		grid-template-columns: minmax(0, 30ch) 1fr;
 		gap: var(--space-4);
 		padding: var(--space-2) 0;
 		border-bottom: var(--rule-thin);
@@ -125,6 +125,8 @@
 		font-size: 0.92em;
 		color: var(--ink);
 		text-decoration: none;
+		min-width: 0;
+		word-break: break-all;
 	}
 
 	.entity:hover {
