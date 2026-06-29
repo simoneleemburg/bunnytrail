@@ -1,11 +1,26 @@
 import { graph } from '$lib/server/graph';
+import { world } from '$lib/server/world';
 import { renderBody, renderSummary } from '$lib/server/markdown';
 import { inlineSvgFigures } from '$lib/server/inlineSvgs';
+import { formatCalendarDateById } from '$lib/calendar';
 
 export interface TimelineEntryCard {
 	/** Folder path, e.g. `leemburg/verhalen/jan-arend-jr/1954`. */
 	path: string;
+	/** Sort key (absolute day for calendar entries, year integer for plain ones). */
 	year: number;
+	/**
+	 * Display label. For calendar-date entries this is the formatted string
+	 * (e.g. "Sixth Eve, Year 143 — Fifth Circle Rising, Day 12").
+	 * For plain year entries it is the year as a string.
+	 */
+	label: string;
+	/**
+	 * The last path segment of `path` — used as the URL slug.
+	 * For numeric folders this equals the year; for named folders
+	 * (calendar-date entries) it is the authored folder name.
+	 */
+	slug: string;
 	/** Rendered summary HTML (from `meta.summary`), or null. */
 	summaryHtml: string | null;
 	href: string;
@@ -51,6 +66,8 @@ export interface TimelinePageData {
 export async function loadTimelinePage(timelinePath: string): Promise<TimelinePageData> {
 	await graph.ready();
 	const timeline = graph.timeline(timelinePath)!;
+	await world.ready();
+	const customCalendars = world.config().customCalendars;
 
 	const resolveLink = (path: string) => graph.resolveLink(path, graph.clusterOf(timelinePath));
 	const languageCodes = graph.languageCodes();
@@ -68,11 +85,20 @@ export async function loadTimelinePage(timelinePath: string): Promise<TimelinePa
 		const summaryHtml = entry.summary
 			? renderSummary(entry.summary, resolveLink, languageCodes, { kindIds })
 			: null;
+		const slug = entry.path.includes('/')
+			? entry.path.slice(entry.path.lastIndexOf('/') + 1)
+			: entry.path;
+		const label =
+			entry.calendarDate && customCalendars?.calendars
+				? formatCalendarDateById(entry.calendarDate, customCalendars.calendars)
+				: String(entry.year);
 		return {
 			path: entry.path,
 			year: entry.year,
+			label,
+			slug,
 			summaryHtml,
-			href: `/${timelinePath}/${entry.year}?thread=${encodeURIComponent(timelinePath)}`
+			href: `/${timelinePath}/${slug}?thread=${encodeURIComponent(timelinePath)}`
 		};
 	});
 

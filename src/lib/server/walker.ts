@@ -482,7 +482,11 @@ async function walkTimelinesDir(
 			meta.type === 'dot' || meta.year !== undefined || (isYearFolder && meta.type !== 'line');
 
 		if (isLine) {
-			// Load the dot entries from year-named immediate sub-folders.
+			// Load the dot entries from immediate sub-folders that carry a _time.md.
+			// Folders may be year-named integers (e.g. "1954") for plain year entries,
+			// or any name (e.g. "epoch-entry") when the dot carries an explicit `date:`
+			// or `year:` field. Non-numeric named folders without a date/year are
+			// silently skipped (NaN sort key would break ordering).
 			const entries: TimelineEntry[] = [];
 			const dirents = await readDirents(absDir);
 			for (const entry of dirents) {
@@ -490,8 +494,6 @@ async function walkTimelinesDir(
 				const childName = entry.name;
 				// Skip hidden/underscore dirs (consistent with entity walk).
 				if (childName.startsWith('.') || childName.startsWith('_')) continue;
-				// Only year-like folders qualify as dot containers.
-				if (!/^-?\d+$/.test(childName)) continue;
 				const childAbsDir = join(absDir, childName);
 				const childTimeMdPath = join(childAbsDir, '_time.md');
 				if (!(await exists(childTimeMdPath))) continue;
@@ -554,6 +556,10 @@ async function walkTimelinesDir(
 							? childMeta.year
 							: parseInt(childName, 10);
 				}
+
+				// If neither a calendar date nor an explicit year resolved, and the
+				// folder name is non-numeric, skip — NaN sort key breaks ordering.
+				if (!calendarDate && isNaN(year)) continue;
 
 				const childRelPath = relPath ? `${relPath}/${childName}` : childName;
 				entries.push({

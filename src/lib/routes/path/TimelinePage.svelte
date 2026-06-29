@@ -65,7 +65,7 @@
 			<article class="timeline-entry">
 				<span class="timeline-year">
 					<!-- Stretched link covers the whole tile -->
-					<a class="entry-link" href={entry.href}>{entry.year}</a>
+					<a class="entry-link" href={entry.href}>{entry.label}</a>
 				</span>
 				{#if entry.summaryHtml}
 					<div class="timeline-summary">
