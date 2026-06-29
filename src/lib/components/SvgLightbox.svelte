@@ -1208,16 +1208,23 @@
 		position: relative;
 		width: 100%;
 		height: 100%;
-		overflow: auto;
+		overflow: hidden;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		padding: var(--space-4);
+		box-sizing: border-box;
 	}
 
 	.bt-img-lightbox .frame img {
-		max-width: none;
-		max-height: none;
+		/* Fit the image within the viewport while preserving aspect ratio.
+		   Portrait photos and landscape photos both show in full on open. */
+		max-width: 100%;
+		max-height: 100%;
+		width: auto;
+		height: auto;
 		display: block;
+		object-fit: contain;
 	}
 
 	.bt-img-lightbox .close {
