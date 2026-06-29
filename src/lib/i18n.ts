@@ -247,7 +247,7 @@ export interface Translations {
 
 	// ── Timeline dot page ─────────────────────────────────────────────
 	timeline_dot_nav_aria: string;
-	timeline_dot_go_to_aria: (year: number) => string;
+	timeline_dot_go_to_aria: (label: number | string) => string;
 	timeline_dot_back_in: (title: string) => string;
 	timeline_dot_forward_in: (title: string) => string;
 }

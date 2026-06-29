@@ -88,19 +88,17 @@ export async function load({ params, url }: { params: { path: string }; url: URL
 		return { kind: 'entity' as const, ...(await loadEntityPage(entity, mode)) };
 	}
 
-	// Timeline dot dispatch: `<timeline-path>/<year>` where the path is a
-	// known timeline and the last segment is an integer year.
+	// Timeline dot dispatch: `<timeline-path>/<slug>` where the path is a
+	// known timeline and the last segment is either an integer year or a
+	// named-folder slug (for calendar-date entries).
 	const lastSlash = path.lastIndexOf('/');
 	if (lastSlash !== -1) {
-		const possibleYear = path.slice(lastSlash + 1);
-		if (/^-?\d+$/.test(possibleYear)) {
-			const timelinePath = path.slice(0, lastSlash);
-			const year = parseInt(possibleYear, 10);
-			if (graph.isTimeline(timelinePath)) {
+		const possibleSlug = path.slice(lastSlash + 1);
+		const timelinePath = path.slice(0, lastSlash);
+		if (graph.isTimeline(timelinePath)) {
 			const thread = searchParams.get('thread') ?? null;
-			const dotData = await loadTimelineDotPage(timelinePath, year, thread);
+			const dotData = await loadTimelineDotPage(timelinePath, possibleSlug, thread);
 			if (dotData) return dotData;
-		}
 		}
 	}
 
@@ -232,11 +230,16 @@ export async function entries(): Promise<{ path: string }[]> {
 		}
 	}
 
-	// Timeline pages: line at the timeline path itself, dots at <path>/<year>
+	// Timeline pages: line at the timeline path itself, dots at <path>/<slug>
 	for (const [timelinePath, timeline] of graph.timelines()) {
 		paths.add(timelinePath);
 		for (const entry of timeline.entries) {
-			paths.add(`${timelinePath}/${entry.year}`);
+			// Use the entry's folder name (last segment of path) as the slug,
+			// not entry.year — named-folder calendar-date entries have non-numeric slugs.
+			const slug = entry.path.includes('/')
+				? entry.path.slice(entry.path.lastIndexOf('/') + 1)
+				: entry.path;
+			paths.add(`${timelinePath}/${slug}`);
 		}
 	}
 

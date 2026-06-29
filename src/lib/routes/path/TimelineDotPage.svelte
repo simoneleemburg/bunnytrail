@@ -36,8 +36,8 @@
 		<div class="dot-nav__line" aria-hidden="true"></div>
 
 		{#if data.prev}
-			<a class="dot-nav__neighbour dot-nav__neighbour--prev" href={withThread(data.prev.href)} aria-label={ui.timeline_dot_go_to_aria(data.prev.year)}>
-				<span class="dot-nav__neighbour-year">{data.prev.year}</span>
+			<a class="dot-nav__neighbour dot-nav__neighbour--prev" href={withThread(data.prev.href)} aria-label={ui.timeline_dot_go_to_aria(data.prev.label)}>
+				<span class="dot-nav__neighbour-year">{data.prev.label}</span>
 				<span class="dot-nav__pip"></span>
 				{#if data.prev.crossThread}
 					<span class="dot-nav__cross-thread">{data.prev.crossThread.title}</span>
@@ -48,13 +48,13 @@
 		{/if}
 
 		<div class="dot-nav__current">
-			<span class="dot-nav__current-year">{data.year}</span>
+			<span class="dot-nav__current-year">{data.label}</span>
 			<span class="dot-nav__pip dot-nav__pip--current"></span>
 		</div>
 
 		{#if data.next}
-			<a class="dot-nav__neighbour dot-nav__neighbour--next" href={withThread(data.next.href)} aria-label={ui.timeline_dot_go_to_aria(data.next.year)}>
-				<span class="dot-nav__neighbour-year">{data.next.year}</span>
+			<a class="dot-nav__neighbour dot-nav__neighbour--next" href={withThread(data.next.href)} aria-label={ui.timeline_dot_go_to_aria(data.next.label)}>
+				<span class="dot-nav__neighbour-year">{data.next.label}</span>
 				<span class="dot-nav__pip"></span>
 				{#if data.next.crossThread}
 					<span class="dot-nav__cross-thread">{data.next.crossThread.title}</span>
