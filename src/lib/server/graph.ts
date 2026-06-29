@@ -147,7 +147,8 @@ export class Graph {
 				await loadAll(contentDir, {
 					allowUndefinedRelations: worldConfig.allowUndefinedRelations,
 					allowUndefinedProperties: worldConfig.allowUndefinedProperties,
-					eraConfig: worldConfig.eras
+					eraConfig: worldConfig.eras,
+					customCalendars: worldConfig.customCalendars
 				});
 			const edges = buildEdges(entities, timelines, new Set(clusters), new Set(universalFolders));
 			this.#entities = entities;

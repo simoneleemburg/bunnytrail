@@ -949,10 +949,36 @@ export interface TimelineMeta {
 	 */
 	type?: 'dot' | 'line' | 'period';
 	/**
-	 * The year this entry belongs to. Required on dot entries.
-	 * Must be a valid integer (may be negative for BCE years).
+	 * The year this entry belongs to. Required on dot entries when no
+	 * `calendarDate` is provided. Must be a valid integer (may be negative
+	 * for BCE years).
 	 */
 	year?: number;
+	/**
+	 * Optional calendar id override for this timeline or dot entry.
+	 * When set on a **line** `_time.md`, it declares the default calendar for
+	 * all dots within this timeline. Dots may themselves override it.
+	 * Dot entries use this in combination with `year` as a structured tuple,
+	 * or alongside a `date:` frontmatter field in the structured form.
+	 *
+	 * Example (on a line _time.md):
+	 *   calendar: revelant
+	 *
+	 * Example (on a dot _time.md — shorthand, uses the line's calendar):
+	 *   date: "6-143-5-2-12"
+	 *
+	 * Example (on a dot _time.md — explicit):
+	 *   date: { calendar: revelant, value: [6, 143, 5, 2, 12] }
+	 */
+	calendar?: string;
+	/**
+	 * Structured calendar date for this dot entry. May be an explicit object
+	 * `{ calendar, value }` or a shorthand separator-joined string
+	 * (uses the timeline's `calendar` field as the default calendar id).
+	 * When present, `year` is derived from the fold and used as the sort key.
+	 * Cannot be combined with a plain integer `year` on the same dot.
+	 */
+	date?: unknown;
 	/** Optional display name for a line timeline (appears in the header). */
 	name?: string;
 	/** Optional one-line summary shown below the title. */
@@ -973,8 +999,20 @@ export interface TimelineMeta {
 export interface TimelineEntry {
 	/** Full folder path under `content/`, e.g. `leemburg/verhalen/jan-arend-jr/1954`. */
 	path: string;
-	/** The year. */
+	/**
+	 * The sort key. For plain `year:` entries this equals the authored year.
+	 * For calendar-date entries this is the `toAbsoluteDay` fold result —
+	 * a large positive integer. Entries of both kinds on the same timeline
+	 * sort correctly as long as the world doesn't mix ISO-year and calendar
+	 * timelines (which is not supported anyway).
+	 */
 	year: number;
+	/**
+	 * When this entry was authored with a structured calendar date, the
+	 * resolved `CalendarDate` is stored here for display rendering. Absent
+	 * for plain ISO/year entries.
+	 */
+	calendarDate?: import('./calendar').CalendarDate;
 	/** Optional one-line summary from the dot's `_time.md` frontmatter. */
 	summary?: string;
 	/** Raw markdown body (empty string when no prose was authored). */

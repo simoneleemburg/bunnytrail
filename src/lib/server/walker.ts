@@ -17,6 +17,8 @@ import type {
 	TimelineEntry,
 	TimelineMeta
 } from '$lib/types';
+import type { CustomCalendarsConfig } from './world';
+import { calendarDateFromRaw, parseCalendarDate, toAbsoluteDay } from '$lib/calendar';
 import { splitFrontmatter } from './frontmatter';
 import { extractKindLinks, extractKindRefs, extractWikilinks } from './wikilinks';
 
@@ -432,10 +434,11 @@ export function resolveBookMeta(raw: unknown): ResolvedBookMeta {
  */
 export async function walkTimelines(
 	contentDir: string,
-	issues: HealthIssue[]
+	issues: HealthIssue[],
+	customCalendars: CustomCalendarsConfig | null = null
 ): Promise<Map<string, Timeline>> {
 	const timelines = new Map<string, Timeline>();
-	await walkTimelinesDir(contentDir, '', contentDir, timelines, issues);
+	await walkTimelinesDir(contentDir, '', contentDir, timelines, issues, customCalendars);
 	return timelines;
 }
 
@@ -444,7 +447,8 @@ async function walkTimelinesDir(
 	relPath: string,
 	contentDir: string,
 	timelines: Map<string, Timeline>,
-	issues: HealthIssue[]
+	issues: HealthIssue[],
+	customCalendars: CustomCalendarsConfig | null
 ): Promise<void> {
 	const timeMdPath = join(absDir, '_time.md');
 	const hasTimeMd = await exists(timeMdPath);
@@ -507,14 +511,55 @@ async function walkTimelinesDir(
 					}
 				}
 				// Determine the year: explicit field first, folder name fallback.
-				const year: number =
-					typeof childMeta.year === 'number'
-						? childMeta.year
-						: parseInt(childName, 10);
+				// Also resolve calendar dates if present.
+				let year: number;
+				let calendarDate: import('$lib/calendar').CalendarDate | undefined;
+
+				// Resolve which calendar to use: dot meta > parent line meta > none
+				const effectiveCalendarId =
+					(typeof childMeta.calendar === 'string' ? childMeta.calendar : null) ??
+					(typeof meta.calendar === 'string' ? meta.calendar : null) ??
+					customCalendars?.default ??
+					null;
+
+				const rawDate = childMeta.date;
+				if (rawDate !== undefined && rawDate !== null) {
+					// Try to parse as a calendar date
+					const parsed = calendarDateFromRaw(rawDate, effectiveCalendarId);
+					if (parsed && customCalendars?.calendars[parsed.calendar]) {
+						const spec = customCalendars.calendars[parsed.calendar];
+						const result = parseCalendarDate(parsed, spec);
+						if (result.ok) {
+							calendarDate = result.date;
+							year = toAbsoluteDay(result.date, spec);
+						} else {
+							for (const err of result.errors) {
+								issues.push({ kind: 'invalid-yaml', detail: `${childTimeMdPath}: ${err}` });
+							}
+							year = typeof childMeta.year === 'number' ? childMeta.year : parseInt(childName, 10);
+						}
+					} else if (parsed && !customCalendars?.calendars[parsed.calendar]) {
+						issues.push({
+							kind: 'invalid-yaml',
+							detail: `${childTimeMdPath}: unknown calendar '${parsed.calendar}'`
+						});
+						year = typeof childMeta.year === 'number' ? childMeta.year : parseInt(childName, 10);
+					} else {
+						// Not a calendar date (e.g. ISO string) — fall through to plain year
+						year = typeof childMeta.year === 'number' ? childMeta.year : parseInt(childName, 10);
+					}
+				} else {
+					year =
+						typeof childMeta.year === 'number'
+							? childMeta.year
+							: parseInt(childName, 10);
+				}
+
 				const childRelPath = relPath ? `${relPath}/${childName}` : childName;
 				entries.push({
 					path: childRelPath,
 					year,
+					...(calendarDate ? { calendarDate } : {}),
 					summary: typeof childMeta.summary === 'string' ? childMeta.summary : undefined,
 					body: childSplit.body,
 					mdPath: childTimeMdPath
@@ -541,7 +586,7 @@ async function walkTimelinesDir(
 		if (!entry.isDirectory()) continue;
 		if (entry.name.startsWith('.') || entry.name.startsWith('_')) continue;
 		const childRel = relPath ? `${relPath}/${entry.name}` : entry.name;
-		await walkTimelinesDir(join(absDir, entry.name), childRel, contentDir, timelines, issues);
+		await walkTimelinesDir(join(absDir, entry.name), childRel, contentDir, timelines, issues, customCalendars);
 	}
 }
 

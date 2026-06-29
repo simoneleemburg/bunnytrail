@@ -65,6 +65,108 @@ export interface OrnamentConfig {
 	};
 }
 
+/**
+ * A single Eve definition. Eves are variable-length event-marked periods;
+ * years restart from 1 inside each Eve. `years` is the number of years the
+ * Eve ran; `null` means the Eve is still open-ended (the current age).
+ */
+export interface EveDef {
+	/** 1-based Eve number. */
+	ref: number;
+	/**
+	 * How many years this Eve lasted. `null` = open-ended (current Eve).
+	 * The engine uses this to compute absolute year offsets for sorting.
+	 */
+	years: number | null;
+}
+
+/**
+ * A single unit in the calendar hierarchy. Units are ordered big → small.
+ * The top unit (usually "eve") has no `per`; every other unit declares
+ * how many of itself fit inside the immediately larger unit.
+ */
+export interface CalendarUnit {
+	/** Lowercase unit identifier, e.g. "eve", "year", "circle", "arc", "day". */
+	unit: string;
+	/**
+	 * How many of this unit fit inside one of the parent unit.
+	 * Omit on the top-level unit. `null` means variable (e.g. year inside eve
+	 * is governed by the `eves` table, not a fixed multiplier).
+	 */
+	per?: number | null;
+}
+
+/**
+ * A single token override for display rendering. Only needed when a token
+ * should render as something other than a plain cardinal number.
+ */
+export interface CalendarTokenDef {
+	/**
+	 * How to render this unit:
+	 * - `cardinal`  — plain integer (default; no entry needed)
+	 * - `ordinal`   — "First", "Second", etc. via Intl.PluralRules
+	 * - `roman`     — Roman numeral (I, II, III, …)
+	 * - `mapped`    — look up from `values` array (1-based index)
+	 */
+	numeral: 'cardinal' | 'ordinal' | 'roman' | 'mapped';
+	/** Required when `numeral: mapped`. 1-based list of display strings. */
+	values?: string[];
+}
+
+/**
+ * A fully-specified custom calendar. The engine uses this to:
+ *   1. Parse a date tuple from frontmatter (validate ranges).
+ *   2. Fold a tuple to a single absolute-day integer (timeline sort key).
+ *   3. Format a tuple to a display string via the `display` template.
+ */
+export interface CalendarSpec {
+	/** Human-readable name, e.g. "The Revelant Calendar". */
+	name?: string;
+	/**
+	 * Eve table. Required when the top unit is an event-marked era whose
+	 * years restart at 1. Each entry declares how many years that Eve
+	 * lasted; the last entry may have `years: null` for the current open Eve.
+	 */
+	eves?: EveDef[];
+	/**
+	 * Unit definitions ordered big → small.
+	 * Example: [eve, year, circle, arc, day]
+	 */
+	units: CalendarUnit[];
+	/**
+	 * Separator-joined token ids that describe the input tuple order.
+	 * E.g. "E-Y-C-A-D" means the tuple is [eve, year, circle, arc, day].
+	 * Separators may be any non-alphanumeric character sequence.
+	 */
+	input: string;
+	/**
+	 * Display template. Use `{TOKEN}` for default (cardinal) rendering,
+	 * or `{TOKEN:numeral}` to reference the token's `tokens` override.
+	 * Literal text (including spaces, punctuation, unit names) goes
+	 * directly in the template.
+	 * Example: "{E:ordinal} Eve, Year {Y} — {C:ordinal} Circle {A:mapped}, Day {D}"
+	 */
+	display: string;
+	/**
+	 * Token overrides. Keys are the uppercase token letters from `input`.
+	 * Only needed for non-cardinal rendering. Cardinals need no entry.
+	 */
+	tokens?: Record<string, CalendarTokenDef>;
+}
+
+/**
+ * The `customCalendars` block in `content_meta/world.md`.
+ * Worlds may define multiple calendars; each entity or timeline may reference
+ * one by its id (key in `calendars`). The `default` id is used when no
+ * explicit calendar is specified.
+ */
+export interface CustomCalendarsConfig {
+	/** Id of the calendar used when no explicit `calendar:` field is present. */
+	default: string | null;
+	/** Map from calendar id to its spec. */
+	calendars: Record<string, CalendarSpec>;
+}
+
 export interface WorldConfig {
 	name: string;
 	shortName: string;
@@ -134,6 +236,13 @@ export interface WorldConfig {
 	 * When absent the ISO date string is shown as-is.
 	 */
 	dateFormat: string | null;
+	/**
+	 * World-defined custom calendar systems. Each calendar has a unique
+	 * string id (map key) and a full `CalendarSpec`. Entities, timelines,
+	 * and temporal relations may reference a calendar by id. When absent,
+	 * all date handling falls back to ISO-8601 via `dateFormat`.
+	 */
+	customCalendars: CustomCalendarsConfig | null;
 }
 
 export interface HomePageSettings {
@@ -182,7 +291,8 @@ function fallbackConfig(): WorldConfig {
 		eras: null,
 		gatePrompt: 'Enter the secret to continue.',
 		homePageSettings: { showProseBreakdown: true, showImageCount: false },
-		dateFormat: null
+		dateFormat: null,
+		customCalendars: null
 	};
 }
 
@@ -246,12 +356,13 @@ export async function loadWorld(
 	const language = readLanguage(meta, issues);
 	const homePageSettings = readHomePageSettings(meta, issues);
 	const dateFormat = typeof meta['dateFormat'] === 'string' ? meta['dateFormat'] : null;
+	const customCalendars = readCustomCalendars(meta, issues);
 
 	const ledeBody = body.trim() === '' ? '' : body;
 	const ledeHtml = ledeBody ? renderPlainBody(ledeBody) : null;
 
 	return {
-		config: { name, shortName, heroTitle, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties, disableScopePainting, eras, gatePrompt, language, homePageSettings, dateFormat },
+		config: { name, shortName, heroTitle, tagline, allScopeLabel, ornament, allowUndefinedRelations, allowUndefinedProperties, disableScopePainting, eras, gatePrompt, language, homePageSettings, dateFormat, customCalendars },
 		ledeHtml,
 		ledeBody,
 		present: true,
@@ -486,6 +597,177 @@ function readEras(meta: Record<string, unknown>, issues: HealthIssue[]): EraConf
 	}
 
 	return { definitions, perCluster };
+}
+
+/**
+ * Parse the optional `customCalendars:` block from world.md frontmatter.
+ * Returns null when absent or malformed at the top level.
+ */
+function readCustomCalendars(
+	meta: Record<string, unknown>,
+	issues: HealthIssue[]
+): CustomCalendarsConfig | null {
+	const raw = meta['customCalendars'];
+	if (raw === undefined || raw === null) return null;
+	if (typeof raw !== 'object' || Array.isArray(raw)) {
+		issues.push({ kind: 'invalid-yaml', detail: 'content_meta/world.md: customCalendars must be a mapping' });
+		return null;
+	}
+	const root = raw as Record<string, unknown>;
+
+	const defaultId = typeof root['default'] === 'string' ? root['default'].trim() || null : null;
+
+	const calsRaw = root['calendars'];
+	if (calsRaw === undefined || calsRaw === null) {
+		issues.push({ kind: 'invalid-yaml', detail: 'content_meta/world.md: customCalendars.calendars must be a mapping' });
+		return null;
+	}
+	if (typeof calsRaw !== 'object' || Array.isArray(calsRaw)) {
+		issues.push({ kind: 'invalid-yaml', detail: 'content_meta/world.md: customCalendars.calendars must be a mapping' });
+		return null;
+	}
+
+	const calendars: Record<string, CalendarSpec> = {};
+	for (const [calId, calRaw] of Object.entries(calsRaw as Record<string, unknown>)) {
+		const spec = readCalendarSpec(calId, calRaw, issues);
+		if (spec) calendars[calId] = spec;
+	}
+
+	if (defaultId && !calendars[defaultId]) {
+		issues.push({ kind: 'invalid-yaml', detail: `content_meta/world.md: customCalendars.default '${defaultId}' is not a defined calendar` });
+	}
+
+	return { default: defaultId, calendars };
+}
+
+function readCalendarSpec(
+	calId: string,
+	raw: unknown,
+	issues: HealthIssue[]
+): CalendarSpec | null {
+	const ctx = `content_meta/world.md: customCalendars.calendars.${calId}`;
+	if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+		issues.push({ kind: 'invalid-yaml', detail: `${ctx}: must be a mapping` });
+		return null;
+	}
+	const o = raw as Record<string, unknown>;
+
+	const name = typeof o['name'] === 'string' ? o['name'].trim() : undefined;
+	const input = typeof o['input'] === 'string' ? o['input'].trim() : null;
+	const display = typeof o['display'] === 'string' ? o['display'] : null;
+
+	if (!input) {
+		issues.push({ kind: 'invalid-yaml', detail: `${ctx}: input is required` });
+		return null;
+	}
+	if (display === null) {
+		issues.push({ kind: 'invalid-yaml', detail: `${ctx}: display is required` });
+		return null;
+	}
+
+	// --- eves ---
+	const evesRaw = o['eves'];
+	let eves: EveDef[] | undefined;
+	if (evesRaw !== undefined && evesRaw !== null) {
+		if (!Array.isArray(evesRaw)) {
+			issues.push({ kind: 'invalid-yaml', detail: `${ctx}: eves must be an array` });
+			return null;
+		}
+		eves = [];
+		for (let i = 0; i < evesRaw.length; i++) {
+			const item = evesRaw[i];
+			if (!item || typeof item !== 'object' || Array.isArray(item)) {
+				issues.push({ kind: 'invalid-yaml', detail: `${ctx}: eves[${i}] must be a mapping` });
+				continue;
+			}
+			const e = item as Record<string, unknown>;
+			const ref = typeof e['ref'] === 'number' ? e['ref'] : null;
+			if (ref === null || !Number.isInteger(ref) || ref < 1) {
+				issues.push({ kind: 'invalid-yaml', detail: `${ctx}: eves[${i}].ref must be a positive integer` });
+				continue;
+			}
+			const yearsRaw = e['years'];
+			const years: number | null =
+				yearsRaw === null
+					? null
+					: typeof yearsRaw === 'number' && Number.isInteger(yearsRaw) && yearsRaw > 0
+						? yearsRaw
+						: null;
+			if (yearsRaw !== null && years === null) {
+				issues.push({ kind: 'invalid-yaml', detail: `${ctx}: eves[${i}].years must be a positive integer or null` });
+			}
+			eves.push({ ref, years: yearsRaw === null ? null : years });
+		}
+	}
+
+	// --- units ---
+	const unitsRaw = o['units'];
+	if (!Array.isArray(unitsRaw) || unitsRaw.length === 0) {
+		issues.push({ kind: 'invalid-yaml', detail: `${ctx}: units must be a non-empty array` });
+		return null;
+	}
+	const units: CalendarUnit[] = [];
+	for (let i = 0; i < unitsRaw.length; i++) {
+		const item = unitsRaw[i];
+		if (!item || typeof item !== 'object' || Array.isArray(item)) {
+			issues.push({ kind: 'invalid-yaml', detail: `${ctx}: units[${i}] must be a mapping` });
+			continue;
+		}
+		const u = item as Record<string, unknown>;
+		const unit = typeof u['unit'] === 'string' ? u['unit'].trim().toLowerCase() : null;
+		if (!unit) {
+			issues.push({ kind: 'invalid-yaml', detail: `${ctx}: units[${i}].unit is required` });
+			continue;
+		}
+		const perRaw = u['per'];
+		let per: number | null | undefined;
+		if (perRaw === undefined) {
+			per = undefined;
+		} else if (perRaw === null) {
+			per = null;
+		} else if (typeof perRaw === 'number' && Number.isInteger(perRaw) && perRaw > 0) {
+			per = perRaw;
+		} else {
+			issues.push({ kind: 'invalid-yaml', detail: `${ctx}: units[${i}].per must be a positive integer or null` });
+			per = undefined;
+		}
+		units.push({ unit, ...(per !== undefined ? { per } : {}) });
+	}
+
+	// --- tokens ---
+	const tokensRaw = o['tokens'];
+	let tokens: Record<string, CalendarTokenDef> | undefined;
+	if (tokensRaw !== undefined && tokensRaw !== null) {
+		if (typeof tokensRaw !== 'object' || Array.isArray(tokensRaw)) {
+			issues.push({ kind: 'invalid-yaml', detail: `${ctx}: tokens must be a mapping` });
+		} else {
+			tokens = {};
+			for (const [tok, defRaw] of Object.entries(tokensRaw as Record<string, unknown>)) {
+				if (!defRaw || typeof defRaw !== 'object' || Array.isArray(defRaw)) {
+					issues.push({ kind: 'invalid-yaml', detail: `${ctx}: tokens.${tok} must be a mapping` });
+					continue;
+				}
+				const d = defRaw as Record<string, unknown>;
+				const numeral = d['numeral'];
+				if (!['cardinal', 'ordinal', 'roman', 'mapped'].includes(numeral as string)) {
+					issues.push({ kind: 'invalid-yaml', detail: `${ctx}: tokens.${tok}.numeral must be cardinal|ordinal|roman|mapped` });
+					continue;
+				}
+				const tokenDef: CalendarTokenDef = { numeral: numeral as CalendarTokenDef['numeral'] };
+				if (numeral === 'mapped') {
+					const vals = d['values'];
+					if (!Array.isArray(vals) || vals.some((v) => typeof v !== 'string')) {
+						issues.push({ kind: 'invalid-yaml', detail: `${ctx}: tokens.${tok}.values must be a string array (required for mapped)` });
+						continue;
+					}
+					tokenDef.values = vals as string[];
+				}
+				tokens[tok] = tokenDef;
+			}
+		}
+	}
+
+	return { ...(name ? { name } : {}), ...(eves ? { eves } : {}), units, input, display, ...(tokens ? { tokens } : {}) };
 }
 
 function readStringFrom(

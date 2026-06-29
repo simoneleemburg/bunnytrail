@@ -1,6 +1,7 @@
 import { readdir } from 'node:fs/promises';
 import type { Dirent } from 'node:fs';
 import type { Edge, Entity, EntityId, EntityType, EraConfig, HealthIssue, Kind, Ontology, Collection, PropertyRegistry, RelationRegistry, Timeline } from '$lib/types';
+import type { CustomCalendarsConfig } from './world';
 import { loadKindRegistry } from './kinds';
 import { CONTENT_DIR } from './globals';
 import { walk, walkTimelines, readDirents } from './walker';
@@ -121,6 +122,7 @@ export async function loadAll(
 		allowUndefinedRelations?: boolean;
 		allowUndefinedProperties?: boolean;
 		eraConfig?: EraConfig | null;
+		customCalendars?: CustomCalendarsConfig | null;
 	} = {}
 ): Promise<LoadResult> {
 	const entities = new Map<EntityId, Entity>();
@@ -130,7 +132,7 @@ export async function loadAll(
 	await walk({ absDir: contentDir, relPath: '', parentEntity: null, contentDir, entities, issues, collections });
 
 	// Walk timelines: discover _time.md files across the content tree.
-	const timelines = await walkTimelines(contentDir, issues);
+	const timelines = await walkTimelines(contentDir, issues, opts.customCalendars ?? null);
 
 	// Resolve children: for every entity whose `parent` is set, push its
 	// id onto the parent's `children` array. Done in a second pass so
