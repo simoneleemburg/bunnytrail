@@ -111,15 +111,31 @@ export interface CalendarUnit {
  */
 export interface CalendarTokenDef {
 	/**
-	 * How to render this unit:
-	 * - `cardinal`  — plain integer (default; no entry needed)
-	 * - `ordinal`   — "First", "Second", etc. via Intl.PluralRules
-	 * - `roman`     — Roman numeral (I, II, III, …)
-	 * - `mapped`    — look up from `values` array (1-based index)
+	 * How to render this unit by default (when no inline hint is given):
+	 * - `cardinal`      — plain integer (default; no entry needed)
+	 * - `ordinal`       — "First", "Second", etc.
+	 * - `ordinal-short` — "1st", "2nd", "3rd", …
+	 * - `roman`         — Roman numeral (I, II, III, …)
+	 * - `mapped`        — look up from `values` array (1-based index)
 	 */
 	numeral: 'cardinal' | 'ordinal' | 'ordinal-short' | 'roman' | 'mapped';
-	/** Required when `numeral: mapped`. 1-based list of display strings. */
+	/**
+	 * Default display strings for `mapped` (1-based index).
+	 * Used by `{T:mapped}` and by `{T}` when `numeral: mapped`.
+	 */
 	values?: string[];
+	/**
+	 * Named display-string arrays for `mapped`.
+	 * Each key is a mapping name; its value is a 1-based list of strings.
+	 * Referenced in format templates as `{T:mapped.name}`.
+	 *
+	 * Example:
+	 *   mappings:
+	 *     short: [L, A, R]
+	 *     long:  [Low, Rising, Returning]
+	 *     label: [The Low Eve, The Rising Eve, The Returning Eve]
+	 */
+	mappings?: Record<string, string[]>;
 }
 
 /**
@@ -771,22 +787,53 @@ function readCalendarSpec(
 					issues.push({ kind: 'invalid-yaml', detail: `${ctx}: tokens.${tok} must be a mapping` });
 					continue;
 				}
-				const d = defRaw as Record<string, unknown>;
-				const numeral = d['numeral'];
-				if (!['cardinal', 'ordinal', 'roman', 'mapped'].includes(numeral as string)) {
-					issues.push({ kind: 'invalid-yaml', detail: `${ctx}: tokens.${tok}.numeral must be cardinal|ordinal|roman|mapped` });
+			const d = defRaw as Record<string, unknown>;
+			const numeral = d['numeral'];
+			const allowedNumerals = ['cardinal', 'ordinal', 'ordinal-short', 'roman', 'mapped'];
+			if (!allowedNumerals.includes(numeral as string)) {
+				issues.push({ kind: 'invalid-yaml', detail: `${ctx}: tokens.${tok}.numeral must be cardinal|ordinal|ordinal-short|roman|mapped` });
+				continue;
+			}
+			const tokenDef: CalendarTokenDef = { numeral: numeral as CalendarTokenDef['numeral'] };
+
+			// values — optional default mapped array
+			if (d['values'] !== undefined) {
+				const vals = d['values'];
+				if (!Array.isArray(vals) || vals.some((v) => typeof v !== 'string')) {
+					issues.push({ kind: 'invalid-yaml', detail: `${ctx}: tokens.${tok}.values must be a string array` });
 					continue;
 				}
-				const tokenDef: CalendarTokenDef = { numeral: numeral as CalendarTokenDef['numeral'] };
-				if (numeral === 'mapped') {
-					const vals = d['values'];
-					if (!Array.isArray(vals) || vals.some((v) => typeof v !== 'string')) {
-						issues.push({ kind: 'invalid-yaml', detail: `${ctx}: tokens.${tok}.values must be a string array (required for mapped)` });
-						continue;
-					}
-					tokenDef.values = vals as string[];
+				tokenDef.values = vals as string[];
+			}
+
+			// mappings — named mapped arrays, usable as {T:mapped.name}
+			if (d['mappings'] !== undefined) {
+				const mapsRaw = d['mappings'];
+				if (typeof mapsRaw !== 'object' || Array.isArray(mapsRaw) || mapsRaw === null) {
+					issues.push({ kind: 'invalid-yaml', detail: `${ctx}: tokens.${tok}.mappings must be a mapping of string arrays` });
+					continue;
 				}
-				tokens[tok] = tokenDef;
+				const mappings: Record<string, string[]> = {};
+				let mappingsOk = true;
+				for (const [name, arrRaw] of Object.entries(mapsRaw as Record<string, unknown>)) {
+					if (!Array.isArray(arrRaw) || arrRaw.some((v) => typeof v !== 'string')) {
+						issues.push({ kind: 'invalid-yaml', detail: `${ctx}: tokens.${tok}.mappings.${name} must be a string array` });
+						mappingsOk = false;
+						break;
+					}
+					mappings[name] = arrRaw as string[];
+				}
+				if (!mappingsOk) continue;
+				tokenDef.mappings = mappings;
+			}
+
+			// Require at least values or mappings when numeral is mapped
+			if (numeral === 'mapped' && !tokenDef.values && !tokenDef.mappings) {
+				issues.push({ kind: 'invalid-yaml', detail: `${ctx}: tokens.${tok}: numeral 'mapped' requires values or mappings` });
+				continue;
+			}
+
+			tokens[tok] = tokenDef;
 			}
 		}
 	}

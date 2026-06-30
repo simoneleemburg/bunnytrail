@@ -474,4 +474,61 @@ describe('formatCalendarDate', () => {
 		const date = { calendar: 'simple', value: [2, 3, 7] };
 		expect(formatCalendarDate(date, simpleSpec)).toBe('Era 2, Phase 3, Step 7');
 	});
+
+	describe('mapped.name — named mappings', () => {
+		const specWithMappings: CalendarSpec = {
+			...revelantSpec,
+			tokens: {
+				...revelantSpec.tokens,
+				A: {
+					numeral: 'mapped',
+					values: ['Low', 'Rising', 'Returning'],
+					mappings: {
+						short: ['L', 'A', 'R'],
+						label: ['The Low Eve', 'The Rising Eve', 'The Returning Eve']
+					}
+				}
+			},
+			display: '{E:ordinal} Eve, Year {Y} — {C:ordinal} Circle {A:mapped.short}, Day {D}'
+		};
+
+		it('{A:mapped.short} uses the short mapping', () => {
+			const d1 = { calendar: 'revelant', value: [1, 1, 1, 1, 1] };
+			const d2 = { calendar: 'revelant', value: [1, 1, 1, 2, 1] };
+			const d3 = { calendar: 'revelant', value: [1, 1, 1, 3, 1] };
+			expect(formatCalendarDate(d1, specWithMappings)).toContain('L');
+			expect(formatCalendarDate(d2, specWithMappings)).toContain('A');
+			expect(formatCalendarDate(d3, specWithMappings)).toContain('R');
+		});
+
+		it('{A:mapped.label} uses the label mapping', () => {
+			const spec = { ...specWithMappings, display: '{A:mapped.label}' };
+			const d2 = { calendar: 'revelant', value: [1, 1, 1, 2, 1] };
+			expect(formatCalendarDate(d2, spec)).toBe('The Rising Eve');
+		});
+
+		it('{A:mapped} (no name) falls back to values', () => {
+			const spec = { ...specWithMappings, display: '{A:mapped}' };
+			const d1 = { calendar: 'revelant', value: [1, 1, 1, 1, 1] };
+			expect(formatCalendarDate(d1, spec)).toBe('Low');
+		});
+
+		it('{A:mapped.unknown} falls back to values when name not found', () => {
+			const spec = { ...specWithMappings, display: '{A:mapped.unknown}' };
+			const d1 = { calendar: 'revelant', value: [1, 1, 1, 1, 1] };
+			expect(formatCalendarDate(d1, spec)).toBe('Low');
+		});
+
+		it('default {A} still uses values (numeral: mapped from token def)', () => {
+			const spec = { ...specWithMappings, display: '{A}' };
+			const d3 = { calendar: 'revelant', value: [1, 1, 1, 3, 1] };
+			expect(formatCalendarDate(d3, spec)).toBe('Returning');
+		});
+
+		it('out-of-range index falls back to cardinal string', () => {
+			const spec = { ...specWithMappings, display: '{A:mapped.short}' };
+			const d = { calendar: 'revelant', value: [1, 1, 1, 9, 1] }; // index 9 — no entry
+			expect(formatCalendarDate(d, spec)).toBe('9');
+		});
+	});
 });

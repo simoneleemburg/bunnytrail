@@ -192,10 +192,9 @@ substitution:
 {E:ordinal-short}  → 5th     (numeric suffix)
 {E:roman}          → V
 {E:cardinal}       → 5
+{A:mapped}         → Rising  (uses default values list)
+{A:mapped.short}   → A       (uses the named mapping "short")
 ```
-
-`mapped` always requires the `values` list from the `tokens` def; a
-bare `{A:mapped}` without a def falls back to cardinal.
 
 ### `tokens` block
 
@@ -206,8 +205,19 @@ need no entry.
 tokens:
   E: { numeral: ordinal }
   C: { numeral: ordinal }
-  A: { numeral: mapped, values: [Low, Rising, Returning] }
+  A:
+    numeral: mapped                         # default for bare {A}
+    values: [Low, Rising, Returning]        # used by {A} and {A:mapped}
+    mappings:
+      short: [L, A, R]                      # used by {A:mapped.short}
+      label: [The Low Eve, The Rising Eve, The Returning Eve]
 ```
+
+`values` is the default mapped list, used by `{A}` (when `numeral:
+mapped`) and `{A:mapped}`. Named mappings are referenced as
+`{A:mapped.name}`. When a named mapping is requested but not found,
+the engine falls back to `values`; when `values` is also absent it
+falls back to the cardinal integer.
 
 ---
 

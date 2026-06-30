@@ -338,7 +338,15 @@ function renderToken(
 	hintOverride?: string
 ): string {
 	const def = spec.tokens?.[tokenId];
-	const numeral = hintOverride ?? def?.numeral ?? 'cardinal';
+	const rawHint = hintOverride ?? def?.numeral ?? 'cardinal';
+
+	// Parse "mapped.name" — e.g. "mapped.short" → numeral=mapped, mappingName="short"
+	let numeral = rawHint;
+	let mappingName: string | undefined;
+	if (rawHint.startsWith('mapped.')) {
+		numeral = 'mapped';
+		mappingName = rawHint.slice(7);
+	}
 
 	switch (numeral) {
 		case 'cardinal':
@@ -350,7 +358,9 @@ function renderToken(
 		case 'roman':
 			return toRoman(value);
 		case 'mapped': {
-			const values = def?.values ?? [];
+			const values = mappingName
+				? (def?.mappings?.[mappingName] ?? def?.values ?? [])
+				: (def?.values ?? []);
 			const idx = value - 1; // 1-based → 0-based
 			return idx >= 0 && idx < values.length ? values[idx] : String(value);
 		}
