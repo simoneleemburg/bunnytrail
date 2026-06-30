@@ -138,7 +138,7 @@ export function loadAggregateSubShelfPage(shelf: string, subShelf: string) {
 		bodyHtml: null,
 		// Cluster tiles first, then child-folder tiles.
 		subcollections: [...clusterSubcollections, ...childSubcollections],
-		timelines: [] as Array<{ path: string; href: string; title: string; summary: string | null; firstYear: number | null; lastYear: number | null }>,
+		timelines: [] as Array<{ path: string; href: string; title: string; summary: string | null; firstYear: number | null; lastYear: number | null; dateRange: string | null; firstCalendarDate: import('$lib/calendar').CalendarDate | null; lastCalendarDate: import('$lib/calendar').CalendarDate | null }>,
 		subShelves: [] as Array<{
 			type: string;
 			plural: string;

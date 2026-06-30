@@ -1,7 +1,9 @@
 import { graph, byRankThenName } from '$lib/server/graph';
 import type { SpeciesPresenceEntry } from '$lib/server/graph';
+import { world } from '$lib/server/world';
 import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderEntityBody, renderSummary } from '$lib/server/markdown';
+import { formatCalendarRange } from '$lib/calendar';
 import { titleCaseSlug, toRoman, relationLabel, type Entity, type RankDisplay, type VocabEntry } from '$lib/types';
 import type { ViewMode } from '$lib/cluster';
 
@@ -626,11 +628,18 @@ export async function loadEntityPage(entity: Entity, mode: ViewMode = 'visitor')
 		namesInOtherLanguages,
 		relationLabels,
 		devInfo,
-		timelineBacklinks: graph.timelinesTargeting(entity.id).map((tl) => ({
-			title: tl.meta.name ?? graph.get(tl.path)?.meta.name ?? tl.path.split('/').pop()!,
-			href: `/${tl.path}`,
-		...graph.timelineYearRange(tl.path)
-		}))
+		timelineBacklinks: graph.timelinesTargeting(entity.id).map((tl) => {
+			const range = graph.timelineYearRange(tl.path);
+			const calendars = world.config().customCalendars?.calendars;
+			return {
+				title: tl.meta.name ?? graph.get(tl.path)?.meta.name ?? tl.path.split('/').pop()!,
+				href: `/${tl.path}`,
+				...range,
+				dateRange: calendars
+					? formatCalendarRange(range.firstCalendarDate, range.lastCalendarDate, calendars)
+					: null
+			};
+		})
 	};
 }
 

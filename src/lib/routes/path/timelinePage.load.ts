@@ -2,7 +2,7 @@ import { graph } from '$lib/server/graph';
 import { world } from '$lib/server/world';
 import { renderBody, renderSummary } from '$lib/server/markdown';
 import { inlineSvgFigures } from '$lib/server/inlineSvgs';
-import { formatCalendarDateById } from '$lib/calendar';
+import { formatCalendarDateById, formatCalendarRange } from '$lib/calendar';
 
 export interface TimelineEntryCard {
 	/** Folder path, e.g. `leemburg/verhalen/jan-arend-jr/1954`. */
@@ -34,6 +34,8 @@ export interface ChildTimelineCard {
 	summaryHtml: string | null;
 	firstYear: number | null;
 	lastYear: number | null;
+	/** Formatted calendar date range when the timeline uses a custom calendar; null otherwise. */
+	dateRange: string | null;
 	/** Resolved target entity links for the header chip row. */
 	targets: { label: string; href: string }[];
 }
@@ -57,10 +59,12 @@ export interface TimelinePageData {
 	/** Direct child timelines nested under this timeline's folder. */
 	childTimelines: ChildTimelineCard[];
 	/** Parent timeline when this is a nested sub-timeline, else null. */
-	parentTimeline: { label: string; href: string; firstYear: number | null; lastYear: number | null } | null;
+	parentTimeline: { label: string; href: string; firstYear: number | null; lastYear: number | null; dateRange: string | null } | null;
 	/** Recursive year range: min/max across this timeline and all descendants. */
 	firstYear: number | null;
 	lastYear: number | null;
+	/** Formatted calendar date range when the timeline uses a custom calendar; null otherwise. */
+	dateRange: string | null;
 }
 
 export async function loadTimelinePage(timelinePath: string): Promise<TimelinePageData> {
@@ -121,12 +125,16 @@ export async function loadTimelinePage(timelinePath: string): Promise<TimelinePa
 			const childSummaryHtml = child.meta.summary
 				? renderSummary(child.meta.summary, resolveLink, languageCodes, { kindIds })
 				: null;
+			const childRange = graph.timelineYearRange(p);
 			return {
 				path: p,
 				href: `/${p}`,
 				title: childTitle,
 				summaryHtml: childSummaryHtml,
-				...graph.timelineYearRange(p),
+				...childRange,
+				dateRange: customCalendars?.calendars
+					? formatCalendarRange(childRange.firstCalendarDate, childRange.lastCalendarDate, customCalendars.calendars)
+					: null,
 				targets: child.targets
 					.map((id) => {
 						const e = graph.get(id);
@@ -192,14 +200,19 @@ export async function loadTimelinePage(timelinePath: string): Promise<TimelinePa
 			const parentEntity = graph.get(parentPath);
 			const parentLabel =
 				parent.meta.name ?? parentEntity?.meta.name ?? parentLeaf.replace(/-/g, ' ');
+			const parentRange = graph.timelineYearRange(parentPath);
 			parentTimeline = {
 				label: parentLabel,
 				href: `/${parentPath}`,
-				...graph.timelineYearRange(parentPath)
+				...parentRange,
+				dateRange: customCalendars?.calendars
+					? formatCalendarRange(parentRange.firstCalendarDate, parentRange.lastCalendarDate, customCalendars.calendars)
+					: null
 			};
 		}
 	}
 
+	const selfRange = graph.timelineYearRange(timelinePath);
 	return {
 		kind: 'timeline',
 		title,
@@ -216,6 +229,9 @@ export async function loadTimelinePage(timelinePath: string): Promise<TimelinePa
 			.filter((t): t is { label: string; href: string } => t !== null),
 		childTimelines,
 		parentTimeline,
-		...graph.timelineYearRange(timelinePath)
+		...selfRange,
+		dateRange: customCalendars?.calendars
+			? formatCalendarRange(selfRange.firstCalendarDate, selfRange.lastCalendarDate, customCalendars.calendars)
+			: null
 	};
 }

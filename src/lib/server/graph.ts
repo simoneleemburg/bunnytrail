@@ -341,19 +341,34 @@ export class Graph {
 	 * Compute the year range for a timeline, recursively including all
 	 * descendant (nested) timelines. Returns { firstYear, lastYear } where
 	 * either may be null if no entries exist anywhere in the subtree.
+	 * Also returns the CalendarDate of the boundary entries (when present)
+	 * so callers can format them with the world's calendar spec.
 	 */
-	timelineYearRange(path: string): { firstYear: number | null; lastYear: number | null } {
+	timelineYearRange(path: string): {
+		firstYear: number | null;
+		lastYear: number | null;
+		firstCalendarDate: import('../calendar').CalendarDate | null;
+		lastCalendarDate: import('../calendar').CalendarDate | null;
+	} {
 		const childPrefix = `${path}/`;
 		let min: number | null = null;
 		let max: number | null = null;
+		let firstCalendarDate: import('../calendar').CalendarDate | null = null;
+		let lastCalendarDate: import('../calendar').CalendarDate | null = null;
 		for (const [p, tl] of this.#timelines) {
 			if (p !== path && !p.startsWith(childPrefix)) continue;
 			for (const entry of tl.entries) {
-				if (min === null || entry.year < min) min = entry.year;
-				if (max === null || entry.year > max) max = entry.year;
+				if (min === null || entry.year < min) {
+					min = entry.year;
+					firstCalendarDate = entry.calendarDate ?? null;
+				}
+				if (max === null || entry.year > max) {
+					max = entry.year;
+					lastCalendarDate = entry.calendarDate ?? null;
+				}
 			}
 		}
-		return { firstYear: min, lastYear: max };
+		return { firstYear: min, lastYear: max, firstCalendarDate, lastCalendarDate };
 	}
 
 	/**

@@ -1,7 +1,9 @@
 import { graph, byRankThenName } from '$lib/server/graph';
+import { world } from '$lib/server/world';
 import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderBody, renderSummary } from '$lib/server/markdown';
 import { type Entity, type EntityId, type RankDisplay } from '$lib/types';
+import { formatCalendarRange } from '$lib/calendar';
 import {
 	buildLoaderKindTree,
 	buildOrbitsTree,
@@ -319,13 +321,20 @@ export async function loadCollectionPage(path: string) {
 			const rest = tl.path.slice(path.length + 1);
 			return !rest.includes('/');
 		})
-		.map((tl) => ({
-			path: tl.path,
-			href: `/${tl.path}`,
-			title: tl.meta.name ?? graph.get(tl.path)?.meta.name ?? tl.path.slice(tl.path.lastIndexOf('/') + 1).replace(/-/g, ' '),
-			summary: tl.meta.summary ?? null,
-			...graph.timelineYearRange(tl.path)
-		}))
+		.map((tl) => {
+			const range = graph.timelineYearRange(tl.path);
+			const calendars = world.config().customCalendars?.calendars;
+			return {
+				path: tl.path,
+				href: `/${tl.path}`,
+				title: tl.meta.name ?? graph.get(tl.path)?.meta.name ?? tl.path.slice(tl.path.lastIndexOf('/') + 1).replace(/-/g, ' '),
+				summary: tl.meta.summary ?? null,
+				...range,
+				dateRange: calendars
+					? formatCalendarRange(range.firstCalendarDate, range.lastCalendarDate, calendars)
+					: null
+			};
+		})
 		.sort((a, b) => a.title.localeCompare(b.title));
 
 	// Prev/next navigation between sibling collections that have an

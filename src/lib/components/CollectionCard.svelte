@@ -5,7 +5,9 @@
 	interface Props {
 		href: string;
 		label: string;
-		eyebrow?: string;		description?: string | null;
+		eyebrow?: string;
+		dateRange?: string | null;
+		description?: string | null;
 		rank?: number | null;
 		rankDisplay?: RankDisplay | null;
 		tags?: Array<{ label: string }>;
@@ -16,6 +18,7 @@
 		href,
 		label,
 		eyebrow = '',
+		dateRange = null,
 		description = null,
 		rank = null,
 		rankDisplay = null,
@@ -28,6 +31,9 @@
 	<a class="card-link" class:bt-meta-link={isCluster} {href}>
 		<div class="card-eyebrow">
 			<span class="card-eyebrow-label">{eyebrow}</span>
+			{#if dateRange}
+				<span class="card-date-range">{dateRange}</span>
+			{/if}
 			{#if rank != null && rankDisplay !== 'none'}
 				<span class="card-rank">
 					{rankDisplay === 'roman' ? toRoman(rank) : rank}
@@ -100,6 +106,12 @@
 	.card-eyebrow-label {
 		font-family: var(--font-serif);
 		font-style: italic;
+		font-size: var(--text-xs);
+		letter-spacing: 0.04em;
+		color: var(--ink-faint);
+	}
+
+	.card-date-range {
 		font-size: var(--text-xs);
 		letter-spacing: 0.04em;
 		color: var(--ink-faint);

@@ -8,6 +8,8 @@
  */
 
 import { graph, byRankThenName } from '$lib/server/graph';
+import { world } from '$lib/server/world';
+import { toAbsoluteDay, formatCalendarRange, type CalendarDate } from '$lib/calendar';
 import { buildKindTree, type Entity, type EntityId, type KindTree } from '$lib/types';
 
 // ---------------------------------------------------------------------------
@@ -177,12 +179,45 @@ export function buildSubcollectionEntry(path: string, tree: KindTree) {
 
 	// Count timeline entries (dots) under this path so that collections
 	// whose only content is _time.md files are not treated as empty.
+	// Also aggregate the first/last calendar dates across all those
+	// timelines so we can show a formatted date range on the tile.
+	const calendars = world.config().customCalendars?.calendars ?? null;
 	let timelineEntryCount = 0;
+	let firstCalendarDate: CalendarDate | null = null;
+	let lastCalendarDate: CalendarDate | null = null;
+	let firstAbsDay = Infinity;
+	let lastAbsDay = -Infinity;
 	for (const [tlPath, tl] of graph.timelines()) {
 		if (tlPath === path || tlPath.startsWith(path + '/')) {
 			timelineEntryCount += tl.entries.length;
+			if (calendars) {
+				const range = graph.timelineYearRange(tlPath);
+				if (range.firstCalendarDate) {
+					const spec = calendars[range.firstCalendarDate.calendar];
+					if (spec) {
+						const absDay = toAbsoluteDay(range.firstCalendarDate, spec);
+						if (absDay < firstAbsDay) {
+							firstAbsDay = absDay;
+							firstCalendarDate = range.firstCalendarDate;
+						}
+					}
+				}
+				if (range.lastCalendarDate) {
+					const spec = calendars[range.lastCalendarDate.calendar];
+					if (spec) {
+						const absDay = toAbsoluteDay(range.lastCalendarDate, spec);
+						if (absDay > lastAbsDay) {
+							lastAbsDay = absDay;
+							lastCalendarDate = range.lastCalendarDate;
+						}
+					}
+				}
+			}
 		}
 	}
+	const dateRange: string | null = calendars
+		? formatCalendarRange(firstCalendarDate, lastCalendarDate, calendars)
+		: null;
 
 	const kindCounts: Record<string, number> = {};
 	const tagCounts = new Map<string, number>();
@@ -233,6 +268,7 @@ export function buildSubcollectionEntry(path: string, tree: KindTree) {
 		description,
 		rank: typeof col?.meta.rank === 'number' ? col.meta.rank : null,
 		count: subEntities.length + timelineEntryCount,
+		dateRange,
 		kindCounts,
 		tags: rankTags(tagCounts),
 		tagsByKind: Object.fromEntries(Object.entries(tagsByKind).map(([k, m]) => [k, rankTags(m)])),

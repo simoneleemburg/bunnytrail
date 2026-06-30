@@ -609,13 +609,17 @@
 							{#each data.timelineBacklinks as tl (tl.href)}
 								<li>
 									<a class="timeline-backlink" href={tl.href}>{tl.title}</a>
-									{#if tl.firstYear !== null}
-										<span class="timeline-backlink__years">
+								{#if tl.dateRange || tl.firstYear !== null}
+									<span class="timeline-backlink__years">
+										{#if tl.dateRange}
+											{tl.dateRange}
+										{:else}
 											{tl.firstYear}{tl.lastYear !== null && tl.lastYear !== tl.firstYear ? `–${tl.lastYear}` : ''}
-										</span>
-									{/if}
-								</li>
-							{/each}
+										{/if}
+									</span>
+								{/if}
+							</li>
+						{/each}
 						</ul>
 					</section>
 					{/if}
@@ -838,13 +842,17 @@
 						{#each data.timelineBacklinks as tl (tl.href)}
 							<li>
 								<a class="timeline-backlink" href={tl.href}>{tl.title}</a>
-								{#if tl.firstYear !== null}
-									<span class="timeline-backlink__years">
+							{#if tl.dateRange || tl.firstYear !== null}
+								<span class="timeline-backlink__years">
+									{#if tl.dateRange}
+										{tl.dateRange}
+									{:else}
 										{tl.firstYear}{tl.lastYear !== null && tl.lastYear !== tl.firstYear ? `–${tl.lastYear}` : ''}
-									</span>
-								{/if}
-							</li>
-						{/each}
+									{/if}
+								</span>
+							{/if}
+						</li>
+					{/each}
 					</ul>
 				</section>
 			{/if}

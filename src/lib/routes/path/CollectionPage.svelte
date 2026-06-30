@@ -611,16 +611,17 @@
 			<section class="subcollections" aria-label={ui.collection_subcollections_aria}>
 				<ul class="subcollection-list">
 					{#each visibleSubcollections as sub (sub.type)}
-						<CollectionCard
-							href={`/${sub.type}`}
-							label={sub.plural}
-							eyebrow={sub.isCluster ? ui.collection_eyebrow_cluster : ui.collection_eyebrow_collection}
-							description={sub.description}
-							rank={sub.rank}
-							rankDisplay={data.subcollectionRankDisplay}
-							tags={sub.displayTags}
-							isCluster={sub.isCluster}
-						/>
+					<CollectionCard
+						href={`/${sub.type}`}
+						label={sub.plural}
+						eyebrow={sub.isCluster ? ui.collection_eyebrow_cluster : ui.collection_eyebrow_collection}
+						description={sub.description}
+						rank={sub.rank}
+						rankDisplay={data.subcollectionRankDisplay}
+						tags={sub.displayTags}
+						isCluster={sub.isCluster}
+						dateRange={sub.dateRange ?? null}
+					/>
 					{/each}
 					{#each data.timelines as tl (tl.path)}
 						<li class="timeline-tile">
@@ -637,7 +638,9 @@
 								</div>
 								<div class="timeline-tile__body">
 									<div class="timeline-tile__eyebrow">
-										{#if tl.firstYear !== null && tl.lastYear !== null && tl.firstYear !== tl.lastYear}
+										{#if tl.dateRange}
+											{tl.dateRange}
+										{:else if tl.firstYear !== null && tl.lastYear !== null && tl.firstYear !== tl.lastYear}
 											{tl.firstYear} – {tl.lastYear}
 										{:else if tl.firstYear !== null}
 											{tl.firstYear}

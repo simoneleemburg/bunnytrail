@@ -82,11 +82,15 @@
 				<div class="child-timeline__connector" aria-hidden="true"></div>
 				<a class="child-timeline__card" href={child.href}>
 					<span class="child-timeline__title">{child.title}</span>
-					{#if child.firstYear !== null}
-						<span class="child-timeline__years">
+				{#if child.dateRange || child.firstYear !== null}
+					<span class="child-timeline__years">
+						{#if child.dateRange}
+							{child.dateRange}
+						{:else}
 							{child.firstYear}{child.lastYear !== null && child.lastYear !== child.firstYear ? `–${child.lastYear}` : ''}
-						</span>
-					{/if}
+						{/if}
+					</span>
+				{/if}
 					{#if child.targets.length > 0}
 						<span class="child-timeline__targets">
 							{#each child.targets as t, i (t.href)}

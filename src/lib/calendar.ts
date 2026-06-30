@@ -423,3 +423,24 @@ export function formatCalendarDateById(
 	if (!spec) return date.value.join('-');
 	return formatCalendarDate(date, spec, variant);
 }
+
+/**
+ * Format a range of two `CalendarDate`s as a single display string.
+ * Returns `null` when `first` is absent (no entries in the timeline).
+ * When `first` and `last` are the same calendar and the same tuple they
+ * collapse into a single formatted date. When they differ they are
+ * separated with an en-dash.
+ */
+export function formatCalendarRange(
+	first: CalendarDate | null,
+	last: CalendarDate | null,
+	calendars: Record<string, CalendarSpec>,
+	variant: 'heading' | 'display' = 'display'
+): string | null {
+	if (!first) return null;
+	const firstStr = formatCalendarDateById(first, calendars, variant);
+	if (!last || last.calendar !== first.calendar) return firstStr;
+	if (first.value.join('-') === last.value.join('-')) return firstStr;
+	const lastStr = formatCalendarDateById(last, calendars, variant);
+	return `${firstStr} – ${lastStr}`;
+}
