@@ -90,7 +90,7 @@ export async function loadTimelinePage(timelinePath: string): Promise<TimelinePa
 			: entry.path;
 		const label =
 			entry.calendarDate && customCalendars?.calendars
-				? formatCalendarDateById(entry.calendarDate, customCalendars.calendars)
+				? formatCalendarDateById(entry.calendarDate, customCalendars.calendars, 'heading')
 				: String(entry.year);
 		return {
 			path: entry.path,

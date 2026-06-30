@@ -181,10 +181,10 @@ export async function loadTimelineDotPage(
 		summaryHtml,
 		bodyHtml,
 		prev: prev
-			? { label: entryLabel(prev), href: neighbourHref(prev, validThread), crossThread: crossThread(prev) }
+			? { label: entryLabel(prev, 'heading'), href: neighbourHref(prev, validThread), crossThread: crossThread(prev) }
 			: null,
 		next: next
-			? { label: entryLabel(next), href: neighbourHref(next, validThread), crossThread: crossThread(next) }
+			? { label: entryLabel(next, 'heading'), href: neighbourHref(next, validThread), crossThread: crossThread(next) }
 			: null,
 		timelineHref: `/${timelinePath}`,
 		breadcrumbs,
