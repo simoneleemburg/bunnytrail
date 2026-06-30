@@ -16,12 +16,12 @@ customCalendars:
   calendars:
     revelant:
       name: The Revelant Calendar
-      eves:
-        - { ref: 1, years: 88 }
-        - { ref: 2, years: 120 }
-        - { ref: 6, years: null }  # open-ended current Eve
       units:
-        - { unit: eve }
+        - unit: eve
+          irregular:
+            - { ref: 1, values: 88 }
+            - { ref: 2, values: 120 }
+            - { ref: 6, values: null }   # open-ended current Eve
         - { unit: year }
         - { unit: circle, per: 9 }
         - { unit: arc,    per: 3 }
@@ -35,32 +35,40 @@ customCalendars:
 ---
 ```
 
-### `eves`
-
-An ordered list of event-marked ages. Years restart from 1 inside
-each Eve. Each entry needs:
-
-| field   | type             | meaning                                      |
-|---------|------------------|----------------------------------------------|
-| `ref`   | integer          | 1-based Eve number                           |
-| `years` | integer or `null`| how many years the Eve lasted; `null` = open |
-
-The `eves` table is **load-bearing**: changing a past Eve's `years`
-shifts every absolute-day sort key after it. Add Eves in order and
-only amend closed entries when lore is retconned.
-
 ### `units`
 
 Ordered big → small. The first unit is the largest (typically the
 era or epoch). Each entry:
 
-| field  | type    | meaning                                         |
-|--------|---------|-------------------------------------------------|
-| `unit` | string  | lowercase identifier used in labels             |
-| `per`  | integer | how many of this unit fit in one parent unit    |
+| field       | type                   | meaning                                                   |
+|-------------|------------------------|-----------------------------------------------------------|
+| `unit`      | string                 | lowercase identifier used in labels                       |
+| `per`       | integer                | how many of this unit fit in one parent unit              |
+| `irregular` | list of segment entries | when the parent's capacity varies per instance (see below) |
 
-The top unit has no `per`. A unit whose size is governed by the
-`eves` table (typically `year`) also omits `per`.
+The top unit has no `per`. A unit whose size is governed by an
+`irregular` parent also omits `per`.
+
+### `irregular`
+
+Attach an `irregular` list to any unit whose instances have
+**different numbers of child units**. Each list entry:
+
+| field    | type              | meaning                                               |
+|----------|-------------------|-------------------------------------------------------|
+| `ref`    | integer           | 1-based instance number (must be contiguous from 1)   |
+| `values` | integer or `null` | how many child units this instance contains; `null` = open-ended |
+
+The last entry may have `values: null` to mark the current,
+still-running instance (no upper bound on the child unit).
+
+The `irregular` table is **load-bearing**: changing a past entry's
+`values` shifts every absolute-day sort key after it. Add entries in
+order and only amend closed ones when lore is retconned.
+
+Any level of the hierarchy may be irregular — not only the top unit.
+The engine handles the first irregular unit in the chain; nested
+irregular units are reserved for future support.
 
 ### `input`
 
@@ -205,17 +213,27 @@ tokens:
 
 ## Sorting
 
-Dates are sorted by an **absolute-day** integer computed at load time:
+Dates are sorted by an **absolute-day** integer computed at load time.
+
+For a calendar where the top unit is irregular (e.g. eves with
+different year counts):
 
 ```
-absoluteYear = Σ(years of all prior Eves) + (year − 1)
-absoluteDay  = absoluteYear × D_per_year
-             + (circle − 1) × D_per_circle
-             + (arc    − 1) × D_per_arc
-             + (day    − 1)
+absoluteChild = Σ(values of all prior segments) + (childValue − 1)
+absoluteDay   = absoluteChild × D_per_child
+              + (unit2 − 1) × D_per_unit2
+              + …
 ```
 
-where `D_per_*` are derived from the `units[].per` chain.
+For a fully regular calendar (all units have fixed `per`):
+
+```
+absoluteDay = (unit0 − 1) × size0
+            + (unit1 − 1) × size1
+            + …
+```
+
+where `size_n` is derived from the `units[].per` chain bottom-up.
 
 Partial dates pad missing units with `1` before folding, so a
 year-precision entry sorts to the very start of that year.

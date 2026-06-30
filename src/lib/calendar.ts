@@ -17,7 +17,7 @@
  *   - `calendarDateFromRaw` — parse raw frontmatter into a CalendarDate
  */
 
-import type { CalendarSpec, CalendarDisplayEntry, EveDef } from './server/world';
+import type { CalendarSpec, CalendarDisplayEntry } from './server/world';
 import { toRoman } from './types';
 
 // ── Public types ──────────────────────────────────────────────────────────────
@@ -164,29 +164,30 @@ export function parseCalendarDate(
 			continue;
 		}
 
-		// Top unit (eve): validate against eves table length
-		if (i === 0 && spec.eves && spec.eves.length > 0) {
-			if (val > spec.eves.length) {
+		// Unit with an irregular table: validate instance index against table length
+		if (unit.irregular && unit.irregular.length > 0) {
+			if (val > unit.irregular.length) {
 				errors.push(
-					`Calendar '${date.calendar}': eve ${val} exceeds the ${spec.eves.length} defined eves`
+					`Calendar '${date.calendar}': ${unit.unit} ${val} exceeds the ${unit.irregular.length} defined segments`
 				);
 			}
 			continue;
 		}
 
-		// Year within an eve: validate against that eve's years (if known)
-		if (i === 1 && spec.eves && spec.eves.length > 0) {
-			const eveIndex = date.value[0] - 1; // eve is 1-based
-			const eveDef = spec.eves[eveIndex] as EveDef | undefined;
-			if (eveDef && eveDef.years !== null && val > eveDef.years) {
+		// Child of an irregular parent: validate against that parent segment's values (if known)
+		const parentUnit = i > 0 ? spec.units[i - 1] : undefined;
+		if (parentUnit?.irregular && parentUnit.irregular.length > 0) {
+			const parentIndex = date.value[i - 1] - 1; // parent value is 1-based
+			const parentEntry = parentUnit.irregular[parentIndex];
+			if (parentEntry && parentEntry.values !== null && val > parentEntry.values) {
 				errors.push(
-					`Calendar '${date.calendar}': year ${val} exceeds ${eveDef.years} years in Eve ${date.value[0]}`
+					`Calendar '${date.calendar}': ${unit.unit} ${val} exceeds ${parentEntry.values} in ${parentUnit.unit} ${date.value[i - 1]}`
 				);
 			}
 			continue;
 		}
 
-		// Other units: validate against the `per` multiplier of this unit
+		// Fixed-per unit: validate against the per multiplier
 		const per = unit.per;
 		if (typeof per === 'number' && val > per) {
 			errors.push(
@@ -221,8 +222,8 @@ export function toAbsoluteDay(date: CalendarDate, spec: CalendarSpec): number {
 
 	// Build unit sizes (number of smallest units per each unit level).
 	// Process bottom-up: the last unit has size 1; each parent = per * child.
-	// For the year unit (index 1 when eves exist), per is variable — we
-	// handle it via the eves table instead.
+	// For units whose size is governed by an irregular parent, we handle them
+	// via the irregular table instead of a fixed per.
 	const unitSize: number[] = new Array(n).fill(1);
 	for (let i = n - 2; i >= 0; i--) {
 		const childSize = unitSize[i + 1];
@@ -230,54 +231,57 @@ export function toAbsoluteDay(date: CalendarDate, spec: CalendarSpec): number {
 		if (typeof per === 'number') {
 			unitSize[i] = per * childSize;
 		} else {
-			// Variable per (year-within-eve): we handle this below
+			// Variable per (child of an irregular unit): handled below
 			unitSize[i] = childSize; // placeholder
 		}
 	}
 
-	// If the calendar has an eves table, the top two units (eve + year) fold
-	// differently: year resets per eve, so we compute absolute year first.
-	const hasEves = spec.eves && spec.eves.length > 0;
+	// Find the first unit with an irregular table (if any).
+	// When present, the child of that unit has a variable per, so we fold
+	// the first two levels specially (sum prior segment values) and then
+	// fold the remaining fixed-per levels normally.
+	const irregUnitIdx = units.findIndex((u) => u.irregular && u.irregular.length > 0);
 
-	if (hasEves && n >= 2) {
-		const eveIndex = vals[0] - 1; // 0-based
-		const yearWithinEve = vals[1] - 1; // 0-based
+	if (irregUnitIdx !== -1 && n > irregUnitIdx + 1) {
+		const irregUnit = units[irregUnitIdx];
+		const segmentIdx = vals[irregUnitIdx] - 1; // 0-based
+		const childWithinSegment = vals[irregUnitIdx + 1] - 1; // 0-based
 
-		// Sum all years from prior eves.
-		let priorYears = 0;
-		for (let e = 0; e < eveIndex && e < spec.eves!.length; e++) {
-			const eveDef = spec.eves![e];
-			// If years is null (open-ended), we can't compute further — just use
-			// what we have (the open eve is always the last, so nothing is after it).
-			if (eveDef.years === null) break;
-			priorYears += eveDef.years;
+		// Sum segment values from all prior segments to get absolute child count.
+		let priorChildUnits = 0;
+		for (let s = 0; s < segmentIdx && s < irregUnit.irregular!.length; s++) {
+			const entry = irregUnit.irregular![s];
+			// open-ended entries can only be the last, so we'll never need to
+			// sum past them; bail safely if we somehow encounter one.
+			if (entry.values === null) break;
+			priorChildUnits += entry.values;
 		}
-		const absoluteYear = priorYears + yearWithinEve;
+		const absoluteChildUnit = priorChildUnits + childWithinSegment;
 
-		// Compute days-per-year from the fixed sub-year units (circle × arc × day).
-		let daysPerYearActual = 1;
-		for (let i = 2; i < n; i++) {
+		// Compute the size of the child unit in smallest units (fixed-per chain below it).
+		let childUnitSize = 1;
+		for (let i = irregUnitIdx + 2; i < n; i++) {
 			const per = units[i].per;
-			if (typeof per === 'number') daysPerYearActual *= per;
+			if (typeof per === 'number') childUnitSize *= per;
 		}
 
-		// Compute the sub-year day offset from circle/arc/day values.
+		// Compute the sub-child-unit offset from the remaining fixed-per levels.
 		const fixedUnitSize: number[] = new Array(n).fill(1);
-		for (let i = n - 2; i >= 2; i--) {
+		for (let i = n - 2; i >= irregUnitIdx + 2; i--) {
 			const per = units[i + 1].per;
 			if (typeof per === 'number') {
 				fixedUnitSize[i] = per * fixedUnitSize[i + 1];
 			}
 		}
-		let subYearDay = 0;
-		for (let i = 2; i < n; i++) {
-			subYearDay += (vals[i] - 1) * fixedUnitSize[i];
+		let subChildDay = 0;
+		for (let i = irregUnitIdx + 2; i < n; i++) {
+			subChildDay += (vals[i] - 1) * fixedUnitSize[i];
 		}
 
-		return absoluteYear * daysPerYearActual + subYearDay;
+		return absoluteChildUnit * childUnitSize + subChildDay;
 	}
 
-	// No eves — all units have fixed `per` multipliers. Simple fold.
+	// No irregular units — all units have fixed `per` multipliers. Simple fold.
 	let result = 0;
 	for (let i = 0; i < n; i++) {
 		result += (vals[i] - 1) * unitSize[i];

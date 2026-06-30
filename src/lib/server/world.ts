@@ -66,34 +66,43 @@ export interface OrnamentConfig {
 }
 
 /**
- * A single Eve definition. Eves are variable-length event-marked periods;
- * years restart from 1 inside each Eve. `years` is the number of years the
- * Eve ran; `null` means the Eve is still open-ended (the current age).
+ * A single entry in an `irregular` segment table on a `CalendarUnit`.
+ * When a unit is divided into irregularly-sized segments (e.g. eves with
+ * different year-counts), each entry names one segment and declares how
+ * many child units it contains.
  */
-export interface EveDef {
-	/** 1-based Eve number. */
+export interface IrregularEntry {
+	/** 1-based reference number for this segment. */
 	ref: number;
 	/**
-	 * How many years this Eve lasted. `null` = open-ended (current Eve).
-	 * The engine uses this to compute absolute year offsets for sorting.
+	 * How many child units this segment contains.
+	 * `null` = open-ended (last/current segment, no upper bound).
+	 * The engine uses this to compute absolute offsets for sorting.
 	 */
-	years: number | null;
+	values: number | null;
 }
 
 /**
  * A single unit in the calendar hierarchy. Units are ordered big → small.
- * The top unit (usually "eve") has no `per`; every other unit declares
- * how many of itself fit inside the immediately larger unit.
+ * The top unit has no `per`; every other unit either declares a fixed `per`
+ * or inherits its size from its parent's `irregular` table.
  */
 export interface CalendarUnit {
 	/** Lowercase unit identifier, e.g. "eve", "year", "circle", "arc", "day". */
 	unit: string;
 	/**
 	 * How many of this unit fit inside one of the parent unit.
-	 * Omit on the top-level unit. `null` means variable (e.g. year inside eve
-	 * is governed by the `eves` table, not a fixed multiplier).
+	 * Omit on the top-level unit or when the parent is irregular.
 	 */
 	per?: number | null;
+	/**
+	 * When set, this unit is divided into named, irregularly-sized segments.
+	 * Each entry gives the number of child units for one segment instance.
+	 * The last entry may have `values: null` for an open-ended current segment.
+	 *
+	 * Example: an "eve" unit with different year-counts per eve.
+	 */
+	irregular?: IrregularEntry[];
 }
 
 /**
@@ -135,14 +144,9 @@ export interface CalendarSpec {
 	/** Human-readable name, e.g. "The Revelant Calendar". */
 	name?: string;
 	/**
-	 * Eve table. Required when the top unit is an event-marked era whose
-	 * years restart at 1. Each entry declares how many years that Eve
-	 * lasted; the last entry may have `years: null` for the current open Eve.
-	 */
-	eves?: EveDef[];
-	/**
 	 * Unit definitions ordered big → small.
 	 * Example: [eve, year, circle, arc, day]
+	 * A unit may carry an `irregular` table to declare variable segment sizes.
 	 */
 	units: CalendarUnit[];
 	/**
@@ -684,41 +688,6 @@ function readCalendarSpec(
 		return null;
 	}
 
-	// --- eves ---
-	const evesRaw = o['eves'];
-	let eves: EveDef[] | undefined;
-	if (evesRaw !== undefined && evesRaw !== null) {
-		if (!Array.isArray(evesRaw)) {
-			issues.push({ kind: 'invalid-yaml', detail: `${ctx}: eves must be an array` });
-			return null;
-		}
-		eves = [];
-		for (let i = 0; i < evesRaw.length; i++) {
-			const item = evesRaw[i];
-			if (!item || typeof item !== 'object' || Array.isArray(item)) {
-				issues.push({ kind: 'invalid-yaml', detail: `${ctx}: eves[${i}] must be a mapping` });
-				continue;
-			}
-			const e = item as Record<string, unknown>;
-			const ref = typeof e['ref'] === 'number' ? e['ref'] : null;
-			if (ref === null || !Number.isInteger(ref) || ref < 1) {
-				issues.push({ kind: 'invalid-yaml', detail: `${ctx}: eves[${i}].ref must be a positive integer` });
-				continue;
-			}
-			const yearsRaw = e['years'];
-			const years: number | null =
-				yearsRaw === null
-					? null
-					: typeof yearsRaw === 'number' && Number.isInteger(yearsRaw) && yearsRaw > 0
-						? yearsRaw
-						: null;
-			if (yearsRaw !== null && years === null) {
-				issues.push({ kind: 'invalid-yaml', detail: `${ctx}: eves[${i}].years must be a positive integer or null` });
-			}
-			eves.push({ ref, years: yearsRaw === null ? null : years });
-		}
-	}
-
 	// --- units ---
 	const unitsRaw = o['units'];
 	if (!Array.isArray(unitsRaw) || unitsRaw.length === 0) {
@@ -750,7 +719,43 @@ function readCalendarSpec(
 			issues.push({ kind: 'invalid-yaml', detail: `${ctx}: units[${i}].per must be a positive integer or null` });
 			per = undefined;
 		}
-		units.push({ unit, ...(per !== undefined ? { per } : {}) });
+
+		// --- irregular ---
+		const irregRaw = u['irregular'];
+		let irregular: IrregularEntry[] | undefined;
+		if (irregRaw !== undefined && irregRaw !== null) {
+			if (!Array.isArray(irregRaw)) {
+				issues.push({ kind: 'invalid-yaml', detail: `${ctx}: units[${i}].irregular must be an array` });
+			} else {
+				irregular = [];
+				for (let j = 0; j < irregRaw.length; j++) {
+					const entry = irregRaw[j];
+					if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
+						issues.push({ kind: 'invalid-yaml', detail: `${ctx}: units[${i}].irregular[${j}] must be a mapping` });
+						continue;
+					}
+					const e = entry as Record<string, unknown>;
+					const ref = typeof e['ref'] === 'number' ? e['ref'] : null;
+					if (ref === null || !Number.isInteger(ref) || ref < 1) {
+						issues.push({ kind: 'invalid-yaml', detail: `${ctx}: units[${i}].irregular[${j}].ref must be a positive integer` });
+						continue;
+					}
+					const valRaw = e['values'];
+					const values: number | null =
+						valRaw === null
+							? null
+							: typeof valRaw === 'number' && Number.isInteger(valRaw) && valRaw > 0
+								? valRaw
+								: null;
+					if (valRaw !== null && values === null) {
+						issues.push({ kind: 'invalid-yaml', detail: `${ctx}: units[${i}].irregular[${j}].values must be a positive integer or null` });
+					}
+					irregular.push({ ref, values: valRaw === null ? null : values });
+				}
+			}
+		}
+
+		units.push({ unit, ...(per !== undefined ? { per } : {}), ...(irregular !== undefined ? { irregular } : {}) });
 	}
 
 	// --- tokens ---
@@ -818,7 +823,7 @@ function readCalendarSpec(
 		}
 	}
 
-	return { ...(name ? { name } : {}), ...(eves ? { eves } : {}), units, input, display, ...(displayByPrecision ? { displayByPrecision } : {}), ...(tokens ? { tokens } : {}) };
+	return { ...(name ? { name } : {}), units, input, display, ...(displayByPrecision ? { displayByPrecision } : {}), ...(tokens ? { tokens } : {}) };
 }
 
 function readStringFrom(

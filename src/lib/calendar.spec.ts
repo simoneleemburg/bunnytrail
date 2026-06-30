@@ -28,16 +28,18 @@ import type { CalendarSpec } from './server/world';
  */
 const revelantSpec: CalendarSpec = {
 	name: 'The Revelant Calendar',
-	eves: [
-		{ ref: 1, years: 88 },
-		{ ref: 2, years: 120 },
-		{ ref: 3, years: 95 },
-		{ ref: 4, years: 60 },
-		{ ref: 5, years: 200 },
-		{ ref: 6, years: null }
-	],
 	units: [
-		{ unit: 'eve' },
+		{
+			unit: 'eve',
+			irregular: [
+				{ ref: 1, values: 88 },
+				{ ref: 2, values: 120 },
+				{ ref: 3, values: 95 },
+				{ ref: 4, values: 60 },
+				{ ref: 5, values: 200 },
+				{ ref: 6, values: null }
+			]
+		},
 		{ unit: 'year' },
 		{ unit: 'circle', per: 9 },
 		{ unit: 'arc', per: 3 },
@@ -132,14 +134,14 @@ describe('parseCalendarDate', () => {
 	it('rejects eve out of range', () => {
 		const result = parseCalendarDate({ calendar: 'revelant', value: [7, 1, 1, 1, 1] }, revelantSpec);
 		expect(result.ok).toBe(false);
-		if (!result.ok) expect(result.errors[0]).toMatch(/eve 7/i);
+		if (!result.ok) expect(result.errors[0]).toMatch(/eve 7.*segment/i);
 	});
 
 	it('rejects year exceeding the eve length', () => {
 		// Eve 4 only has 60 years
 		const result = parseCalendarDate({ calendar: 'revelant', value: [4, 61, 1, 1, 1] }, revelantSpec);
 		expect(result.ok).toBe(false);
-		if (!result.ok) expect(result.errors[0]).toMatch(/60 years in Eve 4/);
+		if (!result.ok) expect(result.errors[0]).toMatch(/year 61.*60.*eve 4/i);
 	});
 
 	it('accepts any year in the open-ended current eve', () => {
