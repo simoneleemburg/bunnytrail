@@ -394,13 +394,32 @@ export async function loadEntityPage(entity: Entity, mode: ViewMode = 'visitor')
 		// `profile` is resolved to a URL and surfaced as an image, not raw text.
 		'profile'
 	]);
-	const extra: { key: string; value: unknown }[] = [];
+	const extra: { key: string; value: unknown; label?: string; unit?: string }[] = [];
+
+	// Resolve a property id's schema (label + unit) for this entity's kind,
+	// walking the kind's ancestry so inherited properties resolve too.
+	// A property id may be overloaded across unrelated kinds, so we pick
+	// the entry whose declaring kind is this entity's kind or an ancestor.
+	function propertySchemaFor(propId: string): { label: string; unit?: string } | undefined {
+		const schemas = graph.propertyRegistry().get(propId);
+		if (!schemas || schemas.length === 0) return undefined;
+		const kindRegistry = graph.kindRegistry();
+		let cur: string | null = typeof entity.meta.kind === 'string' ? entity.meta.kind : null;
+		const ancestry = new Set<string>();
+		while (cur) {
+			ancestry.add(cur);
+			cur = kindRegistry.get(cur)?.parent ?? null;
+		}
+		return schemas.find((s) => ancestry.has(s.declaringKind)) ?? schemas[0];
+	}
+
 	// Read structured properties from the explicit `properties:` block
 	const metaProps = entity.meta.properties;
 	if (metaProps && typeof metaProps === 'object' && !Array.isArray(metaProps)) {
 		for (const [key, value] of Object.entries(metaProps as Record<string, unknown>)) {
 			if (value === null || value === undefined || value === '') continue;
-			extra.push({ key, value });
+			const schema = propertySchemaFor(key);
+			extra.push({ key, value, label: schema?.label, unit: schema?.unit });
 		}
 	}
 	// Also surface any non-hidden, non-kindRef meta fields not in `properties`

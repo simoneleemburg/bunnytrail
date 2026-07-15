@@ -180,7 +180,7 @@ async function walk(
 			// Merge this kind's declared properties into the global registry.
 			if (meta.properties) {
 				for (const [propId, entry] of Object.entries(meta.properties)) {
-					const schema = { label: entry.label, declaringKind: id, values: entry.values };
+					const schema = { label: entry.label, declaringKind: id, values: entry.values, unit: entry.unit };
 					const existing = properties.get(propId);
 					if (existing) {
 						existing.push(schema);
@@ -651,7 +651,12 @@ function parseKindMeta(
 						values = rawValues as string[];
 					}
 				}
-				properties[propId] = values !== undefined ? { label, values } : { label };
+				const unit = readStringFrom(e, 'unit', `${relTo(yamlPath, rootDir)}: properties.${propId}.unit`, issues);
+				properties[propId] = {
+					label,
+					...(values !== undefined ? { values } : {}),
+					...(unit ? { unit } : {})
+				};
 			}
 			if (Object.keys(properties).length > 0) meta.properties = properties;
 		}

@@ -56,11 +56,13 @@ export interface KindMeta {
 	description?: string;
 	/**
 	 * Property schemas declared on this kind. Keys are property ids
-	 * (e.g. `"gender"`); values carry a required `label` and optional
-	 * `values` enum. Scope is implicit: these properties are valid on
-	 * this kind and all its descendants via the kind hierarchy.
+	 * (e.g. `"gender"`); values carry a required `label`, an optional
+	 * `values` enum, and an optional `unit` suffix (e.g. `"km"`, `"g"`)
+	 * appended to numeric values on display. Scope is implicit: these
+	 * properties are valid on this kind and all its descendants via
+	 * the kind hierarchy.
 	 */
-	properties?: Record<string, { label: string; values?: string[] }>;
+	properties?: Record<string, { label: string; values?: string[]; unit?: string }>;
 	/**
 	 * The kind id that constrains which class entities of this kind may
 	 * be assigned. When set, every entity of this kind (or any descendant
@@ -871,6 +873,8 @@ export interface PropertySchema {
 	declaringKind: string;
 	/** Enum of allowed values, e.g. ["woman","man","fluid"]. Omit for any value. */
 	values?: string[];
+	/** Unit suffix appended to numeric values on display, e.g. "km", "g", "AU". */
+	unit?: string;
 }
 
 /** The full property registry built from all `_kind.yaml` files.

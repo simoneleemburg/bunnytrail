@@ -2,6 +2,10 @@
 	interface Item {
 		key: string;
 		value: unknown;
+		/** Override display label, e.g. from a `_kind.yaml` property schema. */
+		label?: string;
+		/** Unit suffix appended to numeric values, e.g. "km", "g". */
+		unit?: string;
 	}
 
 	interface Props {
@@ -10,8 +14,12 @@
 
 	let { items }: Props = $props();
 
-	function format(value: unknown): string {
-		if (Array.isArray(value)) return value.map((v) => String(v)).join(', ');
+	function formatValue(value: unknown, unit?: string): string {
+		if (Array.isArray(value)) return value.map((v) => formatValue(v)).join(', ');
+		if (typeof value === 'number' && Number.isFinite(value)) {
+			const formatted = value.toLocaleString(undefined, { maximumFractionDigits: 3 });
+			return unit ? `${formatted} ${unit}` : formatted;
+		}
 		return String(value);
 	}
 
@@ -31,8 +39,8 @@
 {#if visible.length > 0}
 	<dl class="property-list">
 		{#each visible as item (item.key)}
-			<dt>{humanize(item.key)}</dt>
-			<dd>{format(item.value)}</dd>
+			<dt>{item.label ?? humanize(item.key)}</dt>
+			<dd>{formatValue(item.value, item.unit)}</dd>
 		{/each}
 	</dl>
 {/if}
