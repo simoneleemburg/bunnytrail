@@ -32,12 +32,12 @@ const revelantSpec: CalendarSpec = {
 		{
 			unit: 'eve',
 			irregular: [
-				{ ref: 1, values: 88 },
-				{ ref: 2, values: 120 },
-				{ ref: 3, values: 95 },
-				{ ref: 4, values: 60 },
-				{ ref: 5, values: 200 },
-				{ ref: 6, values: null }
+				{ ref: 1, total: 88 },
+				{ ref: 2, total: 120 },
+				{ ref: 3, total: 95 },
+				{ ref: 4, total: 60 },
+				{ ref: 5, total: 200 },
+				{ ref: 6, total: null }
 			]
 		},
 		{ unit: 'year' },

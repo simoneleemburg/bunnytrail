@@ -512,10 +512,23 @@ async function walkTimelinesDir(
 						continue;
 					}
 				}
+				// A child whose own `_time.md` declares `type: line`/`type: period`
+				// is a nested sub-timeline, not a dot entry of this one. It's
+				// picked up independently by the recursive walk below (and
+				// surfaced to the UI as a `childTimeline`), so skip it here to
+				// avoid double-counting it as both an entry and a child timeline.
+				if (childMeta.type === 'line' || childMeta.type === 'period') continue;
+
 				// Determine the year: explicit field first, folder name fallback.
-				// Also resolve calendar dates if present.
+				// The folder-name fallback only applies when the name is a bare
+				// integer (e.g. "1954") — never parsed from a mixed name like
+				// "1st-eve" (that would silently derive a bogus year from an
+				// ordinal prefix). Non-numeric folders need an explicit `year:`
+				// or `date:` field.
 				let year: number;
 				let calendarDate: import('$lib/calendar').CalendarDate | undefined;
+				const childIsYearFolder = /^-?\d+$/.test(childName);
+				const folderYear = childIsYearFolder ? parseInt(childName, 10) : NaN;
 
 				// Resolve which calendar to use: dot meta > parent line meta > none
 				const effectiveCalendarId =
@@ -538,23 +551,20 @@ async function walkTimelinesDir(
 							for (const err of result.errors) {
 								issues.push({ kind: 'invalid-yaml', detail: `${childTimeMdPath}: ${err}` });
 							}
-							year = typeof childMeta.year === 'number' ? childMeta.year : parseInt(childName, 10);
+							year = typeof childMeta.year === 'number' ? childMeta.year : folderYear;
 						}
 					} else if (parsed && !customCalendars?.calendars[parsed.calendar]) {
 						issues.push({
 							kind: 'invalid-yaml',
 							detail: `${childTimeMdPath}: unknown calendar '${parsed.calendar}'`
 						});
-						year = typeof childMeta.year === 'number' ? childMeta.year : parseInt(childName, 10);
+						year = typeof childMeta.year === 'number' ? childMeta.year : folderYear;
 					} else {
 						// Not a calendar date (e.g. ISO string) — fall through to plain year
-						year = typeof childMeta.year === 'number' ? childMeta.year : parseInt(childName, 10);
+						year = typeof childMeta.year === 'number' ? childMeta.year : folderYear;
 					}
 				} else {
-					year =
-						typeof childMeta.year === 'number'
-							? childMeta.year
-							: parseInt(childName, 10);
+					year = typeof childMeta.year === 'number' ? childMeta.year : folderYear;
 				}
 
 				// If neither a calendar date nor an explicit year resolved, and the

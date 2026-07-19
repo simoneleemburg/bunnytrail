@@ -79,7 +79,7 @@ export interface IrregularEntry {
 	 * `null` = open-ended (last/current segment, no upper bound).
 	 * The engine uses this to compute absolute offsets for sorting.
 	 */
-	values: number | null;
+	total: number | null;
 }
 
 /**
@@ -96,9 +96,16 @@ export interface CalendarUnit {
 	 */
 	per?: number | null;
 	/**
+	 * Explicit name of the unit this one divides up. Purely documentary/
+	 * self-describing — the engine always treats a unit's parent as the
+	 * preceding entry in `units`, so `div` must match that unit's `unit` id
+	 * when present. Omit on the top-level unit.
+	 */
+	div?: string;
+	/**
 	 * When set, this unit is divided into named, irregularly-sized segments.
 	 * Each entry gives the number of child units for one segment instance.
-	 * The last entry may have `values: null` for an open-ended current segment.
+	 * The last entry may have `total: null` for an open-ended current segment.
 	 *
 	 * Example: an "eve" unit with different year-counts per eve.
 	 */
@@ -736,6 +743,26 @@ function readCalendarSpec(
 			per = undefined;
 		}
 
+		// --- div ---
+		const divRaw = u['div'];
+		let div: string | undefined;
+		if (divRaw !== undefined && divRaw !== null) {
+			if (typeof divRaw !== 'string' || !divRaw.trim()) {
+				issues.push({ kind: 'invalid-yaml', detail: `${ctx}: units[${i}].div must be a non-empty string` });
+			} else {
+				div = divRaw.trim().toLowerCase();
+				const parentUnitId = i > 0 ? units[i - 1]?.unit : undefined;
+				if (i === 0) {
+					issues.push({ kind: 'invalid-yaml', detail: `${ctx}: units[${i}].div is not allowed on the top-level unit` });
+				} else if (parentUnitId && div !== parentUnitId) {
+					issues.push({
+						kind: 'invalid-yaml',
+						detail: `${ctx}: units[${i}].div '${div}' does not match the preceding unit '${parentUnitId}'`
+					});
+				}
+			}
+		}
+
 		// --- irregular ---
 		const irregRaw = u['irregular'];
 		let irregular: IrregularEntry[] | undefined;
@@ -756,22 +783,27 @@ function readCalendarSpec(
 						issues.push({ kind: 'invalid-yaml', detail: `${ctx}: units[${i}].irregular[${j}].ref must be a positive integer` });
 						continue;
 					}
-					const valRaw = e['values'];
-					const values: number | null =
-						valRaw === null
+					const totalRaw = e['total'];
+					const total: number | null =
+						totalRaw === null
 							? null
-							: typeof valRaw === 'number' && Number.isInteger(valRaw) && valRaw > 0
-								? valRaw
+							: typeof totalRaw === 'number' && Number.isInteger(totalRaw) && totalRaw > 0
+								? totalRaw
 								: null;
-					if (valRaw !== null && values === null) {
-						issues.push({ kind: 'invalid-yaml', detail: `${ctx}: units[${i}].irregular[${j}].values must be a positive integer or null` });
+					if (totalRaw !== null && total === null) {
+						issues.push({ kind: 'invalid-yaml', detail: `${ctx}: units[${i}].irregular[${j}].total must be a positive integer or null` });
 					}
-					irregular.push({ ref, values: valRaw === null ? null : values });
+					irregular.push({ ref, total: totalRaw === null ? null : total });
 				}
 			}
 		}
 
-		units.push({ unit, ...(per !== undefined ? { per } : {}), ...(irregular !== undefined ? { irregular } : {}) });
+		units.push({
+			unit,
+			...(per !== undefined ? { per } : {}),
+			...(div !== undefined ? { div } : {}),
+			...(irregular !== undefined ? { irregular } : {})
+		});
 	}
 
 	// --- tokens ---

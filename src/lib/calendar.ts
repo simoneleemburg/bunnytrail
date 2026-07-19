@@ -179,9 +179,9 @@ export function parseCalendarDate(
 		if (parentUnit?.irregular && parentUnit.irregular.length > 0) {
 			const parentIndex = date.value[i - 1] - 1; // parent value is 1-based
 			const parentEntry = parentUnit.irregular[parentIndex];
-			if (parentEntry && parentEntry.values !== null && val > parentEntry.values) {
+			if (parentEntry && parentEntry.total !== null && val > parentEntry.total) {
 				errors.push(
-					`Calendar '${date.calendar}': ${unit.unit} ${val} exceeds ${parentEntry.values} in ${parentUnit.unit} ${date.value[i - 1]}`
+					`Calendar '${date.calendar}': ${unit.unit} ${val} exceeds ${parentEntry.total} in ${parentUnit.unit} ${date.value[i - 1]}`
 				);
 			}
 			continue;
@@ -253,8 +253,8 @@ export function toAbsoluteDay(date: CalendarDate, spec: CalendarSpec): number {
 			const entry = irregUnit.irregular![s];
 			// open-ended entries can only be the last, so we'll never need to
 			// sum past them; bail safely if we somehow encounter one.
-			if (entry.values === null) break;
-			priorChildUnits += entry.values;
+			if (entry.total === null) break;
+			priorChildUnits += entry.total;
 		}
 		const absoluteChildUnit = priorChildUnits + childWithinSegment;
 
