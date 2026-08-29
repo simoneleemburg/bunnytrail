@@ -454,6 +454,40 @@ blockquote {
 	}
 }
 
+/* ── Photo gallery (side-by-side figures) ──────────────────────
+   Rendered from ```gallery fenced blocks in prose — one `![alt](src)`
+   image per line. Each image still gets wrapped in its own
+   `.bt-inline-img` figure by `inlineSvgFigures` (caption + lightbox
+   trigger included); this block only lays the resulting figures out
+   as a row instead of the default stacked prose flow. Worlds can
+   swap the layout entirely (masonry, fixed columns, …) via
+   `.bt-gallery {}` in theme.css. */
+.bt-gallery {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+:where(.bt-gallery) {
+	gap: var(--space-6);
+	margin: var(--space-6) auto;
+	max-width: var(--figure-max-width);
+}
+
+.bt-gallery > .bt-inline-img {
+	margin: 0;
+	flex: 1 1 16rem;
+	max-width: calc(var(--figure-max-width) / 2 - var(--space-3));
+}
+
+@media (max-width: 640px) {
+	.bt-gallery > .bt-inline-img {
+		flex-basis: 100%;
+		max-width: 100%;
+	}
+}
+
 /* Fleuron — shared ornamental chapter-mark used on the home hero,
    collection, entity, and guide pages. All layout and decorative
    properties live here so every page gets them from a single

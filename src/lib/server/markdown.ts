@@ -179,6 +179,35 @@ function escapeHtml(s: string): string {
 }
 
 /**
+ * Render a ```gallery fenced block's contents into a
+ * `<div class="bt-gallery">` of bare `<img>` tags — one per
+ * non-blank source line, each written as ordinary
+ * `![alt](src)` markdown image syntax.
+ *
+ * Deliberately does not build `<figure>` chrome itself: the
+ * `<img>` tags it emits still flow through `rewriteImageSrcs`
+ * (sibling/asset path resolution) and then `inlineSvgFigures`
+ * (per-image `.bt-inline-img` figure, caption, lightbox trigger)
+ * exactly as a lone image would. `.bt-gallery` only supplies the
+ * side-by-side layout around the resulting figures.
+ *
+ * Lines that aren't image syntax (or are blank) are dropped,
+ * keeping the block strictly a photo group rather than a general
+ * container — authors who want mixed prose alongside photos
+ * should write it outside the fence.
+ */
+function renderGalleryBlock(text: string): string {
+	const items = text
+		.split('\n')
+		.map((line) => line.trim())
+		.filter((line) => line !== '')
+		.map((line) => marked.parseInline(line, { async: false }) as string)
+		.filter((html) => /<img\b/i.test(html));
+	if (items.length === 0) return '';
+	return `<div class="bt-gallery">${items.join('')}</div>\n`;
+}
+
+/**
  * Slugify a heading's text content into an anchor-safe id.
  *
  * Lowercase, ASCII-fold diacritics, collapse non-alphanumerics to
@@ -399,6 +428,17 @@ export function renderBody(
 	// `rewriteBrackets` above, so `marked.parseInline` converts them to
 	// proper `<a>` tags here. All other language tags fall through to
 	// marked's default renderer.
+	// `gallery` fenced blocks render a `<div class="bt-gallery">`
+	// containing one `<img>` per source line, letting authors group
+	// related photos (e.g. two witnesses to the same event) so they
+	// paint side by side instead of stacking. Each line is ordinary
+	// `![alt](src)` image syntax — nothing new to learn. The block
+	// deliberately emits bare `<img>` tags rather than pre-built
+	// `<figure>`s: `rewriteImageSrcs` below still resolves each `src`
+	// exactly as it would for a lone image, and `inlineSvgFigures`
+	// (run by every route after this) wraps each one in its own
+	// `.bt-inline-img` figure with a caption and lightbox trigger —
+	// the gallery only supplies the side-by-side layout around them.
 	const defaultCode = renderer.code.bind(renderer);
 	renderer.code = (token) => {
 		if (token.lang === 'formula') {
@@ -420,6 +460,9 @@ export function renderBody(
 				return `<span class="bt-verse-line">${inlineHtml}</span>`;
 			});
 			return `<div class="bt-verse">${spans.join('')}</div>\n`;
+		}
+		if (token.lang === 'gallery') {
+			return renderGalleryBlock(token.text);
 		}
 		return defaultCode(token);
 	};
@@ -645,6 +688,9 @@ export function renderPlainBody(body: string, resolveLink?: LinkResolver): strin
 				return `<span class="bt-verse-line">${inlineHtml}</span>`;
 			});
 			return `<div class="bt-verse">${spans.join('')}</div>\n`;
+		}
+		if (token.lang === 'gallery') {
+			return renderGalleryBlock(token.text);
 		}
 		return defaultCode(token);
 	};

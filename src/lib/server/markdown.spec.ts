@@ -457,6 +457,33 @@ describe('renderBody', () => {
 		});
 	});
 
+	describe('```gallery fenced blocks', () => {
+		it('wraps each image line in a .bt-gallery container', () => {
+			const html = renderBody(
+				'```gallery\n![A](a.jpg)\n![B](b.jpg)\n```',
+				resolve,
+				langs,
+				new Set(),
+				undefined,
+				'characters/kael'
+			);
+			expect(html).toContain('<div class="bt-gallery">');
+			expect(html).toContain('<img src="/api/entity-assets/characters/kael/a.jpg" alt="A">');
+			expect(html).toContain('<img src="/api/entity-assets/characters/kael/b.jpg" alt="B">');
+		});
+
+		it('drops blank lines and non-image lines', () => {
+			const html = renderBody('```gallery\n![A](a.jpg)\n\nnot an image\n```', resolve, langs);
+			expect(html).toContain('<div class="bt-gallery">');
+			expect(html).not.toContain('not an image');
+		});
+
+		it('renders nothing when the block has no image lines', () => {
+			const html = renderBody('```gallery\nnot an image\n```', resolve, langs);
+			expect(html).not.toContain('bt-gallery');
+		});
+	});
+
 	describe('wikilinks inside raw HTML chrome', () => {
 		it('rescues a wikilink inside a <dt> block as a real anchor', () => {
 			const html = renderBody(
