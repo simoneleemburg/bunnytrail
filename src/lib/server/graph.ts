@@ -47,12 +47,35 @@ export interface SearchResult {
  * can reuse the same comparator without duplicating it.
  */
 export function byRankThenName(a: Entity, b: Entity): number {
+	return compareRankThenName(a, b, false);
+}
+
+/**
+ * Descending counterpart to `byRankThenName`: highest rank first, then
+ * Z→A for the unranked tail. Ranked entities still always sort before
+ * unranked ones — only the ordering *within* each group reverses.
+ */
+export function byRankThenNameDesc(a: Entity, b: Entity): number {
+	return compareRankThenName(a, b, true);
+}
+
+/**
+ * Pick the ascending or descending rank comparator based on a
+ * collection's `sortOrder`. Callers pass `collection?.meta.sortOrder
+ * === 'descending'`.
+ */
+export function rankComparator(descending: boolean): (a: Entity, b: Entity) => number {
+	return descending ? byRankThenNameDesc : byRankThenName;
+}
+
+function compareRankThenName(a: Entity, b: Entity, descending: boolean): number {
 	const aRank = a.meta.rank;
 	const bRank = b.meta.rank;
-	if (aRank !== undefined && bRank !== undefined) return aRank - bRank;
+	const sign = descending ? -1 : 1;
+	if (aRank !== undefined && bRank !== undefined) return sign * (aRank - bRank);
 	if (aRank !== undefined) return -1;
 	if (bRank !== undefined) return 1;
-	return a.meta.name.localeCompare(b.meta.name);
+	return sign * a.meta.name.localeCompare(b.meta.name);
 }
 
 /**

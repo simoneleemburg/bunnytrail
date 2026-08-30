@@ -7,7 +7,7 @@
  * via `CollectionPageData` (re-exported from `collectionPage.load.ts`).
  */
 
-import { graph, byRankThenName } from '$lib/server/graph';
+import { graph, rankComparator } from '$lib/server/graph';
 import { world } from '$lib/server/world';
 import { toAbsoluteDay, formatCalendarRange, type CalendarDate } from '$lib/calendar';
 import { buildKindTree, type Entity, type EntityId, type KindTree } from '$lib/types';
@@ -109,6 +109,35 @@ export function rankTags(counts: Map<string, number>): Array<{ label: string; co
 	return [...counts.entries()]
 		.map(([label, count]) => ({ label, count }))
 		.sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+}
+
+// ---------------------------------------------------------------------------
+// compareCardRank — rank/name comparator for wire-shape objects
+// ---------------------------------------------------------------------------
+
+/**
+ * Generic version of `byRankThenName` (graph.ts) for view-model shapes
+ * that aren't `Entity` — subcollection tiles (`{ rank, plural }`) and
+ * `Card`s (`{ rank, name }`) both carry `rank: number | null` rather
+ * than `Entity`'s `rank?: number`, so they need their own comparator
+ * rather than reusing the graph-level one directly. `descending`
+ * mirrors `graph.rankComparator`: ranked items still always sort
+ * before unranked ones, only the ordering *within* each group flips.
+ */
+export function compareCardRank<T>(
+	getRank: (item: T) => number | null,
+	getName: (item: T) => string,
+	descending: boolean
+): (a: T, b: T) => number {
+	const sign = descending ? -1 : 1;
+	return (a, b) => {
+		const aRank = getRank(a);
+		const bRank = getRank(b);
+		if (aRank !== null && bRank !== null) return sign * (aRank - bRank);
+		if (aRank !== null) return -1;
+		if (bRank !== null) return 1;
+		return sign * getName(a).localeCompare(getName(b));
+	};
 }
 
 // ---------------------------------------------------------------------------
@@ -303,6 +332,11 @@ export function buildSubcollectionTree(
 	const labels = graph.folderLabels(subPath);
 	const collection = graph.collection(subPath);
 	const description = collection?.meta.description ?? null;
+	// Each subcollection's own tree ordering follows its own
+	// `sortOrder`, independent of the page it's rendered on —
+	// matching how `rankDisplay` and `description` are also read
+	// straight off the subcollection's own `_collection` meta.
+	const comparator = rankComparator(collection?.meta.sortOrder === 'descending');
 
 	// Subcollection's headline entity, if any: an entity sitting at
 	// `subPath` itself (e.g. `places/celestial/aureth-system` exists
@@ -330,7 +364,7 @@ export function buildSubcollectionTree(
 		const children = e.children
 			.map((cid) => graph.get(cid))
 			.filter((c): c is Entity => !!c && inSubcollection(c.id) && !seen.has(c.id))
-			.sort(byRankThenName)
+			.sort(comparator)
 			.map(buildNode);
 		return {
 			container: toCard(e, cardSummaryHtml, undefined, pathBucket(e.id)),
@@ -354,7 +388,7 @@ export function buildSubcollectionTree(
 			.filter((e) => !e.parent || !inSubcollection(e.parent));
 	}
 
-	const roots = rootEntities.sort(byRankThenName).map(buildNode);
+	const roots = rootEntities.sort(comparator).map(buildNode);
 
 	return {
 		path: subPath,

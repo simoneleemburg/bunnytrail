@@ -194,6 +194,18 @@ export interface EraConfig {
 export type RankDisplay = 'arabic' | 'roman' | 'none';
 
 /**
+ * Direction for rank/name ordering within a collection.
+ *   'ascending'  — lowest rank first, then A→Z for the unranked tail (default)
+ *   'descending' — highest rank first, then Z→A for the unranked tail
+ *
+ * Ranked entities/subcollections always sort before unranked ones
+ * regardless of direction — `descending` reverses the ordering
+ * *within* each group, it does not make unranked items outrank
+ * ranked ones. See `rankComparator` in `graph.ts`.
+ */
+export type SortOrder = 'ascending' | 'descending';
+
+/**
  * Convert a positive integer to an uppercase roman numeral string.
  * Returns the arabic string for values outside the roman range (< 1 or > 3999).
  */
@@ -242,6 +254,16 @@ export interface CollectionMeta {
 	 * but still enables prev/next navigation.
 	 */
 	rankDisplay?: RankDisplay;
+	/**
+	 * Sort direction for this collection's direct entities and its
+	 * subcollection tiles. Defaults to `'ascending'`. Set to
+	 * `'descending'` to show the highest-`rank` entities first — e.g.
+	 * a genealogy collection whose entities rank by birth year, shown
+	 * newest-first without renumbering anything. Only affects this
+	 * collection's own listing; sibling collections and nested
+	 * subcollections each read their own `sortOrder` independently.
+	 */
+	sortOrder?: SortOrder;
 	/**
 	 * When set on a *top-level* collection (a folder directly under
 	 * `content/`), marks that folder as a **universal substrate**

@@ -1,4 +1,4 @@
-import { graph, byRankThenName } from '$lib/server/graph';
+import { graph, rankComparator } from '$lib/server/graph';
 import { world } from '$lib/server/world';
 import { inlineSvgFigures } from '$lib/server/inlineSvgs';
 import { makeCollectionResolver, renderBody, renderSummary } from '$lib/server/markdown';
@@ -9,6 +9,7 @@ import {
 	buildOrbitsTree,
 	buildSubcollectionEntry,
 	buildSubcollectionTree,
+	compareCardRank,
 	labelForFolder,
 	serialiseKinds,
 	toCard,
@@ -45,6 +46,13 @@ export async function loadCollectionPage(path: string) {
 	const label = graph.folderLabels(path);
 	const collection = graph.collection(path);
 	const description = collection?.meta.description ?? null;
+	// This collection's own sort direction, applied to its direct
+	// entities and its subcollection tiles. Nested subcollections
+	// each read their own `sortOrder` independently (see
+	// `buildSubcollectionTree` / `buildSubcollectionEntry` call sites
+	// below) rather than inheriting this one.
+	const descending = collection?.meta.sortOrder === 'descending';
+	const comparator = rankComparator(descending);
 
 	// Breadcrumb chain: every browseable ancestor folder above this
 	// collection, from root down. Mirrors the entity-page logic.
@@ -68,7 +76,7 @@ export async function loadCollectionPage(path: string) {
 	}
 
 	// Direct entities of this folder, sorted by rank then name.
-	const entities = graph.byFolder(path).sort(byRankThenName);
+	const entities = graph.byFolder(path).sort(comparator);
 
 	// Virtual members: entities declared via `included:` in the
 	// collection meta that live outside this folder. Deduped against
@@ -81,7 +89,7 @@ export async function loadCollectionPage(path: string) {
 			const e = graph.get(id);
 			return e && !nativeIds.has(e.id) ? [e] : [];
 		});
-	const allEntities = [...entities, ...includedEntities].sort(byRankThenName);
+	const allEntities = [...entities, ...includedEntities].sort(comparator);
 
 	// Wikilinks in a collection's prose resolve from the
 	// collection's own cluster (the first path segment, if it's a
@@ -139,12 +147,13 @@ export async function loadCollectionPage(path: string) {
 	const childPaths = graph.childFolders(path);
 	const subcollections = childPaths
 		.map((sub) => buildSubcollectionEntry(sub, kindTree))
-		.sort((a, b) => {
-			if (a.rank !== null && b.rank !== null) return a.rank - b.rank;
-			if (a.rank !== null) return -1;
-			if (b.rank !== null) return 1;
-			return a.plural.localeCompare(b.plural);
-		});
+		.sort(
+			compareCardRank(
+				(t) => t.rank,
+				(t) => t.plural,
+				descending
+			)
+		);
 
 	// Cards for direct entities, retaining their bucket for folder
 	// chips / synthetic folder containers.
@@ -158,14 +167,13 @@ export async function loadCollectionPage(path: string) {
 		.filter((e) => e.type !== path)
 		.map((e) => toCard(e, cardSummaryHtml, labelForFolder(e.type), pathBucket(e.id)));
 
-	const flatAll = [...cards, ...descendants].sort((a, b) => {
-		const aRank = a.rank;
-		const bRank = b.rank;
-		if (aRank !== null && bRank !== null) return aRank - bRank;
-		if (aRank !== null) return -1;
-		if (bRank !== null) return 1;
-		return a.name.localeCompare(b.name);
-	});
+	const flatAll = [...cards, ...descendants].sort(
+		compareCardRank(
+			(c) => c.rank,
+			(c) => c.name,
+			descending
+		)
+	);
 
 	// Containers: a recursive tree of direct entities that
 	// filesystem-nest other entities of this same folder beneath
@@ -177,7 +185,7 @@ export async function loadCollectionPage(path: string) {
 		const children = e.children
 			.map((cid) => graph.get(cid))
 			.filter((c): c is Entity => !!c && c.type === path)
-			.sort(byRankThenName)
+			.sort(comparator)
 			.map(buildNode);
 		return { container: toCard(e, cardSummaryHtml, undefined, pathBucket(e.id)), children };
 	};
@@ -340,11 +348,15 @@ export async function loadCollectionPage(path: string) {
 	// Prev/next navigation between sibling collections that have an
 	// explicit `rank` in their `_collection` frontmatter. Siblings
 	// are the other child folders of the same parent folder.
-	// rankDisplay is inherited from the *parent* folder's _collection,
-	// mirroring how entity pages inherit it from their containing folder.
+	// rankDisplay and sortOrder are both inherited from the *parent*
+	// folder's _collection, mirroring how entity pages inherit
+	// rankDisplay from their containing folder — the parent is what
+	// declares "how my children are ordered", not each child itself.
 	const myRank = typeof collection?.meta.rank === 'number' ? collection.meta.rank : null;
 	const parentPath = path.includes('/') ? path.slice(0, path.lastIndexOf('/')) : '';
-	const rankDisplay: RankDisplay = graph.collection(parentPath)?.meta.rankDisplay ?? 'arabic';
+	const parentCollection = graph.collection(parentPath);
+	const rankDisplay: RankDisplay = parentCollection?.meta.rankDisplay ?? 'arabic';
+	const siblingsDescending = parentCollection?.meta.sortOrder === 'descending';
 	const collectionNav: {
 		rank: number | null;
 		rankDisplay: RankDisplay;
@@ -364,7 +376,7 @@ export async function loadCollectionPage(path: string) {
 				title: s.col.meta.title ?? graph.folderLabels(s.path).plural,
 				rank: s.col.meta.rank as number
 			}))
-			.sort((a, b) => a.rank - b.rank);
+			.sort((a, b) => (siblingsDescending ? b.rank - a.rank : a.rank - b.rank));
 		const idx = siblings.findIndex((s) => s.path === path);
 		return {
 			rank: myRank,
